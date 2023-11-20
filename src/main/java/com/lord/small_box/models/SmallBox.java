@@ -34,8 +34,8 @@ public class SmallBox {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
-	@Column(name="date")
 	
+	@Column(name="date")
 	private Calendar date;
 	
 	@Column(name="ticket_number")

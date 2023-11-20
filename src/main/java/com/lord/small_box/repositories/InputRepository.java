@@ -6,4 +6,5 @@ import com.lord.small_box.models.Input;
 
 public interface InputRepository extends JpaRepository<Input, Integer>{
 
+	
 }

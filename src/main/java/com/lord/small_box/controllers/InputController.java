@@ -30,10 +30,7 @@ public class InputController {
 	@GetMapping("/example")
 	ResponseEntity<List<InputDto>> findByExample(@RequestBody InputDto inputDto){
 		Input input = InputMapper.INSTNACE.toInput(inputDto);
-		StringMatcher match = StringMatcher.CONTAINING;
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(match).withIgnoreCase();
-		Example<Input> example = Example.of(input,matcher);
-		List<Input> inputs = inputService.findByExample(example);
+		List<Input> inputs = inputService.findByExample(input);
 		List<InputDto> inputsDto = InputMapper.INSTNACE.toInputsDto(inputs);
 		return new ResponseEntity<List<InputDto>>(inputsDto,HttpStatus.OK);
 	}

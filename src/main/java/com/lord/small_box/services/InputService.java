@@ -14,6 +14,6 @@ public interface InputService {
 	
 	public Input save(Input input);
 	
-	public List<Input> findByExample(Example<Input> example);
+	public List<Input> findByExample(Input input);
 
 }

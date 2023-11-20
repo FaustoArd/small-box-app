@@ -1,5 +1,8 @@
 package com.lord.small_box.models;
 
+import java.math.BigDecimal;
+import java.util.Calendar;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,23 +20,20 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
+@Data
 @Entity
-@Table(name="inputs")
-public class Input {
-
+@Table(name="sub_total")
+public class SubTotal {
+	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Column(name="description")
-	private String description;
+	@Column(name="sub_total")
+	private BigDecimal subTotal;
 	
-	@Column(name="input_number")
-	private String inputNumber;
 	
-	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
-	@JoinColumn(name="sub_total_id", referencedColumnName = "id")
-	private SubTotal subTotal;
+	
+
 }
