@@ -16,11 +16,13 @@ public interface SmallBoxMapper {
 	@Mapping(target="input.description", source="description")
 	@Mapping(target="input.id", source="inputId")
 	@Mapping(target="container", ignore=true)
+	@Mapping(target="subtotal", ignore = true)
 	public SmallBox toSmallBox(SmallBoxDto smallBoxDto);
 	
 	@Mapping(target="inputNumber",source="input.inputNumber" )
 	@Mapping(target="description", source="input.description")
 	@Mapping(target="inputId", source="input.id")
+	@Mapping(target="containerId", source="container.id")
 	public SmallBoxDto toSmallBoxDto(SmallBox smallBox);
 	
 	public List<SmallBoxDto> toSmallBoxesDtos(List<SmallBox> smallBoxes);

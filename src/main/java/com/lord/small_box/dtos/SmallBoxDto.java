@@ -31,5 +31,7 @@ public class SmallBoxDto {
 	
 	private Integer viewOrder;
 	
+	private Integer containerId;
+	
 
 }
