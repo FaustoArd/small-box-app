@@ -10,7 +10,9 @@ import com.fasterxml.jackson.datatype.jdk8.OptionalIntDeserializer;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.SmallBox;
+import com.lord.small_box.models.SubTotal;
 import com.lord.small_box.repositories.SmallBoxRepository;
+import com.lord.small_box.repositories.SubTotalRepository;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
 
@@ -25,6 +27,9 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	
 	@Autowired
 	private final InputService inputService;
+	
+	@Autowired
+	private final SubTotalRepository subTotalRepository;
 
 	
 
@@ -57,6 +62,17 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	@Override
 	public List<SmallBox> findAllOrderByInputInputNumber(String inpuNumber) {
 	return (List<SmallBox>)smallBoxRepo.findAllOrderByInputInputNumber(inpuNumber);
+	}
+
+	@Override
+	public SubTotal calculateSubtotal(List<SmallBox> smallBoxes,Integer inputNumber) {
+	 return null;
+	}
+
+	@Override
+	public List<SmallBox> findAllByContainer(Integer conainerId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
