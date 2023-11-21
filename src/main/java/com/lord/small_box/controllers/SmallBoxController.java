@@ -46,9 +46,10 @@ public class SmallBoxController {
 	}
 	
 	@PostMapping("/new")
-	ResponseEntity<SmallBoxDto> newSmallBox(@RequestBody SmallBoxDto smallBoxDto){
+	ResponseEntity<SmallBoxDto> newSmallBox(@RequestBody SmallBoxDto smallBoxDto,
+			@RequestParam("containerId")Integer containerId){
 		SmallBox smallBox = SmallBoxMapper.INSTANCE.toSmallBox(smallBoxDto);
-		SmallBox savedSmallBox = smallBoxService.save(smallBox);
+		SmallBox savedSmallBox = smallBoxService.save(smallBox, containerId);
 		SmallBoxDto savedSmallBoxDto = SmallBoxMapper.INSTANCE.toSmallBoxDto(savedSmallBox);
 		return new ResponseEntity<SmallBoxDto>(savedSmallBoxDto,HttpStatus.CREATED);
 	}

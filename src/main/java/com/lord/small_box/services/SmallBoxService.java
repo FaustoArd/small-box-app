@@ -11,14 +11,16 @@ public interface SmallBoxService {
 	
 	public SmallBox findById(Integer id);
 	
-	public SmallBox save(SmallBox smallBox);
+	public SmallBox save(SmallBox smallBox,Integer containerId);
 	
 	public void delete(Integer id);
 	
 	public List<SmallBox> findAllOrderByInputInputNumber(String inpuNumber);
 	
-	public List<SmallBox> findAllByContainer(Integer conainerId);
+	public List<SmallBox> findAllByContainerId(Integer containerId);
 	
-	public SubTotal calculateSubtotal(List<SmallBox> smallBoxes,Integer inputNumber);
+	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Integer containerId, String inputNumber);
+	
+	public SubTotal calculateSubtotal(Integer conatinerId,String inputNumber);
 
 }

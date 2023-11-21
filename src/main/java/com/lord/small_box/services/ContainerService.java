@@ -10,7 +10,7 @@ public interface ContainerService {
 	
 	public Container save(Container container);
 	
-	public Container findById(Long id);
+	public Container findById(Integer id);
 	
-	public void deleteById(Long id);
+	public void deleteById(Integer id);
 }

@@ -1,16 +1,20 @@
 package com.lord.small_box.services_impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.datatype.jdk8.OptionalIntDeserializer;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SubTotal;
+import com.lord.small_box.repositories.ContainerRepository;
 import com.lord.small_box.repositories.SmallBoxRepository;
 import com.lord.small_box.repositories.SubTotalRepository;
 import com.lord.small_box.services.InputService;
@@ -30,6 +34,9 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	
 	@Autowired
 	private final SubTotalRepository subTotalRepository;
+	
+	@Autowired
+	private final ContainerRepository containerRepository;
 
 	
 
@@ -44,9 +51,11 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 
 	@Override
-	public SmallBox save(SmallBox smallBox) {
+	public SmallBox save(SmallBox smallBox,Integer containerId) {
 		Input input = inputService.findById(smallBox.getInput().getId());
+		Container container = containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException("No se encontro el container"));
 		smallBox.setInput(input);
+		smallBox.setContainer(container);
 		return smallBoxRepo.save(smallBox);
 	}
 
@@ -65,14 +74,24 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 
 	@Override
-	public SubTotal calculateSubtotal(List<SmallBox> smallBoxes,Integer inputNumber) {
-	 return null;
+	public SubTotal calculateSubtotal(Integer containerId,String inputNumber) {
+	List<SmallBox> smallBoxes = smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
+	Double totalResult = smallBoxes.stream().mapToDouble(s -> s.getTicketTotal().doubleValue()).sum();
+	SubTotal subTotal = SubTotal.builder().subTotal(new BigDecimal(totalResult)).build();
+	SubTotal savedSubtotal = subTotalRepository.save(subTotal);
+	smallBoxes.forEach(s -> s.setSubtotal(savedSubtotal));
+	smallBoxRepo.saveAll(smallBoxes);
+	return savedSubtotal;
 	}
 
 	@Override
-	public List<SmallBox> findAllByContainer(Integer conainerId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<SmallBox> findAllByContainerId(Integer containerId) {
+	return (List<SmallBox>) smallBoxRepo.findAllByContainerId(containerId);
+	}
+
+	@Override
+	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Integer containerId, String inputNumber) {
+		return (List<SmallBox>)smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
 	}
 
 }

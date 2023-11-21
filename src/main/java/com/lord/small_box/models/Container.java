@@ -25,8 +25,16 @@ public class Container {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
+	@Column(name="title")
+	private String title;
+	
+	@Column(name="dependency")
+	private String dependency;
+	
 	@Column(name="small_box_total")
 	private Double total;
+	
+	
 	
 	@Column(name="small_box_date")
 	private Calendar smallBoxDate;
