@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.lord.small_box.models.SubTotal;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public class SmallBoxDto {
 	
 	private String inputNumber;
 	
-	private Integer viewOrder;
+	private SubTotal subtotal;
 	
 	private Integer containerId;
 	

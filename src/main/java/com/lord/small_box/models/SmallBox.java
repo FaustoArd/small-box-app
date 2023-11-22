@@ -51,8 +51,7 @@ public class SmallBox {
 	@Column(name="ticket_total")
 	private BigDecimal ticketTotal;
 	
-	@Column(name="view_order")
-	private Integer viewOrder;
+	
 	
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinColumn(name="container_id", referencedColumnName = "id")
