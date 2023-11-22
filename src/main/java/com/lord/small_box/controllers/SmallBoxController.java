@@ -53,4 +53,6 @@ public class SmallBoxController {
 		SmallBoxDto savedSmallBoxDto = SmallBoxMapper.INSTANCE.toSmallBoxDto(savedSmallBox);
 		return new ResponseEntity<SmallBoxDto>(savedSmallBoxDto,HttpStatus.CREATED);
 	}
+	
+	
 }

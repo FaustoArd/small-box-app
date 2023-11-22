@@ -54,7 +54,7 @@ public class SmallBox {
 	@Column(name="view_order")
 	private Integer viewOrder;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinColumn(name="container_id", referencedColumnName = "id")
 	private Container container;
 	
