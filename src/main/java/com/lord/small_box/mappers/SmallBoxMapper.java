@@ -8,7 +8,7 @@ import com.lord.small_box.dtos.SmallBoxDto;
 import com.lord.small_box.models.SmallBox;
 
 @Mapper
-public interface SmallBoxMapper {
+public interface  SmallBoxMapper {
 	
 	public static SmallBoxMapper INSTANCE = Mappers.getMapper(SmallBoxMapper.class);
 	
@@ -17,7 +17,7 @@ public interface SmallBoxMapper {
 	@Mapping(target="input.id", source="inputId")
 	@Mapping(target="container", ignore=true)
 	@Mapping(target="subtotal", ignore = true)
-	public SmallBox toSmallBox(SmallBoxDto smallBoxDto);
+	public  SmallBox toSmallBox(SmallBoxDto smallBoxDto);
 	
 	@Mapping(target="inputNumber",source="input.inputNumber" )
 	@Mapping(target="description", source="input.description")
@@ -25,8 +25,10 @@ public interface SmallBoxMapper {
 	@Mapping(target="containerId", source="container.id")
 	@Mapping(target="subtotal", source="subtotal.subtotal")
 	public SmallBoxDto toSmallBoxDto(SmallBox smallBox);
+		
 	
-	public List<SmallBoxDto> toSmallBoxesDtos(List<SmallBox> smallBoxes);
+	
+	public abstract List<SmallBoxDto> toSmallBoxesDtos(List<SmallBox> smallBoxes);
 	
 	
 

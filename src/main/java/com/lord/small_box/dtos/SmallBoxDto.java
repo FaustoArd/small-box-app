@@ -30,7 +30,7 @@ public class SmallBoxDto {
 	
 	private String inputNumber;
 	
-	private SubTotal subtotal;
+	private BigDecimal subtotal;
 	
 	private Integer containerId;
 	
