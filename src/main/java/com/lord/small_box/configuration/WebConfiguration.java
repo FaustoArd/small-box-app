@@ -1,4 +1,4 @@
-package com.lord.small_box;
+package com.lord.small_box.configuration;
 
 import java.util.Arrays;
 
@@ -19,7 +19,7 @@ public class WebConfiguration {
 		 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		 CorsConfiguration config = new CorsConfiguration();
 		 config.setAllowCredentials(true);
-		 config.addAllowedOrigin("https://localhost:4200");
+		 config.addAllowedOrigin("http://localhost:4200");
 		 
 		 config.setAllowedHeaders(Arrays.asList(
 				 

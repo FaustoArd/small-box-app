@@ -77,7 +77,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	public SubTotal calculateSubtotal(Integer containerId,String inputNumber) {
 	List<SmallBox> smallBoxes = smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
 	Double totalResult = smallBoxes.stream().mapToDouble(s -> s.getTicketTotal().doubleValue()).sum();
-	SubTotal subTotal = SubTotal.builder().subTotal(new BigDecimal(totalResult)).build();
+	SubTotal subTotal = SubTotal.builder().subtotal(new BigDecimal(totalResult)).build();
 	SubTotal savedSubtotal = subTotalRepository.save(subTotal);
 	smallBoxes.forEach(s -> s.setSubtotal(savedSubtotal));
 	smallBoxRepo.saveAll(smallBoxes);

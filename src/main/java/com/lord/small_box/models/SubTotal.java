@@ -33,7 +33,7 @@ public class SubTotal {
 	private Integer id;
 	
 	@Column(name="sub_total")
-	private BigDecimal subTotal;
+	private BigDecimal subtotal;
 	
 	@OneToMany(mappedBy = "subtotal")
 	private List<SmallBox> smallBoxes;

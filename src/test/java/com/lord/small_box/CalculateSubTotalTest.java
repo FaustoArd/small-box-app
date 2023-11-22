@@ -66,6 +66,6 @@ public class CalculateSubTotalTest {
 	@Order(2)
 	void calculateSubtotalTest() {
 		SubTotal SubTotal = smallBoxService.calculateSubtotal(containerId, "211");
-		assertEquals(SubTotal.getSubTotal().intValue(), 14000);
+		assertEquals(SubTotal.getSubtotal().intValue(), 14000);
 	}
 }

@@ -49,6 +49,7 @@ public class SmallBoxApplication {
 			SmallBox smallBox2 = SmallBox.builder().date(cal1).ticketNumber("2342-12656").input(input211)
 					.provider("Almd").ticketTotal(new BigDecimal(9000)).build();
 			SmallBox savedSmallBox2 = smallBoxService.save(smallBox2, savedContainer.getId());
+			smallBoxService.calculateSubtotal(container.getId(), "211");
 		
 		};
 	}
