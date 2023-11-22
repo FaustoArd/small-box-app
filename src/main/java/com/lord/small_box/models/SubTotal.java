@@ -2,6 +2,7 @@ package com.lord.small_box.models;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +34,9 @@ public class SubTotal {
 	
 	@Column(name="sub_total")
 	private BigDecimal subTotal;
+	
+	@OneToMany(mappedBy = "subtotal")
+	private List<SmallBox> smallBoxes;
 	
 	
 	
