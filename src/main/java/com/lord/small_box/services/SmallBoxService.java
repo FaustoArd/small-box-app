@@ -23,6 +23,7 @@ public interface SmallBoxService {
 	
 	public SubTotal calculateSubtotal(Integer conatinerid,String inputNumber);
 	
-	public SmallBox insertSubtotalInColumn(Integer containerId);
-
+	public List<SmallBox> insertSubtotalInColumn(Integer containerId);
+	
+	public List<SmallBox> setViewOrderByInput(Integer containerId,String inputNumber);
 }

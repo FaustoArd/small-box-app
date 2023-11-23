@@ -36,4 +36,9 @@ public class Input {
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
 	@JoinColumn(name="sub_total_id", referencedColumnName = "id")
 	private SubTotal subtotal;
+	
+	public Input(String inputNumber) {
+		super();
+		this.inputNumber = inputNumber;
+	}
 }

@@ -51,7 +51,7 @@ public class SmallBox {
 	@Column(name="ticket_total")
 	private BigDecimal ticketTotal;
 	
-	
+	private Integer viewOrder;
 	
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinColumn(name="container_id", referencedColumnName = "id")
@@ -60,5 +60,7 @@ public class SmallBox {
 	@ManyToOne(cascade =  CascadeType.ALL,fetch = FetchType.LAZY)
 	@JoinColumn(name="subtotal_id", referencedColumnName = "id")
 	private SubTotal subtotal;
+	
+	
 	
 }

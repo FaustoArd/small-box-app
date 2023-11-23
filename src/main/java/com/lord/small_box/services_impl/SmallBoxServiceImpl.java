@@ -94,12 +94,32 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Integer containerId, String inputNumber) {
 		return (List<SmallBox>)smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
 	}
+	
+	public Integer countByInputNumber(String inputNumber) {
+		return smallBoxRepo.countByInputInputNumber(inputNumber);
+	}
 
 	@Override
-	public SmallBox insertSubtotalInColumn(Integer containerId) {
-		List<SmallBox> smallBoxes = findAllByContainerId(containerId);
-		ListIterator<SmallBox> smallBoxesIt =smallBoxes.listIterator();
+	public List<SmallBox> insertSubtotalInColumn(Integer containerId) {
+		List<SmallBox> smallBoxes = findAllByContainerIdOrderByInputAsc(containerId);
 		return null;
+		
+	
+	}
+
+	@Override
+	public List<SmallBox> setViewOrderByInput(Integer containerId, String inputNumber) {
+		int count = 1;
+		List<SmallBox> smallBoxes =  findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
+		ListIterator<SmallBox> it = smallBoxes.listIterator();
+		while(it.hasNext()) {
+			it.next().setViewOrder(count++);
+		}
+		return smallBoxRepo.saveAll(smallBoxes);
+	}
+	
+	public List<SmallBox> findAllByContainerIdOrderByInputAsc(Integer containerId){
+		return (List<SmallBox>)smallBoxRepo.findByContainerIdOrderByInputInputNumberAsc(containerId);
 	}
 
 }
