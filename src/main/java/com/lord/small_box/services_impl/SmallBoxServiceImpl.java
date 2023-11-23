@@ -2,6 +2,7 @@ package com.lord.small_box.services_impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -92,6 +93,13 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	@Override
 	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Integer containerId, String inputNumber) {
 		return (List<SmallBox>)smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
+	}
+
+	@Override
+	public SmallBox insertSubtotalInColumn(Integer containerId) {
+		List<SmallBox> smallBoxes = findAllByContainerId(containerId);
+		ListIterator<SmallBox> smallBoxesIt =smallBoxes.listIterator();
+		return null;
 	}
 
 }

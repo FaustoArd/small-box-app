@@ -21,6 +21,8 @@ public interface SmallBoxService {
 	
 	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Integer containerId, String inputNumber);
 	
-	public SubTotal calculateSubtotal(Integer conatinerId,String inputNumber);
+	public SubTotal calculateSubtotal(Integer conatinerid,String inputNumber);
+	
+	public SmallBox insertSubtotalInColumn(Integer containerId);
 
 }

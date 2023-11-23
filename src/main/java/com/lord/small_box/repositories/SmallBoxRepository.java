@@ -15,5 +15,7 @@ public interface SmallBoxRepository extends JpaRepository<SmallBox, Integer> {
 	public List<SmallBox> findAllByContainerId(Integer id);
 	
 	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Integer id, String inputNumber);
+	
+	public Integer countByInputInputNumber(String inputNumber);
 
 }
