@@ -1,5 +1,7 @@
 package com.lord.small_box.mappers;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -17,4 +19,6 @@ public interface SmallBoxBuilderMapper {
 	public SmallBoxBuilder toSmallBoxBuilder(SmallBoxBuilderDto smallBoxBuilderDto);
 	
 	public SmallBoxBuilderDto toSmallBoxBuilderDto(SmallBoxBuilder smallBoxBuilder);
+	
+	public List<SmallBoxBuilder> toSmallBoxBuildersDto(List<SmallBoxBuilder> smallBoxBuilders);
 }

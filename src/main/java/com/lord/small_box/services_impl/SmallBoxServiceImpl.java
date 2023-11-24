@@ -14,6 +14,7 @@ import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.SmallBox;
+import com.lord.small_box.models.SmallBoxBuilder;
 import com.lord.small_box.models.SubTotal;
 import com.lord.small_box.repositories.ContainerRepository;
 import com.lord.small_box.repositories.SmallBoxRepository;
@@ -38,6 +39,9 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	
 	@Autowired
 	private final ContainerRepository containerRepository;
+	
+	@Autowired
+	private final SmallBoxBuilder smallBoxBuilder;
 
 	
 
