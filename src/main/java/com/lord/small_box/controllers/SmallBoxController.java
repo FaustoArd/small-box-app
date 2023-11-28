@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lord.small_box.dtos.SmallBoxDto;
+import com.lord.small_box.dtos.SmallBoxUnifierDto;
 import com.lord.small_box.mappers.SmallBoxMapper;
+import com.lord.small_box.mappers.SmallBoxUnifierMapper;
 import com.lord.small_box.models.SmallBox;
+import com.lord.small_box.models.SmallBoxUnifier;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
 
@@ -55,8 +58,13 @@ public class SmallBoxController {
 		return new ResponseEntity<SmallBoxDto>(savedSmallBoxDto,HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/insert")
-	ResponseEntity<Sma>
+	@PutMapping("/build")
+	ResponseEntity<List<SmallBoxUnifierDto>> buildSmallBox(@RequestParam("containerId")Integer containerId){
+		List<SmallBoxUnifier> sm = smallBoxService.insertSubtotalInColumn(containerId);
+		List<SmallBoxUnifierDto> smDto = SmallBoxUnifierMapper.INSTANCE.toSmallBoxBuildersDto(sm);
+		return new ResponseEntity<List<SmallBoxUnifierDto>>(smDto,HttpStatus.OK);
+	}
+
 	
 	
 }

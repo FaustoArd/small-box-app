@@ -98,23 +98,25 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	@Override
 	public List<SmallBoxUnifier> insertSubtotalInColumn(Integer containerId) {
 		List<SmallBox> smallBoxes = findAllByContainerIdOrderByInputInputNumber(containerId);
-		ListIterator<SmallBox> smallBoxesIt =smallBoxes.listIterator();
+		ListIterator<SmallBox> sm =smallBoxes.listIterator();
 		List<SmallBoxUnifier> smUnifiers = new ArrayList<SmallBoxUnifier>();
-		SmallBoxUnifier smUnifier = new SmallBoxUnifier();
-		smallBoxesIt.forEachRemaining(sm -> {
-			smUnifier.setDate(sm.getDate());
-			smUnifier.setTicketNumber(sm.getTicketNumber());
-			smUnifier.setProvider(sm.getProvider());
-			smUnifier.setDescription(sm.getInput().getDescription());
-			smUnifier.setTicketTotal(sm.getTicketTotal());
-			smUnifier.setInputNumber(sm.getInput().getInputNumber());
-			if(Integer.parseInt(sm.getInput().getInputNumber())>Integer.parseInt(smUnifier.getInputNumber())) {
-				smUnifier.setSubtotal(sm.getSubtotal().getSubtotal());
-				smUnifier.setSubtotalTitle("SubTotal");
+	
+		while(sm.hasNext()) {
+			SmallBoxUnifier smUnifier = new SmallBoxUnifier();
+			smUnifier.setDate(sm.next().getDate());
+			smUnifier.setTicketNumber(sm.next().getTicketNumber());
+			smUnifier.setProvider(sm.next().getProvider());
+			smUnifier.setDescription(sm.next().getInput().getDescription());
+			smUnifier.setTicketTotal(sm.next().getTicketTotal());
+			smUnifier.setInputNumber(sm.next().getInput().getInputNumber());
+			if(Integer.parseInt(sm.next().getInput().getInputNumber())>Integer.parseInt(smUnifier.getInputNumber())) {
+				SmallBoxUnifier smUnSTotal = new SmallBoxUnifier();
+				smUnSTotal.setSubtotal(sm.next().getSubtotal().getSubtotal());
+				smUnSTotal.setSubtotalTitle("SubTotal");
+				smallBoxUnifierRepository.save(smUnSTotal);
 			}
 			smallBoxUnifierRepository.save(smUnifier);
-		});
-		
+		}
 		return (List<SmallBoxUnifier>)smallBoxUnifierRepository.findAll();
 	}
 

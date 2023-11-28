@@ -20,5 +20,5 @@ public interface SmallBoxUnifierMapper {
 	
 	public SmallBoxUnifierDto toSmallBoxBuilderDto(SmallBoxUnifier smallBoxBuilder);
 	
-	public List<SmallBoxUnifier> toSmallBoxBuildersDto(List<SmallBoxUnifier> smallBoxBuilders);
+	public List<SmallBoxUnifierDto> toSmallBoxBuildersDto(List<SmallBoxUnifier> smallBoxBuilders);
 }
