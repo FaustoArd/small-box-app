@@ -2,8 +2,6 @@ package com.lord.small_box.models;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-
-import jakarta.annotation.Generated;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

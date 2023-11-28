@@ -1,11 +1,7 @@
 package com.lord.small_box.controllers;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +12,6 @@ import com.lord.small_box.dtos.InputDto;
 import com.lord.small_box.mappers.InputMapper;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.services.InputService;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
