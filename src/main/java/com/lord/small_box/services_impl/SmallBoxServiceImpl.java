@@ -1,27 +1,23 @@
 package com.lord.small_box.services_impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.datatype.jdk8.OptionalIntDeserializer;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.SmallBox;
-import com.lord.small_box.models.SmallBoxBuilder;
+import com.lord.small_box.models.SmallBoxUnifier;
 import com.lord.small_box.models.SubTotal;
 import com.lord.small_box.repositories.ContainerRepository;
+import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.SmallBoxRepository;
+import com.lord.small_box.repositories.SmallBoxUnifierRepository;
 import com.lord.small_box.repositories.SubTotalRepository;
-import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,7 +28,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	private final SmallBoxRepository smallBoxRepo;
 	
 	@Autowired
-	private final InputService inputService;
+	private final InputRepository inputRepository;
 	
 	@Autowired
 	private final SubTotalRepository subTotalRepository;
@@ -41,7 +37,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	private final ContainerRepository containerRepository;
 	
 	@Autowired
-	private final SmallBoxBuilder smallBoxBuilder;
+	private final SmallBoxUnifierRepository smallBoxUnifierRepository;
 
 	
 
@@ -57,7 +53,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 
 	@Override
 	public SmallBox save(SmallBox smallBox,Integer containerId) {
-		Input input = inputService.findById(smallBox.getInput().getId());
+		Input input = inputRepository.findById(smallBox.getInput().getId()).orElseThrow(()-> new ItemNotFoundException("No se encontro el input"));
 		Container container = containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException("No se encontro el container"));
 		smallBox.setInput(input);
 		smallBox.setContainer(container);
@@ -100,10 +96,31 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 
 	@Override
-	public SmallBox insertSubtotalInColumn(Integer containerId) {
-		List<SmallBox> smallBoxes = findAllByContainerId(containerId);
+	public List<SmallBoxUnifier> insertSubtotalInColumn(Integer containerId) {
+		List<SmallBox> smallBoxes = findAllByContainerIdOrderByInputInputNumber(containerId);
 		ListIterator<SmallBox> smallBoxesIt =smallBoxes.listIterator();
-		return null;
+		List<SmallBoxUnifier> smUnifiers = new ArrayList<SmallBoxUnifier>();
+		SmallBoxUnifier smUnifier = new SmallBoxUnifier();
+		smallBoxesIt.forEachRemaining(sm -> {
+			smUnifier.setDate(sm.getDate());
+			smUnifier.setTicketNumber(sm.getTicketNumber());
+			smUnifier.setProvider(sm.getProvider());
+			smUnifier.setDescription(sm.getInput().getDescription());
+			smUnifier.setTicketTotal(sm.getTicketTotal());
+			smUnifier.setInputNumber(sm.getInput().getInputNumber());
+			if(Integer.parseInt(sm.getInput().getInputNumber())>Integer.parseInt(smUnifier.getInputNumber())) {
+				smUnifier.setSubtotal(sm.getSubtotal().getSubtotal());
+				smUnifier.setSubtotalTitle("SubTotal");
+			}
+			smallBoxUnifierRepository.save(smUnifier);
+		});
+		
+		return (List<SmallBoxUnifier>)smallBoxUnifierRepository.findAll();
+	}
+
+	@Override
+	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Integer containerId) {
+		return (List<SmallBox>)smallBoxRepo.findAllByContainerIdOrderByInputInputNumber(containerId);
 	}
 
 }

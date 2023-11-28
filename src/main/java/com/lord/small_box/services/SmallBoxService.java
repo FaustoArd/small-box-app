@@ -3,6 +3,7 @@ package com.lord.small_box.services;
 import java.util.List;
 
 import com.lord.small_box.models.SmallBox;
+import com.lord.small_box.models.SmallBoxUnifier;
 import com.lord.small_box.models.SubTotal;
 
 public interface SmallBoxService {
@@ -23,6 +24,8 @@ public interface SmallBoxService {
 	
 	public SubTotal calculateSubtotal(Integer conatinerid,String inputNumber);
 	
-	public SmallBox insertSubtotalInColumn(Integer containerId);
+	public List<SmallBoxUnifier> insertSubtotalInColumn(Integer containerId);
+	
+	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Integer containerId);
 
 }

@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name="small_box_builder")
-public class SmallBoxBuilder {
+public class SmallBoxUnifier {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

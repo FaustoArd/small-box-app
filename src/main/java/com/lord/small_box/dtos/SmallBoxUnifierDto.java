@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class SmallBoxBuilderDto {
+public class SmallBoxUnifierDto {
 	
 	private Integer id;
 	

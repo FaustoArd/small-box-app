@@ -15,7 +15,7 @@ public interface  SmallBoxMapper {
 	@Mapping(target="input.inputNumber", source="inputNumber")
 	@Mapping(target="input.description", source="description")
 	@Mapping(target="input.id", source="inputId")
-	@Mapping(target="container", ignore=true)
+	@Mapping(target="container.id", source="containerId")
 	@Mapping(target="subtotal", ignore = true)
 	public  SmallBox toSmallBox(SmallBoxDto smallBoxDto);
 	
