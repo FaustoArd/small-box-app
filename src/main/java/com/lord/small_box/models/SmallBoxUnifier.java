@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @Entity
-@Table(name="small_box_builder")
+@Table(name="small_box_unifier")
 public class SmallBoxUnifier {
 
 	@Id

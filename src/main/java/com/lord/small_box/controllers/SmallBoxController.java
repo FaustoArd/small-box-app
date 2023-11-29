@@ -60,7 +60,7 @@ public class SmallBoxController {
 	
 	@PutMapping("/build")
 	ResponseEntity<List<SmallBoxUnifierDto>> buildSmallBox(@RequestParam("containerId")Integer containerId){
-		smallBoxService.ca
+		
 		List<SmallBoxUnifier> sm = smallBoxService.insertSubtotalInColumn(containerId);
 		List<SmallBoxUnifierDto> smDto = SmallBoxUnifierMapper.INSTANCE.toSmallBoxBuildersDto(sm);
 		return new ResponseEntity<List<SmallBoxUnifierDto>>(smDto,HttpStatus.OK);
