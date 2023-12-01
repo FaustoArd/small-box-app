@@ -1,0 +1,45 @@
+<app-navbar></app-navbar>
+<div class="container">
+    <div class="row">
+        <div class="col">
+
+        </div>
+        <div class="col-md-4 mt-5">
+            <form [formGroup]="containerFormBuilder"
+                class="form-group   p-3 bg-light border border-dark text-center fw-bold">
+                <div class="form-group mt-2">
+                    <label for="title" class="form-label fs-7">Nombre</label>
+                    <input class="form-control border-dark" type="text" formControlName="title" id="title">
+                    <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger">
+                        <div *ngIf="title.errors?.['required']">
+                            Falta el nombre...
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="categoryId" class="form-label fs-7 mt-3">Categoria</label>
+                    <select id="dependency" formControlName="dependency" class="form-select border-dark  mt-2">
+                        <option value="">Seleccione una categoria</option>
+                        <option class="form-control" *ngFor="let dep of deps" id="dependency" [value]="dep">
+                            {{dep}}</option>
+                        <div *ngIf="dependency.invalid && (dependency.dirty || dependency.touched)" class="text-danger">
+                            <div *ngIf="dependency.errors?.['required']">
+                                Debes seleccionar una categoria
+                            </div>
+
+                            <div class="mt-1" *ngIf="dependency.errors?.['errors']">
+                                password must be at least 6 characters long.
+                            </div>
+                        </div>
+                    </select>
+                </div>
+                <button type="submit" (click)="onCreateContainer()"
+                class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
+            </form>
+
+        </div>
+        <div class="col-md-4 mt-5">
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<app-navbar></app-navbar>
+<div class="container-flex">
+    <div class="row">
+        <div class="col-md-6 mt-5">
+           
+            <table class="table table-fluid table-hover table-bordered table-striped border border-dark">
+                <thead>
+                    <tr class="bg-primary opacity-50 text-center">
+                        <th scope="col">Fecha</th>
+                       <th scope="col">Numero de factura</th>
+                        <th scope="col">Razon social</th>
+                        <th scope="col">Descripcion</th>
+                        <th  scope="col">Importe</th>
+                        <th scope="col">Input</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" *ngFor="let completed of completedSmallBox">
+                       <th scope="row" class="fw-bold">{{completed.date}}</th>
+                       <th scope="row" class="fw-bold">{{completed.ticketNumber}}</th>
+                       <th scope="row" class="fw-bold">{{completed.provider}}</th>
+                       <th scope="row"  class="fw-bold">{{completed.description}}</th>
+                       <th scope="row" *ngIf="completed.subtotal==undefined" class="fw-bold">{{completed.ticketTotal | currency: '$': 'symbol'}}</th>
+                       <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold">{{completed.subtotalTitle}}</th>
+                        <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold">{{completed.subtotal | currency: '$': 'symbol'}}</th>
+                        <th scope="row" class="fw-bold">{{completed.inputNumber}}</th>
+                         <th>
+                            <button class="btn btn-success btn-sm text-white  ">Editar</button>
+                            <button class="btn btn-danger btn-sm text-white ms-2">Eliminar</button>
+                        </th>
+                    </tr>
+                 </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

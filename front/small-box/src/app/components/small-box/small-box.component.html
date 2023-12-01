@@ -1,32 +1,136 @@
-<div class="container">
+<app-navbar></app-navbar>
+<div class="container-flex">
     <div class="row">
+        <div class="col-md-8"></div>
         <div class="col-md-4">
+            <button routerLink="/completed" class="btn btn-success bt-transparent border-dark text-dark fw-bold">Confeccionar</button>
+        </div>
+    </div>
 
-        </div>
-        <div class="col-md-8">
-            <form formControlName="form" [formGroup]="form">
-                <div class="formGroup">
-            <label for="date">Fecha</label>
-            <input type="date", id="date" [value]="date">
-        </div>
-        <div class="formGroup">
-            <label for="ticketNumber">Numero de factura</label>
-            <input type="text" name="ticketNumber" id="ticketNumber" [value]="ticketNumber">
-        </div>
-        <div class="formGroup">
-            <label for="provider">Proveedor</label>
-            <input type="text" name="provider" id="provider" [value]="provider">
-        </div>
-        <div class="formGroup">
-            <label for="ticketTotal">Proveedor</label>
-            <input type="text" name="ticketTotal" id="ticketTotal" [value]="ticketTotal">
-        </div>
-        <div class="formGroup">
-            <label for="inputNumber">Proveedor</label>
-            <input type="number" name="inputNumber" id="inputNumber" [value]="ticketTotal">
+    <div class="row mt-5">
+        <form [formGroup]="smallBoxForm" class="row g-6 form-group justifty-center text-center fw-bold">
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label for="date" class=" form-label fs-7 ">Fecha</label>
+                    <input class="  form-control border-dark" type="date" formControlName="date" id="date">
+                    <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger">
+                        <div *ngIf="date.errors?.['required']">
+                            Falta la fecha...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="ticket-number" class="form-label fs-7 ">Numero de comprobante</label>
+                    <input class="form-control border-dark" type="text" formControlName="ticketNumber"
+                        id="ticket-number">
+                    <div *ngIf="ticketNumber.invalid && (ticketNumber.dirty || date.touched)" class="text-danger">
+                        <div *ngIf="ticketNumber.errors?.['required']">
+                            Falta la fecha...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group ">
+                    <label for="provider" class="form-label fs-7 ">Razon social</label>
+                    <input class="form-control border-dark" type="text" formControlName="provider" id="provider">
+                    <div *ngIf="provider.invalid && (provider.dirty || date.touched)" class="text-danger">
+                        <div *ngIf="provider.errors?.['required']">
+                            Falta la fecha...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="description" class="form-label fs-7 ">Descripcion</label>
+                    <select id="description" formControlName="description" class="form-select  border-dark">
+                        <option type="number" class="form-control border-dark " *ngFor="let input of inputs"
+                            id="categoryId" [value]="input.id">
+                            {{input.description}}</option>
+                        <div *ngIf="description.invalid && (description.dirty || description.touched)"
+                            class="text-danger">
+                            <div *ngIf="description.errors?.['invalid']">
+                                Debes seleccionar una categoria
+                            </div>
+                        </div>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="ticketTotal" class="form-label fs-7 ">Precio</label>
+                    <input class="form-control border-dark " type="number" formControlName="ticketTotal"
+                        id="ticketTotal">
+
+                    <div *ngIf="ticketTotal.invalid && (ticketTotal.dirty || ticketTotal.touched)" class="text-danger">
+                        <div *ngIf="ticketTotal.errors?.['required']">
+                            Deben ser numeros
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label for="inputNumber" class="form-label fs-7">Input</label>
+                    <select id="input-number" formControlName="inputNumber" class="form-select border-dark">
+                        <option type="number" class="form-control" *ngFor="let input of inputs" id="input-number"
+                            [value]="input.id">
+                            {{input.inputNumber}}</option>
+                        <div *ngIf="inputNumber.invalid && (inputNumber.dirty || description.touched)"
+                            class="text-danger">
+                            <div *ngIf="description.errors?.['invalid']">
+                                Debes seleccionar una categoria
+                            </div>
+                        </div>
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-1 mt-4">
+
+                <button type="submit" (click)="onAddSmallBox()"
+                    class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
+            </div>
+
+        </form>
+    </div>
+    <div class="row mt-5">
+        <div class="col mt-5">
+
+            <table class="table table-fluid table-hover table-bordered table-striped border border-dark">
+                <thead>
+                    <tr class="bg-primary opacity-50 text-center">
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Numero de Factura</th>
+                        <th scope="col">Razon Social</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Importe</th>
+                        <th scope="col">Input</th>
+                        <th scope="col">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" *ngFor="let smallbox of smallboxes">
+                        <th scope="row" class="fw-bold">{{smallbox.date}}</th>
+                        <th scope="row" class="fw-bold">{{smallbox.ticketNumber}}</th>
+                        <th scope="row" class="fw-bold">{{smallbox.provider}}</th>
+                        <th scope="row" class="fw-bold">{{smallbox.description}}</th>
+                        <th scope="row" class="fw-bold">{{smallbox.ticketTotal | currency: '$': 'symbol'}}</th>
+                        <th scope="row" class="fw-bold">{{smallbox.inputNumber}}</th>
+                        <th>
+                            <button class="btn btn-success btn-sm text-white  ">Editar</button>
+                            <button class="btn btn-danger btn-sm text-white ms-2">Eliminar</button>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-            </form>
-        </div>
     </div>
 </div>

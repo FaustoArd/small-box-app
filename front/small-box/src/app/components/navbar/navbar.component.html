@@ -1,1 +1,16 @@
-<p>navbar works!</p>
+<div class="container-flex">
+    <mat-toolbar class="bg-dark">
+        <div class="col-md-2">
+            <button class=" btn btn-lg text-white"routerLink="/home" >Inicio</button>
+        </div>
+        <div class="col-md-1">
+            <button mat-button [matMenuTriggerFor]="containerMenu" class="text-white">Caja chica</button>
+            <mat-menu #containerMenu yPosition="above">
+                <button mat-menu-item routerLink="/container">Nuevo</button>
+              
+               
+            </mat-menu>
+        </div>
+     </mat-toolbar>
+</div>
+
