@@ -9,7 +9,7 @@
 
     <div class="row mt-5">
         <form [formGroup]="smallBoxForm" class="row g-6 form-group justifty-center text-center fw-bold">
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label for="date" class=" form-label fs-7 ">Fecha</label>
                     <input class="  form-control border-dark" type="date" formControlName="date" id="date">
@@ -76,7 +76,7 @@
             <div class="col-md-1">
                 <div class="form-group">
                     <label for="inputNumber" class="form-label fs-7">Input</label>
-                    <select id="input-number" formControlName="inputNumber" class="form-select border-dark">
+                    <select id="input-number" formControlName="inputId" class="form-select border-dark">
                         <option type="number" class="form-control" *ngFor="let input of inputs" id="input-number"
                             [value]="input.id">
                             {{input.inputNumber}}</option>

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders,HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
-import { InputDto } from '../models/inputDto';
+import { ContainerDto } from '../models/containerDto';
 
-const INPUT_BASE_URL = 'http://localhost:8080/api/v1/small_box/inputs'
+const CONTAINER_BASE_URL = 'http://localhost:8080/api/v1/small-box/containers'
 
 @Injectable({
   providedIn: 'root'
 })
-export class InputService {
+export class ContainerService {
 
   constructor(private http:HttpClient) { }
 
@@ -26,10 +26,11 @@ export class InputService {
     }
   }
 
-  findAllInputs():Observable<InputDto[]>{
-    return this.http.get<InputDto[]>(`${INPUT_BASE_URL}/all`,this.httpOptions).pipe(catchError(this.handleError));
+  createContainer(container:ContainerDto):Observable<ContainerDto>{
+    return this.http.post<ContainerDto>(`${CONTAINER_BASE_URL}/`,container,this.httpOptions).pipe(catchError(this.handleError));
   }
-  findAllInputsByExample():Observable<InputDto>{
-    return this.http.get<InputDto>(`${INPUT_BASE_URL}/example`,this.httpOptions).pipe(catchError(this.handleError));
+  
+  getContainerById(id:number):Observable<ContainerDto>{
+    return this.http.get<ContainerDto>(`${CONTAINER_BASE_URL}/${id}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 }

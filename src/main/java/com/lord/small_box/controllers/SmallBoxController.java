@@ -41,6 +41,12 @@ public class SmallBoxController {
 		List<SmallBoxDto> smallBoxesDto = SmallBoxMapper.INSTANCE.toSmallBoxesDtos(smallBoxes);
 		return new ResponseEntity<List<SmallBoxDto>>(smallBoxesDto,HttpStatus.OK);
 	}
+	@GetMapping("/all/by_container")
+	ResponseEntity<List<SmallBoxDto>> findAll(@RequestParam("containerId")Integer containerId){
+		List<SmallBox> smallBoxes = smallBoxService.findAll();
+		List<SmallBoxDto> smallBoxesDto = SmallBoxMapper.INSTANCE.toSmallBoxesDtos(smallBoxes);
+		return new ResponseEntity<List<SmallBoxDto>>(smallBoxesDto,HttpStatus.OK);
+	}
 	
 	@GetMapping("/all_by_input")
 	ResponseEntity<List<SmallBoxDto>> findAllByInput(@RequestBody String inputNumber){
@@ -58,10 +64,10 @@ public class SmallBoxController {
 		return new ResponseEntity<SmallBoxDto>(savedSmallBoxDto,HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/build")
-	ResponseEntity<List<SmallBoxUnifierDto>> buildSmallBox(@RequestParam("containerId")Integer containerId){
+	@PutMapping("/complete")
+	ResponseEntity<List<SmallBoxUnifierDto>> completeSmallBox(@RequestParam("containerId")Integer containerId){
 		
-		List<SmallBoxUnifier> sm = smallBoxService.insertSubtotalInColumn(containerId);
+		List<SmallBoxUnifier> sm = smallBoxService.completeSmallBox(containerId);
 		List<SmallBoxUnifierDto> smDto = SmallBoxUnifierMapper.INSTANCE.toSmallBoxBuildersDto(sm);
 		return new ResponseEntity<List<SmallBoxUnifierDto>>(smDto,HttpStatus.OK);
 	}

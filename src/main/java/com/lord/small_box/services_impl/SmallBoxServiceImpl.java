@@ -72,8 +72,8 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 
 	@Override
-	public List<SmallBox> findAllOrderByInputInputNumber(String inpuNumber) {
-		return (List<SmallBox>) smallBoxRepo.findAllOrderByInputInputNumber(inpuNumber);
+	public List<SmallBox> findAllOrderByInputInputNumber(String inputNumber) {
+		return (List<SmallBox>) smallBoxRepo.findAllOrderByInputInputNumber(inputNumber);
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	
 
 	@Override
-	public List<SmallBoxUnifier> insertSubtotalInColumn(Integer containerId) {
+	public List<SmallBoxUnifier> completeSmallBox(Integer containerId) {
 		List<String> smallBoxes = findAllByContainerIdOrderByInputInputNumber(containerId).stream()
 				.map(s -> s.getInput().getInputNumber()).distinct().toList();
 		ListIterator<String> smIt = smallBoxes.listIterator();

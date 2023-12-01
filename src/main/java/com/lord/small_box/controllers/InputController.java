@@ -29,5 +29,11 @@ public class InputController {
 		List<InputDto> inputsDto = InputMapper.INSTNACE.toInputsDto(inputs);
 		return new ResponseEntity<List<InputDto>>(inputsDto,HttpStatus.OK);
 	}
+	@GetMapping("/all")
+	ResponseEntity<List<InputDto>> findAllInputs(){
+		List<Input> inputs = inputService.findAll();
+		List<InputDto> inputsDto= InputMapper.INSTNACE.toInputsDto(inputs);
+		return new ResponseEntity<List<InputDto>>(inputsDto,HttpStatus.OK);
+	}
 
 }

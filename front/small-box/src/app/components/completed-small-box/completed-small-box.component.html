@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <div class="container-flex">
     <div class="row">
-        <div class="col-md-6 mt-5">
+        <div class="col mt-5">
            
             <table class="table table-fluid table-hover table-bordered table-striped border border-dark">
                 <thead>
@@ -13,6 +13,7 @@
                         <th  scope="col">Importe</th>
                         <th scope="col">Input</th>
                        
+                       
                     </tr>
                 </thead>
                 <tbody>
@@ -22,13 +23,10 @@
                        <th scope="row" class="fw-bold">{{completed.provider}}</th>
                        <th scope="row"  class="fw-bold">{{completed.description}}</th>
                        <th scope="row" *ngIf="completed.subtotal==undefined" class="fw-bold">{{completed.ticketTotal | currency: '$': 'symbol'}}</th>
-                       <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold">{{completed.subtotalTitle}}</th>
-                        <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold">{{completed.subtotal | currency: '$': 'symbol'}}</th>
+                       <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold  bg-warning text-dark">{{completed.subtotalTitle}}</th>
+                        <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold  bg-warning text-dark">{{completed.subtotal | currency: '$': 'symbol'}}</th>
                         <th scope="row" class="fw-bold">{{completed.inputNumber}}</th>
-                         <th>
-                            <button class="btn btn-success btn-sm text-white  ">Editar</button>
-                            <button class="btn btn-danger btn-sm text-white ms-2">Eliminar</button>
-                        </th>
+                        
                     </tr>
                  </tbody>
             </table>

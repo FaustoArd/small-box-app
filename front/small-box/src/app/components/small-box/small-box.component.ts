@@ -49,6 +49,10 @@ errorData!:string;
     get provider(){
       return this.smallBoxForm.controls.provider
     }
+    get inputId(){
+      return this.smallBoxForm.controls.inputId
+    }
+
     get inputNumber(){
       return this.smallBoxForm.controls.inputNumber
     }
@@ -63,6 +67,7 @@ errorData!:string;
     onAddSmallBox():void{
       if(this.smallBoxForm.valid){
       this.smallbox = new SmallBoxDto();
+      
       this.smallbox = Object.assign(this.smallbox,this.smallBoxForm.value);
       this.smallBoxService.addSmallBox(this.smallbox,Number(this.storageService.getCurrentContainerId())).subscribe({
         

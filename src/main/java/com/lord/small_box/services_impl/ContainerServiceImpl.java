@@ -1,5 +1,6 @@
 package com.lord.small_box.services_impl;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ContainerServiceImpl implements ContainerService {
-
+	
 	@Autowired
 	private final ContainerRepository containerRepository;
+	
+	private static final Calendar now = Calendar.getInstance();
 
 	@Override
 	public List<Container> findAll() {
@@ -26,7 +29,11 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public Container save(Container container) {
+	container.setSmallBoxDate(now);
+	
+	
 		return containerRepository.save(container);
+		
 	}
 
 	@Override

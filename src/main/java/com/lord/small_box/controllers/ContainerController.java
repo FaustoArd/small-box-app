@@ -3,6 +3,8 @@ package com.lord.small_box.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,7 @@ import com.lord.small_box.dtos.ContainerDto;
 import com.lord.small_box.mappers.ContainerMapper;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.repositories.ContainerRepository;
+import com.lord.small_box.services.ContainerService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,16 +24,22 @@ import lombok.RequiredArgsConstructor;
 public class ContainerController {
 	
 	@Autowired
-	private final ContainerRepository containerRepository;
+	private final ContainerService containerService;
 	
 	@PostMapping("/")
 	ResponseEntity<ContainerDto> createContainer(@RequestBody ContainerDto containerDto){
 		
 		Container container = ContainerMapper.INSTANCE.toContainer(containerDto);
-		Container savedContainer = containerRepository.save(container);
+		Container savedContainer = containerService.save(container);
 		ContainerDto savedContainerDto = ContainerMapper.INSTANCE.toContainerDto(savedContainer);
 		return new ResponseEntity<ContainerDto>(savedContainerDto,HttpStatus.CREATED);
 		
+	}
+	@GetMapping("/{id}")
+	ResponseEntity<ContainerDto> findContainerById(@PathVariable("id")Integer id){
+		Container container = containerService.findById(id);
+		ContainerDto containerDto = ContainerMapper.INSTANCE.toContainerDto(container);
+		return new ResponseEntity<ContainerDto>(containerDto,HttpStatus.OK);
 	}
 
 }

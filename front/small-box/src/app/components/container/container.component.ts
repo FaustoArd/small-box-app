@@ -48,6 +48,7 @@ get title(){
       this.containerService.createContainer(this.container).subscribe({
         next:(contData)=>{
           this.returnedData = contData;
+          this.storageService.deleteCurrentContainerId();
           this.storageService.setCurrentContainerId(JSON.stringify(this.returnedData.id));
           console.log(this.storageService.getCurrentContainerId());
 

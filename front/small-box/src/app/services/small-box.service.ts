@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders,HttpErrorResponse} from '@angular/common/http'
 import { Observable,catchError,throwError} from 'rxjs';
 import { SmallBoxDto } from '../models/smallBoxDto';
+import { SmallBoxUnifierDto } from '../models/smallBoxUnifierDto';
 
 const SMALL_BOX_BASE_URL = 'http://localhost:8080/api/v1/small_box/smallboxes';
 
@@ -26,8 +27,8 @@ export class SmallBoxService {
     }
   }
 
-  addSmallBox(smallBox:SmallBoxDto):Observable<SmallBoxDto>{
-    return this.http.post<SmallBoxDto>(`${SMALL_BOX_BASE_URL}/new`,smallBox,this.httpOptions).pipe(catchError(this.handleError));;
+  addSmallBox(smallBox:SmallBoxDto,containerId:number):Observable<SmallBoxDto>{
+    return this.http.post<SmallBoxDto>(`${SMALL_BOX_BASE_URL}/new?containerId=${containerId}`,smallBox,this.httpOptions).pipe(catchError(this.handleError));;
   }
 
   findSmallBoxes():Observable<SmallBoxDto[]>{
@@ -35,7 +36,13 @@ export class SmallBoxService {
 
   }
 
-  findSmallBoxesByContainerId(id:number):Observable<SmallBoxDto>{
-    return this.http.get<SmallBoxDto>(`${SMALL_BOX_BASE_URL}/by_container`,this.httpOptions).pipe(catchError(this.handleError));
+  findSmallBoxesByContainerId(containerId:number):Observable<SmallBoxDto[]>{
+    return this.http.get<SmallBoxDto[]>(`${SMALL_BOX_BASE_URL}/by_container?containerId=${containerId}`,this.httpOptions).pipe(catchError(this.handleError));
   }
+
+  completeSmallBox(containerId:number):Observable<SmallBoxUnifierDto[]>{
+    return this.http.put<SmallBoxUnifierDto[]>(`${SMALL_BOX_BASE_URL}/complete?containerId=${containerId}`,this.httpOptions).pipe(catchError(this.handleError));
+  }
+
+  
 }
