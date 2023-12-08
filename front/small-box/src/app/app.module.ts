@@ -14,7 +14,8 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { MatToolbarModule} from '@angular/material/toolbar';
-import { CompletedSmallBoxComponent } from './components/completed-small-box/completed-small-box.component'
+import { CompletedSmallBoxComponent } from './components/completed-small-box/completed-small-box.component';
+import { OpenContainerComponent } from './components/open-container/open-container.component'
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { CompletedSmallBoxComponent } from './components/completed-small-box/com
     SmallBoxComponent,
     NavbarComponent,
     ContainerComponent,
-    CompletedSmallBoxComponent
+    CompletedSmallBoxComponent,
+    OpenContainerComponent
   ],
   imports: [
     BrowserModule,

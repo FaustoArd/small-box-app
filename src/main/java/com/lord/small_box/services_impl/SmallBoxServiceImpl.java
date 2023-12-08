@@ -18,6 +18,8 @@ import com.lord.small_box.repositories.SmallBoxRepository;
 import com.lord.small_box.repositories.SmallBoxUnifierRepository;
 import com.lord.small_box.repositories.SubTotalRepository;
 import com.lord.small_box.services.SmallBoxService;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -97,9 +99,10 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 		return (List<SmallBox>) smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
 	}
 	
-
+	@Transactional
 	@Override
 	public List<SmallBoxUnifier> completeSmallBox(Integer containerId) {
+		Container container = containerRepository.findById(containerId).orElseThrow(() -> new ItemNotFoundException("No se encontro el container"));
 		List<String> smallBoxes = findAllByContainerIdOrderByInputInputNumber(containerId).stream()
 				.map(s -> s.getInput().getInputNumber()).distinct().toList();
 		ListIterator<String> smIt = smallBoxes.listIterator();
@@ -112,6 +115,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 				smUnifier.setDescription(sm.getInput().getDescription());
 				smUnifier.setTicketTotal(sm.getTicketTotal());
 				smUnifier.setInputNumber(sm.getInput().getInputNumber());
+				smUnifier.setContainer(container);
 				currentInput = sm.getInput().getInputNumber();
 				smallBoxUnifierRepository.save(smUnifier);
 			});

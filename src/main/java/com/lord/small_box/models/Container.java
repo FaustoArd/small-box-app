@@ -31,10 +31,11 @@ public class Container {
 	@Column(name="dependency")
 	private String dependency;
 	
+	@Column(name="responsible")
+	private String responsible; 
+	
 	@Column(name="small_box_total")
 	private Double total;
-	
-	
 	
 	@Column(name="small_box_date")
 	private Calendar smallBoxDate;

@@ -1,5 +1,7 @@
 package com.lord.small_box.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,13 @@ public class ContainerController {
 	@Autowired
 	private final ContainerService containerService;
 	
+	@GetMapping("/all")
+	ResponseEntity<List<ContainerDto>> findAllContainers(){
+		List<Container> containers = containerService.findAll();
+		List<ContainerDto> containersDto = ContainerMapper.INSTANCE.toContainersDto(containers);
+		return new ResponseEntity<List<ContainerDto>>(containersDto,HttpStatus.OK);
+	}
+	
 	@PostMapping("/")
 	ResponseEntity<ContainerDto> createContainer(@RequestBody ContainerDto containerDto){
 		
@@ -41,5 +50,6 @@ public class ContainerController {
 		ContainerDto containerDto = ContainerMapper.INSTANCE.toContainerDto(container);
 		return new ResponseEntity<ContainerDto>(containerDto,HttpStatus.OK);
 	}
+	
 
 }

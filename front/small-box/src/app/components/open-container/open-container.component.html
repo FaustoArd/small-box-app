@@ -1,0 +1,38 @@
+<app-navbar></app-navbar>
+<div class="container-flex">
+    <div class="row">
+        <div class="col mt-5">
+           
+            <table class="table table-fluid table-hover table-bordered table-striped border border-dark">
+                <thead>
+                    <tr class="bg-primary fw-bold text-center">
+                        <th scope="col">Fecha</th>
+                       <th scope="col">Nombre</th>
+                        <th scope="col">Dependencia</th>
+                        <th scope="col">Responsable</th>
+                        <th  scope="col">Opciones</th>
+                      
+                       
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" *ngFor="let container of containers">
+                       <td scope="row"   class="fw-light">{{container.smallBoxDate}}</td>
+                      
+                       <td scope="row"  class="fw-light">{{container.title}}</td>
+                       
+                       <td scope="row"  class="fw-light">{{container.dependency}}</td>
+                     
+                       <td scope="row"  class="fw-light">{{container.responsible}}</td>
+                     
+                      
+                        <td>
+                            <button routerLink="/completed-by-id/{{container.id}}" class="btn">Abrir</button>
+                        </td>
+
+                       </tr>
+                 </tbody>
+            </table>
+        </div>
+    </div>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxUnifier;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
+import com.lord.small_box.services.SmallBoxUnifierService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +36,9 @@ public class SmallBoxController {
 
 	@Autowired
 	private final InputService inputService;
+	
+	@Autowired
+	private final SmallBoxUnifierService smallBoxUnifierService;
 	
 	@GetMapping("/all")
 	ResponseEntity<List<SmallBoxDto>> findAll(){
@@ -70,6 +75,13 @@ public class SmallBoxController {
 		List<SmallBoxUnifier> sm = smallBoxService.completeSmallBox(containerId);
 		List<SmallBoxUnifierDto> smDto = SmallBoxUnifierMapper.INSTANCE.toSmallBoxBuildersDto(sm);
 		return new ResponseEntity<List<SmallBoxUnifierDto>>(smDto,HttpStatus.OK);
+	}
+	
+	@GetMapping("/unified/{containerId}")
+	ResponseEntity<List<SmallBoxUnifierDto>> findSmallBoxCompletedByContainerId(@PathVariable("containerId")Integer containerId){
+		List<SmallBoxUnifier> completed = smallBoxUnifierService.findByContainerId(containerId);
+		List<SmallBoxUnifierDto> completedDto = SmallBoxUnifierMapper.INSTANCE.toSmallBoxBuildersDto(completed);
+		return new ResponseEntity<List<SmallBoxUnifierDto>>(completedDto,HttpStatus.OK);
 	}
 
 	

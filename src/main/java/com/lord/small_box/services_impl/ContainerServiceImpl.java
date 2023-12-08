@@ -30,9 +30,7 @@ public class ContainerServiceImpl implements ContainerService {
 	@Override
 	public Container save(Container container) {
 	container.setSmallBoxDate(now);
-	
-	
-		return containerRepository.save(container);
+	return containerRepository.save(container);
 		
 	}
 

@@ -44,6 +44,11 @@ public class SmallBoxUnifierServiceImpl implements SmallBoxUnifierService {
 		
 	}
 
+	@Override
+	public List<SmallBoxUnifier> findByContainerId(Integer containerId) {
+	return (List<SmallBoxUnifier>) smallBoxUnifierRepository.findByContainerId(containerId);
+	}
+
 	
 
 	

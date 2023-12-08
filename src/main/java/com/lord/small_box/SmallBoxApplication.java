@@ -26,13 +26,15 @@ public class SmallBoxApplication {
 			InputService inputService) {
 		return args ->{
 			
+		
+			
 		//List<Input> inputs = inputRepository.findAll();
 		//List<Input> result = inputs.stream().filter(f -> f.getInputNumber()<250).map(m -> m).collect(Collectors.toList());
 		//result.forEach(e -> System.out.println(e));
 			
-			Calendar now = Calendar.getInstance();
+			/*Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)
-					.title("Caja chica Super").dependency("Sec. desarr").build();
+					.title("Caja chica Super").dependency("Sec. desarr").responsible("Carlos Bronson") .build();
 			Container savedContainer = containerService.save(container); 
 			
 			Input input211 = inputService.findById(1);
@@ -61,7 +63,7 @@ public class SmallBoxApplication {
 			
 			SmallBox smallBox5 = SmallBox.builder().date(cal1).ticketNumber("09809-234234")
 					.input(input213).provider("Item 5 Mazloa").ticketTotal(new BigDecimal(8798)).build();
-			SmallBox savedSmallBox5 = smallBoxService.save(smallBox5, savedContainer.getId());
+			SmallBox savedSmallBox5 = smallBoxService.save(smallBox5, savedContainer.getId());*/
 		
 		};
 	}

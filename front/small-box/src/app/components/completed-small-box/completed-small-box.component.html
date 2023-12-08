@@ -5,7 +5,7 @@
            
             <table class="table table-fluid table-hover table-bordered table-striped border border-dark">
                 <thead>
-                    <tr class="bg-primary opacity-50 text-center">
+                    <tr class="bg-primary fw-bold text-center">
                         <th scope="col">Fecha</th>
                        <th scope="col">Numero de factura</th>
                         <th scope="col">Razon social</th>
@@ -18,14 +18,18 @@
                 </thead>
                 <tbody>
                     <tr class="text-center" *ngFor="let completed of completedSmallBox">
-                       <th scope="row" class="fw-bold">{{completed.date}}</th>
-                       <th scope="row" class="fw-bold">{{completed.ticketNumber}}</th>
-                       <th scope="row" class="fw-bold">{{completed.provider}}</th>
-                       <th scope="row"  class="fw-bold">{{completed.description}}</th>
-                       <th scope="row" *ngIf="completed.subtotal==undefined" class="fw-bold">{{completed.ticketTotal | currency: '$': 'symbol'}}</th>
+                       <th scope="row"  *ngIf="completed.subtotal==undefined" class="fw-light">{{completed.date}}</th>
+                       <th scope="row"  *ngIf="completed.subtotal!=undefined" class="fw-bold bg-warning"></th>
+                       <th scope="row"  *ngIf="completed.subtotal==undefined" class="fw-light">{{completed.ticketNumber}}</th>
+                       <th scope="row"  *ngIf="completed.subtotal!=undefined" class="fw-bold bg-warning"></th>
+                       <th scope="row"  *ngIf="completed.subtotal==undefined" class="fw-light">{{completed.provider}}</th>
+                       <th scope="row"  *ngIf="completed.subtotal!=undefined" class="fw-bold bg-warning"></th>
+                       <th scope="row"  *ngIf="completed.subtotal==undefined"  class="fw-light">{{completed.description}}</th>
+                       <th scope="row"  *ngIf="completed.subtotal!=undefined"  class="fw-bold bg-warning"></th>
+                       <th scope="row" *ngIf="completed.subtotal==undefined" class="fw-light">{{completed.ticketTotal | currency: '$': 'symbol'}}</th>
                        <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold  bg-warning text-dark">{{completed.subtotalTitle}}</th>
                         <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold  bg-warning text-dark">{{completed.subtotal | currency: '$': 'symbol'}}</th>
-                        <th scope="row" class="fw-bold">{{completed.inputNumber}}</th>
+                        <th scope="row" class="fw-light">{{completed.inputNumber}}</th>
                         
                     </tr>
                  </tbody>

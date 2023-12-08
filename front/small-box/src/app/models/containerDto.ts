@@ -8,6 +8,8 @@ export class ContainerDto{
     title!:string;
     
     dependency!:string;
+
+    responsible!:string;
     
     smallBoxDate!:Date;
 }

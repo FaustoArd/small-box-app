@@ -32,6 +32,7 @@ deps :string[] =  ['Secretaria de Desarrollo Social', 'Direccion de Administraci
   containerFormBuilder = this.formBuilder.group({
    title:['', Validators.required],
     dependency:['', Validators.required],
+    responsible:['',Validators.required]
 });
 
 get title(){
@@ -39,6 +40,10 @@ get title(){
   }
   get dependency(){
     return this.containerFormBuilder.controls.dependency;
+  }
+
+  get responsible(){
+    return this.containerFormBuilder.controls.responsible;
   }
 
   onCreateContainer(){

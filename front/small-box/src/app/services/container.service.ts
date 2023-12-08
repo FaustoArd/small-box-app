@@ -33,4 +33,8 @@ export class ContainerService {
   getContainerById(id:number):Observable<ContainerDto>{
     return this.http.get<ContainerDto>(`${CONTAINER_BASE_URL}/${id}`,this.httpOptions).pipe(catchError(this.handleError));
   }
+
+  getAllContainers():Observable<ContainerDto[]>{
+    return this.http.get<ContainerDto[]>(`${CONTAINER_BASE_URL}/all`,this.httpOptions).pipe(catchError(this.handleError));
+  }
 }
