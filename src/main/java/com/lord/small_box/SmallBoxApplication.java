@@ -12,7 +12,9 @@ import org.springframework.context.annotation.Bean;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.SmallBox;
+import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.repositories.InputRepository;
+import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
@@ -26,8 +28,13 @@ public class SmallBoxApplication {
 
 	@Bean
 	CommandLineRunner run(InputRepository inputRepository,ContainerService containerService,SmallBoxService smallBoxService,
-			InputService inputService) {
+			InputService inputService,SmallBoxTypeRepository smallBoxTypeRepository) {
 		return args ->{
+			
+			SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();
+			SmallBoxType type2 = SmallBoxType.builder().smallBoxType("Caja Especial").build();
+			smallBoxTypeRepository.save(type1);
+			smallBoxTypeRepository.save(type2);
 			
 		Input i211 = Input.builder().description("Alimento para personas").inputNumber("211").build();
 		Input i212 = Input.builder().description("Alimento para animales").inputNumber("212").build();

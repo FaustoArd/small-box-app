@@ -13,9 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lord.small_box.dtos.ContainerDto;
+import com.lord.small_box.dtos.SmallBoxTypeDto;
 import com.lord.small_box.mappers.ContainerMapper;
 import com.lord.small_box.models.Container;
+import com.lord.small_box.models.SmallBoxType;
+import com.lord.small_box.models.SmallBoxTypeMapper;
 import com.lord.small_box.repositories.ContainerRepository;
+import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.ContainerService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,16 @@ public class ContainerController {
 	
 	@Autowired
 	private final ContainerService containerService;
+	
+	private final SmallBoxTypeRepository smallBoxTypeRepository;
+	
+	
+	@GetMapping("/all_types")
+	ResponseEntity<List<SmallBoxTypeDto>> findAllSmallBoxTypes(){
+		List<SmallBoxType> types = smallBoxTypeRepository.findAll();
+		List<SmallBoxTypeDto> typesDto = SmallBoxTypeMapper.INSTANCE.toSmallBoxesDto(types);
+		return new ResponseEntity<List<SmallBoxTypeDto>>(typesDto,HttpStatus.OK);
+	}
 	
 	@GetMapping("/all")
 	ResponseEntity<List<ContainerDto>> findAllContainers(){
