@@ -29,7 +29,7 @@ public class SmallBoxApplication {
 			InputService inputService) {
 		return args ->{
 			
-		/*Input i211 = Input.builder().description("Alimento para personas").inputNumber("211").build();
+		Input i211 = Input.builder().description("Alimento para personas").inputNumber("211").build();
 		Input i212 = Input.builder().description("Alimento para animales").inputNumber("212").build();
 		Input i213 = Input.builder().description("Productos pecuarios").inputNumber("213").build();
 		Input i214 = Input.builder().description("Productos agroforestales").inputNumber("214").build();
@@ -48,7 +48,7 @@ public class SmallBoxApplication {
 		inputs.add(i221);
 		inputs.add(i222);
 		inputs.add(i223);
-		inputRepository.saveAll(inputs);*/
+		inputRepository.saveAll(inputs);
 			
 		//List<Input> inputs = inputRepository.findAll();
 		//List<Input> result = inputs.stream().filter(f -> f.getInputNumber()<250).map(m -> m).collect(Collectors.toList());

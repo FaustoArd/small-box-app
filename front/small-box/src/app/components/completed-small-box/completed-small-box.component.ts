@@ -23,12 +23,12 @@ export class CompletedSmallBoxComponent implements OnInit {
 
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if(id==null||undefined){
+   
+   
     this.onCompleteSmallBox();
-    }else{
-      this.getCompletedSmallboxByContainerId(id);
-    }
+   
+     
+   
   }
 
 
