@@ -77,7 +77,7 @@ export class SmallBoxComponent implements OnInit{
           complete:()=>{
             this.onSnackBarMessage("Se agrego el ticket!")
             this.smallBoxForm.reset();
-            this.getAllSmallBoxes();
+            this.getAllSmallBoxesByContainerId();
           }
         });
       } 

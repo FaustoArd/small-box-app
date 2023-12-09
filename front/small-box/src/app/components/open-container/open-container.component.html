@@ -28,7 +28,7 @@
                      
                       
                         <td>
-                            <button routerLink="/completed-by-id/{{container.id}}" class="btn">Abrir</button>
+                            <button (click)="setCurrentContainerId(container.id)" routerLink="/completed-by-id/{{container.id}}" class="btn">Abrir</button>
                         </td>
 
                        </tr>

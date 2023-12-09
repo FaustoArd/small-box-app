@@ -38,7 +38,7 @@ export class SmallBoxService {
   }
 
   findSmallBoxesByContainerId(containerId:number):Observable<SmallBoxDto[]>{
-    return this.http.get<SmallBoxDto[]>(`${SMALL_BOX_BASE_URL}/by_container?containerId=${containerId}`,this.httpOptions)
+    return this.http.get<SmallBoxDto[]>(`${SMALL_BOX_BASE_URL}/all/by_container?containerId=${containerId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
 

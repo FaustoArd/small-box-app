@@ -48,7 +48,7 @@ public class SmallBoxController {
 	}
 	@GetMapping("/all/by_container")
 	ResponseEntity<List<SmallBoxDto>> findAll(@RequestParam("containerId")Integer containerId){
-		List<SmallBox> smallBoxes = smallBoxService.findAll();
+		List<SmallBox> smallBoxes = smallBoxService.findAllByContainerId(containerId);
 		List<SmallBoxDto> smallBoxesDto = SmallBoxMapper.INSTANCE.toSmallBoxesDtos(smallBoxes);
 		return new ResponseEntity<List<SmallBoxDto>>(smallBoxesDto,HttpStatus.OK);
 	}

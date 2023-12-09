@@ -13,40 +13,57 @@ import { StorageService } from 'src/app/services/storage.service';
 })
 export class CompletedSmallBoxComponent implements OnInit {
 
-  completedSmallBox:SmallBoxUnifierDto[]=[];
-  errorData!:string;
-  container!:ContainerDto;
-  
-  
-    constructor(private smallBoxService:SmallBoxService,private containerService:ContainerService,private storageService:StorageService){}
-  
-  
-    ngOnInit(): void {
-        this.onCompleteSmallBox();
+  completedSmallBox: SmallBoxUnifierDto[] = [];
+  errorData!: string;
+  container!: ContainerDto;
+
+
+  constructor(private smallBoxService: SmallBoxService, private containerService: ContainerService,
+    private storageService: StorageService, private route: ActivatedRoute) { }
+
+
+  ngOnInit(): void {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if(id==null||undefined){
+    this.onCompleteSmallBox();
+    }else{
+      this.getCompletedSmallboxByContainerId(id);
     }
-  
-  
-    onCompleteSmallBox():void{
-      this.smallBoxService.completeSmallBox(Number(this.storageService.getCurrentContainerId())).subscribe({
-        next:(compData)=>{
-          this.completedSmallBox = compData;
-        },
-        error:(errorData)=>{
-          this.errorData = errorData;
-        },complete:()=>{
-          this.getContainerById();
-        }
-      });
-    }
-    getContainerById():void{
-      this.containerService.getContainerById(Number(this.storageService.getCurrentContainerId())).subscribe({
-        next:(containerData)=>{
-          this.container = containerData;
-        },error:(errorData)=>{
-          this.errorData = errorData;
-        }
-      });
-    }
-  
+  }
+
+
+  onCompleteSmallBox(): void {
+    this.smallBoxService.completeSmallBox(Number(this.storageService.getCurrentContainerId())).subscribe({
+      next: (compData) => {
+        this.completedSmallBox = compData;
+      },
+      error: (errorData) => {
+        this.errorData = errorData;
+      }, complete: () => {
+        this.getContainerById();
+      }
+    });
+  }
+  getContainerById(): void {
+    this.containerService.getContainerById(Number(this.storageService.getCurrentContainerId())).subscribe({
+      next: (containerData) => {
+        this.container = containerData;
+      }, error: (errorData) => {
+        this.errorData = errorData;
+      }
+    });
+  }
+
+  getCompletedSmallboxByContainerId(id: number): void {
+    this.smallBoxService.getCompletedSmallBoxByContainerId(id).subscribe({
+      next: (completedData) => {
+        this.completedSmallBox = completedData;
+      },
+      error: (erorrData) => {
+        this.errorData = erorrData;
+      },
+    });
+  }
+
 }
 

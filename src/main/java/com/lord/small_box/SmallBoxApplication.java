@@ -1,7 +1,10 @@
 package com.lord.small_box;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,7 +29,26 @@ public class SmallBoxApplication {
 			InputService inputService) {
 		return args ->{
 			
-		
+		/*Input i211 = Input.builder().description("Alimento para personas").inputNumber("211").build();
+		Input i212 = Input.builder().description("Alimento para animales").inputNumber("212").build();
+		Input i213 = Input.builder().description("Productos pecuarios").inputNumber("213").build();
+		Input i214 = Input.builder().description("Productos agroforestales").inputNumber("214").build();
+		Input i215 = Input.builder().description("Madera ,corcho y sus manufacturas").inputNumber("215").build();
+		Input i219 = Input.builder().description("Otros").inputNumber("219").build();
+		Input i221 = Input.builder().description("Hilados y Telas").inputNumber("221").build();
+		Input i222 = Input.builder().description("Prendas de Vestir").inputNumber("222").build();
+		Input i223 = Input.builder().description("Confecciones Textiles").inputNumber("223").build();
+		List<Input> inputs = new ArrayList<>();
+		inputs.add(i211);
+		inputs.add(i212);
+		inputs.add(i213);
+		inputs.add(i214);
+		inputs.add(i215);
+		inputs.add(i219);
+		inputs.add(i221);
+		inputs.add(i222);
+		inputs.add(i223);
+		inputRepository.saveAll(inputs);*/
 			
 		//List<Input> inputs = inputRepository.findAll();
 		//List<Input> result = inputs.stream().filter(f -> f.getInputNumber()<250).map(m -> m).collect(Collectors.toList());

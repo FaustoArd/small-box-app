@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ContainerDto } from 'src/app/models/containerDto';
 import { ContainerService } from 'src/app/services/container.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-open-container',
@@ -12,7 +13,7 @@ export class OpenContainerComponent implements OnInit {
   containers:ContainerDto[]= [];
   errorData!:string;
 
-  constructor(private containerService:ContainerService){}
+  constructor(private containerService:ContainerService,private storageService:StorageService){}
 
   ngOnInit(): void {
       this.getAllContainers();
@@ -27,6 +28,10 @@ export class OpenContainerComponent implements OnInit {
         this.errorData = errorData;
       }
     })
+  }
+
+  setCurrentContainerId(id:number){
+    this.storageService.setCurrentContainerId(JSON.stringify(id));
   }
 
   
