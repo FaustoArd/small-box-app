@@ -12,5 +12,7 @@ export class ContainerDto{
     responsible!:string;
     
     smallBoxDate!:Date;
+
+    smallBoxCreated!:boolean;
 }
 

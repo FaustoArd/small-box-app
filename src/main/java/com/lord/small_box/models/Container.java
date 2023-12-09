@@ -40,5 +40,8 @@ public class Container {
 	@Column(name="small_box_date")
 	private Calendar smallBoxDate;
 	
+	@Column(name="created")
+	private boolean smallBoxCreated;
+	
 	
 }

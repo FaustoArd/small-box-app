@@ -12,10 +12,13 @@ public class ContainerDto {
 	
 	private Double total;
 	
-	
 	private String title;
 	
 	private String dependency;
 	
+	private String responsible;
+	
 	private Calendar smallBoxDate;
+	
+	private boolean smallBoxCreated;
 }

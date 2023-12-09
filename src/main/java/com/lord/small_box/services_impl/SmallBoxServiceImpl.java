@@ -136,6 +136,8 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 			smUnifierSTotal.setSubtotal(calculateSubtotal(containerId, currentInput).getSubtotal());
 			smUnifierSTotal.setSubtotalTitle("SubTotal");
 			smUnifierSTotal.setContainer(container);
+			container.setSmallBoxCreated(true);
+			containerRepository.save(container);
 			smallBoxUnifierRepository.save(smUnifierSTotal);
 		}
 		return (List<SmallBoxUnifier>) smallBoxUnifierRepository.findAll();

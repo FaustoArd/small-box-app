@@ -1,0 +1,8 @@
+#btnOpen{
+    background-color: blue;
+    color: white;
+}
+
+#btnOpen:hover{
+    background-color: blueviolet;
+}

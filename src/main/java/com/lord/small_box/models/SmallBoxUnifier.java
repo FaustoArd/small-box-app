@@ -56,4 +56,6 @@ public class SmallBoxUnifier {
 	
 	@Column(name="subtotal")
 	private BigDecimal subtotal;
+	
+	
 }

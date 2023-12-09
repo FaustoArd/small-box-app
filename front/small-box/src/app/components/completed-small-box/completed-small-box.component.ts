@@ -16,6 +16,7 @@ export class CompletedSmallBoxComponent implements OnInit {
   completedSmallBox: SmallBoxUnifierDto[] = [];
   errorData!: string;
   container!: ContainerDto;
+  smallBoxCreated!:boolean;
 
 
   constructor(private smallBoxService: SmallBoxService, private containerService: ContainerService,
@@ -23,9 +24,21 @@ export class CompletedSmallBoxComponent implements OnInit {
 
 
   ngOnInit(): void {
-   
-   
-    this.onCompleteSmallBox();
+    this.containerService.getContainerById(Number(this.storageService.getCurrentContainerId())).subscribe({
+      next: (containerData) => {
+        this.container = containerData;
+        this.smallBoxCreated = containerData.smallBoxCreated;
+        if(this.smallBoxCreated){
+          this.getCompletedSmallboxByContainerId(Number(this.storageService.getCurrentContainerId()));
+        }else{
+        this.onCompleteSmallBox();
+        }
+      }, error: (errorData) => {
+        this.errorData = errorData;
+      }
+    });
+  
+  
    
      
    
@@ -48,6 +61,8 @@ export class CompletedSmallBoxComponent implements OnInit {
     this.containerService.getContainerById(Number(this.storageService.getCurrentContainerId())).subscribe({
       next: (containerData) => {
         this.container = containerData;
+        this.smallBoxCreated = containerData.smallBoxCreated;
+       
       }, error: (errorData) => {
         this.errorData = errorData;
       }
