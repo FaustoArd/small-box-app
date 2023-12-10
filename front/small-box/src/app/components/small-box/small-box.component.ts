@@ -44,7 +44,7 @@ export class SmallBoxComponent implements OnInit {
     ticketNumber: [0, Validators.required],
     provider: ['', Validators.required],
     inputId: [0],
-    description: ['', Validators.required],
+    description: [''],
     ticketTotal: [0, Validators.required],
     inputNumber: [0],
   });
@@ -80,7 +80,7 @@ export class SmallBoxComponent implements OnInit {
         },
         error: (errorData) => {
           this.errorData = errorData;
-          this.onSnackBarMessage(this.errorData);
+          this.onSnackBarMessage("Debe ingresar una descripcion o un input!");
         },
         complete: () => {
           this.onSnackBarMessage("Se agrego el ticket!")
