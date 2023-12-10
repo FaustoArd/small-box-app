@@ -26,6 +26,8 @@ public interface SmallBoxService {
 	
 	public List<SmallBoxUnifier> completeSmallBox(Integer containerId);
 	
+	public void addAllTicketTotals(Integer containerId);
+	
 	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Integer containerId);
 
 }

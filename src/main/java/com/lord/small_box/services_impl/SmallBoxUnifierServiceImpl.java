@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.SmallBoxUnifier;
@@ -47,6 +48,13 @@ public class SmallBoxUnifierServiceImpl implements SmallBoxUnifierService {
 	@Override
 	public List<SmallBoxUnifier> findByContainerId(Integer containerId) {
 	return (List<SmallBoxUnifier>) smallBoxUnifierRepository.findByContainerId(containerId);
+	}
+
+	@Transactional
+	@Override
+	public void deleteAllByContainerId(Integer containerId) {
+		smallBoxUnifierRepository.deleteAllByContainerId(containerId);
+		
 	}
 
 	

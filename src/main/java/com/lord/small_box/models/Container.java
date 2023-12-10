@@ -1,5 +1,6 @@
 package com.lord.small_box.models;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 
 import jakarta.persistence.Column;
@@ -35,7 +36,7 @@ public class Container {
 	private String responsible; 
 	
 	@Column(name="small_box_total")
-	private Double total;
+	private BigDecimal total;
 	
 	@Column(name="small_box_date")
 	private Calendar smallBoxDate;

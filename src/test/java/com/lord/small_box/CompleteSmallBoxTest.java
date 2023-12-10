@@ -7,28 +7,29 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.SmallBox;
-import com.lord.small_box.models.SubTotal;
+import com.lord.small_box.models.SmallBoxUnifier;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
+import com.lord.small_box.services.SmallBoxUnifierService;
 
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class CalculateSubTotalTest {
+public class CompleteSmallBoxTest {
 	
 	@Autowired
 	private SmallBoxService smallBoxService;
@@ -39,12 +40,14 @@ public class CalculateSubTotalTest {
 	@Autowired
 	private InputRepository inputRepository;
 	
+	@Autowired
+	private SmallBoxUnifierService smallBoxUnifierService;
+	
 	
 	@Autowired
 	private ContainerService containerService;
 	
 	private Integer containerId;
-
 	
 	@Test
 	@Order(1)
@@ -82,20 +85,28 @@ public class CalculateSubTotalTest {
 		Input input213 = inputService.findById(3);
 		Calendar cal1 = Calendar.getInstance();
 		cal1.set(2023, 11, 4);
+		
+		//Input 211
 		SmallBox smallBox1 = SmallBox.builder().date(cal1).ticketNumber("23423-234234")
 				.input(input211).provider("Disalar").ticketTotal(new BigDecimal(5000)).build();
-		
 		SmallBox savedSmallBox = smallBoxService.save(smallBox1, savedContainer.getId());
 		
+		//Input 211
 		SmallBox smallBox2 = SmallBox.builder().date(cal1).ticketNumber("2342-12656").input(input211)
 				.provider("Almd").ticketTotal(new BigDecimal(9000)).build();
-		
 		SmallBox savedSmallBox2 = smallBoxService.save(smallBox2, savedContainer.getId());
 		
+		//Input 212
+				SmallBox smallBox5 = SmallBox.builder().date(cal1).ticketNumber("987-234234")
+						.input(input212).provider("Item 4 Nikecli").ticketTotal(new BigDecimal(3250.20)).build();
+				SmallBox savedSmallBox5 = smallBoxService.save(smallBox5, savedContainer.getId());
+		
+		//Input 213
 		SmallBox smallBox3 = SmallBox.builder().date(cal1).ticketNumber("23423-234234")
 				.input(input213).provider("Item 1 Disalar").ticketTotal(new BigDecimal(5000)).build();
 		SmallBox savedSmallBox3 = smallBoxService.save(smallBox3, savedContainer.getId());
 		
+		//Input 212
 		SmallBox smallBox4 = SmallBox.builder().date(cal1).ticketNumber("987-234234")
 				.input(input212).provider("Item 4 Nikecli").ticketTotal(new BigDecimal(8968)).build();
 		SmallBox savedSmallBox4 = smallBoxService.save(smallBox4, savedContainer.getId());
@@ -109,9 +120,29 @@ public class CalculateSubTotalTest {
 	
 	@Test
 	@Order(2)
-	void calculateSubtotalTest() {
-		SubTotal SubTotal = smallBoxService.calculateSubtotal(containerId, "211");
-		assertEquals(SubTotal.getSubtotal().intValue(), 14000);
+	void completeSmallBox() {
+		
+		List<SmallBoxUnifier> smUnified = smallBoxService.completeSmallBox(containerId);
+		
+		assertEquals(smUnified.get(2).getSubtotal().intValue(), 14000);
+		assertEquals(smUnified.get(5).getSubtotal().doubleValue(), 12218.20);
+		assertEquals(smUnified.get(7).getSubtotal().intValue(), 5000);
 	}
 	
+	@Test
+	@Order(3)
+	void addAllTicketTotals() {
+		smallBoxService.addAllTicketTotals(containerId);
+		Container container = containerService.findById(containerId);
+		assertEquals(container.getTotal().doubleValue(), 31218.20);
+	}
+	
+	@Test
+	@Order(4)
+	void deleteAllByContainerId() {
+		smallBoxUnifierService.deleteAllByContainerId(containerId);
+		List<SmallBoxUnifier> smUnifiers = smallBoxUnifierService.findByContainerId(containerId);
+		assertEquals(smUnifiers.size(), 0);
+	}
+
 }

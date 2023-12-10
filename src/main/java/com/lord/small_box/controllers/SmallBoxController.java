@@ -73,6 +73,7 @@ public class SmallBoxController {
 	ResponseEntity<List<SmallBoxUnifierDto>> completeSmallBox(@RequestParam("containerId")Integer containerId){
 		
 		List<SmallBoxUnifier> sm = smallBoxService.completeSmallBox(containerId);
+		smallBoxService.addAllTicketTotals(containerId);
 		List<SmallBoxUnifierDto> smDto = SmallBoxUnifierMapper.INSTANCE.toSmallBoxBuildersDto(sm);
 		return new ResponseEntity<List<SmallBoxUnifierDto>>(smDto,HttpStatus.OK);
 	}

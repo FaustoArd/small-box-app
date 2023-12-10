@@ -17,6 +17,10 @@ public interface SmallBoxUnifierService {
 	public void deleteSmallBoxUnifierById(Integer id);
 	
 	public List<SmallBoxUnifier> findByContainerId(Integer containerId);
+	
+	public void deleteAllByContainerId(Integer containerId);
+	
+	
 
 
 }

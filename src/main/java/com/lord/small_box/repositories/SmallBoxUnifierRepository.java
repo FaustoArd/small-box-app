@@ -9,5 +9,7 @@ import com.lord.small_box.models.SmallBoxUnifier;
 public interface SmallBoxUnifierRepository extends JpaRepository<SmallBoxUnifier, Integer> {
 	
 	public List<SmallBoxUnifier> findByContainerId(Integer id);
+	
+	public void deleteAllByContainerId(Integer id);
 
 }

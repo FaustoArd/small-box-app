@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
@@ -21,8 +23,6 @@ import com.lord.small_box.repositories.SmallBoxRepository;
 import com.lord.small_box.repositories.SmallBoxUnifierRepository;
 import com.lord.small_box.repositories.SubTotalRepository;
 import com.lord.small_box.services.SmallBoxService;
-
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -143,11 +143,24 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 		return (List<SmallBoxUnifier>) smallBoxUnifierRepository.findAll();
 
 	}
-
+	
+	@Transactional
+	@Override
+	public void addAllTicketTotals(Integer containerId) {
+		Double totalResult =  findAllByContainerId(containerId).stream().mapToDouble(sm -> sm.getTicketTotal().doubleValue()).sum();
+		Container container= containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException("No se encontro el container"));
+		container.setTotal(new BigDecimal(totalResult));
+		 containerRepository.save(container);
+		
+		
+	}
+	
 	@Override
 	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Integer containerId) {
 		log.info("Fetch all smallBoxes by container id order by input number");
 		return (List<SmallBox>) smallBoxRepo.findAllByContainerIdOrderByInputInputNumber(containerId);
 	}
+
+
 
 }
