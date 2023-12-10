@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule, FormControl} from '@angular/forms'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,8 +14,10 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { MatToolbarModule} from '@angular/material/toolbar';
+import { MatDialogModule} from '@angular/material/dialog'
 import { CompletedSmallBoxComponent } from './components/completed-small-box/completed-small-box.component';
-import { OpenContainerComponent } from './components/open-container/open-container.component'
+import { OpenContainerComponent } from './components/open-container/open-container.component';
+import { DialogTemplateComponent } from './components/dialog/dialog-template/dialog-template.component'
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { OpenContainerComponent } from './components/open-container/open-contain
     NavbarComponent,
     ContainerComponent,
     CompletedSmallBoxComponent,
-    OpenContainerComponent
+    OpenContainerComponent,
+    DialogTemplateComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -38,7 +42,8 @@ import { OpenContainerComponent } from './components/open-container/open-contain
      MatButtonModule,
      MatSnackBarModule,
      MatToolbarModule,
-     HttpClientModule
+     HttpClientModule,
+     MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -62,7 +62,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 
 	@Override
 	public SmallBox save(SmallBox smallBox, Integer containerId) {
-		log.info("Saving new smallbox");
+		log.info("Saving smallbox");
 		Input input = inputRepository.findById(smallBox.getInput().getId())
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el input"));
 		Container container = containerRepository.findById(containerId)
@@ -71,6 +71,17 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 		smallBox.setContainer(container);
 		return smallBoxRepo.save(smallBox);
 	}
+	
+	@Override
+	public SmallBox update(SmallBox smallBox) {
+		log.info("Updating smallbox");
+		Input input = inputRepository.findById(smallBox.getInput().getId())
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el input"));
+		smallBox.setInput(input);
+		return smallBoxRepo.save(smallBox);
+	}
+	
+	
 
 	@Override
 	public void delete(Integer id) {
@@ -140,6 +151,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 			containerRepository.save(container);
 			smallBoxUnifierRepository.save(smUnifierSTotal);
 		}
+		addAllTicketTotals(containerId);
 		return (List<SmallBoxUnifier>) smallBoxUnifierRepository.findAll();
 
 	}
@@ -149,6 +161,8 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	public void addAllTicketTotals(Integer containerId) {
 		Double totalResult =  findAllByContainerId(containerId).stream().mapToDouble(sm -> sm.getTicketTotal().doubleValue()).sum();
 		Container container= containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException("No se encontro el container"));
+		//SmallBoxUnifier smUnifier = SmallBoxUnifier.builder().subtotalTitle("Total").subtotal(new BigDecimal(totalResult)).container(container).build();
+		//smallBoxUnifierRepository.save(smUnifier);
 		container.setTotal(new BigDecimal(totalResult));
 		 containerRepository.save(container);
 		
@@ -160,6 +174,8 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 		log.info("Fetch all smallBoxes by container id order by input number");
 		return (List<SmallBox>) smallBoxRepo.findAllByContainerIdOrderByInputInputNumber(containerId);
 	}
+
+	
 
 
 

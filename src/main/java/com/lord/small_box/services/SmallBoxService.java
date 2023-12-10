@@ -14,6 +14,8 @@ public interface SmallBoxService {
 	
 	public SmallBox save(SmallBox smallBox,Integer containerId);
 	
+	public SmallBox update(SmallBox smallBox);
+	
 	public void delete(Integer id);
 	
 	public List<SmallBox> findAllOrderByInputInputNumber(String inpuNumber);

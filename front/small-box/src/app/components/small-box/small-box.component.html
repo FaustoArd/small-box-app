@@ -1,14 +1,14 @@
 <app-navbar></app-navbar>
 <div class="container-flex">
     <div class="row">
-        <div class="col-md-8"></div>
-        <div class="col-md-4">
-            <button  routerLink="/completed" class="btn btn-success bt-transparent border-dark text-dark fw-bold">Confeccionar</button>
+        <div class="col-md-10"></div>
+        <div class="col-md-2">
+            <button  routerLink="/completed" class="btn btn-success bt-transparent border-dark text-white fw-bold mt-2">Confeccionar</button>
         </div>
     </div>
 
     <div class="row mt-5">
-        <form [formGroup]="smallBoxForm" class="row g-6 form-group justifty-center text-center fw-bold">
+        <form [formGroup]="smallBoxForm" class="row g-6 form-group justifty-center text-center fw-bold ms-1">
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="date" class=" form-label fs-7 ">Fecha</label>
@@ -28,7 +28,7 @@
                         id="ticket-number">
                     <div *ngIf="ticketNumber.invalid && (ticketNumber.dirty || date.touched)" class="text-danger">
                         <div *ngIf="ticketNumber.errors?.['required']">
-                            Falta la fecha...
+                            Falta el numero de comprobante
                         </div>
                     </div>
                 </div>
@@ -39,7 +39,7 @@
                     <input class="form-control border-dark" type="text" formControlName="provider" id="provider">
                     <div *ngIf="provider.invalid && (provider.dirty || date.touched)" class="text-danger">
                         <div *ngIf="provider.errors?.['required']">
-                            Falta la fecha...
+                            Falta la razon social
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                         <div *ngIf="description.invalid && (description.dirty || description.touched)"
                             class="text-danger">
                             <div *ngIf="description.errors?.['invalid']">
-                                Debes seleccionar una categoria
+                                Debes seleccionar una descripcion
                             </div>
                         </div>
                     </select>
@@ -83,7 +83,7 @@
                         <div *ngIf="inputNumber.invalid && (inputNumber.dirty || description.touched)"
                             class="text-danger">
                             <div *ngIf="description.errors?.['invalid']">
-                                Debes seleccionar una categoria
+                                Debes seleccionar un input
                             </div>
                         </div>
                     </select>
@@ -95,7 +95,7 @@
             <div class="col-md-1 mt-4">
 
                 <button type="submit" (click)="onAddSmallBox()"
-                    class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
+                    class="btn btn-success border border-dark mt-1 mb-2">Guardar</button>
             </div>
 
         </form>
@@ -117,14 +117,14 @@
                 </thead>
                 <tbody>
                     <tr class="text-center" *ngFor="let smallbox of smallboxes">
-                        <th scope="row" class="fw-bold">{{smallbox.date}}</th>
+                        <th scope="row" class="fw-bold">{{smallbox.date | date: 'dd-MM-yyyy'}}</th>
                         <th scope="row" class="fw-bold">{{smallbox.ticketNumber}}</th>
                         <th scope="row" class="fw-bold">{{smallbox.provider}}</th>
                         <th scope="row" class="fw-bold">{{smallbox.description}}</th>
                         <th scope="row" class="fw-bold">{{smallbox.ticketTotal | currency: '$': 'symbol'}}</th>
                         <th scope="row" class="fw-bold">{{smallbox.inputNumber}}</th>
                         <th>
-                            <button class="btn btn-success btn-sm text-white  ">Editar</button>
+                            <button (click)="openDialogSmallBoxUpdate(smallbox.id, updateSmallBoxTemplate)" class="btn btn-success btn-sm text-white  ">Editar</button>
                             <button class="btn btn-danger btn-sm text-white ms-2">Eliminar</button>
                         </th>
                     </tr>
@@ -134,3 +134,103 @@
 
     </div>
 </div>
+
+<ng-template #updateSmallBoxTemplate>
+    <div class="container-fluid">
+        <div class="row">
+    <form [formGroup]="updateSmallBoxForm" class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="date" class=" form-label fs-7 ">Fecha</label>
+                <input class="  form-control border-dark" type="date" formControlName="date" id="date">
+                <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger">
+                    <div *ngIf="date.errors?.['required']">
+                        Falta la fecha...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="ticket-number" class="form-label fs-7 ">Numero de comprobante</label>
+                <input class="form-control border-dark" type="text" formControlName="ticketNumber"
+                    id="ticket-number">
+                <div *ngIf="ticketNumber.invalid && (ticketNumber.dirty || date.touched)" class="text-danger">
+                    <div *ngIf="ticketNumber.errors?.['required']">
+                        Falta el numero de comprobante
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group ">
+                <label for="provider" class="form-label fs-7 ">Razon social</label>
+                <input class="form-control border-dark" type="text" formControlName="provider" id="provider">
+                <div *ngIf="provider.invalid && (provider.dirty || date.touched)" class="text-danger">
+                    <div *ngIf="provider.errors?.['required']">
+                        Falta la razon social
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="description" class="form-label fs-7 ">Descripcion</label>
+                <select id="description" formControlName="description" class="form-select  border-dark">
+                    <option >{{updatedSmallBox.description}}</option>
+                    <option type="number" class="form-control border-dark " *ngFor="let input of inputs"
+                        id="categoryId" [value]="input.id">
+                        {{input.description}}</option>
+                    <div *ngIf="description.invalid && (description.dirty || description.touched)"
+                        class="text-danger">
+                        <div *ngIf="description.errors?.['invalid']">
+                            Debes seleccionar una descripcion
+                        </div>
+                    </div>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="ticketTotal" class="form-label fs-7 ">Precio</label>
+                <input class="form-control border-dark " type="number" formControlName="ticketTotal"
+                    id="ticketTotal">
+
+                <div *ngIf="ticketTotal.invalid && (ticketTotal.dirty || ticketTotal.touched)" class="text-danger">
+                    <div *ngIf="ticketTotal.errors?.['required']">
+                        Deben ser numeros
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="inputNumber" class="form-label fs-7">Input</label>
+                <select id="input-number" formControlName="inputId" class="form-select border-dark">
+                    <option >{{updatedSmallBox.inputNumber}}</option>
+                    <option type="number" class="form-control" *ngFor="let input of inputs" id="input-number"
+                        [value]="input.id">
+                        {{input.inputNumber}}</option>
+                    <div *ngIf="inputNumber.invalid && (inputNumber.dirty || description.touched)"
+                        class="text-danger">
+                        <div *ngIf="description.errors?.['invalid']">
+                            Debes seleccionar un input
+                        </div>
+                    </div>
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-1 mt-4">
+
+            <button type="submit" (click)="updateSmallBox()"
+                class="btn btn-success border border-dark mt-1 mb-2">Guardar</button>
+        </div>
+
+    </form>
+</div>
+</div>
+</ng-template>

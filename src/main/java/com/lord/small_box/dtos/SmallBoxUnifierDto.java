@@ -27,5 +27,7 @@ public class SmallBoxUnifierDto {
 	
 	private BigDecimal subtotal;
 	
+	private BigDecimal total;
+	
 	
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ContainerDto } from 'src/app/models/containerDto';
 import { SmallBoxUnifierDto } from 'src/app/models/smallBoxUnifierDto';
 import { ContainerService } from 'src/app/services/container.service';
@@ -20,7 +20,7 @@ export class CompletedSmallBoxComponent implements OnInit {
 
 
   constructor(private smallBoxService: SmallBoxService, private containerService: ContainerService,
-    private storageService: StorageService, private route: ActivatedRoute) { }
+    private storageService: StorageService, private route: ActivatedRoute,private router:Router) { }
 
 
   ngOnInit(): void {
@@ -29,8 +29,10 @@ export class CompletedSmallBoxComponent implements OnInit {
         this.container = containerData;
         this.smallBoxCreated = containerData.smallBoxCreated;
         if(this.smallBoxCreated){
-          this.getCompletedSmallboxByContainerId(Number(this.storageService.getCurrentContainerId()));
+         this.deleteAllbyContainerId(Number(this.storageService.getCurrentContainerId()));
+         this.onCompleteSmallBox();
         }else{
+          this.deleteAllbyContainerId(Number(this.storageService.getCurrentContainerId()));
         this.onCompleteSmallBox();
         }
       }, error: (errorData) => {
@@ -77,7 +79,14 @@ export class CompletedSmallBoxComponent implements OnInit {
       error: (erorrData) => {
         this.errorData = erorrData;
       },
+      complete:()=>{
+        this.router.navigateByUrl("/completed");
+      }
     });
+  }
+
+  deleteAllbyContainerId(containerId:number):void{
+    this.smallBoxService.deleteAllByContainerId(containerId).subscribe();
   }
 
 }

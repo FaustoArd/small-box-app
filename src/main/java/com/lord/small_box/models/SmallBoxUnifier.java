@@ -57,5 +57,8 @@ public class SmallBoxUnifier {
 	@Column(name="subtotal")
 	private BigDecimal subtotal;
 	
+	@Column(name="total")
+	private BigDecimal total;
+	
 	
 }

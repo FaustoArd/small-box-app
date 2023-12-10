@@ -1,4 +1,9 @@
-<app-navbar></app-navbar>
+
+<div class="row">
+    <div class="col">
+        <button routerLink="/small-box" class="btn btn-md border-dark">Editar</button>
+    </div>
+</div>
 <div class="container-flex">
    <div class="row ms-3 mt-5 fw-bold fs-5">
     <div class="col">
@@ -11,7 +16,7 @@
     <div class="row">
         <div class="col mt-5">
            
-            <table class="table table-fluid table-hover table-bordered table-striped border border-dark">
+            <table class="table table-fluid table-hover table-bordered border border-dark">
                 <thead>
                     <tr class="bg-primary fw-bold text-center">
                         <th scope="col">Fecha</th>
@@ -26,18 +31,20 @@
                 </thead>
                 <tbody>
                     <tr class="text-center" *ngFor="let completed of completedSmallBox">
-                       <th scope="row"  *ngIf="completed.subtotal==undefined" class="fw-light">{{completed.date}}</th>
-                       <th scope="row"  *ngIf="completed.subtotal!=undefined" class="fw-bold bg-warning"></th>
+                       <th scope="row"  *ngIf="completed.subtotal==undefined" class="fw-light">{{completed.date | date: 'dd-MM-yyyy'}}</th>
+                       <th scope="row" id="rowCompleted"  *ngIf="completed.subtotal!=undefined" class="fw-bold "></th>
                        <th scope="row"  *ngIf="completed.subtotal==undefined" class="fw-light">{{completed.ticketNumber}}</th>
-                       <th scope="row"  *ngIf="completed.subtotal!=undefined" class="fw-bold bg-warning"></th>
+                       <th scope="row"  id="rowCompleted"  *ngIf="completed.subtotal!=undefined" class="fw-bold"></th>
                        <th scope="row"  *ngIf="completed.subtotal==undefined" class="fw-light">{{completed.provider}}</th>
-                       <th scope="row"  *ngIf="completed.subtotal!=undefined" class="fw-bold bg-warning"></th>
+                       <th scope="row"  id="rowCompleted"  *ngIf="completed.subtotal!=undefined" class="fw-bold "></th>
                        <th scope="row"  *ngIf="completed.subtotal==undefined"  class="fw-light">{{completed.description}}</th>
-                       <th scope="row"  *ngIf="completed.subtotal!=undefined"  class="fw-bold bg-warning"></th>
+                       <th scope="row"  id="rowCompleted"  *ngIf="completed.subtotal!=undefined"  class="fw-bold"></th>
                        <th scope="row" *ngIf="completed.subtotal==undefined" class="fw-light">{{completed.ticketTotal | currency: '$': 'symbol'}}</th>
-                       <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold  bg-warning text-dark">{{completed.subtotalTitle}}</th>
-                        <th scope="row" *ngIf="completed.subtotal!=undefined" class="fw-bold  bg-warning text-dark">{{completed.subtotal | currency: '$': 'symbol'}}</th>
+                       <th scope="row"  id="rowCompleted" *ngIf="completed.subtotal!=undefined" class="fw-bold  text-dark">{{completed.subtotalTitle}}</th>
+                        <th scope="row"  id="rowCompleted" *ngIf="completed.subtotal!=undefined" class="fw-bold   text-dark">{{completed.subtotal | currency: '$': 'symbol'}}</th>
                         <th scope="row" class="fw-light">{{completed.inputNumber}}</th>
+                        
+
                         
                     </tr>
                  </tbody>
@@ -45,10 +52,21 @@
         </div>
     </div>
     <div class="row">
-        <div class="col"></div>
-        <div class="col"></div>
-        <div clas="col">
-          
+        <div class="col-md-9"></div>
+        <div class="col-md-3 mt-0">
+           
+            <table id="tableTotal" class="table ">
+               
+                <tbody>
+                    <tr class="text-center">
+                     
+                       <th scope="row"  class="fw-bold  text-dark fs-5">Total:</th>
+                        <th id="totalRow" scope="row"  class="fw-bold text-dark  fs-5">{{container.total | currency: '$': 'symbol'}}</th>
+                        <th scope="row"  class="fw-bold  text-dark fs-5"></th>
+                                           
+                    </tr>
+                 </tbody>
+            </table>
         </div>
     </div>
 </div>

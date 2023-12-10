@@ -27,9 +27,17 @@ export class SmallBoxService {
     }
   }
 
+  getSmallBoxById(id:number):Observable<SmallBoxDto>{
+    return this.http.get<SmallBoxDto>(`${SMALL_BOX_BASE_URL}/smallbox/${id}`,this.httpOptions).pipe(catchError(this.handleError));
+  }
+
   addSmallBox(smallBox:SmallBoxDto,containerId:number):Observable<SmallBoxDto>{
     return this.http.post<SmallBoxDto>(`${SMALL_BOX_BASE_URL}/new?containerId=${containerId}`,smallBox,this.httpOptions)
     .pipe(catchError(this.handleError));;
+  }
+
+  updateSmallBox(smallBox:SmallBoxDto):Observable<string>{
+    return this.http.put<string>(`${SMALL_BOX_BASE_URL}/smallBox_update`,smallBox,this.httpOptions).pipe(catchError(this.handleError));
   }
 
   findSmallBoxes():Observable<SmallBoxDto[]>{
@@ -50,6 +58,10 @@ export class SmallBoxService {
   getCompletedSmallBoxByContainerId(containerId:number):Observable<SmallBoxUnifierDto[]>{
     return this.http.get<SmallBoxUnifierDto>(`${SMALL_BOX_BASE_URL}/unified/${containerId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
+  }
+
+  deleteAllByContainerId(containerId:number):Observable<any>{
+  return  this.http.delete<any>(`${SMALL_BOX_BASE_URL}/unified_all_by_container/${containerId}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
   

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders,HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { ContainerDto } from '../models/containerDto';
+import { InputDto } from '../models/inputDto';
+import { SmallBoxTypeDto } from '../models/smallBoxTypeDto';
 
 const CONTAINER_BASE_URL = 'http://localhost:8080/api/v1/small-box/containers'
 
@@ -36,5 +38,9 @@ export class ContainerService {
 
   getAllContainers():Observable<ContainerDto[]>{
     return this.http.get<ContainerDto[]>(`${CONTAINER_BASE_URL}/all`,this.httpOptions).pipe(catchError(this.handleError));
+  }
+
+  getAllSmallBoxesTypes():Observable<SmallBoxTypeDto[]>{
+    return this.http.get<SmallBoxTypeDto[]>(`${CONTAINER_BASE_URL}/all_types`,this.httpOptions).pipe(catchError(this.handleError));
   }
 }

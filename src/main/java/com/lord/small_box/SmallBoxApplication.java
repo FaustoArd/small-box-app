@@ -31,7 +31,7 @@ public class SmallBoxApplication {
 			InputService inputService,SmallBoxTypeRepository smallBoxTypeRepository) {
 		return args ->{
 			
-			/*SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();
+			SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();
 			SmallBoxType type2 = SmallBoxType.builder().smallBoxType("Caja Especial").build();
 			smallBoxTypeRepository.save(type1);
 			smallBoxTypeRepository.save(type2);
@@ -55,7 +55,7 @@ public class SmallBoxApplication {
 		inputs.add(i221);
 		inputs.add(i222);
 		inputs.add(i223);
-		inputRepository.saveAll(inputs);*/
+		inputRepository.saveAll(inputs);
 			
 		//List<Input> inputs = inputRepository.findAll();
 		//List<Input> result = inputs.stream().filter(f -> f.getInputNumber()<250).map(m -> m).collect(Collectors.toList());
