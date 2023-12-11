@@ -34,8 +34,11 @@ export class CompletedSmallBoxComponent implements OnInit {
       next: (containerData) => {
         this.container = new ContainerDto();
         this.container = containerData;
+        
         this.smallBoxCreated = containerData.smallBoxCreated;
+        console.log(this.smallBoxCreated)
         if(this.smallBoxCreated){
+          console.log(this.storageService.getCurrentContainerId());
          this.deleteAllbyContainerId(Number(this.storageService.getCurrentContainerId()));
          this.onCompleteSmallBox();
         }else{
@@ -96,15 +99,7 @@ export class CompletedSmallBoxComponent implements OnInit {
     this.smallBoxService.deleteAllByContainerId(containerId).subscribe();
   }
 
-  exportAsPDF(){
-   const doc = new jsPDF();
-   autoTable(doc,{html : '#pdfDiv'});
-   //autoTable(doc,{html: '#tableTotal'});
-   autoTable.length;
-   
-   doc.save('pdfDiv.pdf')
-  }
-
+ 
   
 
 }
