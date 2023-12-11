@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { ContainerDto } from 'src/app/models/containerDto';
 import { SmallBoxUnifierDto } from 'src/app/models/smallBoxUnifierDto';
 import { ContainerService } from 'src/app/services/container.service';
 import { SmallBoxService } from 'src/app/services/small-box.service';
 import { StorageService } from 'src/app/services/storage.service';
+import autoTable from 'jspdf-autotable'
 
 @Component({
   selector: 'app-completed-small-box',
@@ -17,6 +20,8 @@ export class CompletedSmallBoxComponent implements OnInit {
   errorData!: string;
   container!: ContainerDto;
   smallBoxCreated!:boolean;
+ 
+ 
 
 
   constructor(private smallBoxService: SmallBoxService, private containerService: ContainerService,
@@ -24,8 +29,10 @@ export class CompletedSmallBoxComponent implements OnInit {
 
 
   ngOnInit(): void {
+   
     this.containerService.getContainerById(Number(this.storageService.getCurrentContainerId())).subscribe({
       next: (containerData) => {
+        this.container = new ContainerDto();
         this.container = containerData;
         this.smallBoxCreated = containerData.smallBoxCreated;
         if(this.smallBoxCreated){
@@ -88,6 +95,17 @@ export class CompletedSmallBoxComponent implements OnInit {
   deleteAllbyContainerId(containerId:number):void{
     this.smallBoxService.deleteAllByContainerId(containerId).subscribe();
   }
+
+  exportAsPDF(){
+   const doc = new jsPDF();
+   autoTable(doc,{html : '#pdfDiv'});
+   //autoTable(doc,{html: '#tableTotal'});
+   autoTable.length;
+   
+   doc.save('pdfDiv.pdf')
+  }
+
+  
 
 }
 

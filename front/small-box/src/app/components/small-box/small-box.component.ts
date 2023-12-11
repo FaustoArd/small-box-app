@@ -209,6 +209,21 @@ export class SmallBoxComponent implements OnInit {
     });
   }
 
+  deleteSmallBoxById(id:number):void{
+    this.smallBoxService.deleteSmallBoxById(id).subscribe({
+      next:(smData)=>{
+        this.onSnackBarMessage(smData);
+      },
+      error:(errorData)=>{
+        this.onSnackBarMessage(errorData);
+      },
+      complete:()=>{
+        this.getAllSmallBoxesByContainerId();
+      }
+
+    })
+  }
+
 
 
   onSnackBarMessage(message: any) {

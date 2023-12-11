@@ -91,6 +91,13 @@ public class SmallBoxController {
 	
 		return new ResponseEntity<String>(gson.toJson("Se actualizo el comprobante Numero: " + updatedSmallBox.getTicketNumber()),HttpStatus.OK);
 	 }
+	 
+	 @DeleteMapping("/smallbox_delete/{id}")
+	 ResponseEntity<String> deleteSmallBox(@PathVariable("id")Integer id){
+		 smallBoxService.delete(id);
+		 return new ResponseEntity<String>(gson.toJson("Se elimino correctamente el ticket"),HttpStatus.OK);
+	 }
+	 
 	
 	@PutMapping("/complete")
 	ResponseEntity<List<SmallBoxUnifierDto>> completeSmallBox(@RequestParam("containerId")Integer containerId){

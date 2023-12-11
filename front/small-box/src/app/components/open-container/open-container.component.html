@@ -18,7 +18,7 @@
                 </thead>
                 <tbody>
                     <tr class="text-center" *ngFor="let container of containers">
-                       <td scope="row"   class="fw-light">{{container.smallBoxDate}}</td>
+                       <td scope="row"   class="fw-light">{{container.smallBoxDate | date: 'dd-MM-yyyy'}}</td>
                       
                        <td scope="row"  class="fw-light">{{container.title}}</td>
                        

@@ -1,22 +1,38 @@
 
+<app-navbar></app-navbar >
 <div class="row">
-    <div class="col">
+    <div  class="col">
         <button routerLink="/small-box" class="btn btn-md border-dark">Editar</button>
+        <div class="btn" title="Share s PDF"(click)="exportAsPDF()" >Pdf</div>
     </div>
+   
 </div>
-<div class="container-flex">
-   <div class="row ms-3 mt-5 fw-bold fs-5">
-    <div class="col">
-    Tipo : {{container.title}}
+<div  class="container-flex">
+    
+   <div   class="row ms-3 mt-5 ">
+    <div class="col-md-2 fw-italic fs-7">
+    Tipo :
 </div>
-    <div class="col">
-        Dependencia : {{container.dependency}}
+<div class="col-md-2 fw-bold fs-6"> {{container.title}} </div>
+</div>
+<div class="row ms-3 mt-2  ">
+    <div class="col-md-2 fw-italic fs-7">
+        Dependencia :
     </div>
-   </div>
+    <div class="col-md-2 fw-bold fs-6"> {{container.dependency}} </div>
+  
+</div>
+<div class="row ms-3 mt-2  ">
+    <div class="col-md-2 fw-italic fs-7">
+        Responsable : 
+    </div>
+    <div class="col-md-2 fw-bold fs-6">{{container.responsible}}</div>
+  
+</div>
     <div class="row">
         <div class="col mt-5">
            
-            <table class="table table-fluid table-hover table-bordered border border-dark">
+            <table  id="pdfDiv"  class="table table-fluid table-hover table-bordered border border-dark">
                 <thead>
                     <tr class="bg-primary fw-bold text-center">
                         <th scope="col">Fecha</th>
@@ -69,5 +85,6 @@
             </table>
         </div>
     </div>
+
 </div>
 

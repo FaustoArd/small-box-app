@@ -115,7 +115,7 @@
                         <th scope="row" class="fw-bold">{{smallbox.inputNumber}}</th>
                         <th>
                             <button (click)="openDialogSmallBoxUpdate(smallbox.id, updateSmallBoxTemplate)" class="btn btn-success btn-sm text-white  ">Editar</button>
-                            <button class="btn btn-danger btn-sm text-white ms-2">Eliminar</button>
+                            <button (click)="deleteSmallBoxById(smallbox.id)" class="btn btn-danger btn-sm text-white ms-2">Eliminar</button>
                         </th>
                     </tr>
                 </tbody>

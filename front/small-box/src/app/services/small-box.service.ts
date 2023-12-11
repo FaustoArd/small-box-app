@@ -50,6 +50,10 @@ export class SmallBoxService {
     .pipe(catchError(this.handleError));
   }
 
+  deleteSmallBoxById(id:number):Observable<string>{
+    return this.http.delete<string>(`${SMALL_BOX_BASE_URL}/smallbox_delete/${id}`,this.httpOptions).pipe(catchError(this.handleError));
+  }
+
   completeSmallBox(containerId:number):Observable<SmallBoxUnifierDto[]>{
     return this.http.put<SmallBoxUnifierDto[]>(`${SMALL_BOX_BASE_URL}/complete?containerId=${containerId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
