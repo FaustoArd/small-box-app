@@ -19,6 +19,7 @@ import { CompletedSmallBoxComponent } from './components/completed-small-box/com
 import { OpenContainerComponent } from './components/open-container/open-container.component';
 import { DialogTemplateComponent } from './components/dialog/dialog-template/dialog-template.component';
 import { PresentationComponent } from './components/presentation/presentation.component'
+import { NgxCaptureModule } from 'ngx-capture';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { PresentationComponent } from './components/presentation/presentation.co
      MatSnackBarModule,
      MatToolbarModule,
      HttpClientModule,
-     MatDialogModule
+     MatDialogModule,
+     NgxCaptureModule
   ],
   providers: [],
   bootstrap: [AppComponent]

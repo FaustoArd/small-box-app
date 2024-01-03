@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContainerDto } from 'src/app/models/containerDto';
 import { SmallBoxUnifierDto } from 'src/app/models/smallBoxUnifierDto';
 import { ContainerService } from 'src/app/services/container.service';
 import { SmallBoxService } from 'src/app/services/small-box.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { NgxCaptureService } from 'ngx-capture';
+import { pipe, tap } from 'rxjs';
+
+
+
 
 @Component({
   selector: 'app-presentation',
@@ -14,18 +19,24 @@ import { StorageService } from 'src/app/services/storage.service';
 
 export class PresentationComponent implements OnInit {
 
+@ViewChild ('screen', { static:true})  screen: any;
+
+imgBase64 = '';
+
   completedSmallBox: SmallBoxUnifierDto[] = [];
   errorData!: string;
   container!: ContainerDto;
   smallBoxCreated!:boolean;
 
 constructor(private storageService:StorageService,private containerService:ContainerService,
-  private smallBoxService:SmallBoxService){}
+  private smallBoxService:SmallBoxService,private captureService:NgxCaptureService){}
   
 
 
 ngOnInit(): void {
     this.getContainerById();
+   
+   
    
 }
 
@@ -41,6 +52,7 @@ ngOnInit(): void {
       }, error: (errorData) => {
         this.errorData = errorData;
       }
+     
     });
   }
   getSmallBoxCompleteByContainerId(containerId:number):void{
@@ -54,4 +66,18 @@ ngOnInit(): void {
     })
   }
 
+  captureScreen():void{
+   
+    this.captureService
+    .getImage(document.body, true)
+    .pipe(
+      tap((img) => {
+        console.log(img);
+      }),
+      tap((img) => this.captureService.downloadImage(img))
+    )
+    .subscribe();
+  }
+
+  
 }

@@ -63,36 +63,49 @@ public class SmallBoxApplication {
 			
 			Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)
-					.title("Caja chica Super").dependency("Sec. desarr").responsible("Carlos Bronson") .build();
+					.title("Caja chica").dependency("Direccion de administracion y despacho").responsible("Blasa Reyes") .build();
 			Container savedContainer = containerService.save(container); 
 			
 			Input input211 = inputService.findById(1);
 			Input input212 = inputService.findById(2);
 			Input input213 = inputService.findById(3);
+			Input input219 = inputService.findById(6);
 			Calendar cal1 = Calendar.getInstance();
 			cal1.set(2023, 11, 4);
 			SmallBox smallBox1 = SmallBox.builder().date(cal1).ticketNumber("23423-234234")
-					.input(input213).provider("Item 1 Disalar").ticketTotal(new BigDecimal(5000)).build();
+					.input(input211).provider("Disalar").ticketTotal(new BigDecimal(5000)).build();
 			SmallBox savedSmallBox = smallBoxService.save(smallBox1, savedContainer.getId());
 			
+			SmallBox smallBox8 = SmallBox.builder().date(cal1).ticketNumber("23423-234234")
+					.input(input211).provider("Disalar").ticketTotal(new BigDecimal(5000)).build();
+			SmallBox savedSmallBox8 = smallBoxService.save(smallBox8, savedContainer.getId());
+			
 			SmallBox smallBox2 = SmallBox.builder().date(cal1).ticketNumber("2342-12656").input(input211)
-					.provider("Almd").ticketTotal(new BigDecimal(9000)).build();
+					.provider("Papelera rivadavia").ticketTotal(new BigDecimal(9000)).build();
 			SmallBox savedSmallBox2 = smallBoxService.save(smallBox2, savedContainer.getId());
 			//smallBoxService.calculateSubtotal(container.getId(), "211");
 			
 			
 			SmallBox smallBox3 = SmallBox.builder().date(cal1).ticketNumber("7657-234234")
-					.input(input213).provider("JOGe").ticketTotal(new BigDecimal(8000)).build();
+					.input(input213).provider("Arcor").ticketTotal(new BigDecimal(8000)).build();
 			SmallBox savedSmallBox3 = smallBoxService.save(smallBox3, savedContainer.getId());
 			
 			SmallBox smallBox4 = SmallBox.builder().date(cal1).ticketNumber("987-234234")
-					.input(input212).provider("Nikecli").ticketTotal(new BigDecimal(8968)).build();
+					.input(input212).provider("Nikeli").ticketTotal(new BigDecimal(8968)).build();
 			SmallBox savedSmallBox4 = smallBoxService.save(smallBox4, savedContainer.getId());
 			
 			
 			SmallBox smallBox5 = SmallBox.builder().date(cal1).ticketNumber("09809-234234")
 					.input(input213).provider("Mazloa").ticketTotal(new BigDecimal(8798)).build();
 			SmallBox savedSmallBox5 = smallBoxService.save(smallBox5, savedContainer.getId());
+			
+			SmallBox smallBox6 = SmallBox.builder().date(cal1).ticketNumber("03809-2344234")
+					.input(input219).provider("Carlos Boro").ticketTotal(new BigDecimal(5500.20)).build();
+			SmallBox savedSmallBox6 = smallBoxService.save(smallBox6, savedContainer.getId());
+			
+			SmallBox smallBox7 = SmallBox.builder().date(cal1).ticketNumber("03809-23448239")
+					.input(input219).provider("Carlos Boro").ticketTotal(new BigDecimal(6700.80)).build();
+			SmallBox savedSmallBox7 = smallBoxService.save(smallBox7, savedContainer.getId());
 		
 		};
 	}

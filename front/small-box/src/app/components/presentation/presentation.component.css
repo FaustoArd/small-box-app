@@ -1,5 +1,7 @@
 
 
+
+
 #totalText{
    
    
@@ -10,10 +12,46 @@
     margin-left: 5.1rem;
 }
 
+#totalTitle{
+    font-family: 'Quattrocento', serif;
+    font-size: 1.2rem;
+}
+#tableTotal{
+    background-color: aqua;
+}
+
+#totalRow{
+    font-family: 'Quattrocento', serif;
+    font-size: 1.2rem;
+}
+
 #rowCompleted{
     background-color: rgb(230, 230, 188);
 }
 
 th{
     background-color: rgb(243, 240, 219);
+}
+#title{
+    font-family: 'Domine', serif;
+    font-size: 2rem;
+}
+
+h3{
+    font-family: 'Quattrocento', serif;
+   font-weight: bold;
+}
+h4{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+   
+}
+h5{
+    font-family:'Quattrocento', serif; 
+    font-weight: bold;
+}
+
+#rendicion{
+    font-weight: bold;
+    font-size: 0.9rem;
 }
