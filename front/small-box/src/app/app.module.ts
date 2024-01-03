@@ -17,7 +17,9 @@ import { MatToolbarModule} from '@angular/material/toolbar';
 import { MatDialogModule} from '@angular/material/dialog'
 import { CompletedSmallBoxComponent } from './components/completed-small-box/completed-small-box.component';
 import { OpenContainerComponent } from './components/open-container/open-container.component';
-import { DialogTemplateComponent } from './components/dialog/dialog-template/dialog-template.component'
+import { DialogTemplateComponent } from './components/dialog/dialog-template/dialog-template.component';
+import { PresentationComponent } from './components/presentation/presentation.component'
+
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { DialogTemplateComponent } from './components/dialog/dialog-template/dia
     ContainerComponent,
     CompletedSmallBoxComponent,
     OpenContainerComponent,
-    DialogTemplateComponent
+    DialogTemplateComponent,
+    PresentationComponent
     
   ],
   imports: [

@@ -1,29 +1,30 @@
 
-<app-navbar></app-navbar >
-<div class="row">
-    <div  class="col">
-        <button routerLink="/small-box" class="btn btn-md border-dark">Editar</button>
-        <div class="btn" title="Share s PDF" routerLink="/presentation" >Pdf</div>
-    </div>
-   
-</div>
 <div id="contentToConvert"  class="container-flex">
-  
+    <div class="row">
+        <div class="col">
+            <img src="./assets/img/logomoron.png" alt="">
+        </div>
+    </div>
+  <div class="row">
+    <div class="col mt-4">
+        <h1 class="text-center">CAJA CHICA</h1>
+    </div>
+  </div>
    <div   class="row ms-3 mt-5 ">
-    <div class="col-md-2 fw-italic fs-7">
+    <div class="col-md-1 fw-italic fs-7">
     Tipo :
 </div>
 <div class="col-md-2 fw-bold fs-6" *ngIf="container"> {{container.title}} </div>
 </div>
 <div class="row ms-3 mt-2  ">
-    <div class="col-md-2 fw-italic fs-7">
+    <div class="col-md-1 fw-italic fs-7">
         Dependencia :
     </div>
     <div class="col-md-2 fw-bold fs-6" *ngIf="container"> {{container.dependency}} </div>
   
 </div>
 <div class="row ms-3 mt-2  ">
-    <div class="col-md-2 fw-italic fs-7">
+    <div class="col-md-1 fw-italic fs-7">
         Responsable : 
     </div>
     <div class="col-md-2 fw-bold fs-6" *ngIf="container">{{container.responsible}}</div>
@@ -34,8 +35,8 @@
            
             <table  id="pdfDiv"  class="table table-fluid table-hover table-bordered border border-dark">
                 <thead>
-                    <tr class="bg-primary fw-bold text-center">
-                        <th scope="col">Fecha</th>
+                    <tr  class="bg-primary fw-bold text-center">
+                        <th  scope="col">Fecha</th>
                        <th scope="col">Numero de factura</th>
                         <th scope="col">Razon social</th>
                         <th scope="col">Descripcion</th>
@@ -87,4 +88,3 @@
     </div>
 
 </div>
-

@@ -76,22 +76,22 @@ public class SmallBoxApplication {
 			SmallBox savedSmallBox = smallBoxService.save(smallBox1, savedContainer.getId());
 			
 			SmallBox smallBox2 = SmallBox.builder().date(cal1).ticketNumber("2342-12656").input(input211)
-					.provider("Item 2 Almd").ticketTotal(new BigDecimal(9000)).build();
+					.provider("Almd").ticketTotal(new BigDecimal(9000)).build();
 			SmallBox savedSmallBox2 = smallBoxService.save(smallBox2, savedContainer.getId());
 			//smallBoxService.calculateSubtotal(container.getId(), "211");
 			
 			
 			SmallBox smallBox3 = SmallBox.builder().date(cal1).ticketNumber("7657-234234")
-					.input(input213).provider("Item 3 JOGe").ticketTotal(new BigDecimal(8000)).build();
+					.input(input213).provider("JOGe").ticketTotal(new BigDecimal(8000)).build();
 			SmallBox savedSmallBox3 = smallBoxService.save(smallBox3, savedContainer.getId());
 			
 			SmallBox smallBox4 = SmallBox.builder().date(cal1).ticketNumber("987-234234")
-					.input(input212).provider("Item 4 Nikecli").ticketTotal(new BigDecimal(8968)).build();
+					.input(input212).provider("Nikecli").ticketTotal(new BigDecimal(8968)).build();
 			SmallBox savedSmallBox4 = smallBoxService.save(smallBox4, savedContainer.getId());
 			
 			
 			SmallBox smallBox5 = SmallBox.builder().date(cal1).ticketNumber("09809-234234")
-					.input(input213).provider("Item 5 Mazloa").ticketTotal(new BigDecimal(8798)).build();
+					.input(input213).provider("Mazloa").ticketTotal(new BigDecimal(8798)).build();
 			SmallBox savedSmallBox5 = smallBoxService.save(smallBox5, savedContainer.getId());
 		
 		};

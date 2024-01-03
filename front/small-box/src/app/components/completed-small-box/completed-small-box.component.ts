@@ -8,6 +8,12 @@ import { ContainerService } from 'src/app/services/container.service';
 import { SmallBoxService } from 'src/app/services/small-box.service';
 import { StorageService } from 'src/app/services/storage.service';
 import autoTable from 'jspdf-autotable'
+import { auto } from '@popperjs/core';
+import {toPng,toJpeg, toBlob, toPixelData, toSvg} from 'html-to-image';
+import * as htmlToImage from 'html-to-image';
+
+
+
 
 @Component({
   selector: 'app-completed-small-box',
@@ -36,14 +42,16 @@ export class CompletedSmallBoxComponent implements OnInit {
         this.container = containerData;
         
         this.smallBoxCreated = containerData.smallBoxCreated;
-        console.log(this.smallBoxCreated)
+     
         if(this.smallBoxCreated){
           console.log(this.storageService.getCurrentContainerId());
          this.deleteAllbyContainerId(Number(this.storageService.getCurrentContainerId()));
          this.onCompleteSmallBox();
+         
         }else{
           this.deleteAllbyContainerId(Number(this.storageService.getCurrentContainerId()));
         this.onCompleteSmallBox();
+       
         }
       }, error: (errorData) => {
         this.errorData = errorData;
@@ -99,8 +107,30 @@ export class CompletedSmallBoxComponent implements OnInit {
     this.smallBoxService.deleteAllByContainerId(containerId).subscribe();
   }
 
+  exportToPdf(pages:HTMLElement){
+    const doc = new jsPDF({
+      unit:'px',
+    
+    })
+  }
+  captureScreen():void{
+    const filename = 'test.pdf';
+    var node:any = document.getElementById('contentToConvert');
+    htmlToImage.toPng(node)
+    .then(function (dataUrl){
+      var img = new Image();
+      img.src = dataUrl;
+      const pdf = new jsPDF('p','mm','a4');
+      pdf.setLineWidth(1);
+      pdf.addImage(img,'PNG',0,0,208,298);
+      pdf.save(filename);
+     
+    })
+    .catch(function(error){
+      console.error('something went wrong',error);
+    })
+  }
+
  
-  
-
+ 
 }
-
