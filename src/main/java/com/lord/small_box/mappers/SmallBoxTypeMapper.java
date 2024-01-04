@@ -1,4 +1,4 @@
-package com.lord.small_box.models;
+package com.lord.small_box.mappers;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import com.lord.small_box.dtos.SmallBoxTypeDto;
+import com.lord.small_box.models.SmallBoxType;
 
 @Mapper
 public interface SmallBoxTypeMapper {
