@@ -44,5 +44,8 @@ public class Container {
 	@Column(name="created")
 	private boolean smallBoxCreated;
 	
+	@Column(name="totalWrite")
+	private String totalWrite;
+	
 	
 }

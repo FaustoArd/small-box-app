@@ -22,4 +22,6 @@ public class ContainerDto {
 	private Calendar smallBoxDate;
 	
 	private boolean smallBoxCreated;
+	
+	private String totalWrite;
 }
