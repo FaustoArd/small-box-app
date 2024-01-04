@@ -1,6 +1,14 @@
 
 
+#containerCSS{
+  
+    
+}
 
+
+#logo:hover{
+    background-image: none;
+}
 
 #totalText{
    
@@ -37,6 +45,12 @@ th{
     font-size: 2rem;
 }
 
+h2{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+    background-color: rgb(243, 240, 219);
+}
+
 h3{
     font-family: 'Quattrocento', serif;
    font-weight: bold;
@@ -55,3 +69,9 @@ h5{
     font-weight: bold;
     font-size: 0.9rem;
 }
+
+#totalWrite{
+    font-family:'Quattrocento', serif; 
+    font-weight: bold;
+}
+

@@ -41,6 +41,7 @@ export class CompletedSmallBoxComponent implements OnInit {
         this.container = new ContainerDto();
         this.container = containerData;
         
+      
         this.smallBoxCreated = containerData.smallBoxCreated;
      
         if(this.smallBoxCreated){

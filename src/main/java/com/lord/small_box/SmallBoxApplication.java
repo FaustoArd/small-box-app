@@ -63,7 +63,7 @@ public class SmallBoxApplication {
 			
 			Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)
-					.title("Caja chica").dependency("Direccion de administracion y despacho").responsible("Blasa Reyes") .build();
+					.title("CHICA").dependency("Direccion de administracion y despacho").responsible("Blasa Reyes") .build();
 			Container savedContainer = containerService.save(container); 
 			
 			Input input211 = inputService.findById(1);

@@ -1,5 +1,5 @@
 <body #screen>
-    <div  class="container-fluid">
+    <div id="containerCSS"  class="container-fluid">
     <div class="row">
         <a id="logo" (click)="captureScreen()" class="col text-center">
             <img     class="w-25" src="./assets/img/logomoron.png" alt="">
@@ -7,7 +7,7 @@
     </div>
     <div class="row">
         <div class="col mt-1">
-            <h1 id="title" class="text-center">RENDICION CAJA CHICA</h1>
+            <h1 id="title" class="text-center">RENDICION CAJA {{container.title}}</h1>
         </div>
     </div>
     <div class="row">
@@ -17,9 +17,9 @@
     </div>
     <div class="row mt-4">
         <div class="col-md-10">
-        <span id="rendicion">RENDICIÓN DE COMPROBANTES CANCELADOS CON FONDOS DE CAJA CHICA</span>
+        <span id="rendicion">RENDICIÓN DE COMPROBANTES CANCELADOS CON FONDOS DE CAJA {{container.title}}</span>
     </div>
-    <div class="col">
+    <div class="col ms-5">
         <h5 class="fw-bold">Moron, 24 de marzo de 2024</h5>
     </div>
     </div>
@@ -33,7 +33,7 @@
     </div>
     <div class="row mt-0 mb-0">
         <div class="col-md-1">
-            <h4>Tipo:</h4>
+            <h4>Tipo de caja:</h4>
         </div>
         <div class="col-md-2  ms-4" *ngIf="container">
             <h3 class=" ">{{container.title}}</h3>
@@ -61,9 +61,9 @@
     <div class="row">
         <div class="col mt-2">
 
-            <table id="pdfDiv" class="table table-fluid table-hover table-bordered border border-dark">
+            <table id="pdfDiv" class="table table-fluid  table-bordered border border-dark">
                 <thead>
-                    <tr class="bg-primary fw-bold text-center">
+                    <tr class=" fw-bold text-center">
                         <th scope="col">Fecha</th>
                         <th scope="col">Numero de factura</th>
                         <th scope="col">Razon social</th>
@@ -75,7 +75,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="text-center" *ngFor="let completed of completedSmallBox">
+                    <tr   class="text-center" *ngFor="let completed of completedSmallBox">
                         <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.date | date:
                             'dd-MM-yyyy'}}</td>
                         <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold "></td>
@@ -92,33 +92,31 @@
                             {{completed.subtotalTitle}}</td>
                         <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold   text-dark">
                             {{completed.subtotal | currency: '$': 'symbol'}}</td>
-                        <td scope="row" class="fw-light">{{completed.inputNumber}}</td>
-
-
-
-                    </tr>
+                        <td scope="row"  *ngIf="completed.subtotal==null" class="fw-light">{{completed.inputNumber}}</td>
+                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-9 "></div>
-        <div class="col-md-3 mt-0 ">
-
-            <table id="tableTotal" class="table  w-100 ">
-
-                <tbody>
-                    <tr class="text-center ">
-
-                        <th id="totalTitle" scope="row">Total:</th>
-                        <th class="mx-5" id="totalRow" scope="row"  *ngIf="container">
-                            {{container.total | currency: '$': 'symbol'}}</th>
-                        
-
-                    </tr>
-                </tbody>
-            </table>
+    <div *ngIf="container" class="row">
+        <div class="col-md-9 ms-5"></div>
+        <div  class="col-md-1 mt-0 ms-2 ">
+            <h2 class="d-inline" >Total:</h2>
         </div>
+        <div class="col-md-1">
+            <h2 class="d-inline ms-5" >{{container.total | currency: '$'}}</h2>
+        </div>
+    </div>
+    <div id="totalWrite" class="row mt-2">
+       
+       <div class="col-md-4 ms-1">
+           <div class="d-inline">Importa la presente rendición de cuentas la suma de pesos:</div>
+               
+            </div>
+            <div class="col d-inline">
+                <div class="d-inline" >VEINTIDOS MIL CIENTO SETENTA CON 05/100</div>
+            </div>
+       
     </div>
 
 </div>

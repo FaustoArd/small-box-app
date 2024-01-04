@@ -14,5 +14,7 @@ export class ContainerDto{
     smallBoxDate!:Date;
 
     smallBoxCreated!:boolean;
+
+    totalWrite!:string;
 }
 

@@ -17,6 +17,7 @@ export class ContainerComponent implements OnInit {
 container!:ContainerDto;
 errorData!:string;
 returnedData!:ContainerDto;
+smallBoxTypes: string[] = [];
 
 deps :string[] =  ['Secretaria de Desarrollo Social', 'Direccion de Administracion y Despacho'
 ,'Subsecretaria de Politicas Socio Comunitarias']
@@ -26,7 +27,11 @@ deps :string[] =  ['Secretaria de Desarrollo Social', 'Direccion de Administraci
 
 
   ngOnInit(): void {
-    
+    this.getSmallBoxTypes();
+  }
+
+  getSmallBoxTypes(){
+    this.smallBoxTypes = ["CHICA", "ESPECIAL"];
   }
 
   containerFormBuilder = this.formBuilder.group({

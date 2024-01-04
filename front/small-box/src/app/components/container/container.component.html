@@ -7,14 +7,22 @@
         <div class="col-md-4 mt-5">
             <form [formGroup]="containerFormBuilder"
                 class="form-group   p-3 bg-light border border-dark text-center fw-bold">
-                <div class="form-group mt-2">
-                    <label for="title" class="form-label fs-7">Nombre</label>
-                    <input class="form-control border-dark" type="text" formControlName="title" id="title">
-                    <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger">
-                        <div *ngIf="title.errors?.['required']">
-                            Falta el nombre...
+                <div class="form-group mt-3">
+                    <label for="title" class="form-label fs-7">Tipo</label>
+                    <select id="title" formControlName="title" class="form-select border-dark">
+                        <option value="">Seleccione tipo de caja</option>
+                        <option class="form-control" *ngFor="let sm of smallBoxTypes" id="title" [value]="sm">
+                            {{sm}}</option>
+                        <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger">
+                            <div *ngIf="title.errors?.['required']">
+                                Debes seleccionar una categoria
+                            </div>
+
+                            <div class="mt-1" *ngIf="dependency.errors?.['errors']">
+                                password must be at least 6 characters long.
+                            </div>
                         </div>
-                    </div>
+                    </select>
                 </div>
                 <div class="form-group mt-3">
                     <label for="responsible" class="form-label fs-7">Responsable</label>
