@@ -3,15 +3,25 @@ import { SmallBoxDto } from 'src/app/models/smallBoxDto';
 import { InputService } from 'src/app/services/input.service';
 import { SmallBoxService } from 'src/app/services/small-box.service';
 import { FormGroup,FormControl, Validators,FormBuilder } from '@angular/forms'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
+constructor(private router:Router){}
 
- 
+  result:boolean = true;
+
+ ngOnInit(): void {
+    if(this.result){
+      this.router.navigateByUrl('login');
+    }else{
+      this.router.navigateByUrl('home')
+    }
+ }
 
 }

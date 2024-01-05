@@ -29,6 +29,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.0",
     "ngx-capture": "^0.13.0",
+    "ngx-cookie-service": "^16.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

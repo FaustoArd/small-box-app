@@ -20,6 +20,8 @@ import { OpenContainerComponent } from './components/open-container/open-contain
 import { DialogTemplateComponent } from './components/dialog/dialog-template/dialog-template.component';
 import { PresentationComponent } from './components/presentation/presentation.component'
 import { NgxCaptureModule } from 'ngx-capture';
+import {CookieService} from 'ngx-cookie-service';
+import { LoginComponent } from './components/authorization/login/login.component';
 
 
 @NgModule({
@@ -32,7 +34,8 @@ import { NgxCaptureModule } from 'ngx-capture';
     CompletedSmallBoxComponent,
     OpenContainerComponent,
     DialogTemplateComponent,
-    PresentationComponent
+    PresentationComponent,
+    LoginComponent
     
   ],
   imports: [
@@ -50,7 +53,7 @@ import { NgxCaptureModule } from 'ngx-capture';
      MatDialogModule,
      NgxCaptureModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
