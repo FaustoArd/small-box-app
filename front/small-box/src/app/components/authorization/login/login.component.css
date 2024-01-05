@@ -1,17 +1,44 @@
 
 #container-top{
-
+    
 }
 
 #cont{
-    background: linear-gradient(245.59deg, rgb(119, 133, 173) 0%, rgb(151, 136, 232) 28.53%, #7970b0 75.52%);
+    background: linear-gradient(245.59deg, rgb(142, 152, 181) 0%, rgb(188, 185, 203) 28.53%, #938eb0 75.52%);
   color: rgb(8, 13, 13);
 }
 
 #top-row{
-    background-color: white;
+    background:white
 }
+
 h3{
-    font-family:'Noto Sans', sans-serif;
+    font-family:'Quattrocento', serif;
+    font-weight: 500;
+    color: rgb(42, 144, 227);
    
+}
+
+h4{
+    font-family:'Quattrocento', serif;
+    color: rgb(42, 144, 227);
+}
+#btnSubmit{
+    font-family: 'Cabin', sans-serif;
+    font-weight: 300;
+    background: linear-gradient(245.59deg, rgb(154, 164, 193) 0%, rgb(178, 169, 219) 28.53%, #b3aed7 75.52%);
+    color: rgb(49, 9, 9);
+}
+label{
+    font-family: 'Quattrocento', serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: rgb(5, 2, 2);
+}
+input{
+    font-family: 'Quattrocento', serif;
+    background: linear-gradient(245.59deg, rgb(172, 183, 213) 0%, rgb(188, 185, 203) 28.53%, #b4aed1 75.52%);
+}
+img{
+  
 }
