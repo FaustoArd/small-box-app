@@ -29,6 +29,10 @@ h4{
     background: linear-gradient(245.59deg, rgb(154, 164, 193) 0%, rgb(178, 169, 219) 28.53%, #b3aed7 75.52%);
     color: rgb(49, 9, 9);
 }
+
+#btnSubmit:hover{
+    background: linear-gradient(245.59deg, rgb(154, 164, 193) 0%, rgb(63, 34, 192) 28.53%, #b3aed7 75.52%);
+}
 label{
     font-family: 'Quattrocento', serif;
     font-size: 1.5rem;

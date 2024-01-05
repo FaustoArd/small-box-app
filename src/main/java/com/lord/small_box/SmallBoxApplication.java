@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
 import com.lord.small_box.models.Container;
@@ -21,6 +22,7 @@ import com.lord.small_box.repositories.AuthorityRepository;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
+import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
@@ -39,7 +41,8 @@ public class SmallBoxApplication {
 			InputService inputService,
 			SmallBoxTypeRepository smallBoxTypeRepository,
 			OrganizationRepository organizationRepository,
-			AuthorityRepository authorityRepository) {
+			AuthorityRepository authorityRepository,
+			AuthorizationService authorizationService) {
 		return args ->{
 			
 			Authority admin = new Authority();
@@ -49,6 +52,14 @@ public class SmallBoxApplication {
 			
 			authorityRepository.save(admin);
 			authorityRepository.save(user);
+			
+			AppUserRegistrationDto userDto = new AppUserRegistrationDto();
+			userDto.setName("Carlos");
+			userDto.setLastname("Marroin");
+			userDto.setEmail("car@mail.com");
+			userDto.setUsername("car");
+			userDto.setPassword("123");
+			authorizationService.register(userDto, "ADMIN");
 			
 			
 			SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();

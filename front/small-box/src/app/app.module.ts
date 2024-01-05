@@ -22,6 +22,7 @@ import { PresentationComponent } from './components/presentation/presentation.co
 import { NgxCaptureModule } from 'ngx-capture';
 import {CookieService} from 'ngx-cookie-service';
 import { LoginComponent } from './components/authorization/login/login.component';
+import { RegistrationComponent } from './components/authorization/registration/registration.component';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { LoginComponent } from './components/authorization/login/login.component
     OpenContainerComponent,
     DialogTemplateComponent,
     PresentationComponent,
-    LoginComponent
+    LoginComponent,
+    RegistrationComponent
     
   ],
   imports: [

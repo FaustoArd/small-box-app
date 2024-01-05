@@ -61,13 +61,24 @@ public class AppUser implements UserDetails {
 	@Column(name="enabled")
 	private boolean enabled;
 	
-	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
 	@JoinTable(name="user_role_junction", joinColumns = {@JoinColumn(name="user_id", referencedColumnName = "id")},
 	inverseJoinColumns = {@JoinColumn(name="role_id", referencedColumnName = "id")})
-	public Set<Authority> authorities;	
+	private Set<Authority> authorities;
+	
+	@ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinTable(name = "user_organization_junction", joinColumns = { @JoinColumn(name="user_id", referencedColumnName = "id") },
+	inverseJoinColumns = { @JoinColumn(name="organization", referencedColumnName = "id") })
+	private List<Organization> organizations;
 	
 	public AppUser() {
 		super();
+	}
+	
+	public AppUser(List<Organization> organizations) {
+		super();
+		this.organizations = organizations;
+		
 	}
 	
 	public AppUser(String name,String lastname,String username,String email,String password,
@@ -127,15 +138,6 @@ public class AppUser implements UserDetails {
 	}
 
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
-	}
-	
-	public void setAuhtorities(Set<Authority> authorities) {
-		this.authorities = authorities;
-	}
-
-	@Override
 	public String getPassword() {
 		return password;
 	}
@@ -143,6 +145,23 @@ public class AppUser implements UserDetails {
 	@Override
 	public String getUsername() {
 		return username;
+	}
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return authorities;
+	}
+	
+	public void setAuhtorities(Set<Authority> authorities) {
+		this.authorities = authorities;
+	}
+	
+	public List<Organization> getOrganizations(){
+		return organizations;
+	}
+	
+	public void setOrganizations(List<Organization> organizations) {
+		this.organizations = organizations;
 	}
 
 	@Override

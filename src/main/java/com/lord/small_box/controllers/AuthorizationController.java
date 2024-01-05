@@ -25,12 +25,6 @@ public class AuthorizationController {
 		this.authorizationService = authorizationService;
 	}
 	
-	@PostMapping("/register")
-	ResponseEntity<AppUserRegistrationDto> register(@RequestBody AppUserRegistrationDto userDto,@RequestParam("authority")String authority){
-		AppUserRegistrationDto registeredUserDto = authorizationService.register(userDto, authority);
-		return new ResponseEntity<AppUserRegistrationDto>(registeredUserDto,HttpStatus.CREATED);
-
-}
 	@PostMapping("/login")
 	ResponseEntity<TokenResponseDto> login(@RequestBody AppUserLoginDto appUserLoginDto){
 		TokenResponseDto response = authorizationService.login(appUserLoginDto);

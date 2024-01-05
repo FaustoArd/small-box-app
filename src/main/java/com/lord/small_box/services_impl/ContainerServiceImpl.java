@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.Container;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.repositories.ContainerRepository;
 import com.lord.small_box.services.ContainerService;
 
@@ -47,5 +48,10 @@ public class ContainerServiceImpl implements ContainerService {
 		throw new ItemNotFoundException("No se encontro el container");
 	}
 		
+	}
+
+	@Override
+	public List<Container> findAllByOrganizations(List<Organization> organizations) {
+		return containerRepository.findAllByOrganizationIn(organizations);
 	}
 }

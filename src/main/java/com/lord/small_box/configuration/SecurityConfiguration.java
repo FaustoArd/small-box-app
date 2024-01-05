@@ -60,6 +60,7 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/small-box/containers/**").hasAnyRole("USER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/inputs/**").hasAnyRole("USER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/smallboxes/**").hasAnyRole("USER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/registration/**").hasRole("ADMIN");
 			auth.anyRequest().authenticated();
 			
 			
