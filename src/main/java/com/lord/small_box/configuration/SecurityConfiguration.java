@@ -1,11 +1,6 @@
 package com.lord.small_box.configuration;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +19,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-
 import com.lord.small_box.utils.RSAKeyProperties;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -38,6 +32,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 public class SecurityConfiguration {
 	
 	
+	@Autowired
 	private final RSAKeyProperties keys;
 	
 	public SecurityConfiguration(RSAKeyProperties keys) {
@@ -52,7 +47,8 @@ public class SecurityConfiguration {
 		return new ProviderManager(daoAuthenticationProvider);
 	}
 	
-	private PasswordEncoder passwordEncoder() {
+	@Bean
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
@@ -60,10 +56,10 @@ public class SecurityConfiguration {
 	SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
 		
 		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth ->{
-			auth.requestMatchers("/api/v1/small_box/authorization/**").permitAll();
+			auth.requestMatchers("/api/v1/small-box/authorization/**").permitAll();
 			auth.requestMatchers("/api/v1/small-box/containers/**").hasAnyRole("USER","ADMIN");
-			auth.requestMatchers("/api/v1/small_box/inputs/**").hasAnyRole("USER","ADMIN");
-			auth.requestMatchers("/api/v1/small_box/smallboxes/**").hasAnyRole("USER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/inputs/**").hasAnyRole("USER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/smallboxes/**").hasAnyRole("USER","ADMIN");
 			auth.anyRequest().authenticated();
 			
 			

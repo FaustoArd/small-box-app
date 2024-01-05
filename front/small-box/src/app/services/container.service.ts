@@ -41,6 +41,6 @@ export class ContainerService {
   }
 
   getAllSmallBoxesTypes():Observable<SmallBoxTypeDto[]>{
-    return this.http.get<SmallBoxTypeDto[]>(`${CONTAINER_BASE_URL}/all_types`,this.httpOptions).pipe(catchError(this.handleError));
+    return this.http.get<SmallBoxTypeDto[]>(`${CONTAINER_BASE_URL}/all-types`,this.httpOptions).pipe(catchError(this.handleError));
   }
 }

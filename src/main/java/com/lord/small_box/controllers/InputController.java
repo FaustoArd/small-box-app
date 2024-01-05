@@ -15,7 +15,7 @@ import com.lord.small_box.services.InputService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small_box/inputs")
+@RequestMapping("/api/v1/small-box/inputs")
 @RequiredArgsConstructor
 public class InputController {
 	

@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,31 +34,44 @@ public class AppUser implements UserDetails {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
+	@Column(name="name")
 	private String name;
 	
+	@Column(name="lastname")
 	private String lastname;
 	
+	@Column(name="username", unique = true)
 	private String username;
 	
+	@Column(name="email", unique = true)
 	private String email;
 	
+	@Column(name="password")
 	private String password;
 	
+	@Column(name="account_non_locked")
 	private boolean  accountNonLocked;
 	
+	@Column(name="account_non_expired")
 	private boolean accountNonExpired; 
 	
+	@Column(name="credentials_non_expired")
 	private boolean credentialsNonExpired;
 	
+	@Column(name="enabled")
 	private boolean enabled;
 	
 	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-	@JoinTable(name="user_role_junction", joinColumns = {@JoinColumn(name="role_id", referencedColumnName = "id")},
-	inverseJoinColumns = {@JoinColumn(name="user_id", referencedColumnName = "id")})
+	@JoinTable(name="user_role_junction", joinColumns = {@JoinColumn(name="user_id", referencedColumnName = "id")},
+	inverseJoinColumns = {@JoinColumn(name="role_id", referencedColumnName = "id")})
 	public Set<Authority> authorities;	
 	
+	public AppUser() {
+		super();
+	}
+	
 	public AppUser(String name,String lastname,String username,String email,String password,
-	boolean accountNonLocked, boolean accountNonExpired,boolean credentialsNonExpired,boolean enabled) {
+	boolean accountNonLocked, boolean accountNonExpired,boolean credentialsNonExpired,boolean enabled,Set<Authority> authorities) {
 		super();
 		this.name =name;
 		this.lastname = lastname;
@@ -68,6 +82,7 @@ public class AppUser implements UserDetails {
 		this.accountNonExpired = accountNonExpired;
 		this.credentialsNonExpired = credentialsNonExpired;
 		this.enabled = enabled;
+		this.authorities = authorities;
 	}
 	
 

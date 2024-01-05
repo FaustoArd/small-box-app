@@ -10,5 +10,7 @@ public interface AppUserService {
 	public AppUser findById(Long id);
 	
 	public AppUser save(AppUser appUser);
+	
+	public boolean checkUsername(String username);
 
 }

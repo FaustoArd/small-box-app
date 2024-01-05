@@ -15,5 +15,10 @@ public class SmallBoxExceptionHandler extends ResponseEntityExceptionHandler {
 	ResponseEntity<String> handleItemNotFound(ItemNotFoundException ex){
 		return new ResponseEntity<String>(ex.getMessage(),HttpStatus.NOT_FOUND);
 	}
+	
+	@ExceptionHandler(RuntimeException.class)
+	ResponseEntity<String> handleRuntime(RuntimeException ex){
+		return new ResponseEntity<String>(ex.getMessage(),HttpStatus.EXPECTATION_FAILED);
+	}
 
 }

@@ -4,7 +4,7 @@ import { Observable,catchError,throwError} from 'rxjs';
 import { SmallBoxDto } from '../models/smallBoxDto';
 import { SmallBoxUnifierDto } from '../models/smallBoxUnifierDto';
 
-const SMALL_BOX_BASE_URL = 'http://localhost:8080/api/v1/small_box/smallboxes';
+const SMALL_BOX_BASE_URL = 'http://localhost:8080/api/v1/small-box/smallboxes';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ export class SmallBoxService {
   }
 
   updateSmallBox(smallBox:SmallBoxDto):Observable<string>{
-    return this.http.put<string>(`${SMALL_BOX_BASE_URL}/smallBox_update`,smallBox,this.httpOptions).pipe(catchError(this.handleError));
+    return this.http.put<string>(`${SMALL_BOX_BASE_URL}/smallBox-update`,smallBox,this.httpOptions).pipe(catchError(this.handleError));
   }
 
   findSmallBoxes():Observable<SmallBoxDto[]>{
@@ -46,12 +46,12 @@ export class SmallBoxService {
   }
 
   findSmallBoxesByContainerId(containerId:number):Observable<SmallBoxDto[]>{
-    return this.http.get<SmallBoxDto[]>(`${SMALL_BOX_BASE_URL}/all/by_container?containerId=${containerId}`,this.httpOptions)
+    return this.http.get<SmallBoxDto[]>(`${SMALL_BOX_BASE_URL}/all-by-container?containerId=${containerId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   deleteSmallBoxById(id:number):Observable<string>{
-    return this.http.delete<string>(`${SMALL_BOX_BASE_URL}/smallbox_delete/${id}`,this.httpOptions).pipe(catchError(this.handleError));
+    return this.http.delete<string>(`${SMALL_BOX_BASE_URL}/smallbox-delete/${id}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
   completeSmallBox(containerId:number):Observable<SmallBoxUnifierDto[]>{
@@ -65,7 +65,7 @@ export class SmallBoxService {
   }
 
   deleteAllByContainerId(containerId:number):Observable<any>{
-  return  this.http.delete<any>(`${SMALL_BOX_BASE_URL}/unified_all_by_container/${containerId}`,this.httpOptions).pipe(catchError(this.handleError));
+  return  this.http.delete<any>(`${SMALL_BOX_BASE_URL}/unified-all-by-container/${containerId}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
   

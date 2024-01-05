@@ -9,11 +9,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import com.lord.small_box.models.Authority;
+import com.lord.small_box.models.AuthorityName;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxType;
+import com.lord.small_box.repositories.AuthorityRepository;
 import com.lord.small_box.repositories.InputRepository;
+import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.InputService;
@@ -27,9 +33,23 @@ public class SmallBoxApplication {
 	}
 
 	@Bean
-	CommandLineRunner run(InputRepository inputRepository,ContainerService containerService,SmallBoxService smallBoxService,
-			InputService inputService,SmallBoxTypeRepository smallBoxTypeRepository) {
+	CommandLineRunner run(InputRepository inputRepository,
+			ContainerService containerService,
+			SmallBoxService smallBoxService,
+			InputService inputService,
+			SmallBoxTypeRepository smallBoxTypeRepository,
+			OrganizationRepository organizationRepository,
+			AuthorityRepository authorityRepository) {
 		return args ->{
+			
+			Authority admin = new Authority();
+			admin.setAuthority(AuthorityName.ADMIN);
+			Authority user = new Authority();
+			user.setAuthority(AuthorityName.USER);
+			
+			authorityRepository.save(admin);
+			authorityRepository.save(user);
+			
 			
 			SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();
 			SmallBoxType type2 = SmallBoxType.builder().smallBoxType("Caja Especial").build();
@@ -60,10 +80,19 @@ public class SmallBoxApplication {
 		//List<Input> inputs = inputRepository.findAll();
 		//List<Input> result = inputs.stream().filter(f -> f.getInputNumber()<250).map(m -> m).collect(Collectors.toList());
 		//result.forEach(e -> System.out.println(e));
+			Organization org1= new Organization();
+			org1.setOrganizationName("Secretaria de desarrollo social");
+			org1.setOrganizationNumber(1);
+			Organization org2 = new Organization();
+			org2.setOrganizationName("Direccion de administracion y despacho");
+			org2.setOrganizationNumber(2);
+			Organization secDesSocial = organizationRepository.save(org1);
+			Organization dirAdmDesp = organizationRepository.save(org2);
 			
+		
 			Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)
-					.title("CHICA").dependency("Direccion de administracion y despacho").responsible("Blasa Reyes") .build();
+					.title("CHICA").dependency("Direccion de administracion y despacho").responsible("Blasa Reyes").organization(dirAdmDesp) .build();
 			Container savedContainer = containerService.save(container); 
 			
 			Input input211 = inputService.findById(1);

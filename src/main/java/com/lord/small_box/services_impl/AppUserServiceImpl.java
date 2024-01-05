@@ -43,4 +43,11 @@ public class AppUserServiceImpl implements AppUserService,UserDetailsService {
 		return appUserRepository.save(appUser);
 	}
 
+	@Override
+	public boolean checkUsername(String username) {
+		return appUserRepository.findByUsername(username).isPresent();
+	}
+	
+	
+
 }

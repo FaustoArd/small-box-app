@@ -31,7 +31,7 @@ import com.lord.small_box.services.SmallBoxUnifierService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small_box/smallboxes")
+@RequestMapping("/api/v1/small-box/smallboxes")
 @RequiredArgsConstructor
 public class SmallBoxController {
 	
@@ -61,14 +61,14 @@ public class SmallBoxController {
 		List<SmallBoxDto> smallBoxesDto = SmallBoxMapper.INSTANCE.toSmallBoxesDtos(smallBoxes);
 		return new ResponseEntity<List<SmallBoxDto>>(smallBoxesDto,HttpStatus.OK);
 	}
-	@GetMapping("/all/by_container")
+	@GetMapping("/all-by-container")
 	ResponseEntity<List<SmallBoxDto>> findAll(@RequestParam("containerId")Integer containerId){
 		List<SmallBox> smallBoxes = smallBoxService.findAllByContainerId(containerId);
 		List<SmallBoxDto> smallBoxesDto = SmallBoxMapper.INSTANCE.toSmallBoxesDtos(smallBoxes);
 		return new ResponseEntity<List<SmallBoxDto>>(smallBoxesDto,HttpStatus.OK);
 	}
 	
-	@GetMapping("/all_by_input")
+	@GetMapping("/all-by-input")
 	ResponseEntity<List<SmallBoxDto>> findAllByInput(@RequestBody String inputNumber){
 		List<SmallBox> smallBoxes = smallBoxService.findAllOrderByInputInputNumber(inputNumber);
 		List<SmallBoxDto> smallBoxesDto = SmallBoxMapper.INSTANCE.toSmallBoxesDtos(smallBoxes);
@@ -84,7 +84,7 @@ public class SmallBoxController {
 		return new ResponseEntity<SmallBoxDto>(savedSmallBoxDto,HttpStatus.CREATED);
 	}
 	
-	 @PutMapping("/smallBox_update")
+	 @PutMapping("/smallBox-update")
 	 ResponseEntity<String> updateSmallBox(@RequestBody SmallBoxDto smallBoxDto){
 		SmallBox smallBox = SmallBoxMapper.INSTANCE.toSmallBox(smallBoxDto);
 		SmallBox updatedSmallBox =  smallBoxService.update(smallBox);
@@ -92,7 +92,7 @@ public class SmallBoxController {
 		return new ResponseEntity<String>(gson.toJson("Se actualizo el comprobante Numero: " + updatedSmallBox.getTicketNumber()),HttpStatus.OK);
 	 }
 	 
-	 @DeleteMapping("/smallbox_delete/{id}")
+	 @DeleteMapping("/smallbox-delete/{id}")
 	 ResponseEntity<String> deleteSmallBox(@PathVariable("id")Integer id){
 		 smallBoxService.delete(id);
 		 return new ResponseEntity<String>(gson.toJson("Se elimino correctamente el ticket"),HttpStatus.OK);
@@ -116,7 +116,7 @@ public class SmallBoxController {
 		return new ResponseEntity<List<SmallBoxUnifierDto>>(completedDto,HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/unified_all_by_container/{containerId}")
+	@DeleteMapping("/unified-all-by-container/{containerId}")
 	void deleteAllByContainerId(@PathVariable("containerId")Integer containerId) {
 		log.info("Deleting all UnifiedSmallBox by container id");
 		smallBoxUnifierService.deleteAllByContainerId(containerId);

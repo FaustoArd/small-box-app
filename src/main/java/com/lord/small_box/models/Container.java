@@ -51,7 +51,7 @@ public class Container {
 	@Column(name="totalWrite")
 	private String totalWrite;
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="organization_id", referencedColumnName = "id", nullable = false)
 	private Organization organization;
 	
