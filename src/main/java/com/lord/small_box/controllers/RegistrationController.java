@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.OrganizationService;
@@ -29,6 +30,8 @@ public class RegistrationController {
 	@Autowired
 	private final OrganizationService organizationService;
 	
+	private static final Gson gson = new Gson();
+	
 	@PostMapping("/register")
 	ResponseEntity<AppUserRegistrationDto> register(@RequestBody AppUserRegistrationDto userDto,@RequestParam("authority")String authority){
 		AppUserRegistrationDto registeredUserDto = authorizationService.register(userDto, authority);
@@ -36,8 +39,8 @@ public class RegistrationController {
 	}
 	
 	@PutMapping("/add-organization")
-	ResponseEntity<?> addOrganizationToUser(@RequestParam("userId")Long userId, @RequestParam("organizations")List<Long> organizationsId){
+	ResponseEntity<String> addOrganizationToUser(@RequestParam("userId")Long userId, @RequestParam("organizationsId")List<Long> organizationsId){
 		String result = organizationService.addOrganizationToUser(userId, organizationsId);
-		return new ResponseEntity<String>(result,HttpStatus.OK);
+		return new ResponseEntity<String>(gson.toJson(result),HttpStatus.OK);
 	}
 }
