@@ -1,0 +1,19 @@
+#userTable{
+    font-family: 'Noto Sans', sans-serif;
+   text-align: center;
+  
+  
+    
+}
+button{
+    font-family: 'Noto Sans', sans-serif;
+    background: linear-gradient(245.59deg, rgb(12, 34, 97) 0%, rgb(50, 35, 124) 28.53%, #34258a 75.52%);
+    color:aliceblue
+}
+button:hover{
+    background: linear-gradient(245.59deg, rgb(192, 211, 103) 0%, rgb(141, 149, 77) 28.53%, #86874b 75.52%);
+}
+
+#colNames{
+    background: linear-gradient(245.59deg, rgb(12, 34, 97) 0%, rgb(50, 35, 124) 28.53%, #34258a 75.52%);  
+}

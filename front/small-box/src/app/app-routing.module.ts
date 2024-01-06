@@ -8,6 +8,7 @@ import { OpenContainerComponent } from './components/open-container/open-contain
 import { PresentationComponent } from './components/presentation/presentation.component';
 import { LoginComponent } from './components/authorization/login/login.component';
 import { RegistrationComponent } from './components/authorization/registration/registration.component';
+import { OrganizationComponent } from './components/authorization/organization/organization.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -19,7 +20,8 @@ const routes: Routes = [
   { path:'open-container',component:OpenContainerComponent },
   { path:'presentation', component:PresentationComponent },
   { path:'login', component:LoginComponent },
-  { path:'register', component:RegistrationComponent}
+  { path:'register', component:RegistrationComponent},
+  { path:'org', component:OrganizationComponent}
 ];
 
 @NgModule({

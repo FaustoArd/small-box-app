@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.mappers.OrganizationMapper;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.repositories.OrganizationRepository;
@@ -27,8 +29,9 @@ public class OrganizationServiceImpl implements OrganizationService{
 	private final AppUserService appUserService;
 
 	@Override
-	public List<Organization> findAll() {
-		return (List<Organization>)organizationRepository.findAll();
+	public List<OrganizationDto> findAll() {
+		List<Organization> organizations = organizationRepository.findAll();
+		return OrganizationMapper.INSTANCE.toOrganizationsDto(organizations);
 	}
 
 	@Override

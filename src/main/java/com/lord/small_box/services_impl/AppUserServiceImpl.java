@@ -1,13 +1,17 @@
 package com.lord.small_box.services_impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.lord.small_box.dtos.AppUserDto;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.mappers.AppUserMapper;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.repositories.AppUserRepository;
 import com.lord.small_box.services.AppUserService;
@@ -47,6 +51,12 @@ public class AppUserServiceImpl implements AppUserService,UserDetailsService {
 	@Override
 	public boolean checkUsername(String username) {
 		return appUserRepository.findByUsername(username).isPresent();
+	}
+
+	@Override
+	public List<AppUserDto> findAll() {
+		List<AppUser> users = appUserRepository.findAll();
+		return AppUserMapper.INSTANCE.toUsersDto(users);
 	}
 	
 	

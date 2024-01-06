@@ -43,13 +43,5 @@ export class AuthorizationService {
   ,registrationDto,this.httpOptions).pipe(catchError(this.handleError));
  }
 
- addOrganizationToUser(userId:number,organizationsId:Array<number>):Observable<string>{
-  return this.http.put<string>(`${REGISTRATION_BASE_URL}/add-organization?userId=${userId}&organizationsId=${organizationsId}`
-  ,this.httpOptions).pipe(catchError(this.handleError));
- }
-
- test():Observable<string>{
-  return this.http.get<string>(`${AUTHORIZATION_BASE_URL}/test`, this.httpOptions).pipe(catchError(this.handleError));
- }
 
 }

@@ -1,0 +1,87 @@
+<app-navbar></app-navbar>
+<div class="container-flex mt-4">
+  <div class="row">
+   
+    <div class="col-md-4 ms-3">
+      <table id="userTable" class="table table-bordered  w-100" >
+        <thead >
+          <tr>
+            <th  scope="col">ID</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Asignar</th>
+            <th scope="col">Ver</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of usersDto">
+            <th scope="row">{{user.id}}</th>
+            <td>{{user.name}}</td>
+            <td>{{user.lastname}}</td>
+            <td>{{user.username}}</td>
+            <td>{{user.email}}</td>
+            <td>
+              <button class="btn btn-sm mx-2" >-</button>
+            
+            </td>
+            <td>
+              <button class="btn btn-sm">-</button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-4">
+      <table id="userTable" class="table table-bordered w-100" >
+        <thead >
+          <tr>
+            <th  scope="col">ID</th>
+            <th scope="col">Dependencia</th>
+            <th scope="col">Numero</th>
+            <th scope="col">Asignar</th>
+            
+        </thead>
+        <tbody>
+          <tr *ngFor="let org of organizationsDto">
+            <th scope="row">{{org.id}}</th>
+            <td>{{org.organizationName}}</td>
+            <td>{{org.organizationNumber}}</td>
+           <td>
+              <button class="btn btn-sm mx-2" (click)="assignOrganizationToUser(org.id)">-</button>
+            
+            </td>
+           
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-3">
+      <table id="userTable" class="table table-bordered w-100" >
+        <thead >
+          <tr>
+            <th  scope="col">ID</th>
+            <th scope="col">Dependencia</th>
+            <th scope="col">Numero</th>
+           <th scope="col">Eliminar</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let org of organizationsDto">
+            <th scope="row">{{org.id}}</th>
+            <td>{{org.organizationName}}</td>
+            <td>{{org.organizationNumber}}</td>
+          
+            <td>
+              <button class="btn btn-sm mx-2" (click)="deleteOrganizationFromUser(org.id)">-</button>
+            
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -97,8 +97,16 @@ public class SmallBoxApplication {
 			Organization org2 = new Organization();
 			org2.setOrganizationName("Direccion de administracion y despacho");
 			org2.setOrganizationNumber(2);
+			Organization org3 = new Organization();
+			org3.setOrganizationName("Direccion de logistica");
+			org3.setOrganizationNumber(3);
+			Organization org4 = new Organization();
+			org4.setOrganizationName("Direccion de Niñez");
+			org4.setOrganizationNumber(4);;
 			Organization secDesSocial = organizationRepository.save(org1);
 			Organization dirAdmDesp = organizationRepository.save(org2);
+			organizationRepository.save(org3);
+			organizationRepository.save(org4);
 			
 		
 			Calendar now = Calendar.getInstance();

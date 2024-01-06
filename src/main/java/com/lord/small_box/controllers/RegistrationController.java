@@ -27,20 +27,11 @@ public class RegistrationController {
 	@Autowired
 	private final AuthorizationService authorizationService;
 	
-	@Autowired
-	private final OrganizationService organizationService;
-	
-	private static final Gson gson = new Gson();
-	
 	@PostMapping("/register")
 	ResponseEntity<AppUserRegistrationDto> register(@RequestBody AppUserRegistrationDto userDto,@RequestParam("authority")String authority){
 		AppUserRegistrationDto registeredUserDto = authorizationService.register(userDto, authority);
 		return new ResponseEntity<AppUserRegistrationDto>(registeredUserDto,HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/add-organization")
-	ResponseEntity<String> addOrganizationToUser(@RequestParam("userId")Long userId, @RequestParam("organizationsId")List<Long> organizationsId){
-		String result = organizationService.addOrganizationToUser(userId, organizationsId);
-		return new ResponseEntity<String>(gson.toJson(result),HttpStatus.OK);
-	}
+	
 }

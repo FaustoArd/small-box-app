@@ -35,8 +35,5 @@ public class AuthorizationController {
 		return new ResponseEntity<TokenResponseDto>(response,HttpStatus.OK);
 	}
 	
-	@GetMapping("/test")
-	ResponseEntity<String> test(){
-		return ResponseEntity.ok(gson.toJson("Hola soy java!"));
-	}
+	
 }

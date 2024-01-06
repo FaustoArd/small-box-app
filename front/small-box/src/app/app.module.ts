@@ -24,6 +24,7 @@ import {CookieService} from 'ngx-cookie-service';
 import { LoginComponent } from './components/authorization/login/login.component';
 import { RegistrationComponent } from './components/authorization/registration/registration.component';
 import { AuthInterceptor } from './components/interceptor/auth-interceptor';
+import { OrganizationComponent } from './components/authorization/organization/organization.component';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { AuthInterceptor } from './components/interceptor/auth-interceptor';
     DialogTemplateComponent,
     PresentationComponent,
     LoginComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    OrganizationComponent
     
   ],
   imports: [
