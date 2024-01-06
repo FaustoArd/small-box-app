@@ -4,6 +4,7 @@ import { InputService } from 'src/app/services/input.service';
 import { SmallBoxService } from 'src/app/services/small-box.service';
 import { FormGroup,FormControl, Validators,FormBuilder } from '@angular/forms'
 import { Router } from '@angular/router';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 
 @Component({
   selector: 'app-home',
@@ -12,12 +13,13 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-constructor(private router:Router){}
+constructor(private router:Router, private cookieService:CookieStorageService){}
 
-  result:boolean = true;
+  result:boolean = false;
 
- ngOnInit(): void {
-    if(this.result){
+  ngOnInit(): void {
+    
+    if(this.cookieService.getToken()==''){
       this.router.navigateByUrl('login');
     }else{
       this.router.navigateByUrl('home')

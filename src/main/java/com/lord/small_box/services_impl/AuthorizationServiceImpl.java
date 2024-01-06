@@ -2,7 +2,6 @@ package com.lord.small_box.services_impl;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,10 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
-
 import com.lord.small_box.dtos.AppUserLoginDto;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.dtos.TokenResponseDto;
+import com.lord.small_box.exceptions.LoginException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
@@ -24,6 +23,7 @@ import com.lord.small_box.repositories.AuthorityRepository;
 import com.lord.small_box.services.AppUserService;
 import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.JwtTokenService;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -80,7 +80,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	String token = tokenService.generateJwt(auth);
 	return new TokenResponseDto(token);
 		}catch(AuthenticationException ex) {
-			throw new RuntimeException(ex.getMessage());
+			throw new LoginException("Usuario o contraseña invalido");
 		}
 	}
 	

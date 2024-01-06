@@ -1,0 +1,9 @@
+#btnSession{
+    background: linear-gradient(245.59deg, rgb(27, 61, 165) 0%, rgb(43, 21, 151) 28.53%, #493aa1 75.52%);
+    color: white;
+}
+
+#btnSession:hover{
+    background: linear-gradient(245.59deg, rgb(159, 51, 15) 0%, rgb(229, 55, 20) 28.53%, #bb3b30 75.52%);
+    color: white;
+}

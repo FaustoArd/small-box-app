@@ -8,10 +8,23 @@
             <mat-menu #containerMenu yPosition="above">
                 <button mat-menu-item routerLink="/container">Nuevo</button>
                 <button mat-menu-item routerLink="/open-container">Abrir</button>
-              
-               
-            </mat-menu>
+         </mat-menu>
         </div>
+        <div class="col-md-1 ms-5">
+            <button mat-button [matMenuTriggerFor]="userMenu" class="text-white">Usuarios</button>
+            <mat-menu #userMenu yPosition="above">
+                <button mat-menu-item routerLink="/register">Nuevo</button>
+                <button mat-menu-item>Editar</button>
+         </mat-menu>
+        </div>
+       
+       
+            <div class="col-md-1 position-absolute top-0 end-0 mt-3">
+                <button id="btnSession" (click)="onLogout()" class="btn btn-sm">Cerrar sesion</button>
+            </div>
+          
+      
      </mat-toolbar>
+   
 </div>
 

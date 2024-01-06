@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,4 +9,10 @@ import { Component } from '@angular/core';
 })
 export class NavbarComponent {
 
+constructor(private cookieService:CookieStorageService,private router:Router){}
+
+  onLogout(){
+    this.cookieService.deleteToken();
+    this.router.navigateByUrl("/login")
+  }
 }

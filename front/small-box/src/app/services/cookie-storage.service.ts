@@ -10,9 +10,14 @@ export class CookieStorageService {
   constructor(private cookieService:CookieService) { }
 
 
-  test(){
-    this.cookieService.set('Test', 'hello world');
-    this.cookieValue = this.cookieService.get('Test');
-    console.log("OK!"  + this.cookieValue)
+
+  setToken(token:string){
+    this.cookieService.set('token', token);
+}
+  getToken(){
+    return this.cookieService.get('token');
+  }
+  deleteToken(){
+    this.cookieService.delete('token');
   }
 }

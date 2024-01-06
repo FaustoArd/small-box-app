@@ -1,4 +1,4 @@
-export class RegistrationDto{
+export class AppUserRegistrationDto{
     name!:string;
     lastname!:string;
     email!:string;

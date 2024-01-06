@@ -1,18 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LoginDto } from 'src/app/models/loginDto';
+import { LoginResponseDto } from 'src/app/models/loginResponseDto';
+import { AuthorizationService } from 'src/app/services/authorization.service';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
-constructor(private formBuilder:FormBuilder){}
+  loginDto!:LoginDto;
+  loginResponseDto!:LoginResponseDto;
+constructor(private formBuilder:FormBuilder,private authorizationService:AuthorizationService,
+  private cookieService:CookieStorageService,private router:Router, private snackBarService:SnackBarService){}
 
-loginDto!:LoginDto;
+  strRes!:string;
 
+ngOnInit(): void {
+    this.authorizationService.test().subscribe(res =>(console.log(res)));
+}
 
 loginForm = this.formBuilder.group({
   username:['', Validators.required],
@@ -26,8 +37,29 @@ get password(){
   return this.loginForm.controls.password;
 }
 
-onSubmit(){
-  
+
+
+onSubmit():void{
+  this.loginDto = new LoginDto();
+  this.loginDto = Object.assign(this.loginDto,this.loginForm.value);
+ 
+ if(this.loginForm.valid){
+  this.authorizationService.loginUser(this.loginDto).subscribe({
+    next:(tokenData)=>{
+     this.cookieService.setToken(tokenData.token);
+     console.log(this.cookieService.getToken());
+    },
+    error:(errorData)=>{
+      this.snackBarService.openSnackBar(errorData,'Cerrar');
+     // this.router.navigateByUrl('/login');
+    },
+    complete:()=>{
+      this.router.navigateByUrl('/home');
+    }
+  });
+}else{
+  console.log('Datos invalidos');
+}
 }
 
 }

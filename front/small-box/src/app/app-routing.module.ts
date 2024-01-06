@@ -7,17 +7,19 @@ import { CompletedSmallBoxComponent } from './components/completed-small-box/com
 import { OpenContainerComponent } from './components/open-container/open-container.component';
 import { PresentationComponent } from './components/presentation/presentation.component';
 import { LoginComponent } from './components/authorization/login/login.component';
+import { RegistrationComponent } from './components/authorization/registration/registration.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path:'container', component:ContainerComponent },
   { path:'small-box', component:SmallBoxComponent },
-  { path:'completed',component:CompletedSmallBoxComponent},
-  { path:'completed-by-id/:id',component:CompletedSmallBoxComponent},
-  { path:'open-container',component:OpenContainerComponent},
-  { path:'presentation', component:PresentationComponent},
-  { path:'login', component:LoginComponent }
+  { path:'completed',component:CompletedSmallBoxComponent },
+  { path:'completed-by-id/:id',component:CompletedSmallBoxComponent },
+  { path:'open-container',component:OpenContainerComponent },
+  { path:'presentation', component:PresentationComponent },
+  { path:'login', component:LoginComponent },
+  { path:'register', component:RegistrationComponent}
 ];
 
 @NgModule({

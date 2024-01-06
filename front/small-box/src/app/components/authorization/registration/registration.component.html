@@ -1,1 +1,89 @@
-<p>registration works!</p>
+
+<div class="container-fluid">
+    <div class="row">
+        <form class="form-group justify-center mt-3" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="username" class="form-label">Nombre: </label>
+                <input type="text" class="form-control" formControlName="name" id="name" placeholder="Ingresar nombre">
+                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
+                  <div *ngIf="name.errors?.['required']">
+                    nombre requerido
+                  </div>
+                  <div  class="mt-1" *ngIf="name.errors?.['name']">
+                    el username debe tener como minimo 4 letras
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="lastname" class="form-label">Apellido: </label>
+                <input type="text" class="form-control" formControlName="lastname" id="lastname" placeholder="Ingresar nombre">
+                <div *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)" class="text-danger">
+                  <div *ngIf="lastname.errors?.['required']">
+                    apellido requerido
+                  </div>
+                  <div  class="mt-1" *ngIf="name.errors?.['lastname']">
+                    el username debe tener como minimo 4 letras
+                  </div>
+                </div>
+              </div>
+          <div class="form-group">
+            <label for="username" class="form-label">Username: </label>
+            <input type="text" class="form-control" formControlName="username" id="username" placeholder="Enter username">
+            <div *ngIf="username.invalid && (username.dirty || username.touched)" class="text-danger">
+              <div *ngIf="username.errors?.['required']">
+                username requerido
+              </div>
+              <div  class="mt-1" *ngIf="username.errors?.['email']">
+                password must be at least 6 characters long.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">Email: </label>
+            <input type="email" class="form-control" formControlName="email" id="email" placeholder="Ingresar mail">
+            <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">
+              <div *ngIf="email.errors?.['required']">
+                email requerido
+              </div>
+              <div  class="mt-1" *ngIf="email.errors?.['email']">
+               email invalido!.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" formControlName="password" id="password" placeholder="Password">
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger">
+              <div class="mt-1" *ngIf="password.errors?.['required']">
+                password requerido
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="repeatedPassword" class="form-label">Repetir password</label>
+            <input type="password" class="form-control" formControlName="repeatedPassword" id="repeatedPassword" placeholder="repetir password">
+            <div *ngIf="repeatedPassword.invalid && (repeatedPassword.dirty || repeatedPassword.touched)" class="text-danger">
+              <div class="mt-1" *ngIf="repeatedPassword.errors?.['required']">
+                password requerido
+              </div>
+            </div>
+          </div>
+           <div class="form-group" [formGroup]="authorityForm">
+            <label for="employeeJob-id" class="form-label fs-7 mt-3">Categoria</label>
+        <select id="employeeJob-id"  formControlName="authority" class="form-select border-dark  mt-2">
+            <option value="">Seleccione un rol de trabajo</option>
+             <option class="form-control" *ngFor="let authority of authorities" id="employeeJob-id" [value]="authority">
+          
+                {{authority}}</option>
+                <div *ngIf="authority.invalid && (authority.dirty || authority.touched)" class="text-danger">
+                    <div *ngIf="authority.errors?.['required']">
+                  Falta rol de trabajo
+                    </div>
+                  </div>
+        </select>
+    </div>
+
+          <button type="submit"  class="btn btn-primary btn-block mb-4">Submit</button>
+        </form>
+    </div>
+</div>

@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas'
+import { CookieStorageService } from './services/cookie-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +11,9 @@ import html2canvas from 'html2canvas'
 })
 export class AppComponent {
   title = 'small-box';
-}
+
+  
+
+    
+  }
+

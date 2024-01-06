@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import  { Observable, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { RegistrationDto } from '../models/registrationDto';
+import { AppUserRegistrationDto } from '../models/appUserRegistrationDto';
 import { LoginDto } from '../models/loginDto';
 import { LoginResponseDto } from '../models/loginResponseDto';
 
@@ -34,17 +34,22 @@ export class AuthorizationService {
  }
 
  loginUser(loginDto:LoginDto):Observable<LoginResponseDto>{
-  return this.http.post<LoginResponseDto>(`${AUTHORIZATION_BASE_URL}/login`,loginDto,this.httpOptions).pipe(catchError(this.handleError));
+  return this.http.post<LoginResponseDto>(`${AUTHORIZATION_BASE_URL}/login`,loginDto,this.httpOptions)
+  .pipe(catchError(this.handleError));
  }
 
- registerUser(registrationDto:RegistrationDto,authority:string):Observable<RegistrationDto>{
-  return this.http.post<RegistrationDto>(`${REGISTRATION_BASE_URL}/register?authorization=${authority}`
+ registerUser(registrationDto:AppUserRegistrationDto,authority:string):Observable<AppUserRegistrationDto>{
+  return this.http.post<AppUserRegistrationDto>(`${REGISTRATION_BASE_URL}/register?authority=${authority}`
   ,registrationDto,this.httpOptions).pipe(catchError(this.handleError));
  }
 
  addOrganizationToUser(userId:number,organizationsId:Array<number>):Observable<string>{
   return this.http.put<string>(`${REGISTRATION_BASE_URL}/add-organization?userId=${userId}&organizationsId=${organizationsId}`
   ,this.httpOptions).pipe(catchError(this.handleError));
+ }
+
+ test():Observable<string>{
+  return this.http.get<string>(`${AUTHORIZATION_BASE_URL}/test`, this.httpOptions).pipe(catchError(this.handleError));
  }
 
 }
