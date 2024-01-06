@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.lord.small_box.dtos.AppUserLoginDto;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.dtos.TokenResponseDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.exceptions.LoginException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
@@ -56,7 +57,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		if(appUserService.checkUsername(userDto.getUsername())) {
 			throw new RuntimeException("El nombre de usuario ya existe");
 		}else {
-			Authority role = authorityRepository.findByAuthority(AuthorityName.valueOf(authority)).orElseThrow(()-> new RuntimeException("Role not found"));
+			Authority role = authorityRepository.findByAuthority(AuthorityName.valueOf(authority)).orElseThrow(()-> new ItemNotFoundException("Role not found"));
 			Set<Authority> roles = new HashSet<>();
 			roles.add(role);
 			

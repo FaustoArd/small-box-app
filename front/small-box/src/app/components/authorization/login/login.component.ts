@@ -14,52 +14,52 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
 })
 export class LoginComponent implements OnInit {
 
-  loginDto!:LoginDto;
-  loginResponseDto!:LoginResponseDto;
-constructor(private formBuilder:FormBuilder,private authorizationService:AuthorizationService,
-  private cookieService:CookieStorageService,private router:Router, private snackBarService:SnackBarService){}
+  loginDto!: LoginDto;
+  loginResponseDto!: LoginResponseDto;
+  constructor(private formBuilder: FormBuilder, private authorizationService: AuthorizationService,
+    private cookieService: CookieStorageService, private router: Router, private snackBarService: SnackBarService) { }
 
-  strRes!:string;
+  strRes!: string;
 
-ngOnInit(): void {
-    this.authorizationService.test().subscribe(res =>(console.log(res)));
-}
+  ngOnInit(): void {
+  
+  }
 
-loginForm = this.formBuilder.group({
-  username:['', Validators.required],
-  password:['', Validators.required]
-});
-
-get username(){
-  return this.loginForm.controls.username;
-}
-get password(){
-  return this.loginForm.controls.password;
-}
-
-
-
-onSubmit():void{
-  this.loginDto = new LoginDto();
-  this.loginDto = Object.assign(this.loginDto,this.loginForm.value);
- 
- if(this.loginForm.valid){
-  this.authorizationService.loginUser(this.loginDto).subscribe({
-    next:(tokenData)=>{
-     this.cookieService.setToken(tokenData.token);
-     console.log(this.cookieService.getToken());
-    },
-    error:(errorData)=>{
-      this.snackBarService.openSnackBar(errorData,'Cerrar');
-     // this.router.navigateByUrl('/login');
-    },
-    complete:()=>{
-      this.router.navigateByUrl('/home');
-    }
+  loginForm = this.formBuilder.group({
+    username: ['', Validators.required],
+    password: ['', Validators.required]
   });
-}else{
-  console.log('Datos invalidos');
-}
-}
+
+  get username() {
+    return this.loginForm.controls.username;
+  }
+  get password() {
+    return this.loginForm.controls.password;
+  }
+
+
+
+  onSubmit(): void {
+    this.loginDto = new LoginDto();
+    this.loginDto = Object.assign(this.loginDto, this.loginForm.value);
+
+    if (this.loginForm.valid) {
+      this.authorizationService.loginUser(this.loginDto).subscribe({
+        next: (tokenData) => {
+          this.cookieService.setToken(tokenData.token);
+          console.log(this.cookieService.getToken());
+        },
+        error: (errorData) => {
+          this.snackBarService.openSnackBar(errorData, 'Cerrar');
+          this.router.navigateByUrl('/login');
+        },
+        complete: () => {
+          this.router.navigateByUrl('/home');
+        }
+      });
+    } else {
+      this.snackBarService.openSnackBar('Alguno de los datos es invalido...', 'Cerrar');
+    }
+  }
 
 }

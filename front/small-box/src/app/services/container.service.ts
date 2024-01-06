@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders,HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { ContainerDto } from '../models/containerDto';
 import { InputDto } from '../models/inputDto';
 import { SmallBoxTypeDto } from '../models/smallBoxTypeDto';
+import { Router } from '@angular/router';
+import { SnackBarService } from './snack-bar.service';
 
 const CONTAINER_BASE_URL = 'http://localhost:8080/api/v1/small-box/containers'
 
@@ -12,7 +14,7 @@ const CONTAINER_BASE_URL = 'http://localhost:8080/api/v1/small-box/containers'
 })
 export class ContainerService {
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,private snackBar:SnackBarService) { }
 
   httpOptions = { 
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -23,9 +25,11 @@ export class ContainerService {
        throw catchError(error.error)
     }else if(error.status===404){
       throw catchError(error.error)
-    }else{
-      throw catchError(error.error)
+    }else if(error.status===401){
+      return throwError(() => error.status);
+   
     }
+    return throwError(() => new Error('Error en el servidor...'));
   }
 
   createContainer(container:ContainerDto):Observable<ContainerDto>{

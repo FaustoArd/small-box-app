@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.repositories.OrganizationRepository;
@@ -37,7 +38,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 
 	@Override
 	public Organization findById(Long id) {
-		return organizationRepository.findById(id).orElseThrow(() -> new RuntimeException("Organization not found"));
+		return organizationRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Organization not found"));
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 		if(organizationRepository.existsById(id)) {
 			organizationRepository.deleteById(id);
 		}else {
-			throw new RuntimeException("Organization Not found");
+			throw new ItemNotFoundException("Organization Not found");
 		}
 		
 	}

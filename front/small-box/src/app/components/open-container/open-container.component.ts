@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ContainerDto } from 'src/app/models/containerDto';
 import { ContainerService } from 'src/app/services/container.service';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class OpenContainerComponent implements OnInit {
   containers:ContainerDto[]= [];
   errorData!:string;
 
-  constructor(private containerService:ContainerService,private storageService:StorageService){}
+  constructor(private containerService:ContainerService,private storageService:StorageService,private snackBar:SnackBarService){}
 
   ngOnInit(): void {
       this.getAllContainers();
@@ -26,6 +27,7 @@ export class OpenContainerComponent implements OnInit {
       },
       error:(errorData)=>{
         this.errorData = errorData;
+        this.snackBar.openSnackBar(errorData + ", cierre sesion y vuelva a logearse",'Cerrar');
       }
     })
   }

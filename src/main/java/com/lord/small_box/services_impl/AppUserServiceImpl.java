@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.lord.small_box.dtos.AppUserRegistrationDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.repositories.AppUserRepository;
 import com.lord.small_box.services.AppUserService;
@@ -30,12 +31,12 @@ public class AppUserServiceImpl implements AppUserService,UserDetailsService {
 
 	@Override
 	public AppUser findByUsername(String username) {
-		return appUserRepository.findByUsername(username).orElseThrow(()-> new RuntimeException(userNotFound));
+		return appUserRepository.findByUsername(username).orElseThrow(()-> new ItemNotFoundException(userNotFound));
 	}
 
 	@Override
 	public AppUser findById(Long id) {
-		return appUserRepository.findById(id).orElseThrow(()-> new RuntimeException(userNotFound));
+		return appUserRepository.findById(id).orElseThrow(()-> new ItemNotFoundException(userNotFound));
 	}
 
 	@Override

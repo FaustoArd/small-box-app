@@ -29,7 +29,7 @@ public class InputServiceImpl implements InputService {
 
 	@Override
 	public Input findById(Integer id) {
-		return inputRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+		return inputRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Input not found"));
 	}
 
 	@Override

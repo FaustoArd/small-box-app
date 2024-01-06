@@ -5,6 +5,7 @@ import { ContainerService } from 'src/app/services/container.service';
 import { ContainerDto } from 'src/app/models/containerDto';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 @Component({
   selector: 'app-container',
@@ -23,7 +24,7 @@ deps :string[] =  ['Secretaria de Desarrollo Social', 'Direccion de Administraci
 ,'Subsecretaria de Politicas Socio Comunitarias']
 
   constructor(private formBuilder: FormBuilder,private containerService:ContainerService,
-    private router:Router,private storageService:StorageService){ }
+    private router:Router,private storageService:StorageService,private snackBar:SnackBarService){ }
 
 
   ngOnInit(): void {
@@ -65,6 +66,9 @@ get title(){
         },
         error:(errorData)=>{
           this.errorData = errorData;
+          if(errorData===401){
+          this.router.navigateByUrl("login")
+          }
         },
         complete:()=>{
           this.router.navigateByUrl("/small-box")
