@@ -16,4 +16,6 @@ public interface ContainerService {
 	public void deleteById(Integer id);
 	
 	public List<Container> findAllByOrganizations(List<Organization> organizations);
+	
+	public void setContainerTotalWrite(int containerId,String totalWrite);
 }

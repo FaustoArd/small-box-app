@@ -21,6 +21,8 @@ public class ContainerServiceImpl implements ContainerService {
 	@Autowired
 	private final ContainerRepository containerRepository;
 	
+	private static final String strNotFound = "Container not found";
+	
 	private static final Calendar now = Calendar.getInstance();
 
 	@Override
@@ -37,7 +39,7 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public Container findById(Integer id) {
-		return containerRepository.findById(id).orElseThrow(()-> new ItemNotFoundException("No se encontro el container"));
+		return containerRepository.findById(id).orElseThrow(()-> new ItemNotFoundException(strNotFound));
 	}
 
 	@Override
@@ -45,7 +47,7 @@ public class ContainerServiceImpl implements ContainerService {
 	if(containerRepository.existsById(id)) {
 		containerRepository.deleteById(id);
 	}else {
-		throw new ItemNotFoundException("No se encontro el container");
+		throw new ItemNotFoundException(strNotFound);
 	}
 		
 	}
@@ -53,5 +55,13 @@ public class ContainerServiceImpl implements ContainerService {
 	@Override
 	public List<Container> findAllByOrganizations(List<Organization> organizations) {
 		return containerRepository.findAllByOrganizationIn(organizations);
+	}
+
+	@Override
+	public void setContainerTotalWrite(int containerId, String totalWrite) {
+		Container container = containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException(strNotFound));
+		container.setTotalWrite(totalWrite);
+		containerRepository.save(container);
+		
 	}
 }
