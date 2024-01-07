@@ -16,7 +16,7 @@ const routes: Routes = [
   { path:'container', component:ContainerComponent },
   { path:'small-box', component:SmallBoxComponent },
   { path:'completed',component:CompletedSmallBoxComponent },
-  { path:'completed-by-id/:id',component:CompletedSmallBoxComponent },
+  { path:'completed-by-id',component:CompletedSmallBoxComponent },
   { path:'open-container',component:OpenContainerComponent },
   { path:'presentation', component:PresentationComponent },
   { path:'login', component:LoginComponent },

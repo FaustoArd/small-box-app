@@ -152,7 +152,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 			smallBoxUnifierRepository.save(smUnifierSTotal);
 		}
 		addAllTicketTotals(containerId);
-		return (List<SmallBoxUnifier>) smallBoxUnifierRepository.findAll();
+		return (List<SmallBoxUnifier>) smallBoxUnifierRepository.findByContainerId(containerId);
 
 	}
 	

@@ -36,22 +36,17 @@ export class CompletedSmallBoxComponent implements OnInit {
 
 
   ngOnInit(): void {
-    const containerId = Number(this.route.snapshot.paramMap.get('id'));
+    const containerId = Number(this.cookieService.getCurrentContainerId());
     this.containerService.getContainerById(containerId).subscribe({
       next: (containerData) => {
         this.container = new ContainerDto();
         this.container = containerData;
         this.cookieService.setCurrentContainerId(JSON.stringify(containerData.id));
         this.smallBoxCreated = containerData.smallBoxCreated;
-        if (this.smallBoxCreated) {
-          this.deleteAllbyContainerId(Number(this.cookieService.getCurrentContainerId()));
+        this.deleteAllUnifiedSamllBoxByContainerId(Number(this.cookieService.getCurrentContainerId()));
           this.onCompleteSmallBox();
 
-        } else {
-          this.deleteAllbyContainerId(Number(this.cookieService.getCurrentContainerId()));
-          this.onCompleteSmallBox();
-
-        }
+        
       }, error: (errorData) => {
         this.errorData = errorData;
       }
@@ -67,6 +62,7 @@ export class CompletedSmallBoxComponent implements OnInit {
   onCompleteSmallBox(): void {
     this.smallBoxService.completeSmallBox(Number(this.cookieService.getCurrentContainerId())).subscribe({
       next: (compData) => {
+        this.completedSmallBox = [];
         this.completedSmallBox = compData;
       },
       error: (errorData) => {
@@ -91,6 +87,7 @@ export class CompletedSmallBoxComponent implements OnInit {
   getCompletedSmallboxByContainerId(id: number): void {
     this.smallBoxService.getCompletedSmallBoxByContainerId(id).subscribe({
       next: (completedData) => {
+        this.completedSmallBox = [];
         this.completedSmallBox = completedData;
       },
       error: (erorrData) => {
@@ -102,8 +99,8 @@ export class CompletedSmallBoxComponent implements OnInit {
     });
   }
 
-  deleteAllbyContainerId(containerId: number): void {
-    this.smallBoxService.deleteAllByContainerId(containerId).subscribe();
+  deleteAllUnifiedSamllBoxByContainerId(containerId: number): void {
+    this.smallBoxService.deleteAllUnifiedSamllBoxByContainerId(containerId).subscribe();
   }
 
   exportToPdf(pages: HTMLElement) {

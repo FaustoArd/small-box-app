@@ -24,6 +24,7 @@ export class PresentationComponent implements OnInit {
 @ViewChild ('screen', { static:true})  screen: any;
 
 imgBase64 = '';
+downloaded!:boolean;
 
   completedSmallBox: SmallBoxUnifierDto[] = [];
   errorData!: string;
@@ -37,6 +38,7 @@ constructor(private cookieService:CookieStorageService,private containerService:
 
 ngOnInit(): void {
     this.getContainerById();
+    this.snackBarService.openSnackBar('Haga click en el logo de Moron para descargar', 'Cerrar',1000);
    
    
    
@@ -80,6 +82,7 @@ ngOnInit(): void {
     )
     .subscribe();
       this.snackBarService.openSnackBar('Se descargo la caja chica!', 'Cerrar', 3000);
+      this.downloaded = true;
   }
 
   

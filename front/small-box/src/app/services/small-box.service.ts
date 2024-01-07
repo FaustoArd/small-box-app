@@ -64,7 +64,7 @@ export class SmallBoxService {
     .pipe(catchError(this.handleError));
   }
 
-  deleteAllByContainerId(containerId:number):Observable<any>{
+  deleteAllUnifiedSamllBoxByContainerId(containerId:number):Observable<any>{
   return  this.http.delete<any>(`${SMALL_BOX_BASE_URL}/unified-all-by-container/${containerId}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 

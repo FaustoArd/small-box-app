@@ -68,9 +68,7 @@ get title(){
           this.returnedData = contData;
           this.cookieService.deleteCurrentContainerId();
           this.cookieService.setCurrentContainerId(JSON.stringify(this.returnedData.id));
-          console.log(this.cookieService.getCurrentContainerId());
-
-        },
+         },
         error:(errorData)=>{
           this.errorData = errorData;
           if(errorData===401){
