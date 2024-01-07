@@ -6,6 +6,7 @@ import { SmallBoxService } from 'src/app/services/small-box.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { NgxCaptureService } from 'ngx-capture';
 import { pipe, tap } from 'rxjs';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 
 
@@ -29,7 +30,7 @@ imgBase64 = '';
   smallBoxCreated!:boolean;
 
 constructor(private storageService:StorageService,private containerService:ContainerService,
-  private smallBoxService:SmallBoxService,private captureService:NgxCaptureService){}
+  private smallBoxService:SmallBoxService,private captureService:NgxCaptureService, private snackBarService:SnackBarService){}
   
 
 
@@ -77,6 +78,7 @@ ngOnInit(): void {
       tap((img) => this.captureService.downloadImage(img))
     )
     .subscribe();
+      this.snackBarService.openSnackBar('Se descargo la caja chica!', 'Cerrar', 3000);
   }
 
   

@@ -27,7 +27,7 @@ export class OpenContainerComponent implements OnInit {
       },
       error:(errorData)=>{
         this.errorData = errorData;
-        this.snackBar.openSnackBar(errorData + ", cierre sesion y vuelva a logearse",'Cerrar');
+        this.snackBar.openSnackBar(errorData + ", cierre sesion y vuelva a logearse",'Cerrar',3000);
       }
     })
   }

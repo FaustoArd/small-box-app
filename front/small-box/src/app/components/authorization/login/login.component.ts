@@ -47,10 +47,10 @@ export class LoginComponent implements OnInit {
       this.authorizationService.loginUser(this.loginDto).subscribe({
         next: (tokenData) => {
           this.cookieService.setToken(tokenData.token);
-          console.log(this.cookieService.getToken());
+        
         },
         error: (errorData) => {
-          this.snackBarService.openSnackBar(errorData, 'Cerrar');
+          this.snackBarService.openSnackBar(errorData, 'Cerrar',3000);
           this.router.navigateByUrl('/login');
         },
         complete: () => {
@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
         }
       });
     } else {
-      this.snackBarService.openSnackBar('Alguno de los datos es invalido...', 'Cerrar');
+      this.snackBarService.openSnackBar('Alguno de los datos es invalido...', 'Cerrar',3000);
     }
   }
 

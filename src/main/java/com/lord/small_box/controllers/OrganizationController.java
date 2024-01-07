@@ -33,6 +33,11 @@ public class OrganizationController {
 		List<OrganizationDto> orgsDto = organizationService.findAll();
 		return ResponseEntity.ok(orgsDto);
 	}
+	@GetMapping("/all-orgs-by-id")
+	ResponseEntity<List<OrganizationDto>> findAllOrganizationsById(@RequestParam("organizationsId")List<Long> organizationsId){
+		List<OrganizationDto> orgsDto = organizationService.findAllById(organizationsId);
+		return ResponseEntity.ok(orgsDto);
+	}
 	
 	@PutMapping("/add-organization")
 	ResponseEntity<String> addOrganizationToUser(@RequestParam("userId")Long userId, @RequestParam("organizationsId")List<Long> organizationsId){

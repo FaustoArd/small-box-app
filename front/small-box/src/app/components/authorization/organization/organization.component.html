@@ -12,7 +12,7 @@
   <div class="row mt-3">
    
     <div class="col-md-4 ms-3">
-      <table id="userTable" class="table table-sm table-bordered  w-100" >
+      <table id="userTable" class="table table-sm table-bordered table-striped  w-100" >
         <thead >
           <tr>
             <th  scope="col">ID</th>
@@ -21,7 +21,7 @@
             <th scope="col">Username</th>
             <th scope="col">Email</th>
             <th scope="col">Sel</th>
-            <th scope="col">Ver</th>
+           
           </tr>
         </thead>
         <tbody>
@@ -33,18 +33,14 @@
             <td>{{user.email}}</td>
             <td>
               <button (click)="selectUser(user.id)" class="btn btn-sm mx-2" >-</button>
-            
             </td>
-            <td>
-              <button  class="btn btn-sm">-</button>
-            </td>
-          </tr>
+           </tr>
 
         </tbody>
       </table>
     </div>
     <div class="col-md-3">
-      <table id="userTable" class="table table-sm table-bordered w-100" >
+      <table id="userTable" class="table table-sm table-bordered table-striped w-100" >
         <thead >
           <tr>
             <th  scope="col">ID</th>
@@ -69,7 +65,7 @@
       </table>
     </div>
     <div class="col-md-3">
-      <table id="userTable" class="table table-sm table-bordered w-75" >
+      <table id="userTable" class="table table-sm table-bordered table-striped w-75" >
         <thead >
           <tr>
             <th  scope="col">ID</th>
@@ -95,7 +91,7 @@
       
      </div>
      <div class="col-md-1">
-      <button  id="btnApply" *ngIf="orgsSelected.length>0" (click)="addOrganizationsToUser()" class="btn">Aplicar</button>
+      <button  id="btnApply" *ngIf="selectedUserId!=null" (click)="addOrganizationsToUser()" class="btn">Aplicar</button>
     </div>
    
      

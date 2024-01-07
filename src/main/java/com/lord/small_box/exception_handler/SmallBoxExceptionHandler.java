@@ -1,5 +1,7 @@
 package com.lord.small_box.exception_handler;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -28,5 +30,7 @@ public class SmallBoxExceptionHandler extends ResponseEntityExceptionHandler {
 	ResponseEntity<String> handleLogin(LoginException ex){
 		return new ResponseEntity<String>(ex.getMessage(),HttpStatus.UNAUTHORIZED);
 	}
+	
+	
 
 }

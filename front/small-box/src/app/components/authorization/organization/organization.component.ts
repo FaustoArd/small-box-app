@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AppUserDto } from 'src/app/models/appUserDto';
 import { OrganizationDto } from 'src/app/models/organizationDto';
 import { AppUserService } from 'src/app/services/app-user.service';
@@ -17,40 +17,66 @@ export class OrganizationComponent implements OnInit {
 
   usersDto: AppUserDto[] = [];
   userSelected!:AppUserDto;
-  userId!: number;
+  selectedUserId!: number;
   organizationsId: Array<number> = new Array<number>;
   organizationsDto: OrganizationDto[] = [];
   orgsSelected: OrganizationDto[] = [];
+  organizationDto!:OrganizationDto;
  
   constructor(private appUserService: AppUserService, private organizationService: OrganizationService,
     private snackBarService: SnackBarService, private cookieService: CookieStorageService,private router:Router) { }
 
   ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      if(event instanceof NavigationEnd){
+        this.organizationsId = [];
+        this.orgsSelected = [];
+        this.userSelected = new AppUserDto();
+      }
+    })
     this.getUsers();
     this.getOrganizations();
   }
 
-  assignOrganizationToUser(id: number) {
-    if(this.userId==null){
-      this.snackBarService.openSnackBar('Debe seleccionar un usuario','Close');
+  assignOrganizationToUser(orgId: number) {
+    if(this.selectedUserId==null){
+      this.snackBarService.openSnackBar('Debe seleccionar un usuario','Close',3000);
     }else{
-    const index = this.organizationsId.indexOf(id);
-    if(index > -1){
-      this.snackBarService.openSnackBar('Esa dependencia ya ha sido asignada','Close');
-    }else{
-    this.organizationsId.push(id);
-    this.organizationsDto.filter(org => org.id === id).map(org => this.orgsSelected.push(org));
+      var checkId = this.organizationsId.indexOf(orgId);
+     if(checkId > -1){
+        this.snackBarService.openSnackBar('Esa dependencia ya fue seleccionada', 'Cerrar', 3000);
+      }else{
+      this.organizationsId.push(orgId);
+      this.organizationsDto.filter(org => org.id == orgId)
+      .map(org => this.snackBarService.openSnackBar('Dependencia agregada: ' + org.organizationName, 'Cerrar',3000));
+     this.getAllOrganizationsById(this.organizationsId);
+      }
     }
-  }
+}
+
+deleteOrganizationFromUser(id: number) {
+  this.organizationsId.forEach((item,index) => {
+    if(item == id){
+      this.organizationsId.splice(index ,1);
+    }
+  });
+  this.getAllOrganizationsById(this.organizationsId);
+    this.orgsSelected.filter(org => org.id==id).map(org => this.snackBarService.openSnackBar('Eliminada: ' + org.organizationName,'Cerrar',3000));
+  
   }
 
-  deleteOrganizationFromUser(id: number) {
-    const index = this.organizationsId.indexOf(id);
-    if (index > -1) {
-      this.organizationsId.splice(index, 1);
+getAllOrganizationsById(organizationsId:Array<number>):void{
+  this.organizationService.getAllOrganizationsById(organizationsId).subscribe({
+    next:(orgsData)=>{
+      this.orgsSelected = orgsData;
+    },
+    error:(errorData)=>{
+      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
     }
-    this.orgsSelected = this.orgsSelected.filter(org => org.id != id);
-  }
+  })
+}
+
+  
 
 
   getUsers(): void {
@@ -59,7 +85,7 @@ export class OrganizationComponent implements OnInit {
         this.usersDto = usersData;
       },
       error: (errorData) => {
-        this.snackBarService.openSnackBar(errorData, 'Cerrar');
+        this.snackBarService.openSnackBar(errorData, 'Cerrar',3000);
       }
     })
   }
@@ -70,28 +96,39 @@ export class OrganizationComponent implements OnInit {
         this.organizationsDto = orgData;
       },
       error: (errorData) => {
-        this.snackBarService.openSnackBar(errorData, 'Cerrar');
+        this.snackBarService.openSnackBar(errorData, 'Cerrar',3000);
       }
     })
   }
 
   selectUser(userId:number){
-    this.userId = userId;
+    this.selectedUserId = userId;
     this.userSelected = new AppUserDto();
      this.usersDto.filter(user => user.id===userId).map(user => this.userSelected = user);
+     this.organizationService.getAllOrganizationsByUser(this.selectedUserId).subscribe({
+      next:(orgsData)=>{
+        this.orgsSelected = orgsData;
+        orgsData.map(org => {
+          this.organizationsId.push(org.id);
+        });
+      },
+      error:(errorData)=>{
+        this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+      }
+    })
   }
 
   addOrganizationsToUser(){
 
-    this.organizationService.addOrganizationToUser(this.userId,this.organizationsId).subscribe({
+    this.organizationService.addOrganizationToUser(this.selectedUserId,this.organizationsId).subscribe({
       next:(orgsData)=>{
-      this.snackBarService.openSnackBar(orgsData,'Cerrar')
+      this.snackBarService.openSnackBar(orgsData,'Cerrar',5000)
       },
       error:(errorData)=>{
-        this.snackBarService.openSnackBar(errorData,'Cerrar');
+        this.snackBarService.openSnackBar(errorData,'Cerrar',5000);
       },complete:()=>{
         console.log("hola")
-        this.router.navigate([this.router.url]);
+       this.router.navigateByUrl('/org')
       }
     });
     
@@ -103,7 +140,7 @@ export class OrganizationComponent implements OnInit {
         this.orgsSelected = orgsData;
       },
       error:(errorData)=>{
-        this.snackBarService.openSnackBar(errorData,'Cerrar');
+        this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
       }
     })
   }

@@ -32,13 +32,18 @@ export class OrganizationService {
     return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
+  getAllOrganizationsById(organizationsId:Array<number>):Observable<OrganizationDto[]>{
+    return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs-by-id?organizationsId=${organizationsId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   addOrganizationToUser(userId:number,organizationsId:Array<number>):Observable<string>{
     return this.http.put<string>(`${ORGANIZATION_BASE_URL}/add-organization?userId=${userId}&organizationsId=${organizationsId}`
     ,this.httpOptions).pipe(catchError(this.handleError));
    }
 
    getAllOrganizationsByUser(userId:number):Observable<OrganizationDto[]>{
-    return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs-by-user`,this.httpOptions).pipe(catchError(this.handleError));
+    return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs-by-user?userId=${userId}`,this.httpOptions).pipe(catchError(this.handleError));
    }
-  
+
 }

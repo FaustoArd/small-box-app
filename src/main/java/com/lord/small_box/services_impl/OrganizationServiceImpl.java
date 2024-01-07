@@ -1,7 +1,10 @@
 package com.lord.small_box.services_impl;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrganizationServiceImpl implements OrganizationService{
 
+	
+	private static final Logger log = LoggerFactory.getLogger(OrganizationServiceImpl.class);
 	
 	@Autowired
 	private final OrganizationRepository organizationRepository;
@@ -58,12 +63,23 @@ public class OrganizationServiceImpl implements OrganizationService{
 	
 	@Override
 	public String addOrganizationToUser(Long userId,List<Long> organizationsId) {
-		List<Organization> organizations = organizationRepository.findAllById(organizationsId);
+	
+		
+		log.info("Add organization to user method");
+		log.info("Modificando usuario con id: " + userId );
 		AppUser user = appUserService.findById(userId);
-		user.setOrganizations(organizations);
-		AppUser updatedUser = appUserService.save(user);
-		return "El usuario: " + updatedUser.getName()+ " " + updatedUser.getLastname() +
-				"Tiene asignada las siguientes dependencias: /n" + updatedUser.getOrganizations().stream().map(o -> o.getOrganizationName() + ",").toString();
+		log.info("Usuario encontrado: " + user.getName() + " " + user.getLastname());
+		List<Organization> organizations = organizationRepository.findAllById(organizationsId);
+			user.setOrganizations(organizations);
+			AppUser updatedUser = appUserService.save(user);
+			return "El usuario: " + updatedUser.getName()+ " " + updatedUser.getLastname() +
+					"Tiene asignada las siguientes dependencias: " + updatedUser.getOrganizations().stream().map(o -> o.getOrganizationName())
+					.reduce((org , element) -> org +  ", " + element)
+					.orElse( "Ninguna");
+		
+		
+		
+		
 	}
 
 	@Override
@@ -78,6 +94,15 @@ public class OrganizationServiceImpl implements OrganizationService{
 		}).toList();
 		return orgsDto;
 		
+	}
+
+	@Override
+	public List<OrganizationDto> findAllById(List<Long> organizationsId) {
+		if(Optional.of(organizationsId).isEmpty()) {
+			return null;
+		}
+	List<Organization> orgs = organizationRepository.findAllById(organizationsId);
+	return  OrganizationMapper.INSTANCE.toOrganizationsDto(orgs);
 	}
 	
 }

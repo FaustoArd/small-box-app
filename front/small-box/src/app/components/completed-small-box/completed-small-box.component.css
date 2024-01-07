@@ -13,4 +13,11 @@
 #rowCompleted{
     background-color: rgb(230, 230, 188);
 }
+button{
+    background: linear-gradient(245.59deg, rgb(12, 34, 97) 0%, rgb(50, 35, 124) 28.53%, #34258a 75.52%);
+    color: white;
+}
+button:hover{
+    background: linear-gradient(245.59deg, rgb(28, 97, 12) 0%, rgb(35, 124, 56) 28.53%, #258a2d 75.52%);
+}
 
