@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.lord.small_box.models.SubTotal;
 
-public interface SubTotalRepository extends JpaRepository<SubTotal, Integer> {
+public interface SubTotalRepository extends JpaRepository<SubTotal, Long> {
 	
 	
 

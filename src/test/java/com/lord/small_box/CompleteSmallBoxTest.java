@@ -18,9 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxUnifier;
 import com.lord.small_box.repositories.InputRepository;
+import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
@@ -43,11 +45,13 @@ public class CompleteSmallBoxTest {
 	@Autowired
 	private SmallBoxUnifierService smallBoxUnifierService;
 	
+	@Autowired
+	private OrganizationRepository organizationRepository;
 	
 	@Autowired
 	private ContainerService containerService;
 	
-	private Integer containerId;
+	private Long containerId;
 	
 	@Test
 	@Order(1)
@@ -74,15 +78,20 @@ public class CompleteSmallBoxTest {
 		inputs.add(i222);
 		inputs.add(i223);
 		inputRepository.saveAll(inputs);
+		
+		Organization secDesSocial = new Organization();
+		secDesSocial.setOrganizationName("Secretaria de Desarrollo Social");
+		secDesSocial.setOrganizationNumber(1);
+		Organization savedSecDesSocial = organizationRepository.save(secDesSocial);
 			
 		
 		Container container = Container.builder().smallBoxDate(now)
-				.title("Caja chica Super").dependency("Sec. desarr").responsible("Carlos Monzon").build();
+				.title("Caja chica Super").organization(savedSecDesSocial).responsible("Carlos Monzon").build();
 		Container savedContainer = containerService.save(container); 
 		containerId = savedContainer.getId();
-		Input input211 = inputService.findById(1);
-		Input input212 = inputService.findById(2);
-		Input input213 = inputService.findById(3);
+		Input input211 = inputService.findById(1l);
+		Input input212 = inputService.findById(2l);
+		Input input213 = inputService.findById(3l);
 		Calendar cal1 = Calendar.getInstance();
 		cal1.set(2023, 11, 4);
 		
@@ -112,7 +121,7 @@ public class CompleteSmallBoxTest {
 		SmallBox savedSmallBox4 = smallBoxService.save(smallBox4, savedContainer.getId());
 		
 		
-		assertEquals(savedSmallBox.getContainer().getDependency(), "Sec. desarr");
+		
 		assertEquals(savedSmallBox.getTicketTotal().intValue(), 5000);
 		assertEquals(savedSmallBox.getInput().getInputNumber(),"211");
 

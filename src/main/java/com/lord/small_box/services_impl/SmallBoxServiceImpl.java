@@ -55,13 +55,13 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 
 	@Override
-	public SmallBox findById(Integer id) {
+	public SmallBox findById(Long id) {
 		log.info("Fetch SmallBox by id");
 		return smallBoxRepo.findById(id).orElseThrow(() -> new ItemNotFoundException("No se encontro el item"));
 	}
 
 	@Override
-	public SmallBox save(SmallBox smallBox, Integer containerId) {
+	public SmallBox save(SmallBox smallBox, Long containerId) {
 		log.info("Saving smallbox");
 		Input input = inputRepository.findById(smallBox.getInput().getId())
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el input"));
@@ -84,7 +84,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	
 
 	@Override
-	public void delete(Integer id) {
+	public void delete(Long id) {
 		if (smallBoxRepo.existsById(id)) {
 			smallBoxRepo.deleteById(id);
 		} else {
@@ -99,7 +99,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 
 	@Override
-	public SubTotal calculateSubtotal(Integer containerId, String inputNumber) {
+	public SubTotal calculateSubtotal(Long containerId, String inputNumber) {
 		log.info("Calculate smallBoxes subtotal");
 		List<SmallBox> smallBoxes = smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
 		Double totalResult = smallBoxes.stream().mapToDouble(s -> s.getTicketTotal().doubleValue()).sum();
@@ -111,20 +111,20 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 
 	@Override
-	public List<SmallBox> findAllByContainerId(Integer containerId) {
+	public List<SmallBox> findAllByContainerId(Long containerId) {
 		log.info("Fetch al smallBoxes by container id");
 		return (List<SmallBox>) smallBoxRepo.findAllByContainerId(containerId);
 	}
 
 	@Override
-	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Integer containerId, String inputNumber) {
+	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Long containerId, String inputNumber) {
 		log.info("Fetch al smallBoxes by container and input number");
 		return (List<SmallBox>) smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
 	}
 	
 	@Transactional
 	@Override
-	public List<SmallBoxUnifier> completeSmallBox(Integer containerId) {
+	public List<SmallBoxUnifier> completeSmallBox(Long containerId) {
 		log.info("Complete small box");
 		Container container = containerRepository.findById(containerId).orElseThrow(() -> new ItemNotFoundException("No se encontro el container"));
 		List<String> smallBoxes = findAllByContainerIdOrderByInputInputNumber(containerId).stream()
@@ -158,7 +158,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	
 	@Transactional
 	@Override
-	public void addAllTicketTotals(Integer containerId) {
+	public void addAllTicketTotals(Long containerId) {
 		Double totalResult =  findAllByContainerId(containerId).stream().mapToDouble(sm -> sm.getTicketTotal().doubleValue()).sum();
 		Container container= containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException("No se encontro el container"));
 		//SmallBoxUnifier smUnifier = SmallBoxUnifier.builder().subtotalTitle("Total").subtotal(new BigDecimal(totalResult)).container(container).build();
@@ -170,7 +170,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 	
 	@Override
-	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Integer containerId) {
+	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Long containerId) {
 		log.info("Fetch all smallBoxes by container id order by input number");
 		return (List<SmallBox>) smallBoxRepo.findAllByContainerIdOrderByInputInputNumber(containerId);
 	}

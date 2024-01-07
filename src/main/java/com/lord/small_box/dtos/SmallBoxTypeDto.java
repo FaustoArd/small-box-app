@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 public class SmallBoxTypeDto {
 	
-	private Integer id;
+	private Long id;
 	
 	private String smallBoxType;
 	

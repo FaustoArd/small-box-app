@@ -10,15 +10,15 @@ public interface SmallBoxUnifierService {
 	
 	public List<SmallBoxUnifier> findAllSmallBoxUnifiers();
 	
-	public SmallBoxUnifier findSmallBoxUnifierbyId(Integer id);
+	public SmallBoxUnifier findSmallBoxUnifierbyId(Long id);
 	
 	public SmallBoxUnifier saveSmallBoxUnifier(SmallBoxUnifier smallBoxUnifier);
 	
-	public void deleteSmallBoxUnifierById(Integer id);
+	public void deleteSmallBoxUnifierById(Long id);
 	
-	public List<SmallBoxUnifier> findByContainerId(Integer containerId);
+	public List<SmallBoxUnifier> findByContainerId(Long containerId);
 	
-	public void deleteAllByContainerId(Integer containerId);
+	public void deleteAllByContainerId(Long containerId);
 	
 	
 

@@ -38,12 +38,12 @@ public class ContainerServiceImpl implements ContainerService {
 	}
 
 	@Override
-	public Container findById(Integer id) {
+	public Container findById(Long id) {
 		return containerRepository.findById(id).orElseThrow(()-> new ItemNotFoundException(strNotFound));
 	}
 
 	@Override
-	public void deleteById(Integer id) {
+	public void deleteById(Long id) {
 	if(containerRepository.existsById(id)) {
 		containerRepository.deleteById(id);
 	}else {
@@ -58,7 +58,7 @@ public class ContainerServiceImpl implements ContainerService {
 	}
 
 	@Override
-	public void setContainerTotalWrite(int containerId, String totalWrite) {
+	public void setContainerTotalWrite(Long containerId, String totalWrite) {
 		Container container = containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException(strNotFound));
 		container.setTotalWrite(totalWrite);
 		containerRepository.save(container);

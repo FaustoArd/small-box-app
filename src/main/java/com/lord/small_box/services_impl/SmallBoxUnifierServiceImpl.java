@@ -26,7 +26,7 @@ public class SmallBoxUnifierServiceImpl implements SmallBoxUnifierService {
 	}
 
 	@Override
-	public SmallBoxUnifier findSmallBoxUnifierbyId(Integer id) {
+	public SmallBoxUnifier findSmallBoxUnifierbyId(Long id) {
 		return smallBoxUnifierRepository.findById(id).orElseThrow(()-> new ItemNotFoundException("No se encontro el SmallBoxUnifier"));
 	}
 
@@ -36,7 +36,7 @@ public class SmallBoxUnifierServiceImpl implements SmallBoxUnifierService {
 	}
 
 	@Override
-	public void deleteSmallBoxUnifierById(Integer id) {
+	public void deleteSmallBoxUnifierById(Long id) {
 		if(smallBoxUnifierRepository.existsById(id)) {
 			smallBoxUnifierRepository.deleteById(id);
 		}else {
@@ -46,13 +46,13 @@ public class SmallBoxUnifierServiceImpl implements SmallBoxUnifierService {
 	}
 
 	@Override
-	public List<SmallBoxUnifier> findByContainerId(Integer containerId) {
+	public List<SmallBoxUnifier> findByContainerId(Long containerId) {
 	return (List<SmallBoxUnifier>) smallBoxUnifierRepository.findByContainerId(containerId);
 	}
 
 	@Transactional
 	@Override
-	public void deleteAllByContainerId(Integer containerId) {
+	public void deleteAllByContainerId(Long containerId) {
 		smallBoxUnifierRepository.deleteAllByContainerId(containerId);
 		
 	}

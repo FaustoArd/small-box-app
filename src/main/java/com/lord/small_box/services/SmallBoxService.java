@@ -10,26 +10,26 @@ public interface SmallBoxService {
 	
 	public List<SmallBox> findAll();
 	
-	public SmallBox findById(Integer id);
+	public SmallBox findById(Long id);
 	
-	public SmallBox save(SmallBox smallBox,Integer containerId);
+	public SmallBox save(SmallBox smallBox,Long containerId);
 	
 	public SmallBox update(SmallBox smallBox);
 	
-	public void delete(Integer id);
+	public void delete(Long id);
 	
 	public List<SmallBox> findAllOrderByInputInputNumber(String inpuNumber);
 	
-	public List<SmallBox> findAllByContainerId(Integer containerId);
+	public List<SmallBox> findAllByContainerId(Long containerId);
 	
-	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Integer containerId, String inputNumber);
+	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Long containerId, String inputNumber);
 	
-	public SubTotal calculateSubtotal(Integer conatinerid,String inputNumber);
+	public SubTotal calculateSubtotal(Long containerid,String inputNumber);
 	
-	public List<SmallBoxUnifier> completeSmallBox(Integer containerId);
+	public List<SmallBoxUnifier> completeSmallBox(Long containerId);
 	
-	public void addAllTicketTotals(Integer containerId);
+	public void addAllTicketTotals(Long containerId);
 	
-	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Integer containerId);
+	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Long containerId);
 
 }

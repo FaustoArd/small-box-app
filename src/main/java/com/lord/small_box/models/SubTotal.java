@@ -30,7 +30,7 @@ public class SubTotal {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	private Long id;
 	
 	@Column(name="sub_total")
 	private BigDecimal subtotal;

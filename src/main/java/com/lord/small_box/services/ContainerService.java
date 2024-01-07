@@ -11,11 +11,11 @@ public interface ContainerService {
 	
 	public Container save(Container container);
 	
-	public Container findById(Integer id);
+	public Container findById(Long id);
 	
-	public void deleteById(Integer id);
+	public void deleteById(Long id);
 	
 	public List<Container> findAllByOrganizations(List<Organization> organizations);
 	
-	public void setContainerTotalWrite(int containerId,String totalWrite);
+	public void setContainerTotalWrite(Long containerId,String totalWrite);
 }

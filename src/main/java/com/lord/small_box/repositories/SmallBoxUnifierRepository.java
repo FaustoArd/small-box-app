@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.lord.small_box.models.SmallBoxUnifier;
 
-public interface SmallBoxUnifierRepository extends JpaRepository<SmallBoxUnifier, Integer> {
+public interface SmallBoxUnifierRepository extends JpaRepository<SmallBoxUnifier, Long> {
 	
-	public List<SmallBoxUnifier> findByContainerId(Integer id);
+	public List<SmallBoxUnifier> findByContainerId(Long id);
 	
-	public void deleteAllByContainerId(Integer id);
+	public void deleteAllByContainerId(Long id);
 
 }

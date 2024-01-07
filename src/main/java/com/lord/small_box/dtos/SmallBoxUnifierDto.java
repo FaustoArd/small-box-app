@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 public class SmallBoxUnifierDto {
 	
-	private Integer id;
+	private Long id;
 	
 	private Calendar date;
 	

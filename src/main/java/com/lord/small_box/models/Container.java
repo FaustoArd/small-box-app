@@ -28,13 +28,10 @@ public class Container {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	private Long id;
 	
 	@Column(name="title")
 	private String title;
-	
-	@Column(name="dependency")
-	private String dependency;
 	
 	@Column(name="responsible")
 	private String responsible; 

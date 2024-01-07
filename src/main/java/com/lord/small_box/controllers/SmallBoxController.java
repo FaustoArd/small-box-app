@@ -49,7 +49,7 @@ public class SmallBoxController {
 	private static final Logger log = LoggerFactory.getLogger(SmallBoxController.class);
 	
 	@GetMapping("/smallbox/{id}")
-	ResponseEntity<SmallBoxDto> findSmallBoxById(@PathVariable("id")Integer id){
+	ResponseEntity<SmallBoxDto> findSmallBoxById(@PathVariable("id")Long id){
 		SmallBox smallBox = smallBoxService.findById(id);
 		SmallBoxDto smallBoxDto = SmallBoxMapper.INSTANCE.toSmallBoxDto(smallBox);
 		return new ResponseEntity<SmallBoxDto>(smallBoxDto,HttpStatus.OK);
@@ -62,7 +62,7 @@ public class SmallBoxController {
 		return new ResponseEntity<List<SmallBoxDto>>(smallBoxesDto,HttpStatus.OK);
 	}
 	@GetMapping("/all-by-container")
-	ResponseEntity<List<SmallBoxDto>> findAll(@RequestParam("containerId")Integer containerId){
+	ResponseEntity<List<SmallBoxDto>> findAll(@RequestParam("containerId")Long containerId){
 		List<SmallBox> smallBoxes = smallBoxService.findAllByContainerId(containerId);
 		List<SmallBoxDto> smallBoxesDto = SmallBoxMapper.INSTANCE.toSmallBoxesDtos(smallBoxes);
 		return new ResponseEntity<List<SmallBoxDto>>(smallBoxesDto,HttpStatus.OK);
@@ -77,7 +77,7 @@ public class SmallBoxController {
 	
 	@PostMapping("/new")
 	ResponseEntity<SmallBoxDto> newSmallBox(@RequestBody SmallBoxDto smallBoxDto,
-			@RequestParam("containerId")Integer containerId){
+			@RequestParam("containerId")Long containerId){
 		SmallBox smallBox = SmallBoxMapper.INSTANCE.toSmallBox(smallBoxDto);
 		SmallBox savedSmallBox = smallBoxService.save(smallBox, containerId);
 		SmallBoxDto savedSmallBoxDto = SmallBoxMapper.INSTANCE.toSmallBoxDto(savedSmallBox);
@@ -93,14 +93,14 @@ public class SmallBoxController {
 	 }
 	 
 	 @DeleteMapping("/smallbox-delete/{id}")
-	 ResponseEntity<String> deleteSmallBox(@PathVariable("id")Integer id){
+	 ResponseEntity<String> deleteSmallBox(@PathVariable("id")Long id){
 		 smallBoxService.delete(id);
 		 return new ResponseEntity<String>(gson.toJson("Se elimino correctamente el ticket"),HttpStatus.OK);
 	 }
 	 
 	
 	@PutMapping("/complete")
-	ResponseEntity<List<SmallBoxUnifierDto>> completeSmallBox(@RequestParam("containerId")Integer containerId){
+	ResponseEntity<List<SmallBoxUnifierDto>> completeSmallBox(@RequestParam("containerId")Long containerId){
 		
 		List<SmallBoxUnifier> sm = smallBoxService.completeSmallBox(containerId);
 		List<SmallBoxUnifierDto> smDto = SmallBoxUnifierMapper.INSTANCE.toSmallBoxBuildersDto(sm);
@@ -110,14 +110,14 @@ public class SmallBoxController {
 	
 	
 	@GetMapping("/unified/{containerId}")
-	ResponseEntity<List<SmallBoxUnifierDto>> findSmallBoxCompletedByContainerId(@PathVariable("containerId")Integer containerId){
+	ResponseEntity<List<SmallBoxUnifierDto>> findSmallBoxCompletedByContainerId(@PathVariable("containerId")Long containerId){
 		List<SmallBoxUnifier> completed = smallBoxUnifierService.findByContainerId(containerId);
 		List<SmallBoxUnifierDto> completedDto = SmallBoxUnifierMapper.INSTANCE.toSmallBoxBuildersDto(completed);
 		return new ResponseEntity<List<SmallBoxUnifierDto>>(completedDto,HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/unified-all-by-container/{containerId}")
-	void deleteAllByContainerId(@PathVariable("containerId")Integer containerId) {
+	void deleteAllByContainerId(@PathVariable("containerId")Long containerId) {
 		log.info("Deleting all UnifiedSmallBox by container id");
 		smallBoxUnifierService.deleteAllByContainerId(containerId);
 	}

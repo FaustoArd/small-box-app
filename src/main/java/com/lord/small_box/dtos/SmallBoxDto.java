@@ -14,7 +14,7 @@ import lombok.Setter;
 public class SmallBoxDto {
 
 	
-	private Integer id;
+	private Long id;
 	
 	private Calendar date;
 	
@@ -22,7 +22,7 @@ public class SmallBoxDto {
 	
 	private String provider;
 	
-	private Integer inputId;
+	private Long inputId;
 	
 	private String description;
 	
@@ -32,7 +32,7 @@ public class SmallBoxDto {
 	
 	private BigDecimal subtotal;
 	
-	private Integer containerId;
+	private Long containerId;
 	
 
 }

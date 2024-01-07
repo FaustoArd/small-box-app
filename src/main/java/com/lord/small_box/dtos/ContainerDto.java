@@ -9,13 +9,11 @@ import lombok.Setter;
 @Setter
 public class ContainerDto {
 
-	private Integer id;
+	private Long id;
 	
 	private BigDecimal total;
 	
 	private String title;
-	
-	private String dependency;
 	
 	private String responsible;
 	

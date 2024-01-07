@@ -10,7 +10,7 @@ public interface InputService {
 	
 	public List<Input> findAll();
 	
-	public Input findById(Integer id);
+	public Input findById(Long id);
 	
 	public Input save(Input input);
 	

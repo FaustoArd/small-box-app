@@ -111,13 +111,13 @@ public class SmallBoxApplication {
 		
 			Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)
-					.title("CHICA").dependency("Direccion de administracion y despacho").responsible("Blasa Reyes").organization(dirAdmDesp) .build();
+					.title("CHICA").responsible("Blasa Reyes").organization(dirAdmDesp) .build();
 			Container savedContainer = containerService.save(container); 
 			
-			Input input211 = inputService.findById(1);
-			Input input212 = inputService.findById(2);
-			Input input213 = inputService.findById(3);
-			Input input219 = inputService.findById(6);
+			Input input211 = inputService.findById(1l);
+			Input input212 = inputService.findById(2l);
+			Input input213 = inputService.findById(3l);
+			Input input219 = inputService.findById(6l);
 			Calendar cal1 = Calendar.getInstance();
 			cal1.set(2023, 11, 4);
 			SmallBox smallBox1 = SmallBox.builder().date(cal1).ticketNumber("23423-234234")
