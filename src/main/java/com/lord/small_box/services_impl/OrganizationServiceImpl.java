@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.mappers.AppUserMapper;
 import com.lord.small_box.mappers.OrganizationMapper;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Organization;
@@ -61,8 +62,22 @@ public class OrganizationServiceImpl implements OrganizationService{
 		AppUser user = appUserService.findById(userId);
 		user.setOrganizations(organizations);
 		AppUser updatedUser = appUserService.save(user);
-		return "El usuario: " + updatedUser.getName() + updatedUser.getLastname() +
+		return "El usuario: " + updatedUser.getName()+ " " + updatedUser.getLastname() +
 				"Tiene asignada las siguientes dependencias: /n" + updatedUser.getOrganizations().stream().map(o -> o.getOrganizationName() + ",").toString();
+	}
+
+	@Override
+	public List<OrganizationDto> findOrganizationByUser(Long userId) {
+		List<OrganizationDto> orgsDto =  appUserService.findById(userId).getOrganizations().stream().map(org -> {
+			OrganizationDto orgDto = new OrganizationDto();
+			orgDto.setId(org.getId());
+			orgDto.setOrganizationName(org.getOrganizationName());
+			orgDto.setOrganizationNumber(org.getOrganizationNumber());
+			return orgDto;
+		
+		}).toList();
+		return orgsDto;
+		
 	}
 	
 }

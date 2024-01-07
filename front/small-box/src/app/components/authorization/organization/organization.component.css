@@ -17,3 +17,12 @@ button:hover{
 #colNames{
     background: linear-gradient(245.59deg, rgb(12, 34, 97) 0%, rgb(50, 35, 124) 28.53%, #34258a 75.52%);  
 }
+#btnApply{
+    background: linear-gradient(245.59deg, rgb(177, 28, 28) 0%, rgb(124, 35, 35) 28.53%, #8a2534 75.52%);  
+}
+span{
+    font-family: 'Noto Sans', sans-serif;
+}
+h2{
+    color: rgb(181, 17, 17);
+}

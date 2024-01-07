@@ -39,5 +39,10 @@ public class OrganizationController {
 		String result = organizationService.addOrganizationToUser(userId, organizationsId);
 		return new ResponseEntity<String>(gson.toJson(result),HttpStatus.OK);
 	}
+	@GetMapping("/all-orgs-by-user")
+	ResponseEntity<List<OrganizationDto>> findOrganizationsByUser(@RequestParam("userId")Long userId){
+		List<OrganizationDto> orgsDto = organizationService.findOrganizationByUser(userId);
+		return ResponseEntity.ok(orgsDto);
+	}
 
 }

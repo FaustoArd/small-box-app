@@ -36,5 +36,9 @@ export class OrganizationService {
     return this.http.put<string>(`${ORGANIZATION_BASE_URL}/add-organization?userId=${userId}&organizationsId=${organizationsId}`
     ,this.httpOptions).pipe(catchError(this.handleError));
    }
+
+   getAllOrganizationsByUser(userId:number):Observable<OrganizationDto[]>{
+    return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs-by-user`,this.httpOptions).pipe(catchError(this.handleError));
+   }
   
 }

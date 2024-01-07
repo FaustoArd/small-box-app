@@ -27,6 +27,9 @@ import { AuthInterceptor } from './components/interceptor/auth-interceptor';
 import { OrganizationComponent } from './components/authorization/organization/organization.component';
 
 
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,8 +59,11 @@ import { OrganizationComponent } from './components/authorization/organization/o
      MatToolbarModule,
      HttpClientModule,
      MatDialogModule,
-     NgxCaptureModule
+     NgxCaptureModule,
+    
+    
   ],
+ 
   providers: [CookieService,
   {
     provide: HTTP_INTERCEPTORS,

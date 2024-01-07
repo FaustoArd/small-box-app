@@ -1,9 +1,18 @@
 <app-navbar></app-navbar>
-<div class="container-flex mt-4">
+<div class="container-fluid mt-4">
   <div class="row">
+    <div class="col-md-7"></div>
+    <div class="col-md-4 ms-3">
+      <div *ngIf="userSelected!=null || undefined">
+        <span>Usuario seleccionado: </span>
+      <h2>{{userSelected.name}} {{userSelected.lastname}}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3">
    
     <div class="col-md-4 ms-3">
-      <table id="userTable" class="table table-bordered  w-100" >
+      <table id="userTable" class="table table-sm table-bordered  w-100" >
         <thead >
           <tr>
             <th  scope="col">ID</th>
@@ -11,7 +20,7 @@
             <th scope="col">Apellido</th>
             <th scope="col">Username</th>
             <th scope="col">Email</th>
-            <th scope="col">Asignar</th>
+            <th scope="col">Sel</th>
             <th scope="col">Ver</th>
           </tr>
         </thead>
@@ -23,19 +32,19 @@
             <td>{{user.username}}</td>
             <td>{{user.email}}</td>
             <td>
-              <button class="btn btn-sm mx-2" >-</button>
+              <button (click)="selectUser(user.id)" class="btn btn-sm mx-2" >-</button>
             
             </td>
             <td>
-              <button class="btn btn-sm">-</button>
+              <button  class="btn btn-sm">-</button>
             </td>
           </tr>
 
         </tbody>
       </table>
     </div>
-    <div class="col-md-4">
-      <table id="userTable" class="table table-bordered w-100" >
+    <div class="col-md-3">
+      <table id="userTable" class="table table-sm table-bordered w-100" >
         <thead >
           <tr>
             <th  scope="col">ID</th>
@@ -60,7 +69,7 @@
       </table>
     </div>
     <div class="col-md-3">
-      <table id="userTable" class="table table-bordered w-100" >
+      <table id="userTable" class="table table-sm table-bordered w-75" >
         <thead >
           <tr>
             <th  scope="col">ID</th>
@@ -69,7 +78,7 @@
            <th scope="col">Eliminar</th>
         </thead>
         <tbody>
-          <tr *ngFor="let org of organizationsDto">
+          <tr *ngFor="let org of orgsSelected">
             <th scope="row">{{org.id}}</th>
             <td>{{org.organizationName}}</td>
             <td>{{org.organizationNumber}}</td>
@@ -81,7 +90,18 @@
           </tr>
 
         </tbody>
+       
       </table>
+      
+     </div>
+     <div class="col-md-1">
+      <button  id="btnApply" *ngIf="orgsSelected.length>0" (click)="addOrganizationsToUser()" class="btn">Aplicar</button>
     </div>
+   
+     
+    
   </div>
+ 
+      
+   
 </div>

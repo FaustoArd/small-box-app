@@ -16,4 +16,6 @@ public interface OrganizationService {
 	public void deleteById(Long id);
 	
 	public String addOrganizationToUser(Long userId,List<Long> organizationsId);
+	
+	public List<OrganizationDto> findOrganizationByUser(Long userId);
 }
