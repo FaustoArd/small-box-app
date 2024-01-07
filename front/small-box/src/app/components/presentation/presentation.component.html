@@ -20,7 +20,8 @@
         <span id="rendicion">RENDICIÓN DE COMPROBANTES CANCELADOS CON FONDOS DE CAJA {{container.title}}</span>
     </div>
     <div class="col ms-5">
-        <h5 class="fw-bold">Moron, 24 de marzo de 2024</h5>
+        <h5 class="fw-bold">Moron, {{container.smallBoxDate | date:
+            'dd-MM-yyyy'}} </h5>
     </div>
     </div>
     <div class="row mt-2">
@@ -43,8 +44,8 @@
         <div class="col-md-1 ">
             <h4> Dependencia:</h4>
         </div>
-        <div class="col-md-2  ms-4 " *ngIf="container">
-            <h3 class=" ">{{container.dependency}}</h3>
+        <div class="col-md-4  ms-4 " *ngIf="container">
+            <h3 class=" ">{{container.organization}}</h3>
 
         </div>
 

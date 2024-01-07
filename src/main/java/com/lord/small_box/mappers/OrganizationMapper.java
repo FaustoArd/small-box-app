@@ -13,6 +13,7 @@ public interface OrganizationMapper {
 	
 	public static OrganizationMapper INSTANCE = Mappers.getMapper(OrganizationMapper.class);
 	
+	
 	public Organization toOrganization(OrganizationDto organizationDto);
 	
 	public OrganizationDto toOrganizationDto(Organization organization);

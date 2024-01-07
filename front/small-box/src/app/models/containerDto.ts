@@ -7,7 +7,7 @@ export class ContainerDto{
     
     title!:string;
     
-    dependency!:string;
+    organization!:string;
 
     responsible!:string;
     

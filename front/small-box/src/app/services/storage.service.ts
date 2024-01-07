@@ -8,7 +8,7 @@ export class StorageService {
   constructor() { }
 
 
-  getCurrentContainerId(){
+  /*getCurrentContainerId(){
     return window.localStorage.getItem("containerId");
   }
 
@@ -17,5 +17,5 @@ export class StorageService {
   }
   deleteCurrentContainerId(){
     window.localStorage.removeItem("containerId");
-  }
+  }*/
 }

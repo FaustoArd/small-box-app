@@ -6,6 +6,11 @@ import { ContainerDto } from 'src/app/models/containerDto';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { CookieService } from 'ngx-cookie-service';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
+import { OrganizationService } from 'src/app/services/organization.service';
+import { OrganizationComponent } from '../authorization/organization/organization.component';
+import { OrganizationDto } from 'src/app/models/organizationDto';
 
 @Component({
   selector: 'app-container',
@@ -19,15 +24,17 @@ container!:ContainerDto;
 errorData!:string;
 returnedData!:ContainerDto;
 smallBoxTypes: string[] = [];
+organizations:OrganizationDto[]=[];
 
-deps :string[] =  ['Secretaria de Desarrollo Social', 'Direccion de Administracion y Despacho'
-,'Subsecretaria de Politicas Socio Comunitarias']
+
 
   constructor(private formBuilder: FormBuilder,private containerService:ContainerService,
-    private router:Router,private storageService:StorageService,private snackBar:SnackBarService){ }
+    private router:Router,private cookieService:CookieStorageService,private snackBar:SnackBarService,
+    private organizationService:OrganizationService){ }
 
 
   ngOnInit(): void {
+    this.getOrganizationsByUserId();
     this.getSmallBoxTypes();
   }
 
@@ -37,15 +44,15 @@ deps :string[] =  ['Secretaria de Desarrollo Social', 'Direccion de Administraci
 
   containerFormBuilder = this.formBuilder.group({
    title:['', Validators.required],
-    dependency:['', Validators.required],
+    organization:['', Validators.required],
     responsible:['',Validators.required]
 });
 
 get title(){
     return this.containerFormBuilder.controls.title;
   }
-  get dependency(){
-    return this.containerFormBuilder.controls.dependency;
+  get organization(){
+    return this.containerFormBuilder.controls.organization;
   }
 
   get responsible(){
@@ -59,9 +66,9 @@ get title(){
       this.containerService.createContainer(this.container).subscribe({
         next:(contData)=>{
           this.returnedData = contData;
-          this.storageService.deleteCurrentContainerId();
-          this.storageService.setCurrentContainerId(JSON.stringify(this.returnedData.id));
-          console.log(this.storageService.getCurrentContainerId());
+          this.cookieService.deleteCurrentContainerId();
+          this.cookieService.setCurrentContainerId(JSON.stringify(this.returnedData.id));
+          console.log(this.cookieService.getCurrentContainerId());
 
         },
         error:(errorData)=>{
@@ -75,6 +82,17 @@ get title(){
         }
       })
     }
+  }
+
+  getOrganizationsByUserId():void{
+    this.organizationService.getAllOrganizationsByUser(Number(this.cookieService.getCurrentUserId())).subscribe({
+      next:(orgsData)=>{
+        this.organizations = orgsData;
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    })
   }
 
 }

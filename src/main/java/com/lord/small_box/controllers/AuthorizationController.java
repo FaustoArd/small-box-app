@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.AppUserLoginDto;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
-import com.lord.small_box.dtos.TokenResponseDto;
+import com.lord.small_box.dtos.LoginResponseDto;
 import com.lord.small_box.services.AuthorizationService;
 
 @RestController
@@ -30,9 +30,9 @@ public class AuthorizationController {
 	}
 	
 	@PostMapping("/login")
-	ResponseEntity<TokenResponseDto> login(@RequestBody AppUserLoginDto loginDto){
-		TokenResponseDto response = authorizationService.login(loginDto);
-		return new ResponseEntity<TokenResponseDto>(response,HttpStatus.OK);
+	ResponseEntity<LoginResponseDto> login(@RequestBody AppUserLoginDto loginDto){
+		LoginResponseDto response = authorizationService.login(loginDto);
+		return new ResponseEntity<LoginResponseDto>(response,HttpStatus.OK);
 	}
 	
 	

@@ -12,6 +12,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
 import { formatDate } from '@angular/common';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 
 @Component({
   selector: 'app-small-box',
@@ -31,7 +32,7 @@ export class SmallBoxComponent implements OnInit {
 
   constructor(private smallBoxService: SmallBoxService, private inputService: InputService
     , private formBuilder: FormBuilder, private snackBar: MatSnackBar, private router: Router,
-    private storageService: StorageService, private dialogService: DialogService) { }
+    private cookieService: CookieStorageService, private dialogService: DialogService) { }
 
 
 
@@ -73,7 +74,7 @@ export class SmallBoxComponent implements OnInit {
     if (this.smallBoxForm.valid) {
       this.smallbox = new SmallBoxDto();
       this.smallbox = Object.assign(this.smallbox, this.smallBoxForm.value);
-      this.smallBoxService.addSmallBox(this.smallbox, Number(this.storageService.getCurrentContainerId())).subscribe({
+      this.smallBoxService.addSmallBox(this.smallbox, Number(this.cookieService.getCurrentContainerId())).subscribe({
 
         next: (smallBoxData) => {
           this.smallbox = smallBoxData;
@@ -166,7 +167,7 @@ export class SmallBoxComponent implements OnInit {
   }
 
   getAllSmallBoxesByContainerId(): void {
-    this.smallBoxService.findSmallBoxesByContainerId(Number(this.storageService.getCurrentContainerId())).subscribe({
+    this.smallBoxService.findSmallBoxesByContainerId(Number(this.cookieService.getCurrentContainerId())).subscribe({
       next: (smallData) => {
 
         this.smallboxes = smallData;

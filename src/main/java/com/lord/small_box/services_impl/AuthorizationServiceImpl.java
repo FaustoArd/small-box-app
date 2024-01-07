@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
 import com.lord.small_box.dtos.AppUserLoginDto;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
-import com.lord.small_box.dtos.TokenResponseDto;
+import com.lord.small_box.dtos.LoginResponseDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.exceptions.LoginException;
 import com.lord.small_box.models.AppUser;
@@ -75,11 +75,15 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	}
 
 	@Override
-	public TokenResponseDto login(AppUserLoginDto appUserLoginDto) throws AuthenticationException {
+	public LoginResponseDto login(AppUserLoginDto appUserLoginDto) throws AuthenticationException {
 		try {
 	Authentication auth  = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUserLoginDto.getUsername(), appUserLoginDto.getPassword()));
 	String token = tokenService.generateJwt(auth);
-	return new TokenResponseDto(token);
+	LoginResponseDto loginResponseDto = new LoginResponseDto();
+	loginResponseDto.setToken(token);
+	loginResponseDto.setUserId(appUserService.findByUsername(appUserLoginDto.getUsername()).getId());
+	
+	return loginResponseDto;
 		}catch(AuthenticationException ex) {
 			throw new LoginException("Usuario o contraseña invalido");
 		}

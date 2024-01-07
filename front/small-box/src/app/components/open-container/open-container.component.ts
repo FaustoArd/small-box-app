@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ContainerDto } from 'src/app/models/containerDto';
 import { ContainerService } from 'src/app/services/container.service';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { StorageService } from 'src/app/services/storage.service';
 
@@ -14,7 +15,7 @@ export class OpenContainerComponent implements OnInit {
   containers:ContainerDto[]= [];
   errorData!:string;
 
-  constructor(private containerService:ContainerService,private storageService:StorageService,private snackBar:SnackBarService){}
+  constructor(private containerService:ContainerService,private cookieService:CookieStorageService,private snackBar:SnackBarService){}
 
   ngOnInit(): void {
       this.getAllContainers();
@@ -32,8 +33,8 @@ export class OpenContainerComponent implements OnInit {
     })
   }
 
-  setCurrentContainerId(id:number){
-    this.storageService.setCurrentContainerId(JSON.stringify(id));
+  setCurrentContainerId(containerId:number){
+    this.cookieService.setCurrentContainerId(JSON.stringify(containerId));
   }
 
   

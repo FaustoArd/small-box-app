@@ -20,4 +20,26 @@ export class CookieStorageService {
   deleteToken(){
     this.cookieService.delete('token');
   }
+
+  setCurrentContainerId(containerId:string){
+    this.cookieService.set('containerId', containerId);
+  }
+ 
+  getCurrentContainerId(){
+   return  this.cookieService.get('containerId');
+  }
+  deleteCurrentContainerId(){
+    this.cookieService.delete('containerId');
+  }
+
+  setCurrentUserId(userId:string){
+    this.cookieService.set('userId', userId);
+
+  }
+  getCurrentUserId(){
+    return this.cookieService.get('userId');
+  }
+  deleteCurrentUserId(){
+    this.cookieService.delete('userId');
+  }
 }

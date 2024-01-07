@@ -9,8 +9,9 @@ import { SmallBoxService } from 'src/app/services/small-box.service';
 import { StorageService } from 'src/app/services/storage.service';
 import autoTable from 'jspdf-autotable'
 import { auto } from '@popperjs/core';
-import {toPng,toJpeg, toBlob, toPixelData, toSvg} from 'html-to-image';
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 import * as htmlToImage from 'html-to-image';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 
 
 
@@ -25,49 +26,46 @@ export class CompletedSmallBoxComponent implements OnInit {
   completedSmallBox: SmallBoxUnifierDto[] = [];
   errorData!: string;
   container!: ContainerDto;
-  smallBoxCreated!:boolean;
- 
- 
+  smallBoxCreated!: boolean;
+
+
 
 
   constructor(private smallBoxService: SmallBoxService, private containerService: ContainerService,
-    private storageService: StorageService, private route: ActivatedRoute,private router:Router) { }
+    private cookieService: CookieStorageService, private route: ActivatedRoute, private router: Router) { }
 
 
   ngOnInit(): void {
-   
-    this.containerService.getContainerById(Number(this.storageService.getCurrentContainerId())).subscribe({
+    const containerId = Number(this.route.snapshot.paramMap.get('id'));
+    this.containerService.getContainerById(containerId).subscribe({
       next: (containerData) => {
         this.container = new ContainerDto();
         this.container = containerData;
-        
-      
+        this.cookieService.setCurrentContainerId(JSON.stringify(containerData.id));
         this.smallBoxCreated = containerData.smallBoxCreated;
-     
-        if(this.smallBoxCreated){
-          console.log(this.storageService.getCurrentContainerId());
-         this.deleteAllbyContainerId(Number(this.storageService.getCurrentContainerId()));
-         this.onCompleteSmallBox();
-         
-        }else{
-          this.deleteAllbyContainerId(Number(this.storageService.getCurrentContainerId()));
-        this.onCompleteSmallBox();
-       
+        if (this.smallBoxCreated) {
+          this.deleteAllbyContainerId(Number(this.cookieService.getCurrentContainerId()));
+          this.onCompleteSmallBox();
+
+        } else {
+          this.deleteAllbyContainerId(Number(this.cookieService.getCurrentContainerId()));
+          this.onCompleteSmallBox();
+
         }
       }, error: (errorData) => {
         this.errorData = errorData;
       }
     });
-  
-  
-   
-     
-   
+
+
+
+
+
   }
 
 
   onCompleteSmallBox(): void {
-    this.smallBoxService.completeSmallBox(Number(this.storageService.getCurrentContainerId())).subscribe({
+    this.smallBoxService.completeSmallBox(Number(this.cookieService.getCurrentContainerId())).subscribe({
       next: (compData) => {
         this.completedSmallBox = compData;
       },
@@ -79,11 +77,11 @@ export class CompletedSmallBoxComponent implements OnInit {
     });
   }
   getContainerById(): void {
-    this.containerService.getContainerById(Number(this.storageService.getCurrentContainerId())).subscribe({
+    this.containerService.getContainerById(Number(this.cookieService.getCurrentContainerId())).subscribe({
       next: (containerData) => {
         this.container = containerData;
         this.smallBoxCreated = containerData.smallBoxCreated;
-       
+
       }, error: (errorData) => {
         this.errorData = errorData;
       }
@@ -98,40 +96,40 @@ export class CompletedSmallBoxComponent implements OnInit {
       error: (erorrData) => {
         this.errorData = erorrData;
       },
-      complete:()=>{
+      complete: () => {
         this.router.navigateByUrl("/completed");
       }
     });
   }
 
-  deleteAllbyContainerId(containerId:number):void{
+  deleteAllbyContainerId(containerId: number): void {
     this.smallBoxService.deleteAllByContainerId(containerId).subscribe();
   }
 
-  exportToPdf(pages:HTMLElement){
+  exportToPdf(pages: HTMLElement) {
     const doc = new jsPDF({
-      unit:'px',
-    
+      unit: 'px',
+
     })
   }
-  captureScreen():void{
+  captureScreen(): void {
     const filename = 'test.pdf';
-    var node:any = document.getElementById('contentToConvert');
+    var node: any = document.getElementById('contentToConvert');
     htmlToImage.toPng(node)
-    .then(function (dataUrl){
-      var img = new Image();
-      img.src = dataUrl;
-      const pdf = new jsPDF('p','mm','a4');
-      pdf.setLineWidth(1);
-      pdf.addImage(img,'PNG',0,0,208,298);
-      pdf.save(filename);
-     
-    })
-    .catch(function(error){
-      console.error('something went wrong',error);
-    })
+      .then(function (dataUrl) {
+        var img = new Image();
+        img.src = dataUrl;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        pdf.setLineWidth(1);
+        pdf.addImage(img, 'PNG', 0, 0, 208, 298);
+        pdf.save(filename);
+
+      })
+      .catch(function (error) {
+        console.error('something went wrong', error);
+      })
   }
 
- 
- 
+
+
 }

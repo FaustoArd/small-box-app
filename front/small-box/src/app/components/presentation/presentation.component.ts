@@ -7,6 +7,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { NgxCaptureService } from 'ngx-capture';
 import { pipe, tap } from 'rxjs';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 
 
 
@@ -29,7 +30,7 @@ imgBase64 = '';
   container!: ContainerDto;
   smallBoxCreated!:boolean;
 
-constructor(private storageService:StorageService,private containerService:ContainerService,
+constructor(private cookieService:CookieStorageService,private containerService:ContainerService,
   private smallBoxService:SmallBoxService,private captureService:NgxCaptureService, private snackBarService:SnackBarService){}
   
 
@@ -42,7 +43,7 @@ ngOnInit(): void {
 }
 
   getContainerById(): void {
-    this.containerService.getContainerById(Number(this.storageService.getCurrentContainerId())).subscribe({
+    this.containerService.getContainerById(Number(this.cookieService.getCurrentContainerId())).subscribe({
       next: (containerData) => {
         this.container = new ContainerDto();
         this.container = containerData;

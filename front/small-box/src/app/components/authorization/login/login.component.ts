@@ -47,6 +47,8 @@ export class LoginComponent implements OnInit {
       this.authorizationService.loginUser(this.loginDto).subscribe({
         next: (tokenData) => {
           this.cookieService.setToken(tokenData.token);
+          this.cookieService.setCurrentUserId(JSON.stringify(tokenData.userId));
+        
         
         },
         error: (errorData) => {
