@@ -2,16 +2,12 @@ package com.lord.small_box.services_impl;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
-import com.lord.small_box.mappers.AppUserMapper;
 import com.lord.small_box.mappers.OrganizationMapper;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Organization;
@@ -60,15 +56,11 @@ public class OrganizationServiceImpl implements OrganizationService{
 		
 	}
 
-	
 	@Override
 	public String addOrganizationToUser(Long userId,List<Long> organizationsId) {
-	
 		
-		log.info("Add organization to user method");
-		log.info("Modificando usuario con id: " + userId );
 		AppUser user = appUserService.findById(userId);
-		log.info("Usuario encontrado: " + user.getName() + " " + user.getLastname());
+		log.info("Agregando organizacion al asuario: " + user.getName() + user.getLastname());
 		List<Organization> organizations = organizationRepository.findAllById(organizationsId);
 			user.setOrganizations(organizations);
 			AppUser updatedUser = appUserService.save(user);
@@ -76,11 +68,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 					"Tiene asignada las siguientes dependencias: " + updatedUser.getOrganizations().stream().map(o -> o.getOrganizationName())
 					.reduce((org , element) -> org +  ", " + element)
 					.orElse( "Ninguna");
-		
-		
-		
-		
-	}
+		}
 
 	@Override
 	public List<OrganizationDto> findOrganizationByUser(Long userId) {
@@ -92,8 +80,8 @@ public class OrganizationServiceImpl implements OrganizationService{
 			return orgDto;
 		
 		}).toList();
-		return orgsDto;
 		
+		return orgsDto;
 	}
 
 	@Override
