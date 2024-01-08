@@ -33,8 +33,9 @@ public class Container {
 	@Column(name="title")
 	private String title;
 	
-	@Column(name="responsible")
-	private String responsible; 
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+	@JoinColumn(name="responsible_id",referencedColumnName = "id")
+	private OrganizationResponsible responsible; 
 	
 	@Column(name="small_box_total")
 	private BigDecimal total;

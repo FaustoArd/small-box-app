@@ -107,8 +107,8 @@ public class SmallBoxApplication {
 		fabi.setLastname("Yanes");
 		OrganizationResponsible saveFabi = organizationResponsibleRepository.save(fabi);
 		OrganizationResponsible fontova = new OrganizationResponsible();
-		fabi.setName("Carlos");
-		fabi.setLastname("Fontova");
+		fontova.setName("Carlos");
+		fontova.setLastname("Fontova");
 		OrganizationResponsible saveFontova = organizationResponsibleRepository.save(fontova);
 			Organization org1= new Organization();
 			org1.setOrganizationName("Secretaria de desarrollo social");
@@ -136,7 +136,7 @@ public class SmallBoxApplication {
 		
 			Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)
-					.title("CHICA").responsible("Blasa Reyes").organization(dirAdmDesp).smallBoxCreated(true).build();
+					.title("CHICA").organization(dirAdmDesp).responsible(dirAdmDesp.getResponsible()).smallBoxCreated(true).build();
 			Container savedContainer = containerService.save(container); 
 			
 			Input input211 = inputService.findById(1l);

@@ -19,10 +19,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.Organization;
+import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SubTotal;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
+import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
@@ -44,6 +46,8 @@ public class CalculateSubTotalTest {
 	@Autowired
 	private OrganizationRepository organizationRepository;
 	
+	@Autowired
+	private OrganizationResponsibleRepository organizationResponsibleRepository;
 	
 	@Autowired
 	private ContainerService containerService;
@@ -76,15 +80,20 @@ public class CalculateSubTotalTest {
 		inputs.add(i222);
 		inputs.add(i223);
 		inputRepository.saveAll(inputs);
+		OrganizationResponsible pierpa = new OrganizationResponsible();
+		pierpa.setName("Roxana");
+		pierpa.setLastname("Pierpaoli");
+		OrganizationResponsible savedPierpa = organizationResponsibleRepository.save(pierpa);
 		
 		Organization secDesSocial = new Organization();
 		secDesSocial.setOrganizationName("Secretaria de Desarrollo Social");
 		secDesSocial.setOrganizationNumber(1);
+		secDesSocial.setResponsible(savedPierpa);
 		Organization savedSecDesSocial = organizationRepository.save(secDesSocial);
 			
 		
 		Container container = Container.builder().smallBoxDate(now)
-				.title("Caja chica Super").organization(savedSecDesSocial).responsible("Carlos Monzon").build();
+				.title("Caja chica Super").organization(savedSecDesSocial).responsible(savedSecDesSocial.getResponsible()).build();
 		Container savedContainer = containerService.save(container); 
 		containerId = savedContainer.getId();
 		Input input211 = inputService.findById(1l);

@@ -10,7 +10,9 @@ import com.lord.small_box.dtos.ContainerDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Organization;
+import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.repositories.ContainerRepository;
+import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.services.AppUserService;
 import com.lord.small_box.services.ContainerService;
 
@@ -22,6 +24,9 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Autowired
 	private final ContainerRepository containerRepository;
+	
+	@Autowired
+	private final OrganizationResponsibleRepository organizationResponsibleRepository;
 
 	@Autowired
 	private final AppUserService appUserService;
@@ -37,6 +42,9 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public Container save(Container container) {
+		OrganizationResponsible organizationResponsible  = organizationResponsibleRepository
+		.findByOrganization(container.getOrganization()).orElseThrow(()-> new ItemNotFoundException("Responsible not found"));
+		container.setResponsible(organizationResponsible);
 		container.setSmallBoxDate(now);
 		return containerRepository.save(container);
 
@@ -80,7 +88,7 @@ public class ContainerServiceImpl implements ContainerService {
 					ContainerDto containerDto = new ContainerDto();
 					containerDto.setId(container.getId());
 					containerDto.setOrganization(container.getOrganization().getOrganizationName());
-					containerDto.setResponsible(container.getResponsible());
+					containerDto.setResponsible(container.getResponsible().getName() + " " +  container.getResponsible().getLastname());
 					containerDto.setSmallBoxDate(container.getSmallBoxDate());
 					containerDto.setTitle(container.getTitle());
 					containerDto.setTotal(container.getTotal());

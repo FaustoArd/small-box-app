@@ -26,15 +26,6 @@
                     </select>
                 </div>
                 <div class="form-group mt-3">
-                    <label for="responsible" class="form-label fs-7">Responsable</label>
-                    <input class="form-control border-dark" type="text" formControlName="responsible" id="responsible">
-                    <div *ngIf="responsible.invalid && (responsible.dirty || responsible.touched)" class="text-danger">
-                        <div *ngIf="responsible.errors?.['required']">
-                            Falta el nombre...
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group mt-3">
                     <label for="organization" class="form-label fs-7">Dependencia</label>
                     <select id="organization" formControlName="organization" class="form-select border-dark">
                         <option value="">Seleccione una Dependencia</option>

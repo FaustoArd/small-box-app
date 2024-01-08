@@ -10,13 +10,16 @@ import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 })
 export class NavbarComponent implements OnInit {
 
-jwtList!:Array<string>;
+
+permission!:boolean;
 
 constructor(private cookieService:CookieStorageService,private router:Router){}
 
 
 ngOnInit(): void {
-    this.decodeToken();
+    if(this.decodeToken()){
+      this.permission==true;
+    }
 }
 
   onLogout(){
@@ -24,12 +27,13 @@ ngOnInit(): void {
     this.router.navigateByUrl("/login")
   }
   
-  decodeToken():void{
+  decodeToken():boolean{
     let token = this.cookieService.getToken();
     let decodedJWT = JSON.parse(window.atob(token.split('.')[1]));
-    console.log(decodedJWT.roles);
-  
-   
+    if(decodedJWT.roles==='ADMIN'){
+      return true;
+    }
+    return false;
   }
 
 

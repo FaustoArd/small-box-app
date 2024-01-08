@@ -34,7 +34,7 @@ organizations:OrganizationDto[]=[];
 
 
   ngOnInit(): void {
-    this.getOrganizationsByUserIdOrderAsc();
+    this.getOrganizationsByUserId();
     this.getSmallBoxTypes();
   }
 
@@ -44,8 +44,8 @@ organizations:OrganizationDto[]=[];
 
   containerFormBuilder = this.formBuilder.group({
    title:['', Validators.required],
-    organization:['', Validators.required],
-    responsible:['',Validators.required]
+    organization:['', Validators.required]
+   
 });
 
 get title(){
@@ -55,9 +55,7 @@ get title(){
     return this.containerFormBuilder.controls.organization;
   }
 
-  get responsible(){
-    return this.containerFormBuilder.controls.responsible;
-  }
+ 
 
   onCreateContainer(){
     if(this.containerFormBuilder.valid){
@@ -82,7 +80,7 @@ get title(){
     }
   }
 
-  getOrganizationsByUserIdOrderAsc():void{
+  getOrganizationsByUserId():void{
     this.organizationService.getAllOrganizationsByUser(Number(this.cookieService.getCurrentUserId())).subscribe({
       next:(orgsData)=>{
         this.organizations = orgsData;
