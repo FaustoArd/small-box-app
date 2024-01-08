@@ -37,5 +37,17 @@ export class OpenContainerComponent implements OnInit {
     this.cookieService.setCurrentContainerId(JSON.stringify(containerId));
   }
 
+  getAllContainersByOrganizationsByUser():void{
+    this.containerService.getAllContainersByOrganizationsbyUser(Number(this.cookieService.getCurrentUserId())).subscribe({
+      next:(containersData)=>{
+        this.containers = containersData;
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+
+    })
+  }
+
   
 }

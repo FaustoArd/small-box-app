@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.ContainerDto;
+import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.SmallBoxTypeDto;
 import com.lord.small_box.mappers.ContainerMapper;
 import com.lord.small_box.mappers.SmallBoxTypeMapper;
@@ -72,6 +73,11 @@ public class ContainerController {
 	ResponseEntity<String> setContainerTotalWrite(@RequestParam("containerId")Long containerId,@RequestParam("totalWrite")String totalWrite){
 		containerService.setContainerTotalWrite(containerId, totalWrite);
 		return ResponseEntity.ok(gson.toJson("Guardado!"));
+	}
+	@GetMapping("/all-by-organizations-by-user")
+	ResponseEntity<List<ContainerDto>> findAllbyOrganizations(@RequestParam("userId")Long userId){
+		List<ContainerDto> containersDto = containerService.findAllbyOrganizationsByUser(userId);
+		return ResponseEntity.ok(containersDto);
 	}
 	
 

@@ -40,6 +40,11 @@ export class ContainerService {
     return this.http.get<ContainerDto>(`${CONTAINER_BASE_URL}/${id}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
+  getAllContainersByOrganizationsbyUser(userId:number):Observable<ContainerDto[]>{
+    return this.http.get<ContainerDto[]>(`${CONTAINER_BASE_URL}/all-by-organizations-by-user?userId=${userId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   getAllContainers():Observable<ContainerDto[]>{
     return this.http.get<ContainerDto[]>(`${CONTAINER_BASE_URL}/all`,this.httpOptions).pipe(catchError(this.handleError));
   }
@@ -52,4 +57,6 @@ export class ContainerService {
     return this.http.put<string>(`${CONTAINER_BASE_URL}/set-total-write?containerId=${containerId}&totalWrite=${totalWrite}`, this.httpOptions)
     .pipe(catchError(this.handleError));
   }
+
+
 }
