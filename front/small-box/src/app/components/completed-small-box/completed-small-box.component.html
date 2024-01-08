@@ -1,5 +1,6 @@
 
 <app-navbar></app-navbar >
+    <div id="mainContainer"  class="container-flex">
 <div class="row">
     <div class="col-md-9"></div>
     <div  class="col-md-3 mt-3">
@@ -59,7 +60,7 @@
                        <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketTotal | currency: '$': 'symbol'}}</td>
                        <td scope="row"  id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold  text-dark">{{completed.subtotalTitle}}</td>
                         <td scope="row"  id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold   text-dark">{{completed.subtotal | currency: '$': 'symbol'}}</td>
-                        <td scope="row" class="fw-light">{{completed.inputNumber}}</td>
+                        <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.inputNumber}}</td>
                         
 
                         
@@ -70,12 +71,12 @@
     </div>
     <div class="row">
         <div class="col-md-9"></div>
-        <div class="col-md-3 mt-0">
+        <div class="col-md-3 mt-0 ">
            
-            <table id="tableTotal" class="table ">
+            <table id="tableTotal" class="table">
                
                 <tbody>
-                    <tr class="text-center">
+                    <tr class="text-center ">
                      
                        <th scope="row"  class="fw-bold  text-dark fs-5">Total:</th>
                         <th id="totalRow" scope="row"  class="fw-bold text-dark  fs-5" *ngIf="container">{{container.total | currency: '$': 'symbol'}}</th>
@@ -86,6 +87,23 @@
             </table>
         </div>
     </div>
+   
+        <div id="totalWrite" class="row mt-3">
+       
+            <div class="col-md-4 ms-0">
+                <div class="">Importa la presente rendición de cuentas la suma de pesos:</div>
+                    
+                 </div>
+                 <div class="col-md-5 mb-3  ms-1">
+                    <input type="text" #totalWrite class="form-control w-100" id="totalWriteInput" placeholder="Ingrese importe total en letras">
 
+                 </div>
+                 <div class="col">
+                    <button (click)="setTotalWrite(totalWrite.value)" class="btn">Aplicar</button>
+                 </div>
+                
+</div>
+
+</div>
 </div>
 

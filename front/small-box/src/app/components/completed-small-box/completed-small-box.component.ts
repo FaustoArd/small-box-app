@@ -12,6 +12,7 @@ import { auto } from '@popperjs/core';
 import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 import * as htmlToImage from 'html-to-image';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 
 
@@ -32,7 +33,7 @@ export class CompletedSmallBoxComponent implements OnInit {
 
 
   constructor(private smallBoxService: SmallBoxService, private containerService: ContainerService,
-    private cookieService: CookieStorageService, private route: ActivatedRoute, private router: Router) { }
+    private cookieService: CookieStorageService, private route: ActivatedRoute, private router: Router, private snackBar:SnackBarService) { }
 
 
   ngOnInit(): void {
@@ -125,6 +126,17 @@ export class CompletedSmallBoxComponent implements OnInit {
       .catch(function (error) {
         console.error('something went wrong', error);
       })
+  }
+
+  setTotalWrite(totalWrite:string):void{
+    console.log(totalWrite);
+    this.containerService.setContainerTotalWrite(Number(this.cookieService.getCurrentContainerId()), totalWrite).subscribe({
+      next:(totalData)=>{
+        this.snackBar.openSnackBar(totalData,'Cerrar', 3000);
+      },error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar', 3000);
+      }
+    })
   }
 
 

@@ -74,4 +74,8 @@ h5{
     font-family:'Quattrocento', serif; 
     font-weight: bold;
 }
+button{
+    background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
+    color:white
+}
 

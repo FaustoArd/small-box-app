@@ -1,5 +1,11 @@
 <app-navbar></app-navbar>
+<body  id="mainContainer">
+    
+
 <div class="container-flex">
+    
+
+<div  class="container-flex">
     <div class="row">
         <div class="col-md-10"></div>
         <div class="col-md-2">
@@ -8,7 +14,7 @@
     </div>
 
     <div class="row mt-5">
-        <form [formGroup]="smallBoxForm" class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+        <form [formGroup]="smallBoxForm" class="row w-100 g-6 form-group justifty-center text-center fw-bold ms-1">
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="date" class=" form-label fs-7 ">Fecha</label>
@@ -124,7 +130,7 @@
 
     </div>
 </div>
-
+</div>
 <ng-template #updateSmallBoxTemplate>
     <div class="container-fluid">
         <div class="row">
@@ -224,3 +230,4 @@
 </div>
 </div>
 </ng-template>
+</body>

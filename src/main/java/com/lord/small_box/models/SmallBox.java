@@ -55,7 +55,7 @@ public class SmallBox {
 	@JoinColumn(name="container_id", referencedColumnName = "id")
 	private Container container;
 	
-	@ManyToOne(cascade =  CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="subtotal_id", referencedColumnName = "id")
 	private SubTotal subtotal;
 	

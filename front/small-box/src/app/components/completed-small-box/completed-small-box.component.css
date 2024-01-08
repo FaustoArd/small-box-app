@@ -1,4 +1,8 @@
 
+#mainContainer{
+     background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
+    font-family: 'Quattrocento', serif;
+}
 
 #totalText{
    
@@ -19,5 +23,10 @@ button{
 }
 button:hover{
     background: linear-gradient(245.59deg, rgb(28, 97, 12) 0%, rgb(35, 124, 56) 28.53%, #258a2d 75.52%);
+}
+
+#totalWrite{
+    font-family:'Quattrocento', serif; 
+    font-weight: bold;
 }
 

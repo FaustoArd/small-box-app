@@ -44,6 +44,8 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	@Autowired
 	private final SmallBoxUnifierRepository smallBoxUnifierRepository;
 	
+	private static final String containerNotFound = "No se encontro el container";
+	
 	private static final Logger log = LoggerFactory.getLogger(SmallBoxServiceImpl.class);
 
 	private String currentInput;
@@ -66,7 +68,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 		Input input = inputRepository.findById(smallBox.getInput().getId())
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el input"));
 		Container container = containerRepository.findById(containerId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el container"));
+				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
 		smallBox.setInput(input);
 		smallBox.setContainer(container);
 		return smallBoxRepo.save(smallBox);
@@ -126,7 +128,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	@Override
 	public List<SmallBoxUnifier> completeSmallBox(Long containerId) {
 		log.info("Complete small box");
-		Container container = containerRepository.findById(containerId).orElseThrow(() -> new ItemNotFoundException("No se encontro el container"));
+		Container container = containerRepository.findById(containerId).orElseThrow(() -> new ItemNotFoundException(containerNotFound));
 		List<String> smallBoxes = findAllByContainerIdOrderByInputInputNumber(containerId).stream()
 				.map(s -> s.getInput().getInputNumber()).distinct().toList();
 		ListIterator<String> smIt = smallBoxes.listIterator();
@@ -160,7 +162,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	@Override
 	public void addAllTicketTotals(Long containerId) {
 		Double totalResult =  findAllByContainerId(containerId).stream().mapToDouble(sm -> sm.getTicketTotal().doubleValue()).sum();
-		Container container= containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException("No se encontro el container"));
+		Container container= containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException(containerNotFound));
 		//SmallBoxUnifier smUnifier = SmallBoxUnifier.builder().subtotalTitle("Total").subtotal(new BigDecimal(totalResult)).container(container).build();
 		//smallBoxUnifierRepository.save(smUnifier);
 		container.setTotal(new BigDecimal(totalResult));

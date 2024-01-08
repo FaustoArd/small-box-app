@@ -8,9 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.Gson;
 import com.lord.small_box.dtos.ContainerDto;
 import com.lord.small_box.dtos.SmallBoxTypeDto;
 import com.lord.small_box.mappers.ContainerMapper;
@@ -31,6 +35,8 @@ public class ContainerController {
 	private final ContainerService containerService;
 	
 	private final SmallBoxTypeRepository smallBoxTypeRepository;
+	
+	private final static Gson gson = new Gson();
 	
 	
 	@GetMapping("/all-types")
@@ -61,6 +67,11 @@ public class ContainerController {
 		Container container = containerService.findById(id);
 		ContainerDto containerDto = ContainerMapper.INSTANCE.toContainerDto(container);
 		return new ResponseEntity<ContainerDto>(containerDto,HttpStatus.OK);
+	}
+	@PutMapping("/set-total-write")
+	ResponseEntity<String> setContainerTotalWrite(@RequestParam("containerId")Long containerId,@RequestParam("totalWrite")String totalWrite){
+		containerService.setContainerTotalWrite(containerId, totalWrite);
+		return ResponseEntity.ok(gson.toJson("Guardado!"));
 	}
 	
 

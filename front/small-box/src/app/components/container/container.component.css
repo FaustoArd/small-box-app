@@ -1,0 +1,32 @@
+#mainContainer{
+    background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
+   font-family: 'Quattrocento', serif;
+}
+
+form{
+    background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
+    font-family: 'Quattrocento', serif; 
+}
+label{
+    font-family: 'Quattrocento', serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: rgb(5, 2, 2);
+}
+input{
+    font-family: 'Quattrocento', serif;
+    background: linear-gradient(245.59deg, rgb(185, 190, 202) 0%, rgb(212, 210, 224) 28.53%, #cdcbdb 75.52%);
+    color: white;
+}
+select{
+    font-family: 'Quattrocento', serif;
+    background: linear-gradient(245.59deg, rgb(208, 211, 219) 0%, rgb(212, 210, 224) 28.53%, #cdcbdb 75.52%);
+}
+button{
+    background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
+    color:white
+}
+
+button:hover{
+    background: linear-gradient(245.59deg, rgb(73, 174, 192) 0%, rgb(66, 151, 175) 28.53%,rgb(118, 180, 185)9 75.52%); 
+}

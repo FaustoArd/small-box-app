@@ -1,6 +1,9 @@
 
 <app-navbar *ngIf="downloaded"></app-navbar>
 <body #screen>
+    <div class="ms-3 mt-3">
+    <button routerLink="/completed" class="btn" *ngIf="downloaded">Volver a editar</button>
+</div>
     <div id="containerCSS"  class="container-fluid">
     <div class="row">
         <a id="logo" (click)="captureScreen()" class="col text-center">
@@ -117,7 +120,7 @@
                
             </div>
             <div class="col d-inline">
-                <div class="d-inline" >VEINTIDOS MIL CIENTO SETENTA CON 05/100</div>
+                <div class="d-inline" >{{container.totalWrite}}</div>
             </div>
        
     </div>

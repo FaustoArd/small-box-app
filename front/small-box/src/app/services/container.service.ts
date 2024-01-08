@@ -47,4 +47,9 @@ export class ContainerService {
   getAllSmallBoxesTypes():Observable<SmallBoxTypeDto[]>{
     return this.http.get<SmallBoxTypeDto[]>(`${CONTAINER_BASE_URL}/all-types`,this.httpOptions).pipe(catchError(this.handleError));
   }
+
+  setContainerTotalWrite(containerId:number,totalWrite:string):Observable<string>{
+    return this.http.put<string>(`${CONTAINER_BASE_URL}/set-total-write?containerId=${containerId}&totalWrite=${totalWrite}`, this.httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 }
