@@ -59,7 +59,7 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public List<Container> findAllByOrganizations(List<Organization> organizations) {
-		return containerRepository.findAllByOrganizationIn(organizations);
+		return containerRepository.findAllByOrganizationInOrderByIdAsc(organizations);
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class ContainerServiceImpl implements ContainerService {
 	@Override
 	public List<ContainerDto> findAllbyOrganizationsByUser(Long userId) {
 		return containerRepository
-				.findAllByOrganizationIn(
+				.findAllByOrganizationInOrderByIdAsc(
 						appUserService.findById(userId).getOrganizations().stream().map(org -> org).toList())
 				.stream().map(container -> {
 					ContainerDto containerDto = new ContainerDto();

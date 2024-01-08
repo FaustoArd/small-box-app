@@ -18,7 +18,7 @@ export class OpenContainerComponent implements OnInit {
   constructor(private containerService:ContainerService,private cookieService:CookieStorageService,private snackBar:SnackBarService){}
 
   ngOnInit(): void {
-      this.getAllContainers();
+      this.getAllContainersByOrganizationsByUser();
   }
 
   getAllContainers():void{

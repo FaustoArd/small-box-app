@@ -34,7 +34,7 @@ organizations:OrganizationDto[]=[];
 
 
   ngOnInit(): void {
-    this.getOrganizationsByUserId();
+    this.getOrganizationsByUserIdOrderAsc();
     this.getSmallBoxTypes();
   }
 
@@ -82,7 +82,7 @@ get title(){
     }
   }
 
-  getOrganizationsByUserId():void{
+  getOrganizationsByUserIdOrderAsc():void{
     this.organizationService.getAllOrganizationsByUser(Number(this.cookieService.getCurrentUserId())).subscribe({
       next:(orgsData)=>{
         this.organizations = orgsData;

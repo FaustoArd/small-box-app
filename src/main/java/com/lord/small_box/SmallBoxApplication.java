@@ -16,11 +16,13 @@ import com.lord.small_box.models.AuthorityName;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.Organization;
+import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.repositories.AuthorityRepository;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
+import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.ContainerService;
@@ -42,7 +44,8 @@ public class SmallBoxApplication {
 			SmallBoxTypeRepository smallBoxTypeRepository,
 			OrganizationRepository organizationRepository,
 			AuthorityRepository authorityRepository,
-			AuthorizationService authorizationService) {
+			AuthorizationService authorizationService,
+			OrganizationResponsibleRepository organizationResponsibleRepository) {
 		return args ->{
 			
 			Authority admin = new Authority();
@@ -91,18 +94,40 @@ public class SmallBoxApplication {
 		//List<Input> inputs = inputRepository.findAll();
 		//List<Input> result = inputs.stream().filter(f -> f.getInputNumber()<250).map(m -> m).collect(Collectors.toList());
 		//result.forEach(e -> System.out.println(e));
+		OrganizationResponsible reyes = new OrganizationResponsible();
+		reyes.setName("Blasa");
+		reyes.setLastname("Reyes");
+		OrganizationResponsible savedReyes = organizationResponsibleRepository.save(reyes);
+		OrganizationResponsible pierpa = new OrganizationResponsible();
+		pierpa.setName("Roxana");
+		pierpa.setLastname("Pierpaoli");
+		OrganizationResponsible savedPierpa = organizationResponsibleRepository.save(pierpa);
+		OrganizationResponsible fabi = new OrganizationResponsible();
+		fabi.setName("Fabian");
+		fabi.setLastname("Yanes");
+		OrganizationResponsible saveFabi = organizationResponsibleRepository.save(fabi);
+		OrganizationResponsible fontova = new OrganizationResponsible();
+		fabi.setName("Carlos");
+		fabi.setLastname("Fontova");
+		OrganizationResponsible saveFontova = organizationResponsibleRepository.save(fontova);
 			Organization org1= new Organization();
 			org1.setOrganizationName("Secretaria de desarrollo social");
 			org1.setOrganizationNumber(1);
+			org1.setResponsible(savedPierpa);
 			Organization org2 = new Organization();
 			org2.setOrganizationName("Direccion de administracion y despacho");
 			org2.setOrganizationNumber(2);
+			org2.setResponsible(savedReyes);
 			Organization org3 = new Organization();
 			org3.setOrganizationName("Direccion de logistica");
 			org3.setOrganizationNumber(3);
+			org3.setResponsible(saveFabi);
+			
 			Organization org4 = new Organization();
 			org4.setOrganizationName("Direccion de Niñez");
-			org4.setOrganizationNumber(4);;
+			org4.setResponsible(saveFontova);
+			org4.setOrganizationNumber(4);
+			
 			Organization secDesSocial = organizationRepository.save(org1);
 			Organization dirAdmDesp = organizationRepository.save(org2);
 			organizationRepository.save(org3);
