@@ -43,7 +43,7 @@ public class AppUser implements UserDetails {
 	@Column(name="username", unique = true)
 	private String username;
 	
-	@Column(name="email", unique = true)
+	@Column(name="email",unique = false)
 	private String email;
 	
 	@Column(name="password")

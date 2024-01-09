@@ -11,15 +11,13 @@ import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 export class NavbarComponent implements OnInit {
 
 
-permission!:boolean;
+auth!:boolean;
 
 constructor(private cookieService:CookieStorageService,private router:Router){}
 
 
 ngOnInit(): void {
-    if(this.decodeToken()){
-      this.permission==true;
-    }
+    this.auth = this.decodeToken();
 }
 
   onLogout(){

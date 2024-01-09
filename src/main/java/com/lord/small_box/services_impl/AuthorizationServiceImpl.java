@@ -99,7 +99,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		userDto.setLastname(user.getLastname());
 		userDto.setUsername(user.getUsername());
 		userDto.setEmail(user.getEmail());
-		userDto.setPassword(user.getPassword());
+		userDto.setPassword(null);
 		return userDto;
 	}
 

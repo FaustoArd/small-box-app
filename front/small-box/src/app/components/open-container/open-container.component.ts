@@ -13,9 +13,7 @@ import { StorageService } from 'src/app/services/storage.service';
 export class OpenContainerComponent implements OnInit {
 
   containers:ContainerDto[]= [];
-  errorData!:string;
-
-  constructor(private containerService:ContainerService,private cookieService:CookieStorageService,private snackBar:SnackBarService){}
+   constructor(private containerService:ContainerService,private cookieService:CookieStorageService,private snackBar:SnackBarService){}
 
   ngOnInit(): void {
       this.getAllContainersByOrganizationsByUser();
@@ -27,7 +25,7 @@ export class OpenContainerComponent implements OnInit {
         this.containers = containersData;
       },
       error:(errorData)=>{
-        this.errorData = errorData;
+      
         this.snackBar.openSnackBar(errorData + ", cierre sesion y vuelva a logearse",'Cerrar',3000);
       }
     })

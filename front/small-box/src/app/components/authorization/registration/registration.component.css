@@ -1,0 +1,26 @@
+form{
+    text-align: center;
+}
+
+.form-group{
+    margin-top: 0.6rem;
+}
+label{
+  
+    font-size: 18px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+input{
+    border:  solid 1px;
+    font-size: 14px;
+    font-family: 'Quattrocento', serif;
+}
+
+button{
+    margin-top: 0.8rem;
+    background: linear-gradient(245.59deg, rgb(142, 157, 202) 0%, rgb(79, 63, 152) 28.53%, #716e82 75.52%);
+}
+select{
+    font-family: 'Quattrocento', serif;
+}

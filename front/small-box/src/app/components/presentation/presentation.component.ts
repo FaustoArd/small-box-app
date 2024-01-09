@@ -65,7 +65,7 @@ ngOnInit(): void {
         this.completedSmallBox = smData;
       },
       error:(errorData)=>{
-        console.log(errorData);
+        this.snackBarService.openSnackBar(errorData,'Cerrar', 3000);
       }
     })
   }

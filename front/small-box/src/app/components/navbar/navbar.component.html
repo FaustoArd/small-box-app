@@ -10,7 +10,7 @@
                 <button mat-menu-item routerLink="/open-container">Abrir</button>
          </mat-menu>
         </div>
-        <div class="col-md-1 ms-5">
+        <div *ngIf="auth" class="col-md-1 ms-5">
             <button mat-button [matMenuTriggerFor]="userMenu" class="text-white">Usuarios</button>
             <mat-menu #userMenu yPosition="above">
                 <button mat-menu-item routerLink="/register">Nuevo</button>

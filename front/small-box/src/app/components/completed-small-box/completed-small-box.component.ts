@@ -1,16 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { ContainerDto } from 'src/app/models/containerDto';
 import { SmallBoxUnifierDto } from 'src/app/models/smallBoxUnifierDto';
 import { ContainerService } from 'src/app/services/container.service';
 import { SmallBoxService } from 'src/app/services/small-box.service';
-import { StorageService } from 'src/app/services/storage.service';
-import autoTable from 'jspdf-autotable'
-import { auto } from '@popperjs/core';
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
-import * as htmlToImage from 'html-to-image';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 
@@ -33,7 +26,8 @@ export class CompletedSmallBoxComponent implements OnInit {
 
 
   constructor(private smallBoxService: SmallBoxService, private containerService: ContainerService,
-    private cookieService: CookieStorageService, private route: ActivatedRoute, private router: Router, private snackBar:SnackBarService) { }
+    private cookieService: CookieStorageService, private route: ActivatedRoute, private router: Router, 
+    private snackBarService:SnackBarService) { }
 
 
   ngOnInit(): void {
@@ -104,37 +98,16 @@ export class CompletedSmallBoxComponent implements OnInit {
     this.smallBoxService.deleteAllUnifiedSamllBoxByContainerId(containerId).subscribe();
   }
 
-  exportToPdf(pages: HTMLElement) {
-    const doc = new jsPDF({
-      unit: 'px',
-
-    })
-  }
-  captureScreen(): void {
-    const filename = 'test.pdf';
-    var node: any = document.getElementById('contentToConvert');
-    htmlToImage.toPng(node)
-      .then(function (dataUrl) {
-        var img = new Image();
-        img.src = dataUrl;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        pdf.setLineWidth(1);
-        pdf.addImage(img, 'PNG', 0, 0, 208, 298);
-        pdf.save(filename);
-
-      })
-      .catch(function (error) {
-        console.error('something went wrong', error);
-      })
-  }
+ 
+  
 
   setTotalWrite(totalWrite:string):void{
     console.log(totalWrite);
     this.containerService.setContainerTotalWrite(Number(this.cookieService.getCurrentContainerId()), totalWrite).subscribe({
       next:(totalData)=>{
-        this.snackBar.openSnackBar(totalData,'Cerrar', 3000);
+        this.snackBarService.openSnackBar(totalData,'Cerrar', 3000);
       },error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar', 3000);
+        this.snackBarService.openSnackBar(errorData,'Cerrar', 3000);
       }
     })
   }

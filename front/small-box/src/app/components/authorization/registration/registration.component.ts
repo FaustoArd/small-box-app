@@ -4,6 +4,7 @@ import { AuthorityDto } from 'src/app/models/authorityDto';
 import { AppUserRegistrationDto } from 'src/app/models/appUserRegistrationDto';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 @Component({
   selector: 'app-registration',
@@ -25,7 +26,7 @@ authorities:string[] = [];
 
 
   constructor(private cookieService:CookieStorageService, private formBuilder:FormBuilder,
-    private authorizationService:AuthorizationService){}
+    private authorizationService:AuthorizationService, private snackBarService:SnackBarService){}
 
   ngOnInit(): void {
      this.getRoles();
@@ -76,9 +77,8 @@ authorities:string[] = [];
   }
 
   onSubmit(){
-    console.log(this.registerForm.value)
-    if(this.registerForm.value.password!==this.registerForm.value.repeatedPassword){
-      console.log("password are different!!");
+   if(this.registerForm.value.password!==this.registerForm.value.repeatedPassword){
+     this.snackBarService.openSnackBar("Los password son distintos!!",'Cerrar',3000);
      
     }else{
       if(this.registerForm.valid && this.authorityForm.valid){
@@ -86,18 +86,20 @@ authorities:string[] = [];
         this.registrationDto = Object.assign(this.registrationDto,this.registerForm.value);
         this.authorityDto = new AuthorityDto();
         this.authorityDto = Object.assign(this.authorityDto,this.authorityForm.value);
-        console.log(this.authorityDto.authority)
-        this.authorizationService.registerUser(this.registrationDto,this.authorityDto.authority).subscribe({
+       this.authorizationService.registerUser(this.registrationDto,this.authorityDto.authority).subscribe({
           next:(regData)=>{
             this.regResponseDto = regData;
-            console.log(this.regResponseDto.username);
+           
           },
           error:(errorData)=>{
-            console.log(errorData);
+            this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+          },
+          complete:()=>{
+            this.snackBarService.openSnackBar("Se guardo el usuario: " + this.regResponseDto.name + " " + this.regResponseDto.lastname,'Cerrar',3000);
           }
         });
       }else{
-        console.log('Error en los dtos')
+        this.snackBarService.openSnackBar("Datos invalidos!",'Cerrar',3000);
       }
     }
    

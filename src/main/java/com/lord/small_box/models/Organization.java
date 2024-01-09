@@ -30,7 +30,7 @@ public class Organization {
 	@Column(name="organization")
 	private String organizationName;
 	
-	@Column(name="organization_name")
+	@Column(name="organization_number")
 	private int organizationNumber;
 	
 	@OneToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)

@@ -13,6 +13,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
 import { formatDate } from '@angular/common';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 @Component({
   selector: 'app-small-box',
@@ -26,12 +27,12 @@ export class SmallBoxComponent implements OnInit {
   smallbox!: SmallBoxDto;
   updatedSmallBox!: SmallBoxDto;
   errorData!: string;
-  updatedData!:string;
-  formatedDate!:Date;
+  updatedData!: string;
+  formatedDate!: Date;
 
 
   constructor(private smallBoxService: SmallBoxService, private inputService: InputService
-    , private formBuilder: FormBuilder, private snackBar: MatSnackBar, private router: Router,
+    , private formBuilder: FormBuilder, private snackBar: SnackBarService, private router: Router,
     private cookieService: CookieStorageService, private dialogService: DialogService) { }
 
 
@@ -40,6 +41,7 @@ export class SmallBoxComponent implements OnInit {
     this.getAllInputs();
     this.getAllSmallBoxesByContainerId();
   }
+
   smallBoxForm = this.formBuilder.group({
     date: ['', Validators.required],
     ticketNumber: [0, Validators.required],
@@ -81,10 +83,10 @@ export class SmallBoxComponent implements OnInit {
         },
         error: (errorData) => {
           this.errorData = errorData;
-          this.onSnackBarMessage("Debe ingresar una descripcion o un input!");
+          this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
         },
         complete: () => {
-          this.onSnackBarMessage("Se agrego el ticket!")
+          this.snackBar.openSnackBar("Se agrego el ticket!", 'Cerrar', 3000);
           this.smallBoxForm.reset();
           this.getAllSmallBoxesByContainerId();
         }
@@ -123,7 +125,7 @@ export class SmallBoxComponent implements OnInit {
 
   private matDialogRef!: MatDialogRef<DialogTemplateComponent>
 
-  openDialogSmallBoxUpdate(id:number,template: TemplateRef<any>) {
+  openDialogSmallBoxUpdate(id: number, template: TemplateRef<any>) {
     this.getSmallBoxById(id);
     this.matDialogRef = this.dialogService.openDialogCreation({
       template
@@ -134,17 +136,17 @@ export class SmallBoxComponent implements OnInit {
 
   }
 
-  updateSmallBox():void{
-    if(this.updateSmallBoxForm.valid){
-      this.updatedSmallBox = Object.assign(this.updatedSmallBox,this.updateSmallBoxForm.value);
+  updateSmallBox(): void {
+    if (this.updateSmallBoxForm.valid) {
+      this.updatedSmallBox = Object.assign(this.updatedSmallBox, this.updateSmallBoxForm.value);
       this.smallBoxService.updateSmallBox(this.updatedSmallBox).subscribe({
-        next:(smData)=>{
-         this.onSnackBarMessage(smData);
+        next: (smData) => {
+          this.snackBar.openSnackBar(smData, 'Close', 3000);
         },
-        error:(errorData)=>{
-          this.onSnackBarMessage(errorData);
+        error: (errorData) => {
+          this.snackBar.openSnackBar(errorData, 'Close', 3000);
         },
-        complete:()=>{
+        complete: () => {
           this.getAllSmallBoxesByContainerId();
           this.update();
         }
@@ -156,12 +158,10 @@ export class SmallBoxComponent implements OnInit {
   getAllSmallBoxes(): void {
     this.smallBoxService.findSmallBoxes().subscribe({
       next: (smallData) => {
-
         this.smallboxes = smallData;
       },
       error: (errorData) => {
-        this.errorData = errorData;
-        this.onSnackBarMessage(this.errorData);
+        this.snackBar.openSnackBar(errorData, 'Close', 3000);
       }
     })
   }
@@ -169,12 +169,10 @@ export class SmallBoxComponent implements OnInit {
   getAllSmallBoxesByContainerId(): void {
     this.smallBoxService.findSmallBoxesByContainerId(Number(this.cookieService.getCurrentContainerId())).subscribe({
       next: (smallData) => {
-
         this.smallboxes = smallData;
       },
       error: (errorData) => {
-        this.errorData = errorData;
-        this.onSnackBarMessage(this.errorData);
+        this.snackBar.openSnackBar(errorData, 'Close', 3000);
       }
 
     });
@@ -187,55 +185,40 @@ export class SmallBoxComponent implements OnInit {
         this.inputs = inputData;
       },
       error: (errorData) => {
-        this.errorData = errorData;
+        this.snackBar.openSnackBar(errorData, 'Close', 3000);
       }
     })
   }
 
-  convertDate():void{
-   
+  convertDate(): void {
+
   }
 
   getSmallBoxById(id: number): void {
     this.smallBoxService.getSmallBoxById(id).subscribe({
       next: (smData) => {
         this.updatedSmallBox = smData;
-     this.onUpdateSmallBoxShow();
+        this.onUpdateSmallBoxShow();
 
       },
-      error:(errorData)=>{
-        this.errorData = errorData;
-        this.onSnackBarMessage(this.errorData);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Close', 3000);
       }
     });
   }
 
-  deleteSmallBoxById(id:number):void{
+  deleteSmallBoxById(id: number): void {
     this.smallBoxService.deleteSmallBoxById(id).subscribe({
-      next:(smData)=>{
-        this.onSnackBarMessage(smData);
+      next: (smData) => {
+        this.snackBar.openSnackBar(smData, 'Close', 3000);
       },
-      error:(errorData)=>{
-        this.onSnackBarMessage(errorData);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Close', 3000);
       },
-      complete:()=>{
+      complete: () => {
         this.getAllSmallBoxesByContainerId();
       }
 
     })
   }
-
-
-
-  onSnackBarMessage(message: any) {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 3000,
-      verticalPosition: 'top',
-      horizontalPosition: 'center',
-
-    });
-  }
-
-
-
 }

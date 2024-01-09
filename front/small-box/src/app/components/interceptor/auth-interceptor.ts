@@ -7,15 +7,13 @@ import { Router } from "@angular/router";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-    httpError!:HttpErrorResponse;
+    httpError!: HttpErrorResponse;
     constructor(private cookieService: CookieStorageService, private router: Router) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
         const token = this.cookieService.getToken();
         if (token !== '') {
-          
-
             const authReq = req.clone({
                 headers: req.headers.set('Authorization', 'Bearer ' + token)
             })
@@ -28,5 +26,5 @@ export class AuthInterceptor implements HttpInterceptor {
         return next.handle(authReq)
     }
 
-   
+
 }

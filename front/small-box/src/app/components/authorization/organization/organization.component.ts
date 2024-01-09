@@ -127,7 +127,7 @@ getAllOrganizationsById(organizationsId:Array<number>):void{
       error:(errorData)=>{
         this.snackBarService.openSnackBar(errorData,'Cerrar',5000);
       },complete:()=>{
-        console.log("hola")
+       
        this.router.navigateByUrl('/org')
       }
     });
