@@ -79,7 +79,10 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 		log.info("Updating smallbox");
 		Input input = inputRepository.findById(smallBox.getInput().getId())
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el input"));
+		Container container = containerRepository.findById(smallBox.getContainer().getId())
+				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
 		smallBox.setInput(input);
+		smallBox.setContainer(container);
 		return smallBoxRepo.save(smallBox);
 	}
 	
@@ -87,6 +90,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 
 	@Override
 	public void delete(Long id) {
+		log.info("Deleting smallbox");
 		if (smallBoxRepo.existsById(id)) {
 			smallBoxRepo.deleteById(id);
 		} else {
@@ -161,10 +165,9 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	@Transactional
 	@Override
 	public void addAllTicketTotals(Long containerId) {
+		log.info("Add total $ amount to container");
 		Double totalResult =  findAllByContainerId(containerId).stream().mapToDouble(sm -> sm.getTicketTotal().doubleValue()).sum();
 		Container container= containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException(containerNotFound));
-		//SmallBoxUnifier smUnifier = SmallBoxUnifier.builder().subtotalTitle("Total").subtotal(new BigDecimal(totalResult)).container(container).build();
-		//smallBoxUnifierRepository.save(smUnifier);
 		container.setTotal(new BigDecimal(totalResult));
 		 containerRepository.save(container);
 		

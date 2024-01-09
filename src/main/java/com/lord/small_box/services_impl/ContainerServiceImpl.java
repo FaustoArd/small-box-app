@@ -3,6 +3,8 @@ package com.lord.small_box.services_impl;
 import java.util.Calendar;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +33,11 @@ public class ContainerServiceImpl implements ContainerService {
 	@Autowired
 	private final AppUserService appUserService;
 
-	private static final String strNotFound = "Container not found";
+	private static final String containerNotFound = "Container not found";
 
 	private static final Calendar now = Calendar.getInstance();
+	
+	private static final Logger log = LoggerFactory.getLogger(ContainerServiceImpl.class);
 
 	@Override
 	public List<Container> findAll() {
@@ -42,6 +46,7 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public Container save(Container container) {
+		log.info("Save container");
 		OrganizationResponsible organizationResponsible  = organizationResponsibleRepository
 		.findByOrganization(container.getOrganization()).orElseThrow(()-> new ItemNotFoundException("Responsible not found"));
 		container.setResponsible(organizationResponsible);
@@ -52,7 +57,11 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public Container findById(Long id) {
-		return containerRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(strNotFound));
+		Container container =  containerRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(containerNotFound));
+		OrganizationResponsible organizationResponsible  = organizationResponsibleRepository
+				.findByOrganization(container.getOrganization()).orElseThrow(()-> new ItemNotFoundException("Responsible not found"));
+				container.setResponsible(organizationResponsible);
+				return container;
 	}
 
 	@Override
@@ -60,20 +69,21 @@ public class ContainerServiceImpl implements ContainerService {
 		if (containerRepository.existsById(id)) {
 			containerRepository.deleteById(id);
 		} else {
-			throw new ItemNotFoundException(strNotFound);
+			throw new ItemNotFoundException(containerNotFound);
 		}
 
 	}
 
 	@Override
 	public List<Container> findAllByOrganizations(List<Organization> organizations) {
+		log.info("Fetch all containers by organizations");
 		return containerRepository.findAllByOrganizationInOrderByIdAsc(organizations);
 	}
 
 	@Override
 	public void setContainerTotalWrite(Long containerId, String totalWrite) {
 		Container container = containerRepository.findById(containerId)
-				.orElseThrow(() -> new ItemNotFoundException(strNotFound));
+				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
 		container.setTotalWrite(totalWrite);
 		containerRepository.save(container);
 
@@ -81,6 +91,7 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public List<ContainerDto> findAllbyOrganizationsByUser(Long userId) {
+		log.info("Fetch all containers by user( \"id\" ) assigned organization");
 		return containerRepository
 				.findAllByOrganizationInOrderByIdAsc(
 						appUserService.findById(userId).getOrganizations().stream().map(org -> org).toList())
