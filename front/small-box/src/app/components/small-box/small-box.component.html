@@ -7,13 +7,21 @@
 
 <div  class="container-flex">
     <div class="row">
-        <div class="col-md-10"></div>
+       <div class="col-md-5"></div>
+        <div class="col-md-2 ms-5">
+        <button id="create" routerLink="/completed"
+         class=" btn btn-md btn-success bt-transparent border-dark text-white fw-bold mt-2">Confeccionar</button>
+         <p> <small>Haga click aqui para confeccionar la rendicion</small></p>
+    </div>
         <div class="col-md-2">
-            <button  routerLink="/completed" class="btn btn-success bt-transparent border-dark text-white fw-bold mt-2">Confeccionar</button>
         </div>
     </div>
-
-    <div class="row mt-5">
+    <div class="row">
+        <div class="col ms-2">
+            <p><small>Ingresar datos de la factura: </small></p>
+        </div>
+    </div>
+    <div class="row mt-0">
         <form [formGroup]="smallBoxForm" class="row w-100 g-6 form-group justifty-center text-center fw-bold ms-1">
             <div class="col-md-2">
                 <div class="form-group">

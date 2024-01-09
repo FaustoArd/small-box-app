@@ -1,0 +1,36 @@
+body{
+    background: linear-gradient(245.59deg, rgb(206, 210, 220)60%, rgb(220, 218, 233) 30%, #d3d0e8 79%);
+   
+}
+jumbotron{
+   
+    background-color: aliceblue;
+}
+
+.btn{
+    background: linear-gradient(245.59deg, rgb(153, 53, 53)20%, rgb(175, 80, 88) 30%, #eb2222 79%); 
+    color:red;
+}
+.btn:hover{
+    background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
+    color:rgb(215, 154, 41);
+}
+
+
+h1{
+    font-family: 'Noto Sans', sans-serif;
+}
+
+p{
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+}
+
+#mainTitle{
+    font-weight: bold;
+    font-family: 'Merienda', cursive;
+
+    background: linear-gradient(245.59deg, rgb(206, 210, 220)60%, rgb(220, 218, 233) 30%, #d3d0e8 79%);
+    color:#010802;
+font-size: 3rem;
+}
