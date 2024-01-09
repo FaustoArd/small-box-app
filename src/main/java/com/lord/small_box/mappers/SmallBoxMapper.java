@@ -27,7 +27,11 @@ public interface  SmallBoxMapper {
 	public SmallBoxDto toSmallBoxDto(SmallBox smallBox);
 		
 	
-	
+	@Mapping(target="inputNumber",source="input.inputNumber" )
+	@Mapping(target="description", source="input.description")
+	@Mapping(target="inputId", source="input.id")
+	@Mapping(target="containerId", source="container.id")
+	@Mapping(target="subtotal", source="subtotal.subtotal")
 	public abstract List<SmallBoxDto> toSmallBoxesDtos(List<SmallBox> smallBoxes);
 	
 	

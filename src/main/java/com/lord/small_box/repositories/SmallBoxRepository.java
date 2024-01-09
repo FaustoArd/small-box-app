@@ -20,5 +20,7 @@ public interface SmallBoxRepository extends JpaRepository<SmallBox, Long> {
 	public Integer countByInputInputNumber(String inputNumber);
 	
 	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Long id);
+	
+	
 
 }

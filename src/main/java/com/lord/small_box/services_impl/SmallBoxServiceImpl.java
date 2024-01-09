@@ -77,7 +77,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	@Override
 	public SmallBox update(SmallBox smallBox) {
 		log.info("Updating smallbox");
-		Input input = inputRepository.findById(smallBox.getInput().getId())
+		Input input = inputRepository.findByDescription(smallBox.getInput().getDescription())
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el input"));
 		smallBox.setInput(input);
 		return smallBoxRepo.save(smallBox);

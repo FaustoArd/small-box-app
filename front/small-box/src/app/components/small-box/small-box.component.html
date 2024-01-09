@@ -74,20 +74,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-1">
-                <div class="form-group">
-                    <label for="inputNumber" class="form-label fs-7">Input</label>
-                    <select id="input-number" formControlName="inputId" class="form-select border-dark">
-                        <option type="number" class="form-control" *ngFor="let input of inputs" id="input-number"
-                            [value]="input.id">
-                            {{input.inputNumber}}</option>
-                      
-                    </select>
-
-                </div>
-
-            </div>
-
+           
             <div class="col-md-1 mt-4">
 
                 <button type="submit" (click)="onAddSmallBox()"
@@ -176,7 +163,7 @@
                 <select id="description" formControlName="description" class="form-select  border-dark">
                     <option >{{updatedSmallBox.description}}</option>
                     <option type="number" class="form-control border-dark " *ngFor="let input of inputs"
-                        id="categoryId" [value]="input.id">
+                        id="categoryId" [value]="input.description">
                         {{input.description}}</option>
                     <div *ngIf="description.invalid && (description.dirty || description.touched)"
                         class="text-danger">
@@ -201,22 +188,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="form-group">
-                <label for="inputNumber" class="form-label fs-7">Input</label>
-                <select id="input-number" formControlName="inputId" class="form-select border-dark">
-                    <option >{{updatedSmallBox.inputNumber}}</option>
-                    <option type="number" class="form-control" *ngFor="let input of inputs" id="input-number"
-                        [value]="input.id">
-                        {{input.inputNumber}}</option>
-                    <div *ngIf="inputNumber.invalid && (inputNumber.dirty || description.touched)"
-                        class="text-danger">
-                        <div *ngIf="description.errors?.['invalid']">
-                            Debes seleccionar un input
-                        </div>
-                    </div>
-                </select>
-
-            </div>
+          
 
         </div>
 

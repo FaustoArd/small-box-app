@@ -49,7 +49,7 @@ export class SmallBoxComponent implements OnInit {
     inputId: [0],
     description: [''],
     ticketTotal: [0, Validators.required],
-    inputNumber: [0],
+   
   });
   get date() {
 
@@ -61,9 +61,7 @@ export class SmallBoxComponent implements OnInit {
   get provider() {
     return this.smallBoxForm.controls.provider
   }
-  get inputNumber() {
-    return this.smallBoxForm.controls.inputNumber
-  }
+ 
   get description() {
     return this.smallBoxForm.controls.description
   }
@@ -118,8 +116,8 @@ export class SmallBoxComponent implements OnInit {
       provider: this.updatedSmallBox.provider,
       inputId: this.updatedSmallBox.inputId,
       description: this.updatedSmallBox.description,
-      ticketTotal: this.updatedSmallBox.ticketTotal,
-      inputNumber: this.updatedSmallBox.inputNumber,
+      ticketTotal: this.updatedSmallBox.ticketTotal
+     
     });
   }
 
