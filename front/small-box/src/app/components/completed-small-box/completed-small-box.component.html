@@ -1,109 +1,120 @@
+<app-navbar></app-navbar>
+<body id="mainContainer">
+    
 
-<app-navbar></app-navbar >
-    <div id="mainContainer"  class="container-flex">
-<div class="row">
-    <div class="col-md-9"></div>
-    <div  class="col-md-3 mt-3">
-        <button routerLink="/small-box" class="btn">Editar</button>
-        <button class="btn  ms-4" title="Share s PDF" routerLink="/presentation" >Ver presentacion</button>
-    </div>
-   
-</div>
-<div id="contentToConvert"  class="container-flex">
-  
-   <div   class="row ms-3 mt-5 ">
-    <div class="col-md-2 fw-italic fs-7">
-    Tipo :
-</div>
-<div class="col-md-2 fw-bold fs-6" *ngIf="container"> {{container.title}} </div>
-</div>
-<div class="row ms-3 mt-2  ">
-    <div class="col-md-2 fw-italic fs-7">
-        Dependencia :
-    </div>
-    <div class="col-md-2 fw-bold fs-6" *ngIf="container"> {{container.organization}} </div>
-  
-</div>
-<div class="row ms-3 mt-2  ">
-    <div class="col-md-2 fw-italic fs-7">
-        Responsable : 
-    </div>
-    <div class="col-md-2 fw-bold fs-6" *ngIf="container">{{container.responsible}}</div>
-  
-</div>
-    <div class="row">
-        <div class="col mt-5">
-           
-            <table  id="pdfDiv"  class="table table-fluid table-hover table-bordered border border-dark">
-                <thead>
-                    <tr class="bg-primary fw-bold text-center">
-                        <th scope="col">Fecha</th>
-                       <th scope="col">Numero de factura</th>
-                        <th scope="col">Razon social</th>
-                        <th scope="col">Descripcion</th>
-                        <th  scope="col">Importe</th>
-                        <th scope="col">Input</th>
-                       
-                       
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="text-center" *ngFor="let completed of completedSmallBox">
-                       <td scope="row"  *ngIf="completed.subtotal==null" class="fw-light">{{completed.date | date: 'dd-MM-yyyy'}}</td>
-                       <td scope="row" id="rowCompleted"  *ngIf="completed.subtotal!=null" class="fw-bold "></td>
-                       <td scope="row"  *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketNumber}}</td>
-                       <td scope="row"  id="rowCompleted"  *ngIf="completed.subtotal!=null" class="fw-bold"></td>
-                       <td scope="row"  *ngIf="completed.subtotal==null" class="fw-light">{{completed.provider}}</td>
-                       <td scope="row"  id="rowCompleted"  *ngIf="completed.subtotal!=null" class="fw-bold "></td>
-                       <td scope="row"  *ngIf="completed.subtotal==null"  class="fw-light">{{completed.description}}</td>
-                       <td scope="row"  id="rowCompleted"  *ngIf="completed.subtotal!=null"  class="fw-bold"></td>
-                       <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketTotal | currency: '$': 'symbol'}}</td>
-                       <td scope="row"  id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold  text-dark">{{completed.subtotalTitle}}</td>
-                        <td scope="row"  id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold   text-dark">{{completed.subtotal | currency: '$': 'symbol'}}</td>
-                        <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.inputNumber}}</td>
-                        
-
-                        
-                    </tr>
-                 </tbody>
-            </table>
-        </div>
-    </div>
+<div  class="container-flex">
     <div class="row">
         <div class="col-md-9"></div>
-        <div class="col-md-3 mt-0 ">
-           
-            <table id="tableTotal" class="table">
-               
-                <tbody>
-                    <tr class="text-center ">
-                     
-                       <th scope="row"  class="fw-bold  text-dark fs-5">Total:</th>
-                        <th id="totalRow" scope="row"  class="fw-bold text-dark  fs-5" *ngIf="container">{{container.total | currency: '$': 'symbol'}}</th>
-                        <th scope="row"  class="fw-bold  text-dark fs-5"></th>
-                                           
-                    </tr>
-                 </tbody>
-            </table>
+        <div class="col-md-3 mt-3">
+            <button routerLink="/small-box" class="btn">Editar</button>
+            <button class="btn  ms-4" title="Share s PDF" routerLink="/presentation">Ver presentacion</button>
         </div>
+
     </div>
-   
-        <div id="totalWrite" class="row mt-3">
-       
-            <div class="col-md-4 ms-0">
-                <div class="">Importa la presente rendición de cuentas la suma de pesos:</div>
-                    
-                 </div>
-                 <div class="col-md-5 mb-3  ms-1">
-                    <input type="text" #totalWrite class="form-control w-100" id="totalWriteInput" placeholder="Ingrese importe total en letras">
+    <div class="container-flex">
+        <div class="row ms-3 mt-3">
+            <div class="col-md-2 fw-italic fs-7">
+                Fecha :
+            </div>
+            <div class="col-md-2 fw-bold fs-6" *ngIf="container"> {{container.smallBoxDate | date:
+                'dd-MM-yyyy'}} </div>
+        </div>
+        <div class="row ms-3 mt-2 ">
+            <div class="col-md-2 fw-italic fs-7">
+                Tipo :
+            </div>
+            <div class="col-md-2 fw-bold fs-6" *ngIf="container">CAJA {{container.title}} </div>
+        </div>
+        <div class="row ms-3 mt-2  ">
+            <div class="col-md-2 fw-italic fs-7">
+                Dependencia :
+            </div>
+            <div class="col-md-2 fw-bold fs-6" *ngIf="container"> {{container.organization}} </div>
 
-                 </div>
-                 <div class="col">
-                    <button (click)="setTotalWrite(totalWrite.value)" class="btn">Aplicar</button>
-                 </div>
-                
-</div>
+        </div>
+        <div class="row ms-3 mt-2  ">
+            <div class="col-md-2 fw-italic fs-7">
+                Responsable :
+            </div>
+            <div class="col-md-2 fw-bold fs-6" *ngIf="container">{{container.responsible}}</div>
 
-</div>
-</div>
+        </div>
+        <div class="row">
+            <div class="col mt-5">
 
+                <table id="pdfDiv" class="table table-fluid table-hover table-bordered border border-dark">
+                    <thead>
+                        <tr class="bg-primary fw-bold text-center">
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Numero de factura</th>
+                            <th scope="col">Razon social</th>
+                            <th scope="col">Descripcion</th>
+                            <th scope="col">Importe</th>
+                            <th scope="col">Input</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" *ngFor="let completed of completedSmallBox">
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.date | date:
+                                'dd-MM-yyyy'}}</td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold "></td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketNumber}}
+                            </td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold"></td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.provider}}
+                            </td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold "></td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.description}}
+                            </td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold"></td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketTotal |
+                                currency: '$': 'symbol'}}</td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null"
+                                class="fw-bold  text-dark">{{completed.subtotalTitle}}</td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null"
+                                class="fw-bold   text-dark">{{completed.subtotal | currency: '$': 'symbol'}}</td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.inputNumber}}
+                            </td>
+
+
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div  id="totalCont" class="row">
+            <div class="col-md-9"></div>
+            <div *ngIf="container" class="row">
+                <div class="col-md-9 ms-5"></div>
+                <div  class="col-md-1 mt-0 ms-5 ">
+                    <h2 class="d-inline" >Total:</h2>
+                </div>
+                <div class="col-md-1 ms-2">
+                    <h2 class="d-inline ms-3" >{{container.total | currency: '$'}}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div id="totalWrite" class="row mt-0">
+
+            <div class="col-md-3 ms-2 mt-3">
+                <div id="legend">Importa la presente rendición de cuentas la suma de pesos:</div>
+
+            </div>
+            <div class="col-md-5 mt-2  ms-0">
+                <input type="text" #totalWrite class="form-control w-100 h-75"  id="totalWriteInput"
+                    placeholder="Ingrese importe total en letras">
+
+            </div>
+            <div class="col-md-2 mt-2">
+                <button (click)="setTotalWrite(totalWrite.value)" class="btn">Aplicar</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+</body>

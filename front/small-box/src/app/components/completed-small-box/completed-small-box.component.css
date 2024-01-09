@@ -18,15 +18,26 @@
     background-color: rgb(230, 230, 188);
 }
 button{
-    background: linear-gradient(245.59deg, rgb(12, 34, 97) 0%, rgb(50, 35, 124) 28.53%, #34258a 75.52%);
+    background: linear-gradient(245.59deg, rgb(166, 179, 31) 0%, rgb(108, 124, 35) 28.53%, #6c8a25 75.52%);
     color: white;
 }
 button:hover{
-    background: linear-gradient(245.59deg, rgb(28, 97, 12) 0%, rgb(35, 124, 56) 28.53%, #258a2d 75.52%);
+    background: linear-gradient(245.59deg, rgb(187, 88, 13) 0%, rgb(124, 71, 35) 28.53%, #8a5725 75.52%);
 }
 
 #totalWrite{
+    color: white;
+    background: linear-gradient(245.59deg, rgb(83, 94, 126) 0%, rgb(93, 83, 140) 28.53%, #6c639f 75.52%);
     font-family:'Quattrocento', serif; 
     font-weight: bold;
+}
+#totalWriteInput{
+    font-weight: bold;
+}
+#totalCont{
+    background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
+}
+#legend{
+    font-size: 0.8rem;
 }
 
