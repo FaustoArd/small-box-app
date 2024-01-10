@@ -2,6 +2,8 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { OrganizationDto } from '../models/organizationDto';
+import { OrganizationResponsibleDto} from '../models/organizationResponsibleDto'
+import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 
 const ORGANIZATION_BASE_URL = 'http://localhost:8080/api/v1/small-box/organization';
 
@@ -44,6 +46,16 @@ export class OrganizationService {
 
    getAllOrganizationsByUser(userId:number):Observable<OrganizationDto[]>{
     return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs-by-user?userId=${userId}`,this.httpOptions).pipe(catchError(this.handleError));
+   }
+
+   newOrganization(organizationDto:OrganizationDto):Observable<OrganizationDto>{
+    return this.http.post<OrganizationDto>(`${ORGANIZATION_BASE_URL}/new-organization`,organizationDto,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+
+   newResponsible(responsibleDto:OrganizationResponsibleDto):Observable<OrganizationResponsibleDto>{
+    return this.http.post<OrganizationResponsibleDto>(`${ORGANIZATION_BASE_URL}/new-responsible`,responsibleDto,this.httpOptions)
+    .pipe(catchError(this.handleError));
    }
 
 }

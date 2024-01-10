@@ -19,6 +19,8 @@ public class OrganizationDto {
 	
 	private String responsible;
 	
+	private int currentRotation;
+	
 
 
 }

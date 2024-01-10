@@ -12,6 +12,7 @@ import com.lord.small_box.mappers.OrganizationMapper;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.repositories.OrganizationRepository;
+import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.services.AppUserService;
 import com.lord.small_box.services.OrganizationService;
 
@@ -26,6 +27,8 @@ public class OrganizationServiceImpl implements OrganizationService{
 	
 	@Autowired
 	private final OrganizationRepository organizationRepository;
+	
+	
 	
 	@Autowired
 	private final AppUserService appUserService;

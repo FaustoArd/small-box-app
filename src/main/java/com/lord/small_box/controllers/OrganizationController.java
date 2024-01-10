@@ -2,17 +2,22 @@ package com.lord.small_box.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.OrganizationDto;
+import com.lord.small_box.dtos.OrganizationResponsibleDto;
 import com.lord.small_box.services.AppUserService;
+import com.lord.small_box.services.OrganizationResponsibleService;
 import com.lord.small_box.services.OrganizationService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +27,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrganizationController {
 	
+	@Autowired
 	private final OrganizationService organizationService;
+	
+	@Autowired
+	private final OrganizationResponsibleService organizationResponsibleService;
 	
 	
 	
@@ -49,5 +58,15 @@ public class OrganizationController {
 		List<OrganizationDto> orgsDto = organizationService.findOrganizationByUser(userId);
 		return ResponseEntity.ok(orgsDto);
 	}
+	@PostMapping("/new-organization")
+	ResponseEntity<OrganizationDto> newOrganization(@RequestBody OrganizationDto organizationDto){
+		return new ResponseEntity<OrganizationDto>(new OrganizationDto(),HttpStatus.NOT_IMPLEMENTED);
+	}
+	@PostMapping("/new-responsible")
+	ResponseEntity<OrganizationResponsibleDto> newResponsible(@RequestBody OrganizationResponsibleDto organizationResponsibleDto){
+		OrganizationResponsibleDto responseOrganizationResponsibleDto = organizationResponsibleService.save(organizationResponsibleDto);
+		return new ResponseEntity<OrganizationResponsibleDto>(responseOrganizationResponsibleDto,HttpStatus.CREATED);
+	}
+
 
 }
