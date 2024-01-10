@@ -33,8 +33,6 @@ public class OrganizationController {
 	@Autowired
 	private final OrganizationResponsibleService organizationResponsibleService;
 	
-	
-	
 	private static final Gson gson = new Gson();
 	
 	@GetMapping("/all-orgs")
@@ -42,6 +40,7 @@ public class OrganizationController {
 		List<OrganizationDto> orgsDto = organizationService.findAll();
 		return ResponseEntity.ok(orgsDto);
 	}
+	
 	@GetMapping("/all-orgs-by-id")
 	ResponseEntity<List<OrganizationDto>> findAllOrganizationsById(@RequestParam("organizationsId")List<Long> organizationsId){
 		List<OrganizationDto> orgsDto = organizationService.findAllById(organizationsId);
@@ -53,15 +52,18 @@ public class OrganizationController {
 		String result = organizationService.addOrganizationToUser(userId, organizationsId);
 		return new ResponseEntity<String>(gson.toJson(result),HttpStatus.OK);
 	}
+	
 	@GetMapping("/all-orgs-by-user")
 	ResponseEntity<List<OrganizationDto>> findOrganizationsByUser(@RequestParam("userId")Long userId){
 		List<OrganizationDto> orgsDto = organizationService.findOrganizationByUser(userId);
 		return ResponseEntity.ok(orgsDto);
 	}
+	
 	@PostMapping("/new-organization")
 	ResponseEntity<OrganizationDto> newOrganization(@RequestBody OrganizationDto organizationDto){
 		return new ResponseEntity<OrganizationDto>(new OrganizationDto(),HttpStatus.NOT_IMPLEMENTED);
 	}
+	
 	@PostMapping("/new-responsible")
 	ResponseEntity<OrganizationResponsibleDto> newResponsible(@RequestBody OrganizationResponsibleDto organizationResponsibleDto){
 		OrganizationResponsibleDto responseOrganizationResponsibleDto = organizationResponsibleService.save(organizationResponsibleDto);
