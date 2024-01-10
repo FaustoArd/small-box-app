@@ -13,7 +13,7 @@ public class ContainerDto {
 	
 	private BigDecimal total;
 	
-	private String title;
+	private String smallBoxType;
 	
 	private String organization;
 	

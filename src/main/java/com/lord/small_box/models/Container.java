@@ -30,8 +30,9 @@ public class Container {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="title")
-	private String title;
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinColumn(name="small_box_type_id", referencedColumnName = "id")
+	private SmallBoxType smallBoxType;
 	
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
 	@JoinColumn(name="responsible_id",referencedColumnName = "id")

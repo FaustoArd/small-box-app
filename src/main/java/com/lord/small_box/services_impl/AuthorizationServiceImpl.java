@@ -2,6 +2,9 @@ package com.lord.small_box.services_impl;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,10 +53,13 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	@Autowired
 	private final JwtTokenService tokenService;
 	
+	private static final Logger log = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
+	
 	
 
 	@Override
 	public AppUserRegistrationDto register(AppUserRegistrationDto userDto, String authority) {
+		log.info("Register user");
 		if(appUserService.checkUsername(userDto.getUsername())) {
 			throw new RuntimeException("El nombre de usuario ya existe");
 		}else {
@@ -76,6 +82,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
 	@Override
 	public LoginResponseDto login(AppUserLoginDto appUserLoginDto) throws AuthenticationException {
+		log.info("Login user");
 		try {
 	Authentication auth  = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUserLoginDto.getUsername(), appUserLoginDto.getPassword()));
 	String token = tokenService.generateJwt(auth);

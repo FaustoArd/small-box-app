@@ -110,33 +110,48 @@ public class SmallBoxApplication {
 		fontova.setName("Carlos");
 		fontova.setLastname("Fontova");
 		OrganizationResponsible saveFontova = organizationResponsibleRepository.save(fontova);
+			SmallBoxType chica = SmallBoxType.builder()
+					.smallBoxType("CHICA")
+					.maxRotation(12)
+					.maxAmount(new BigDecimal(45000)).build();
+			SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
+			
+			SmallBoxType especial = SmallBoxType.builder()
+					.maxRotation(3)
+					.maxAmount(new BigDecimal(200000)).build();
+			SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
+					
+		
 			Organization org1= new Organization();
 			org1.setOrganizationName("Secretaria de desarrollo social");
 			org1.setOrganizationNumber(1);
 			org1.setResponsible(savedPierpa);
+		
 			Organization org2 = new Organization();
 			org2.setOrganizationName("Direccion de administracion y despacho");
 			org2.setOrganizationNumber(2);
 			org2.setResponsible(savedReyes);
+			
 			Organization org3 = new Organization();
 			org3.setOrganizationName("Direccion de logistica");
 			org3.setOrganizationNumber(3);
 			org3.setResponsible(saveFabi);
-			
+		
 			Organization org4 = new Organization();
 			org4.setOrganizationName("Direccion de Niñez");
 			org4.setResponsible(saveFontova);
 			org4.setOrganizationNumber(4);
-			
+		
 			Organization secDesSocial = organizationRepository.save(org1);
 			Organization dirAdmDesp = organizationRepository.save(org2);
 			organizationRepository.save(org3);
 			organizationRepository.save(org4);
 			
+			
 		
 			Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)
-					.title("CHICA").organization(dirAdmDesp).responsible(dirAdmDesp.getResponsible()).smallBoxCreated(true).build();
+					.smallBoxType(savedCHica).organization(dirAdmDesp).responsible(dirAdmDesp.getResponsible()).smallBoxCreated(true).build();
 			Container savedContainer = containerService.save(container); 
 			
 			Input input211 = inputService.findById(1l);

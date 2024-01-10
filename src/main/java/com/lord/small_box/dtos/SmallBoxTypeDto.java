@@ -1,5 +1,7 @@
 package com.lord.small_box.dtos;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,5 +13,7 @@ public class SmallBoxTypeDto {
 	
 	private String smallBoxType;
 	
-
+	private int maxRotation;
+	
+	private BigDecimal maxAmount;
 }

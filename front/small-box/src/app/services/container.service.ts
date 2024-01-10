@@ -23,13 +23,10 @@ export class ContainerService {
   handleError(error:HttpErrorResponse):Observable<any>{
     if(error.status===500){
        throw catchError(error.error)
-    }else if(error.status===404){
-      throw catchError(error.error)
-    }else if(error.status===401){
-      return throwError(() => error.status);
+  
    
     }
-    return throwError(() => new Error('Error en el servidor...'));
+    return throwError(() => new Error(error.error));
   }
 
   createContainer(container:ContainerDto):Observable<ContainerDto>{

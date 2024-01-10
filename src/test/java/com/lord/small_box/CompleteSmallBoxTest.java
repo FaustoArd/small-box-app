@@ -21,10 +21,12 @@ import com.lord.small_box.models.Input;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.SmallBox;
+import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.models.SmallBoxUnifier;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
+import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
@@ -52,6 +54,9 @@ public class CompleteSmallBoxTest {
 	
 	@Autowired
 	private OrganizationRepository organizationRepository;
+	
+	@Autowired
+	private SmallBoxTypeRepository smallBoxTypeRepository;
 	
 	@Autowired
 	private ContainerService containerService;
@@ -95,9 +100,19 @@ public class CompleteSmallBoxTest {
 		secDesSocial.setResponsible(savedPierpa);
 		Organization savedSecDesSocial = organizationRepository.save(secDesSocial);
 			
+		SmallBoxType chica = SmallBoxType.builder()
+				.smallBoxType("CHICA")
+				.maxRotation(12)
+				.maxAmount(new BigDecimal(45000)).build();
+		SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
+		
+		SmallBoxType especial = SmallBoxType.builder()
+				.maxRotation(3)
+				.maxAmount(new BigDecimal(200000)).build();
+		SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
 		
 		Container container = Container.builder().smallBoxDate(now)
-				.title("Caja chica Super").organization(savedSecDesSocial).responsible(savedSecDesSocial.getResponsible()).build();
+				.smallBoxType(savedCHica).organization(savedSecDesSocial).responsible(savedSecDesSocial.getResponsible()).build();
 		Container savedContainer = containerService.save(container); 
 		containerId = savedContainer.getId();
 		Input input211 = inputService.findById(1l);

@@ -18,14 +18,15 @@ public abstract class ContainerMapper {
 	
 	@Mapping(target="organization.id", source="organization")
 	@Mapping(target="responsible", ignore = true)
+	@Mapping(target = "smallBoxType.smallBoxType", source="smallBoxType")
 	public abstract Container toContainer(ContainerDto containerDto);
 	
+	@Mapping(target ="smallBoxType", source="smallBoxType.smallBoxType")
 	@Mapping(target="responsible", source = ".", qualifiedByName = "toFullName")
 	@Mapping(target="organization", source="organization.organizationName")
 	public abstract ContainerDto toContainerDto(Container container);
 	
-	@Mapping(target="responsible", source = "responsible.name")
-	@Mapping(target="organization", source="organization.organizationName")
+	
 	public abstract List<ContainerDto> toContainersDto(List<Container> containers);
 	
 	@Named("toFullName")

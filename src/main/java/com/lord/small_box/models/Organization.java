@@ -1,5 +1,8 @@
 package com.lord.small_box.models;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -30,12 +34,18 @@ public class Organization {
 	@Column(name="organization")
 	private String organizationName;
 	
+	@Column(name="current_rotation")
+	private int currentRotation;
+	
 	@Column(name="organization_number")
 	private int organizationNumber;
 	
 	@OneToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="responsible_id", referencedColumnName = "id")
 	private OrganizationResponsible responsible;
+	
+	@OneToMany(mappedBy = "organization")
+	public List<Container> containers;
 	
 	
 	

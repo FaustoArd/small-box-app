@@ -43,13 +43,13 @@ organizations:OrganizationDto[]=[];
   }
 
   containerFormBuilder = this.formBuilder.group({
-   title:['', Validators.required],
+   smallBoxType:['', Validators.required],
     organization:['', Validators.required]
    
 });
 
 get title(){
-    return this.containerFormBuilder.controls.title;
+    return this.containerFormBuilder.controls.smallBoxType;
   }
   get organization(){
     return this.containerFormBuilder.controls.organization;
@@ -69,9 +69,7 @@ get title(){
          },
         error:(errorData)=>{
           this.errorData = errorData;
-          if(errorData===401){
-          this.router.navigateByUrl("login")
-          }
+          this.snackBar.openSnackBar(errorData,'Cerrar',4000);
         },
         complete:()=>{
           this.router.navigateByUrl("/small-box")

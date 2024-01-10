@@ -2,11 +2,14 @@ package com.lord.small_box.models;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +29,13 @@ public class SmallBoxType {
 	private Long id;
 	
 	private String smallBoxType;
+	
+	@Column(name="max_rotation")
+	private int maxRotation;
+	
+	@Column(name="max_amount")
+	private BigDecimal maxAmount;
+	
+	
 
 }

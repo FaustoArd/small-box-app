@@ -12,7 +12,7 @@
     </div>
     <div class="row">
         <div class="col mt-1">
-            <h1 id="title" class="text-center">RENDICION CAJA {{container.title}}</h1>
+            <h1 id="title" class="text-center">RENDICION CAJA {{container.smallBoxType}}</h1>
         </div>
     </div>
     <div class="row">
@@ -22,7 +22,7 @@
     </div>
     <div class="row mt-4">
         <div class="col-md-10">
-        <span id="rendicion">RENDICIÓN DE COMPROBANTES CANCELADOS CON FONDOS DE CAJA {{container.title}}</span>
+        <span id="rendicion">RENDICIÓN DE COMPROBANTES CANCELADOS CON FONDOS DE CAJA {{container.smallBoxType}}</span>
     </div>
     <div class="col ms-5">
         <h5 class="fw-bold">Moron, {{container.smallBoxDate | date:
@@ -42,7 +42,7 @@
             <h4>Tipo de caja:</h4>
         </div>
         <div class="col-md-2  ms-4" *ngIf="container">
-            <h3 class=" "> CAJA {{container.title}}</h3>
+            <h3 class=" "> CAJA {{container.smallBoxType}}</h3>
         </div>
     </div>
     <div class="row mt-0 mb-0">
