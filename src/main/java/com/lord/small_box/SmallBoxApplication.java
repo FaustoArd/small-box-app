@@ -36,7 +36,7 @@ public class SmallBoxApplication {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
 
-	//@Bean
+	@Bean
 	CommandLineRunner run(InputRepository inputRepository,
 			ContainerService containerService,
 			SmallBoxService smallBoxService,
@@ -65,7 +65,7 @@ public class SmallBoxApplication {
 			authorizationService.register(userDto, "ADMIN");
 			
 			
-			/*SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();
+			SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();
 			SmallBoxType type2 = SmallBoxType.builder().smallBoxType("Caja Especial").build();
 			smallBoxTypeRepository.save(type1);
 			smallBoxTypeRepository.save(type2);
@@ -199,7 +199,7 @@ public class SmallBoxApplication {
 			
 			SmallBox smallBox7 = SmallBox.builder().date(cal1).ticketNumber("03809-23448239")
 					.input(input219).provider("Carlos Boro").ticketTotal(new BigDecimal(6700.80)).build();
-			SmallBox savedSmallBox7 = smallBoxService.save(smallBox7, savedContainer.getId());*/
+			SmallBox savedSmallBox7 = smallBoxService.save(smallBox7, savedContainer.getId());
 		
 		};
 	}
