@@ -1,0 +1,10 @@
+body{
+    background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
+   
+}
+.h1{
+    font-family: 'Quattrocento', serif;
+}
+button{
+    background: linear-gradient(245.59deg, rgb(45, 138, 188) 0%, rgb(67, 36, 204) 28.53%, #2009cf 75.52%);
+}

@@ -93,18 +93,19 @@ public class CalculateSubTotalTest {
 		Organization secDesSocial = new Organization();
 		secDesSocial.setOrganizationName("Secretaria de Desarrollo Social");
 		secDesSocial.setOrganizationNumber(1);
+		secDesSocial.setMaxRotation(12);
+		secDesSocial.setMaxAmount(new BigDecimal(45000));
 		secDesSocial.setResponsible(savedPierpa);
 		Organization savedSecDesSocial = organizationRepository.save(secDesSocial);
 		
 		SmallBoxType chica = SmallBoxType.builder()
-				.smallBoxType("CHICA")
-				.maxRotation(12)
-				.maxAmount(new BigDecimal(45000)).build();
+				.smallBoxType("CHICA").build();
+				
+				
 		SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
 		
 		SmallBoxType especial = SmallBoxType.builder()
-				.maxRotation(3)
-				.maxAmount(new BigDecimal(200000)).build();
+				.build();
 		SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
 		
 		Container container = Container.builder().smallBoxDate(now)

@@ -62,18 +62,21 @@ public class ContainerServiceImpl implements ContainerService {
 		SmallBoxType smallBoxType = smallBoxTypeRepository
 				.findBySmallBoxType(container.getSmallBoxType().getSmallBoxType())
 				.orElseThrow(() -> new ItemNotFoundException("SmallBoxType not found"));
+		
 		Organization organization = organizationRepository.findById(container.getOrganization().getId())
 				.orElseThrow(() -> new ItemNotFoundException("Organization not found"));
+		
 		if (smallBoxType.getSmallBoxType().equals("CHICA")) {
-			if (organization.getCurrentRotation() + 1 > smallBoxType.getMaxRotation()) {
+			if (organization.getCurrentRotation() + 1 > organization.getMaxRotation()) {
 				throw new MaxRotationExceededException("Ya se supero la rotacion maxima de rendiciones de caja chica");
 			}
 			organization.setCurrentRotation(organization.getCurrentRotation() + 1);
 			organizationRepository.save(organization);
 		}
 		OrganizationResponsible organizationResponsible = organizationResponsibleRepository
-				.findByOrganization(container.getOrganization())
+				.findById(organization.getResponsible().getId())
 				.orElseThrow(() -> new ItemNotFoundException("Responsible not found"));
+		
 		container.setResponsible(organizationResponsible);
 		container.setSmallBoxDate(now);
 		container.setSmallBoxType(smallBoxType);
@@ -86,7 +89,7 @@ public class ContainerServiceImpl implements ContainerService {
 		Container container = containerRepository.findById(id)
 				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
 		OrganizationResponsible organizationResponsible = organizationResponsibleRepository
-				.findByOrganization(container.getOrganization())
+				.findById(container.getResponsible().getId())
 				.orElseThrow(() -> new ItemNotFoundException("Responsible not found"));
 		container.setResponsible(organizationResponsible);
 		return container;

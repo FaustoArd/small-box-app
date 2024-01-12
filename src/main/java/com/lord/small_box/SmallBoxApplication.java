@@ -36,7 +36,7 @@ public class SmallBoxApplication {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
 
-	@Bean
+	//@Bean
 	CommandLineRunner run(InputRepository inputRepository,
 			ContainerService containerService,
 			SmallBoxService smallBoxService,
@@ -65,7 +65,7 @@ public class SmallBoxApplication {
 			authorizationService.register(userDto, "ADMIN");
 			
 			
-			SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();
+			/*SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();
 			SmallBoxType type2 = SmallBoxType.builder().smallBoxType("Caja Especial").build();
 			smallBoxTypeRepository.save(type1);
 			smallBoxTypeRepository.save(type2);
@@ -111,35 +111,41 @@ public class SmallBoxApplication {
 		fontova.setLastname("Fontova");
 		OrganizationResponsible saveFontova = organizationResponsibleRepository.save(fontova);
 			SmallBoxType chica = SmallBoxType.builder()
-					.smallBoxType("CHICA")
-					.maxRotation(12)
-					.maxAmount(new BigDecimal(45000)).build();
+					.smallBoxType("CHICA").build();
+					
 			SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
 			
 			SmallBoxType especial = SmallBoxType.builder()
-					.maxRotation(3)
-					.maxAmount(new BigDecimal(200000)).build();
+					.build();
 			SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
 					
 		
 			Organization org1= new Organization();
 			org1.setOrganizationName("Secretaria de desarrollo social");
 			org1.setOrganizationNumber(1);
+			org1.setMaxRotation(12);
+			org1.setMaxAmount(new BigDecimal(45000));
 			org1.setResponsible(savedPierpa);
 		
 			Organization org2 = new Organization();
 			org2.setOrganizationName("Direccion de administracion y despacho");
 			org2.setOrganizationNumber(2);
+			org2.setMaxRotation(12);
+			org2.setMaxAmount(new BigDecimal(45000));
 			org2.setResponsible(savedReyes);
 			
 			Organization org3 = new Organization();
 			org3.setOrganizationName("Direccion de logistica");
 			org3.setOrganizationNumber(3);
+			org3.setMaxRotation(12);
+			org3.setMaxAmount(new BigDecimal(45000));
 			org3.setResponsible(saveFabi);
 		
 			Organization org4 = new Organization();
 			org4.setOrganizationName("Direccion de Niñez");
 			org4.setResponsible(saveFontova);
+			org4.setMaxRotation(12);
+			org4.setMaxAmount(new BigDecimal(45000));
 			org4.setOrganizationNumber(4);
 		
 			Organization secDesSocial = organizationRepository.save(org1);
@@ -193,7 +199,7 @@ public class SmallBoxApplication {
 			
 			SmallBox smallBox7 = SmallBox.builder().date(cal1).ticketNumber("03809-23448239")
 					.input(input219).provider("Carlos Boro").ticketTotal(new BigDecimal(6700.80)).build();
-			SmallBox savedSmallBox7 = smallBoxService.save(smallBox7, savedContainer.getId());
+			SmallBox savedSmallBox7 = smallBoxService.save(smallBox7, savedContainer.getId());*/
 		
 		};
 	}

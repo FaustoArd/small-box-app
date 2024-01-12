@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.OrganizationResponsibleDto;
-import com.lord.small_box.services.AppUserService;
+import com.lord.small_box.mappers.OrganizationMapper;
+import com.lord.small_box.models.Organization;
+import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.services.OrganizationResponsibleService;
 import com.lord.small_box.services.OrganizationService;
 
@@ -61,13 +62,21 @@ public class OrganizationController {
 	
 	@PostMapping("/new-organization")
 	ResponseEntity<OrganizationDto> newOrganization(@RequestBody OrganizationDto organizationDto){
-		return new ResponseEntity<OrganizationDto>(new OrganizationDto(),HttpStatus.NOT_IMPLEMENTED);
+		Organization org = OrganizationMapper.INSTANCE.toOrganization(organizationDto);
+		Organization savedOrg = organizationService.save(org);
+		OrganizationDto savedOrgDto = OrganizationMapper.INSTANCE.toOrganizationDto(savedOrg);
+		return new ResponseEntity<OrganizationDto>(savedOrgDto,HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/new-responsible")
 	ResponseEntity<OrganizationResponsibleDto> newResponsible(@RequestBody OrganizationResponsibleDto organizationResponsibleDto){
 		OrganizationResponsibleDto responseOrganizationResponsibleDto = organizationResponsibleService.save(organizationResponsibleDto);
 		return new ResponseEntity<OrganizationResponsibleDto>(responseOrganizationResponsibleDto,HttpStatus.CREATED);
+	}
+	@GetMapping("/all-responsibles")
+	ResponseEntity<List<OrganizationResponsibleDto>> findAllResponsibles(){
+		List<OrganizationResponsibleDto> responsiblesDto = organizationResponsibleService.findAll();
+		return ResponseEntity.ok(responsiblesDto);
 	}
 
 

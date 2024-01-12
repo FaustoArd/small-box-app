@@ -1,0 +1,196 @@
+<app-navbar></app-navbar>
+<body>
+<div class="container-fluid">
+        <div class="row">
+            
+            <div class="col-3 mt-3 text-center ms-2">
+                <div class="h1 text-center">ORGANIZACION</div>
+                <form [formGroup]="organizationForm"  class="form-group p-3 bg-light border border-dark fw-bold ">
+                    <div class="form-group  mt-3">
+                        <label for="organization-name" class="form-label fs-7">Nombre</label>
+                        <input class="form-control  border-dark" type="text" formControlName="organizationName" id="organizationName">
+                        <div *ngIf="organizationName.invalid && (organizationName.dirty || organizationName.touched)" class="text-danger">
+                        <div *ngIf="organizationName.errors?.['required']">
+                        Falta el nombre...
+                        </div>
+                       </div>
+                    </div>
+                    <div class="form-group  mt-3">
+                        <label for="organization-number" class="form-label fs-7">Numero</label>
+                        <input class="form-control  border-dark" type="text" formControlName="organizationNumber" id="organizationNumber">
+                        <div *ngIf="organizationNumber.invalid && (organizationNumber.dirty || organizationNumber.touched)" class="text-danger">
+                        <div *ngIf="organizationNumber.errors?.['required']">
+                        Falta el nombre...
+                        </div>
+                       </div>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="max-rotation" class="form-label fs-7  border-dark">Maxima rotacion</label>
+                        <input class="form-control  border-dark " type="number" formControlName="maxRotation" id="maxRotation">
+    
+                        <div *ngIf="maxRotation.invalid && (maxRotation.dirty || maxRotation.touched)" class="text-danger">
+                            <div *ngIf="maxRotation.errors?.['required']">
+                            Deben ser numeros
+                            </div>
+                           </div>
+                    </div>
+                  
+                    <div class="form-group mt-4">
+                        <label for="max-amount" class="form-label fs-7  border-dark">Dinero disponible</label>
+                        <input class="form-control  border-dark " type="number" formControlName="maxAmount" id="maxAmount">
+    
+                        <div *ngIf="maxAmount.invalid && (maxAmount.dirty || maxAmount.touched)" class="text-danger">
+                            <div *ngIf="maxAmount.errors?.['required']">
+                            Deben ser numeros
+                            </div>
+                           </div>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="responsibleId" class="form-label fs-7 ">Responsable</label>
+                    <select id="responsibleId"  formControlName="responsibleId" class="form-select border-dark mt-1">
+                        <option value="">Seleccione una categoria</option>
+                       <option class="form-control" *ngFor="let responsible of responsiblesDto" id="categoryId" [value]="responsible.id">
+                            {{responsible.name}}</option>
+                            <div *ngIf="responsible.invalid && (responsible.dirty || responsible.touched)" class="text-danger">
+                                <div *ngIf="responsible.errors?.['required']">
+                               Debes seleccionar un responsable
+                                </div>
+                              
+                               <div  class="mt-1" *ngIf="responsible.errors?.['errors']">
+                                password must be at least 6 characters long.
+                              </div>
+                            </div>
+                    </select>
+                </div>
+                    <button type="submit" (click)="newOrganization()" class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
+                </form>
+            </div>
+            <div class="col-5 mt-3 text-center">
+                <div class="h1">Organizaciones</div>
+                <table id="userTable" class="table table-sm table-bordered table-striped w-100" >
+                    <thead >
+                      <tr>
+                        <th  scope="col">ID</th>
+                        <th scope="col">Dependencia</th>
+                        <th scope="col">Numero</th>
+                        <th scope="col">Maxima rotacion</th>
+                        <th scope="col">Dinero disponible</th>
+                        <th scope="col">Responsable</th>
+                        <th scope="col">Editar</th>
+
+                        
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let org of organizationsDto">
+                        <th scope="row">{{org.id}}</th>
+                        <td>{{org.organizationName}}</td>
+                        <td>{{org.organizationNumber}}</td>
+                        <td>{{org.maxRotation}}</td>
+                        <td>{{org.maxAmount}}</td>
+                        <td>{{org.responsible}}</td>
+                       <td>
+                          <button class="btn btn-sm mx-2" >-</button>
+                        
+                        </td>
+                       
+                      </tr>
+            
+                    </tbody>
+                  </table>
+                  <div class="h1">Responsables</div>
+                  <table id="userTable" class="table table-sm table-bordered table-striped w-100" >
+                    <thead >
+                      <tr>
+                        <th  scope="col">ID</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Apellido</th>
+                      
+                   
+                        <th scope="col">Editar</th>
+
+                        
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let res of responsiblesDto">
+                        <th scope="row">{{res.id}}</th>
+                        <td>{{res.name}}</td>
+                        <td>{{res.lastname}}</td>
+                      
+                      
+                       <td>
+                          <button class="btn btn-sm mx-2" >-</button>
+                        
+                        </td>
+                       
+                      </tr>
+            
+                    </tbody>
+                  </table>
+            </div>
+            
+            <div class="col-3  mt-3 text-center">
+                <div class="h1 text-center">Responsable</div>
+                <form [formGroup]="responsibleForm"  class="form-group p-3 bg-light border border-dark fw-bold ">
+                    <div class="form-group  mt-3">
+                        <label for="name" class="form-label fs-7">Nombre</label>
+                        <input class="form-control  border-dark" type="text" formControlName="name" id="name">
+                        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
+                        <div *ngIf="name.errors?.['required']">
+                        Falta el nombre...
+                        </div>
+                       </div>
+                    </div>
+                    <div class="form-group  mt-3">
+                        <label for="lastname" class="form-label fs-7">Apellido</label>
+                        <input class="form-control  border-dark" type="text" formControlName="lastname" id="lastname">
+                        <div *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)" class="text-danger">
+                        <div *ngIf="lastname.errors?.['required']">
+                        Falta el nombre...
+                        </div>
+                       </div>
+                    </div>
+                  
+                  
+                   
+                    <button type="submit" (click)="newResponsible()" class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-3 mt-5">
+                <table id="userTable" class="table table-sm table-bordered table-striped w-100" >
+                    <thead >
+                      <tr>
+                        <th  scope="col">ID</th>
+                        <th scope="col">Dependencia</th>
+                        <th scope="col">Numero</th>
+                        <th scope="col">Maxima rotacion</th>
+                        <th scope="col">Dinero disponible</th>
+                        <th scope="col">Responsable</th>
+                        <th scope="col">Editar</th>
+
+                        
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let org of organizationsDto">
+                        <th scope="row">{{org.id}}</th>
+                        <td>{{org.organizationName}}</td>
+                        <td>{{org.organizationNumber}}</td>
+                        <td>{{org.maxRotation}}</td>
+                        <td>{{org.maxAmount}}</td>
+                        <td>{{org.responsible}}</td>
+                       <td>
+                          <button class="btn btn-sm mx-2" >-</button>
+                        
+                        </td>
+                       
+                      </tr>
+            
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</body>

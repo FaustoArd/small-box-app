@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lord.small_box.dtos.OrganizationResponsibleDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.OrganizationResponsibleMapper;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
@@ -34,14 +35,15 @@ public class OrganizationResponsibleServiceImpl implements OrganizationResponsib
 
 	@Override
 	public OrganizationResponsibleDto findById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	OrganizationResponsible organizationResponsible =  organizationResponsibleRepository.findById(id)
+			.orElseThrow(()-> new ItemNotFoundException("No se encontro el responsable"));
+	return organizationResponsibleMapper.toDto(organizationResponsible);
 	}
 
 	@Override
 	public List<OrganizationResponsibleDto> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		List<OrganizationResponsible> responsibles = organizationResponsibleRepository.findAll();
+		return organizationResponsibleMapper.toDtoList(responsibles);
 	}
 
 }

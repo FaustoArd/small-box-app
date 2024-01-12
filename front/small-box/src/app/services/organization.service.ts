@@ -58,4 +58,9 @@ export class OrganizationService {
     .pipe(catchError(this.handleError));
    }
 
+   getAllResponsibles():Observable<OrganizationResponsibleDto[]>{
+    return this.http.get<OrganizationResponsibleDto[]>(`${ORGANIZATION_BASE_URL}/all-responsibles`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+
 }

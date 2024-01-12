@@ -3,6 +3,10 @@ package com.lord.small_box.models;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -37,13 +42,21 @@ public class Organization {
 	@Column(name="current_rotation")
 	private int currentRotation;
 	
+	@Column(name="max_rotation")
+	private int maxRotation;
+	
+	@Column(name="max_amount")
+	private BigDecimal maxAmount;
+	
 	@Column(name="organization_number")
 	private int organizationNumber;
 	
-	@OneToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JsonBackReference
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="responsible_id", referencedColumnName = "id")
 	private OrganizationResponsible responsible;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "organization")
 	public List<Container> containers;
 	

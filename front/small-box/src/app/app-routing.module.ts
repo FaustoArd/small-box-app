@@ -9,6 +9,7 @@ import { PresentationComponent } from './components/presentation/presentation.co
 import { LoginComponent } from './components/authorization/login/login.component';
 import { RegistrationComponent } from './components/authorization/registration/registration.component';
 import { OrganizationComponent } from './components/authorization/organization/organization.component';
+import { OrganizationSetupComponent } from './components/organization-setup/organization-setup.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -21,7 +22,8 @@ const routes: Routes = [
   { path:'presentation', component:PresentationComponent },
   { path:'login', component:LoginComponent },
   { path:'register', component:RegistrationComponent},
-  { path:'org', component:OrganizationComponent}
+  { path:'org', component:OrganizationComponent},
+  { path:'org-setup', component:OrganizationSetupComponent}
 ];
 
 @NgModule({

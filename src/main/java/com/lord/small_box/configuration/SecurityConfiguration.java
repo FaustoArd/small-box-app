@@ -66,6 +66,7 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/small-box/organization/new-organization").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/add-organization").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/new-responsible").hasRole("ADMIN");
+			auth.requestMatchers("/api/v1/small-box/organization/all-responsibles").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/all-orgs-by-user").hasAnyRole("USER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/users/**").hasRole("ADMIN");
 			auth.anyRequest().authenticated();

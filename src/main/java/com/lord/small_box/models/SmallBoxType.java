@@ -30,11 +30,7 @@ public class SmallBoxType {
 	
 	private String smallBoxType;
 	
-	@Column(name="max_rotation")
-	private int maxRotation;
 	
-	@Column(name="max_amount")
-	private BigDecimal maxAmount;
 	
 	
 

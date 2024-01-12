@@ -17,6 +17,13 @@
                 <button mat-menu-item  routerLink="/org">Asignar dependencia</button>
          </mat-menu>
         </div>
+         <div *ngIf="auth" class="col-md-1 ms-5">
+            <button mat-button [matMenuTriggerFor]="orgMenu" class="text-white">Organizacion</button>
+            <mat-menu #orgMenu yPosition="above">
+                <button mat-menu-item routerLink="/org-setup">Panel</button>
+               
+         </mat-menu>
+        </div>
        
        
        

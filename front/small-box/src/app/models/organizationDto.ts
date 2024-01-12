@@ -5,5 +5,9 @@ export class OrganizationDto{
     organizationName!:string;
     organizationNumber!:number;
     currentRotation!:number;
+    maxRotation!:number;
+    maxAmount!:number;
+    responsible!:string;
+    responsibleId!:number
 
 }

@@ -25,6 +25,7 @@ import { LoginComponent } from './components/authorization/login/login.component
 import { RegistrationComponent } from './components/authorization/registration/registration.component';
 import { AuthInterceptor } from './components/interceptor/auth-interceptor';
 import { OrganizationComponent } from './components/authorization/organization/organization.component';
+import { OrganizationSetupComponent } from './components/organization-setup/organization-setup.component';
 
 
 
@@ -43,7 +44,8 @@ import { OrganizationComponent } from './components/authorization/organization/o
     PresentationComponent,
     LoginComponent,
     RegistrationComponent,
-    OrganizationComponent
+    OrganizationComponent,
+    OrganizationSetupComponent
     
   ],
   imports: [

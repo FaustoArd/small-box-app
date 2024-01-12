@@ -13,7 +13,5 @@ public class SmallBoxTypeDto {
 	
 	private String smallBoxType;
 	
-	private int maxRotation;
 	
-	private BigDecimal maxAmount;
 }

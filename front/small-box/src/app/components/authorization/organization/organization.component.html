@@ -10,9 +10,8 @@
     </div>
   </div>
   <div class="row mt-3">
-   
-    <div class="col-md-4 ms-3">
-      <table id="userTable" class="table table-sm table-bordered table-striped  w-100" >
+   <div class="col-md-4 ms-3">
+      <table id="userTable" class="table table-md table-bordered table-striped  w-100" >
         <thead >
           <tr>
             <th  scope="col">ID</th>
@@ -31,8 +30,8 @@
             <td>{{user.lastname}}</td>
             <td>{{user.username}}</td>
             <td>{{user.email}}</td>
-            <td>
-              <button (click)="selectUser(user.id)" class="btn btn-sm mx-2" >-</button>
+            <td class="mt-2">
+              <button (click)="selectUser(user.id)" class="btn btn-sm mx-2 " >-</button>
             </td>
            </tr>
 

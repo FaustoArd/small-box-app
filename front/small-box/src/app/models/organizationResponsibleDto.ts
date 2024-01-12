@@ -4,6 +4,8 @@ export class OrganizationResponsibleDto{
   name!:string;
 	
   lastname!:string;
+
+
 	
- organization!:string;
+
 }
