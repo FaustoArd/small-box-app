@@ -11,6 +11,7 @@ import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { OrganizationService } from 'src/app/services/organization.service';
 import { OrganizationComponent } from '../authorization/organization/organization.component';
 import { OrganizationDto } from 'src/app/models/organizationDto';
+import { SmallBoxTypeDto } from 'src/app/models/smallBoxTypeDto';
 
 @Component({
   selector: 'app-container',
@@ -23,7 +24,7 @@ export class ContainerComponent implements OnInit {
 container!:ContainerDto;
 errorData!:string;
 returnedData!:ContainerDto;
-smallBoxTypes: string[] = [];
+smallBoxTypes: SmallBoxTypeDto[]=[];
 organizations:OrganizationDto[]=[];
 
 
@@ -39,7 +40,14 @@ organizations:OrganizationDto[]=[];
   }
 
   getSmallBoxTypes(){
-    this.smallBoxTypes = ["CHICA", "ESPECIAL"];
+   this.containerService.getAllSmallBoxesTypes().subscribe({
+    next:(smTypesData)=>{
+      this.smallBoxTypes = smTypesData;
+    },
+    error:(errorData)=>{
+      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+    }
+   })
   }
 
   containerFormBuilder = this.formBuilder.group({
@@ -48,7 +56,7 @@ organizations:OrganizationDto[]=[];
    
 });
 
-get title(){
+get smallBoxType(){
     return this.containerFormBuilder.controls.smallBoxType;
   }
   get organization(){
@@ -59,6 +67,7 @@ get title(){
 
   onCreateContainer(){
     if(this.containerFormBuilder.valid){
+      console.log(this.containerFormBuilder.controls.smallBoxType)
       this.container = new ContainerDto();
       this.container = Object.assign(this.container,this.containerFormBuilder.value)
       this.containerService.createContainer(this.container).subscribe({
@@ -87,6 +96,6 @@ get title(){
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);
       }
     })
-  }
+  };
 
 }

@@ -54,6 +54,12 @@ public class OrganizationServiceImpl implements OrganizationService{
 	}
 
 	@Override
+	public Organization update(Organization organization) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public Organization findById(Long id) {
 		log.info("Find organization by id");
 		return organizationRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Organization not found"));
@@ -110,5 +116,6 @@ public class OrganizationServiceImpl implements OrganizationService{
 	List<Organization> orgs = organizationRepository.findAllById(organizationsId);
 	return  OrganizationMapper.INSTANCE.toOrganizationsDto(orgs);
 	}
+
 	
 }

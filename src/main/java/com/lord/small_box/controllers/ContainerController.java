@@ -1,7 +1,6 @@
 package com.lord.small_box.controllers;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +14,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.ContainerDto;
-import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.SmallBoxTypeDto;
 import com.lord.small_box.mappers.ContainerMapper;
 import com.lord.small_box.mappers.SmallBoxTypeMapper;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.SmallBoxType;
-import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.ContainerService;
+import com.lord.small_box.services.SmallBoxTypeService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,7 +34,8 @@ public class ContainerController {
 	@Autowired
 	private final ContainerService containerService;
 	
-	private final SmallBoxTypeRepository smallBoxTypeRepository;
+	@Autowired
+	private final SmallBoxTypeService smallBoxTypeService;
 	
 	private final static Gson gson = new Gson();
 	
@@ -47,7 +45,7 @@ public class ContainerController {
 	@GetMapping("/all-types")
 	ResponseEntity<List<SmallBoxTypeDto>> findAllSmallBoxTypes(){
 		log.info("Find all smallBox types");
-		List<SmallBoxType> types = smallBoxTypeRepository.findAll();
+		List<SmallBoxType> types = smallBoxTypeService.findAll();
 		List<SmallBoxTypeDto> typesDto = SmallBoxTypeMapper.INSTANCE.toSmallBoxesDto(types);
 		return new ResponseEntity<List<SmallBoxTypeDto>>(typesDto,HttpStatus.OK);
 	}
@@ -69,6 +67,16 @@ public class ContainerController {
 		return new ResponseEntity<ContainerDto>(savedContainerDto,HttpStatus.CREATED);
 		
 	}
+	
+	@PutMapping("/update-container")
+	ResponseEntity<ContainerDto> updateContainer(@RequestBody ContainerDto containerDto){
+		log.info("Update container");
+		Container container = ContainerMapper.INSTANCE.toContainer(containerDto);
+		Container updatedContainer = containerService.update(container);
+		ContainerDto updatedContainerDto = ContainerMapper.INSTANCE.toContainerDto(updatedContainer);
+		return new ResponseEntity<ContainerDto>(updatedContainerDto,HttpStatus.OK);
+	}
+	
 	@GetMapping("/{id}")
 	ResponseEntity<ContainerDto> findContainerById(@PathVariable("id")Long id){
 		log.info("Find container by id");

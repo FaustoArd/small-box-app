@@ -32,6 +32,13 @@ public class OrganizationResponsibleServiceImpl implements OrganizationResponsib
 		OrganizationResponsible savedOrganizationResponsible = organizationResponsibleRepository.save(organizationResponsible);
 		return organizationResponsibleMapper.toDto(savedOrganizationResponsible);
 	}
+	
+	@Override
+	public OrganizationResponsibleDto update(OrganizationResponsibleDto organizationResponsibleDto) {
+		OrganizationResponsible organizationResponsible = organizationResponsibleMapper.toModel(organizationResponsibleDto);
+		OrganizationResponsible savedOrganizationResponsible = organizationResponsibleRepository.save(organizationResponsible);
+		return organizationResponsibleMapper.toDto(savedOrganizationResponsible);
+	}
 
 	@Override
 	public OrganizationResponsibleDto findById(Long id) {
@@ -45,5 +52,7 @@ public class OrganizationResponsibleServiceImpl implements OrganizationResponsib
 		List<OrganizationResponsible> responsibles = organizationResponsibleRepository.findAll();
 		return organizationResponsibleMapper.toDtoList(responsibles);
 	}
+
+	
 
 }

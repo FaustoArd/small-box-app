@@ -58,6 +58,7 @@ public class ContainerServiceImpl implements ContainerService {
 	@Transactional
 	@Override
 	public Container save(Container container) throws MaxRotationExceededException {
+		System.err.println(container.getSmallBoxType().getSmallBoxType());
 		log.info("Save container");
 		SmallBoxType smallBoxType = smallBoxTypeRepository
 				.findBySmallBoxType(container.getSmallBoxType().getSmallBoxType())
@@ -82,6 +83,26 @@ public class ContainerServiceImpl implements ContainerService {
 		container.setSmallBoxType(smallBoxType);
 		return containerRepository.save(container);
 
+	}
+	
+	@Override
+	public Container update(Container container) {
+		log.info("Update container");
+		Container updatedContainer = containerRepository.findById(container.getId())
+				.orElseThrow(()-> new ItemNotFoundException(containerNotFound));
+		Organization organization = organizationRepository.findById(container.getOrganization().getId())
+				.orElseThrow(() -> new ItemNotFoundException("Organization not found"));
+		SmallBoxType smallBoxType = smallBoxTypeRepository
+				.findBySmallBoxType(container.getSmallBoxType().getSmallBoxType())
+				.orElseThrow(() -> new ItemNotFoundException("SmallBoxType not found"));
+		OrganizationResponsible organizationResponsible = organizationResponsibleRepository
+				.findById(organization.getResponsible().getId())
+				.orElseThrow(() -> new ItemNotFoundException("Responsible not found"));
+		updatedContainer.setResponsible(organizationResponsible);
+		updatedContainer.setOrganization(organization);
+		updatedContainer.setSmallBoxDate(now);
+		updatedContainer.setSmallBoxType(smallBoxType);
+		return containerRepository.save(updatedContainer);
 	}
 
 	@Override
@@ -139,4 +160,6 @@ public class ContainerServiceImpl implements ContainerService {
 					return containerDto;
 				}).toList();
 	}
+
+	
 }

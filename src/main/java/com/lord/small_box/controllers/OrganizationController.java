@@ -68,11 +68,26 @@ public class OrganizationController {
 		return new ResponseEntity<OrganizationDto>(savedOrgDto,HttpStatus.CREATED);
 	}
 	
+	@PutMapping("/update-organization")
+	ResponseEntity<OrganizationDto> updateOrganization(@RequestBody OrganizationDto organizationDto){
+		Organization org = OrganizationMapper.INSTANCE.toOrganization(organizationDto);
+		Organization updatedOrg = organizationService.update(org);
+		OrganizationDto updatedOrgDto = OrganizationMapper.INSTANCE.toOrganizationDto(updatedOrg);
+		return new ResponseEntity<OrganizationDto>(updatedOrgDto,HttpStatus.OK);
+	}
+	
 	@PostMapping("/new-responsible")
 	ResponseEntity<OrganizationResponsibleDto> newResponsible(@RequestBody OrganizationResponsibleDto organizationResponsibleDto){
 		OrganizationResponsibleDto responseOrganizationResponsibleDto = organizationResponsibleService.save(organizationResponsibleDto);
 		return new ResponseEntity<OrganizationResponsibleDto>(responseOrganizationResponsibleDto,HttpStatus.CREATED);
 	}
+	
+	@PutMapping("/update/responsible")
+	ResponseEntity<OrganizationResponsibleDto> updateResponsible(@RequestBody OrganizationResponsibleDto organizationResponsibleDto){
+		OrganizationResponsibleDto respoOrganizationResponsibleDto = organizationResponsibleService.save(organizationResponsibleDto);
+		return new ResponseEntity<OrganizationResponsibleDto>(respoOrganizationResponsibleDto,HttpStatus.CREATED);
+	}
+	
 	@GetMapping("/all-responsibles")
 	ResponseEntity<List<OrganizationResponsibleDto>> findAllResponsibles(){
 		List<OrganizationResponsibleDto> responsiblesDto = organizationResponsibleService.findAll();

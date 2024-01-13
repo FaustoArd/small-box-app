@@ -65,10 +65,7 @@ public class SmallBoxApplication {
 			authorizationService.register(userDto, "ADMIN");
 			
 			
-			SmallBoxType type1 = SmallBoxType.builder().smallBoxType("Caja chica").build();
-			SmallBoxType type2 = SmallBoxType.builder().smallBoxType("Caja Especial").build();
-			smallBoxTypeRepository.save(type1);
-			smallBoxTypeRepository.save(type2);
+			
 			
 		Input i211 = Input.builder().description("Alimento para personas").inputNumber("211").build();
 		Input i212 = Input.builder().description("Alimento para animales").inputNumber("212").build();
@@ -110,12 +107,12 @@ public class SmallBoxApplication {
 		fontova.setName("Carlos");
 		fontova.setLastname("Fontova");
 		OrganizationResponsible saveFontova = organizationResponsibleRepository.save(fontova);
+		
 			SmallBoxType chica = SmallBoxType.builder()
 					.smallBoxType("CHICA").build();
-					
-			SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
+					SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
 			
-			SmallBoxType especial = SmallBoxType.builder()
+			SmallBoxType especial = SmallBoxType.builder().smallBoxType("ESPECIAL")
 					.build();
 			SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
 					

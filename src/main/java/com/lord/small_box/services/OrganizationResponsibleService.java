@@ -9,6 +9,8 @@ public interface OrganizationResponsibleService {
 
 	public OrganizationResponsibleDto save(OrganizationResponsibleDto organizationResponsibleDto);
 	
+	public OrganizationResponsibleDto update(OrganizationResponsibleDto organizationResponsibleDto);
+	
 	public OrganizationResponsibleDto findById(Long id);
 	
 	public List<OrganizationResponsibleDto> findAll();

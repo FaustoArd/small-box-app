@@ -1,8 +1,13 @@
+.row{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+   
+}
 #btnOpen{
-    background-color: blue;
-    color: white;
+    background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
+    color:white
 }
 
 #btnOpen:hover{
-    background-color: blueviolet;
+    background: linear-gradient(245.59deg, rgb(73, 174, 192) 0%, rgb(66, 151, 175) 28.53%,rgb(118, 180, 185)9 75.52%); 
 }

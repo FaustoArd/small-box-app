@@ -32,6 +32,11 @@ export class ContainerService {
   createContainer(container:ContainerDto):Observable<ContainerDto>{
     return this.http.post<ContainerDto>(`${CONTAINER_BASE_URL}/`,container,this.httpOptions).pipe(catchError(this.handleError));
   }
+
+  updateContainer(container:ContainerDto):Observable<ContainerDto>{
+    return this.http.put<ContainerDto>(`${CONTAINER_BASE_URL}/update-container`, container,this.httpOptions)
+    .pipe(catchError(this.handleError));
+  }
   
   getContainerById(id:number):Observable<ContainerDto>{
     return this.http.get<ContainerDto>(`${CONTAINER_BASE_URL}/${id}`,this.httpOptions).pipe(catchError(this.handleError));

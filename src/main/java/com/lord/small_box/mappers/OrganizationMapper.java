@@ -22,6 +22,7 @@ public abstract class OrganizationMapper {
 	public abstract Organization toOrganization(OrganizationDto organizationDto);
 	
 	@Mapping(target="responsible", source = ".", qualifiedByName = "toFullName")
+	@Mapping(target="responsibleId", source ="responsible.id")
 	public abstract OrganizationDto toOrganizationDto(Organization organization);
 	
 	

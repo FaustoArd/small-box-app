@@ -12,6 +12,8 @@ public interface OrganizationService {
 	
 	public Organization save(Organization organization);
 	
+	public Organization update(Organization organization);
+	
 	public Organization findById(Long id);
 	
 	public void deleteById(Long id);

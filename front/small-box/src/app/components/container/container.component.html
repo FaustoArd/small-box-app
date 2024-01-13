@@ -12,14 +12,14 @@
                     <label for="smallBoxType" class="form-label fs-7">Tipo</label>
                     <select id="smallBoxType" formControlName="smallBoxType" class="form-select border-dark">
                         <option value="">Seleccione tipo de rendicion</option>
-                        <option class="form-control" *ngFor="let sm of smallBoxTypes" id="smallBoxType" [value]="sm">
-                            {{sm}}</option>
-                        <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger">
-                            <div *ngIf="title.errors?.['required']">
+                        <option class="form-control" *ngFor="let sm of smallBoxTypes" id="smallBoxType" [value]="sm.smallBoxType">
+                            {{sm.smallBoxType}}</option>
+                        <div *ngIf="smallBoxType.invalid && (smallBoxType.dirty || smallBoxType.touched)" class="text-danger">
+                            <div *ngIf="smallBoxType.errors?.['required']">
                                 Debes seleccionar una categoria
                             </div>
 
-                            <div class="mt-1" *ngIf="title.errors?.['errors']">
+                            <div class="mt-1" *ngIf="smallBoxType.errors?.['errors']">
                                 password must be at least 6 characters long.
                             </div>
                         </div>
