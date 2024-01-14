@@ -20,12 +20,7 @@ export class AppUserService {
   }
 
   private handleError(error:HttpErrorResponse):Observable<any>{
-    if(error.status===0){
-      return throwError(() => new Error(error.error));
-    }else if(error.status===500){
-      return throwError(()=> new Error('Error en el servidor, intente nuevamente en unos segundos'))
-    }
-    return throwError(()=> new Error(error.error));
+    return throwError(() => new Error(error.error));
   }
 
   getUsers():Observable<AppUserDto[]>{

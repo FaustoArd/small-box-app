@@ -87,10 +87,12 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	Authentication auth  = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUserLoginDto.getUsername(), appUserLoginDto.getPassword()));
 	String token = tokenService.generateJwt(auth);
 	LoginResponseDto loginResponseDto = new LoginResponseDto();
+	AppUser loggedUser =  appUserService.findByUsername(appUserLoginDto.getUsername());
+	loginResponseDto.serUsername(loggedUser.getUsername());
 	loginResponseDto.setToken(token);
-	loginResponseDto.setUserId(appUserService.findByUsername(appUserLoginDto.getUsername()).getId());
-	
+	loginResponseDto.setUserId(loggedUser.getId());
 	return loginResponseDto;
+	
 		}catch(AuthenticationException ex) {
 			throw new LoginException("Usuario o contraseña invalido");
 		}

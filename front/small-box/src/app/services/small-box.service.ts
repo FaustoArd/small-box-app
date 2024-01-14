@@ -18,13 +18,8 @@ export class SmallBoxService {
   }
 
   handleError(error:HttpErrorResponse):Observable<any>{
-    if(error.status===500){
-       throw catchError(error.error)
-    }else if(error.status===404){
-      throw catchError(error.error)
-    }else{
-      throw catchError(error.error)
-    }
+    return throwError(()=> new Error(error.error));
+    
   }
 
   getSmallBoxById(id:number):Observable<SmallBoxDto>{
@@ -66,6 +61,10 @@ export class SmallBoxService {
 
   deleteAllUnifiedSamllBoxByContainerId(containerId:number):Observable<any>{
   return  this.http.delete<any>(`${SMALL_BOX_BASE_URL}/unified-all-by-container/${containerId}`,this.httpOptions).pipe(catchError(this.handleError));
+  }
+
+  checkMaxAmount(containerId:number,userId:number):Observable<string>{
+    return this.http.get<string>(`${SMALL_BOX_BASE_URL}/check-max-amount?containerId=${containerId}&userId=${userId}`, this.httpOptions).pipe(catchError(this.handleError));
   }
 
   

@@ -109,9 +109,24 @@ export class CompletedSmallBoxComponent implements OnInit {
       },error:(errorData)=>{
         this.snackBarService.openSnackBar(errorData,'Cerrar', 3000);
       }
+    });
+  };
+
+  checkMaxAmount():void{
+    const containerId = Number(this.cookieService.getCurrentContainerId());
+    const userId = Number(this.cookieService.getCurrentUserId());
+    this.smallBoxService.checkMaxAmount(containerId,userId).subscribe({
+      next:(checkData)=>{
+        this.snackBarService.openSnackBar(checkData,'Cerrar',4000);
+      },
+      error:(errorData)=>{
+        this.snackBarService.openSnackBar(errorData,'Cerrar',4000);
+      },
+      complete:()=>{
+        this.router.navigateByUrl("/presentation")
+      }
     })
   }
-
 
 
 }

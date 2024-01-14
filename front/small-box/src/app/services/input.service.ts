@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders,HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { InputDto } from '../models/inputDto';
 
 const INPUT_BASE_URL = 'http://localhost:8080/api/v1/small-box/inputs'
@@ -17,13 +17,7 @@ export class InputService {
   }
 
   handleError(error:HttpErrorResponse):Observable<any>{
-    if(error.status===500){
-       throw catchError(error.error)
-    }else if(error.status===404){
-      throw catchError(error.error)
-    }else{
-      throw catchError(error.error)
-    }
+    return throwError(() => new Error(error.error));
   }
 
   findAllInputs():Observable<InputDto[]>{

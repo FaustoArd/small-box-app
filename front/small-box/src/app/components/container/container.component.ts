@@ -67,8 +67,7 @@ get smallBoxType(){
 
   onCreateContainer(){
     if(this.containerFormBuilder.valid){
-      console.log(this.containerFormBuilder.controls.smallBoxType)
-      this.container = new ContainerDto();
+   this.container = new ContainerDto();
       this.container = Object.assign(this.container,this.containerFormBuilder.value)
       this.containerService.createContainer(this.container).subscribe({
         next:(contData)=>{

@@ -39,9 +39,6 @@ public class SmallBoxController {
 	private final SmallBoxService smallBoxService;
 
 	@Autowired
-	private final InputService inputService;
-	
-	@Autowired
 	private final SmallBoxUnifierService smallBoxUnifierService;
 	
 	private static final Gson gson = new Gson();
@@ -120,6 +117,12 @@ public class SmallBoxController {
 	void deleteAllByContainerId(@PathVariable("containerId")Long containerId) {
 		log.info("Deleting all UnifiedSmallBox by container id");
 		smallBoxUnifierService.deleteAllByContainerId(containerId);
+	}
+	
+	@GetMapping("/check-max-amount")
+	ResponseEntity<String> checkMaxAmount(@RequestParam("containerId")Long containerId, @RequestParam("userId")Long userId){
+		String result = smallBoxService.checkMaxAmount(containerId, userId);
+		return new ResponseEntity<String>(gson.toJson(result),HttpStatus.OK); 
 	}
 	
 

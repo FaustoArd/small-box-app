@@ -46,8 +46,10 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.authorizationService.loginUser(this.loginDto).subscribe({
         next: (tokenData) => {
+         
           this.cookieService.setToken(tokenData.token);
           this.cookieService.setCurrentUserId(JSON.stringify(tokenData.userId));
+          this.cookieService.setCurrentUsername(tokenData.username);
         
         
         },

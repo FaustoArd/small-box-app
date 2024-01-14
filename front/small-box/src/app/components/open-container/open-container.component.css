@@ -11,3 +11,15 @@
 #btnOpen:hover{
     background: linear-gradient(245.59deg, rgb(73, 174, 192) 0%, rgb(66, 151, 175) 28.53%,rgb(118, 180, 185)9 75.52%); 
 }
+
+h1{
+    font-family: 'Quattrocento', serif;
+    font-size: 28px;
+}
+button{
+    color: white;
+    background: linear-gradient(245.59deg, rgb(94, 179, 126) 0%, rgb(65, 149, 89) 28.53%, #76b99c 75.52%); 
+}
+button:hover{
+    background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
+}

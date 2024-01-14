@@ -12,12 +12,15 @@ export class NavbarComponent implements OnInit {
 
 
 auth!:boolean;
+currentUsername!:string;
 
 constructor(private cookieService:CookieStorageService,private router:Router){}
 
 
 ngOnInit(): void {
     this.auth = this.decodeToken();
+    this.currentUsername = this.cookieService.getCurrentUsername();
+    
 }
 
   onLogout(){

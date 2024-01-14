@@ -12,16 +12,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.exceptions.MaxAmountExeededException;
 import com.lord.small_box.models.Container;
 import com.lord.small_box.models.Input;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.SmallBox;
+import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.models.SmallBoxUnifier;
 import com.lord.small_box.models.SubTotal;
 import com.lord.small_box.repositories.ContainerRepository;
 import com.lord.small_box.repositories.InputRepository;
+import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.SmallBoxRepository;
+import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.repositories.SmallBoxUnifierRepository;
 import com.lord.small_box.repositories.SubTotalRepository;
+import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.SmallBoxService;
 import lombok.RequiredArgsConstructor;
 
@@ -43,6 +49,12 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 
 	@Autowired
 	private final SmallBoxUnifierRepository smallBoxUnifierRepository;
+	
+	@Autowired
+	private final OrganizationRepository organizationRepository;
+	
+	@Autowired
+	private final SmallBoxTypeRepository smallBoxTypeRepository;
 	
 	private static final String containerNotFound = "No se encontro el container";
 	
@@ -178,6 +190,25 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Long containerId) {
 		log.info("Fetch all smallBoxes by container id order by input number");
 		return (List<SmallBox>) smallBoxRepo.findAllByContainerIdOrderByInputInputNumber(containerId);
+	}
+
+	@Override
+	public String checkMaxAmount(Long containerId,Long userId)throws MaxAmountExeededException {
+		log.info("Check Total max amount");
+		Container container = containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException(containerNotFound));
+		SmallBoxType smType = smallBoxTypeRepository.findById(container.getSmallBoxType().getId())
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el tipo de rendicion"));
+		if(smType.getSmallBoxType().equals("CHICA")) {
+			double result = findAllByContainerId(containerId).stream().mapToDouble(sm -> sm.getTicketTotal().doubleValue()).sum();
+			Organization organization = organizationRepository.findById(container.getOrganization().getId())
+					.orElseThrow(()-> new ItemNotFoundException("Organization Not found"));
+			if(result>organization.getMaxAmount().doubleValue()) {
+				throw new MaxAmountExeededException("El total de la rendicion exede el maximo permitido de: $" + organization.getMaxAmount());
+			}
+			return "Total permitido";
+		}
+		
+		return "Total permitido";
 	}
 
 	

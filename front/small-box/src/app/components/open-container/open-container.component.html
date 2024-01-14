@@ -1,78 +1,92 @@
 <app-navbar></app-navbar>
-<div class="container-flex">
+<div *ngIf="containers.length===0" class="container-flex">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col mt-5">
+            <div class="jumbotron">
+              <h1>Todavia no has creado ninguna rendicion!</h1>
+              <button class="btn btn-lg" routerLink="/container">Crear</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="containers.length>0" class="container-flex">
     <div class="row">
         <div class="col mt-5">
-           
+
             <table class="table table-fluid table-hover table-bordered table-striped border border-dark">
                 <thead>
                     <tr class="bg-primary fw-bold text-center">
                         <th scope="col">Fecha</th>
-                       <th scope="col">Nombre</th>
+                        <th scope="col">Nombre</th>
                         <th scope="col">Dependencia</th>
                         <th scope="col">Responsable</th>
-                        <th  scope="col">Opciones</th>
-                      
-                       
-                       
+                        <th scope="col">Opciones</th>
+
+
+
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="text-center" *ngFor="let container of containers">
-                       <td scope="row"   class="fw-light">{{container.smallBoxDate | date: 'dd-MM-yyyy'}}</td>
-                      
-                       <td scope="row"  class="fw-light">{{container.smallBoxType}}</td>
-                       
-                       <td scope="row"  class="fw-light">{{container.organization}}</td>
-                     
-                       <td scope="row"  class="fw-light">{{container.responsible}}</td>
-                     
-                      
+                        <td scope="row" class="fw-light">{{container.smallBoxDate | date: 'dd-MM-yyyy'}}</td>
+
+                        <td scope="row" class="fw-light">{{container.smallBoxType}}</td>
+
+                        <td scope="row" class="fw-light">{{container.organization}}</td>
+
+                        <td scope="row" class="fw-light">{{container.responsible}}</td>
+
+
                         <td>
-                            <button id="btnOpen" (click)="setCurrentContainerId(container.id)" routerLink="/completed-by-id" class="btn">Abrir</button>
-                            <button id="btnOpen" (click)="openDialogUpdateContainer(container.id,udpateContainerTemplate)" class="btn ms-3">Modificar Datos</button>
+                            <button id="btnOpen" (click)="setCurrentContainerId(container.id)"
+                                routerLink="/completed-by-id" class="btn">Abrir</button>
+                            <button id="btnOpen"
+                                (click)="openDialogUpdateContainer(container.id,udpateContainerTemplate)"
+                                class="btn ms-3">Modificar Datos</button>
                         </td>
 
-                       </tr>
-                 </tbody>
+                    </tr>
+                </tbody>
             </table>
         </div>
         <ng-template #udpateContainerTemplate>
-            <form [formGroup]="containerForm"
-                class="form-group   p-3 bg-light border border-dark text-center fw-bold">
+            <form [formGroup]="containerForm" class="form-group   p-3 bg-light border border-dark text-center fw-bold">
                 <div class="form-group mt-3">
                     <label for="smallBoxType" class="form-label fs-7">Tipo</label>
                     <select id="smallBoxType" formControlName="smallBoxType" class="form-select border-dark">
                         <option value="">Seleccione tipo de rendicion</option>
-                        <option class="form-control" *ngFor="let sm of smallBoxTypes" id="smallBoxType" [value]="sm.smallBoxType">
+                        <option class="form-control" *ngFor="let sm of smallBoxTypes" id="smallBoxType"
+                            [value]="sm.smallBoxType">
                             {{sm.smallBoxType}}</option>
-                        <div *ngIf="smallBoxType.invalid && (smallBoxType.dirty || smallBoxType.touched)" class="text-danger">
+                        <div *ngIf="smallBoxType.invalid && (smallBoxType.dirty || smallBoxType.touched)"
+                            class="text-danger">
                             <div *ngIf="smallBoxType.errors?.['required']">
                                 Debes seleccionar un tipo de rendicion
                             </div>
-                         </div>
+                        </div>
                     </select>
                 </div>
                 <div class="form-group mt-3">
                     <label for="organization" class="form-label fs-7">Dependencia</label>
                     <select id="organization" formControlName="organization" class="form-select border-dark">
                         <option>Seleccione una Dependencia</option>
-                        <option >{{containerShow.organization}}</option>
-                        <option class="form-control" *ngFor="let org of organizations" id="organization" [value]="org.id">
-                         
+                        <option class="form-control" *ngFor="let org of organizations" id="organization"
+                            [value]="org.id">
                             {{org.organizationName}}</option>
-                        <div *ngIf="organization.invalid && (organization.dirty || organization.touched)" class="text-danger">
+                        <div *ngIf="organization.invalid && (organization.dirty || organization.touched)"
+                            class="text-danger">
                             <div *ngIf="organization.errors?.['required']">
-                                Debes seleccionar una categoria
+                                Debes seleccionar una Dependencia
                             </div>
 
-                            <div class="mt-1" *ngIf="organization.errors?.['errors']">
-                                password must be at least 6 characters long.
-                            </div>
+
                         </div>
                     </select>
                 </div>
                 <button type="submit" (click)="updateContainer()"
-                class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
+                    class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
             </form>
         </ng-template>
     </div>

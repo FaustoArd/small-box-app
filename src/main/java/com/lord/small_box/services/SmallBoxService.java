@@ -31,5 +31,7 @@ public interface SmallBoxService {
 	public void addAllTicketTotals(Long containerId);
 	
 	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Long containerId);
+	
+	public String checkMaxAmount(Long containerId,Long userId);
 
 }

@@ -7,3 +7,13 @@
     background: linear-gradient(245.59deg, rgb(159, 51, 15) 0%, rgb(229, 55, 20) 28.53%, #bb3b30 75.52%);
     color: white;
 }
+span{
+    font-size: 13px;
+    color: white;
+  
+}
+h4{
+    font-family: 'Rubik Glitch', system-ui;
+    font-size: 14px;
+    color: rgb(235, 26, 40);
+}

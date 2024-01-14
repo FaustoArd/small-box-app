@@ -4,6 +4,8 @@ public class LoginResponseDto {
 	
 	private Long userId;
 	
+	private String username;
+	
 	private String token;
 	
 	
@@ -20,6 +22,12 @@ public class LoginResponseDto {
 	}
 	public void setToken(String token) {
 		this.token = token;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void serUsername(String username) {
+		this.username = username;
 	}
 
 }

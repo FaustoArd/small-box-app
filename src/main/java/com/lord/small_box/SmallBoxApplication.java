@@ -121,7 +121,7 @@ public class SmallBoxApplication {
 			org1.setOrganizationName("Secretaria de desarrollo social");
 			org1.setOrganizationNumber(1);
 			org1.setMaxRotation(12);
-			org1.setMaxAmount(new BigDecimal(45000));
+			org1.setMaxAmount(new BigDecimal(180000));
 			org1.setResponsible(savedPierpa);
 		
 			Organization org2 = new Organization();

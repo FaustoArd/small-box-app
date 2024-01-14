@@ -24,12 +24,6 @@ export class AuthorizationService {
   };
 
   private handleError(error: HttpErrorResponse){
-    if(error.status===0){
-     return throwError(() => new Error(error.error));
-    }else if(error.status===500){
-      return throwError(() => new Error('Error en el servidor...'));
-   
-    }
     return throwError(() => new Error(error.error));
  }
 

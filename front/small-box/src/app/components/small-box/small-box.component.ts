@@ -219,4 +219,6 @@ export class SmallBoxComponent implements OnInit {
 
     })
   }
+
+ 
 }

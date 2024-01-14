@@ -122,6 +122,7 @@ private matDialogRef!: MatDialogRef<DialogTemplateComponent>
         }
       });
     }
+    this.snackBarService.openSnackBar("Debe seleccionar un tipo de rendicion y una dependencia", 'Cerrar',3000);
   }
 
   getAllSmallBoxTypes(){

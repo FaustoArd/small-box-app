@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.exceptions.LoginException;
+import com.lord.small_box.exceptions.MaxAmountExeededException;
 import com.lord.small_box.exceptions.MaxRotationExceededException;
 
 @ControllerAdvice
@@ -34,6 +35,11 @@ public class SmallBoxExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(MaxRotationExceededException.class)
 	ResponseEntity<String> handleMaxRotation(MaxRotationExceededException ex){
+		return new ResponseEntity<String>(ex.getMessage(),HttpStatus.EXPECTATION_FAILED);
+	}
+	
+	@ExceptionHandler(MaxAmountExeededException.class)
+	ResponseEntity<String> handleMaxAmount(MaxAmountExeededException ex){
 		return new ResponseEntity<String>(ex.getMessage(),HttpStatus.EXPECTATION_FAILED);
 	}
 	

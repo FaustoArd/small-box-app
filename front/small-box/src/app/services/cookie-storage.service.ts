@@ -42,4 +42,14 @@ export class CookieStorageService {
   deleteCurrentUserId(){
     this.cookieService.delete('userId');
   }
+
+  setCurrentUsername(username:string){
+    this.cookieService.set('username', username);
+  }
+  getCurrentUsername(){
+    return this.cookieService.get('username');
+  }
+  deleteCurrentUsername(){
+    this.cookieService.delete('username');
+  }
 }
