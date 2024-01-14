@@ -5,6 +5,7 @@
             
             <div class="col-3 mt-3 text-center ms-2">
                 <div class="h1 text-center">ORGANIZACION</div>
+              
                 <form [formGroup]="organizationForm"  class="form-group p-3 bg-light border border-dark fw-bold ">
                     <div class="form-group  mt-3">
                         <label for="organization-name" class="form-label fs-7">Nombre</label>
@@ -49,7 +50,7 @@
                         <label for="responsibleId" class="form-label fs-7 ">Responsable</label>
                     <select id="responsibleId"  formControlName="responsibleId" class="form-select border-dark mt-1">
                         <option value="">Seleccione una categoria</option>
-                       <option class="form-control" *ngFor="let responsible of responsiblesDto" id="categoryId" [value]="responsible.id">
+                       <option class="form-control" *ngFor="let responsible of responsiblesOrgs" id="categoryId" [value]="responsible.id">
                             {{responsible.name}}</option>
                             <div *ngIf="responsible.invalid && (responsible.dirty || responsible.touched)" class="text-danger">
                                 <div *ngIf="responsible.errors?.['required']">

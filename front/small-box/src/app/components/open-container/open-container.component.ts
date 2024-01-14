@@ -88,7 +88,10 @@ private matDialogRef!: MatDialogRef<DialogTemplateComponent>
   return this.containerForm.controls.organization;
   }
 
- 
+  update(): void {
+    this.containerForm.reset();
+    this.matDialogRef.close();
+  }
 
   openDialogUpdateContainer(id:number,template:TemplateRef<any>){
     this.getContainerById(id);
@@ -98,6 +101,8 @@ private matDialogRef!: MatDialogRef<DialogTemplateComponent>
       template
     });
 
+    this.matDialogRef.afterClosed().subscribe();
+  
   }
 
   updateContainer():void{
@@ -110,6 +115,10 @@ private matDialogRef!: MatDialogRef<DialogTemplateComponent>
         },
         error:(errorData)=>{
           this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+        },
+        complete:()=>{
+          this.update();
+          this.getAllContainersByOrganizationsByUser();
         }
       });
     }

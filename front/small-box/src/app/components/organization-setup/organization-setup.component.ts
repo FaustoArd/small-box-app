@@ -17,6 +17,7 @@ export class OrganizationSetupComponent implements OnInit {
 
   organizationDto!: OrganizationDto;
   responsibleDto!: OrganizationResponsibleDto;
+  responsiblesOrgs:OrganizationResponsibleDto[] = [];
   organizationsDto:OrganizationDto[]= [];
   responsiblesDto:OrganizationResponsibleDto[]=[];
 
@@ -62,8 +63,11 @@ export class OrganizationSetupComponent implements OnInit {
         },
         error: (errorData) => {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+        },
+        complete:()=>{
+          this.getOrganizations();
         }
-      })
+      });
     }
   }
 
@@ -97,6 +101,9 @@ export class OrganizationSetupComponent implements OnInit {
         },
         error: (errorData) => {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+        },
+        complete:()=>{
+         this.getResponsibles();
         }
       });
     }
@@ -117,6 +124,10 @@ getResponsibles(){
   this.organizationService.getAllResponsibles().subscribe({
     next:(responsiblesData)=>{
       this.responsiblesDto = responsiblesData;
+      responsiblesData.map(res =>{
+        res.name = res.name + ' ' + res.lastname;
+      });
+      this.responsiblesOrgs = responsiblesData;
     },
     error:(errorData)=>{
       this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
