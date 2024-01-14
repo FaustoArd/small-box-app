@@ -55,8 +55,12 @@ public class OrganizationServiceImpl implements OrganizationService{
 
 	@Override
 	public Organization update(Organization organization) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("Update organization");
+		OrganizationResponsible responsible = organizationResponsibleRepository.findById(organization.getResponsible().getId())
+				.orElseThrow(()-> new ItemNotFoundException("Responsible not found"));
+		organization.setResponsible(responsible);
+		return organizationRepository.save(organization);
+		
 	}
 
 	@Override
