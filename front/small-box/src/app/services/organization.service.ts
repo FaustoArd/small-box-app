@@ -25,6 +25,10 @@ export class OrganizationService {
     return throwError(() => new Error(error.error));
   }
 
+  getOrganizationById(id:number):Observable<OrganizationDto>{
+    return this.http.get<OrganizationDto>(`${ORGANIZATION_BASE_URL}/org/${id}`,this.httpOptions).pipe(catchError(this.handleError));
+  }
+
   getAllOrganizations():Observable<OrganizationDto[]>{
     return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs`,this.httpOptions).pipe(catchError(this.handleError));
   }
@@ -45,6 +49,11 @@ export class OrganizationService {
 
    newOrganization(organizationDto:OrganizationDto):Observable<OrganizationDto>{
     return this.http.post<OrganizationDto>(`${ORGANIZATION_BASE_URL}/new-organization`,organizationDto,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+
+   updateOrganization(organization:OrganizationDto):Observable<OrganizationDto>{
+    return this.http.put<OrganizationDto>(`${ORGANIZATION_BASE_URL}/update-organization`,organization,this.httpOptions)
     .pipe(catchError(this.handleError));
    }
 

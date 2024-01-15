@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,12 @@ public class OrganizationController {
 	ResponseEntity<List<OrganizationDto>> findAllOrganizations(){
 		List<OrganizationDto> orgsDto = organizationService.findAll();
 		return ResponseEntity.ok(orgsDto);
+	}
+	@GetMapping("/org/{id}")
+	ResponseEntity<OrganizationDto> findOrganizationById(@PathVariable("id")Long id){
+		Organization org = organizationService.findById(id);
+		OrganizationDto orgDto = OrganizationMapper.INSTANCE.toOrganizationDto(org);
+		return ResponseEntity.ok(orgDto);
 	}
 	
 	@GetMapping("/all-orgs-by-id")
@@ -82,7 +89,7 @@ public class OrganizationController {
 		return new ResponseEntity<OrganizationResponsibleDto>(responseOrganizationResponsibleDto,HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/update/responsible")
+	@PutMapping("/update-responsible")
 	ResponseEntity<OrganizationResponsibleDto> updateResponsible(@RequestBody OrganizationResponsibleDto organizationResponsibleDto){
 		OrganizationResponsibleDto respoOrganizationResponsibleDto = organizationResponsibleService.save(organizationResponsibleDto);
 		return new ResponseEntity<OrganizationResponsibleDto>(respoOrganizationResponsibleDto,HttpStatus.CREATED);

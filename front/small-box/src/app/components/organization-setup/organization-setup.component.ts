@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { OrganizationDto } from 'src/app/models/organizationDto';
 import { OrganizationResponsibleDto } from 'src/app/models/organizationResponsibleDto';
 import { OrganizationService } from 'src/app/services/organization.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-organization-setup',
@@ -13,13 +16,16 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
 export class OrganizationSetupComponent implements OnInit {
 
   constructor(private organizationService: OrganizationService, private snackBarService: SnackBarService
-    , private formBuilder: FormBuilder) { }
+    , private formBuilder: FormBuilder,private dialogService:DialogService) { }
 
   organizationDto!: OrganizationDto;
+  updateOrganizationDto!:OrganizationDto;
+  organizationUpdateDto!:OrganizationDto;
   responsibleDto!: OrganizationResponsibleDto;
   responsiblesOrgs:OrganizationResponsibleDto[] = [];
   organizationsDto:OrganizationDto[]= [];
   responsiblesDto:OrganizationResponsibleDto[]=[];
+  private matDialogRef!: MatDialogRef<DialogTemplateComponent>;
 
   ngOnInit(): void {
     this.getOrganizations();
@@ -109,6 +115,58 @@ export class OrganizationSetupComponent implements OnInit {
     }
   };
 
+  updateOrganizationForm = this.formBuilder.group({
+    id:[0],
+    organizationName: ['', Validators.required],
+    organizationNumber: [0, Validators.required],
+    maxRotation: [0, Validators.required],
+    maxAmount: [0, Validators.required],
+    responsibleId:[0, Validators.required]
+
+  });
+
+  onUpdateOrganizationShow():void{
+    this.updateOrganizationForm.patchValue({
+      id:this.organizationUpdateDto.id,
+      organizationName:this.organizationUpdateDto.organizationName,
+      organizationNumber:this.organizationUpdateDto.organizationNumber,
+      maxRotation:this.organizationUpdateDto.maxRotation,
+      maxAmount:this.organizationUpdateDto.maxAmount,
+      responsibleId:this.organizationUpdateDto.responsibleId
+
+    });
+  }
+
+  openDialogUpdateOrganization(id:number,template:TemplateRef<any>){
+    this.getOrganizationbyId(id);
+    this.getResponsibles();
+    this.matDialogRef = this.dialogService.openDialogCreation({
+      template
+    });
+    this.matDialogRef.afterClosed().subscribe();
+    this.updateOrganizationForm.reset();
+  }
+
+  create():void{
+    this.matDialogRef.close();
+    this.updateOrganizationForm.reset();
+   }
+
+   updateOrganization():void{
+    if(this.updateOrganizationForm.valid){
+      this.updateOrganizationDto = Object.assign(this.updateOrganizationDto,this.updateOrganizationForm.value);
+      this.organizationService.updateOrganization(this.updateOrganizationDto).subscribe({
+        next:(orgData)=>{
+          this.snackBarService.openSnackBar('Se actializo la organization: ' + orgData.organizationName,'Cerrar',3000);
+        },
+        error:(errorData)=>{
+          this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+        }
+      });
+    }
+   }
+
+
   getOrganizations(){
     this.organizationService.getAllOrganizations().subscribe({
       next:(orgsData)=>{
@@ -133,6 +191,17 @@ getResponsibles(){
       this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
     }
   })
+}
+
+getOrganizationbyId(id:number):void{
+  this.organizationService.getOrganizationById(id).subscribe({
+    next:(orgData)=>{
+      this.organizationUpdateDto = orgData;
+    },
+    error:(errorData)=>{
+      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+    }
+  });
 }
 
 }
