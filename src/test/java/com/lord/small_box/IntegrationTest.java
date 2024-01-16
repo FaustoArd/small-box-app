@@ -58,6 +58,8 @@ public class IntegrationTest {
 	
 	private Long lagunasId;
 	
+	private Long yanezId;
+	
 	private Long sitCalleId;
 
 	@BeforeAll
@@ -146,6 +148,36 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.maxRotation", is(12)))
 				.andExpect(jsonPath("$.maxAmount", is(45000)))
 				.andExpect(jsonPath("$.responsible",is("Analia Lagunas"))).andReturn();
+	}
+	@Test
+	@Order(5)
+	void createNewResponsible()throws Exception{
+		mvcResult =	this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/organization/new-responsible")
+				.content("{\"name\":\"Fabian\",\"lastname\":\"Yanez\"}")
+				.header("Authorization",  "Bearer " + jwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
+		.andExpect(jsonPath("$.id", is(notNullValue())))
+		.andExpect(jsonPath("$.name", is("Fabian")))
+		.andExpect(jsonPath("$.lastname", is("Yanez"))).andReturn();
+		String[] list = mvcResult.getResponse().getContentAsString().split("\"");
+		String s = Character.toString(list[2].charAt(1));
+		yanezId = Long.parseLong(s);
+	}
+	
+	@Test
+	@Order(6)
+	void createNewOrganization()throws Exception{
+		mvcResult = this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/organization/new-organization")
+				.content("{\"organizationName\":\"Dir  de Logistica\",\"organizationNumber\":5,\"responsibleId\":2,\"maxRotation\":12,\"maxAmount\":45000}")
+				.header("Authorization",  "Bearer " + jwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.id", is(notNullValue())))
+				.andExpect(jsonPath("$.organizationName", is("Dir  de Logistica")))
+				.andExpect(jsonPath("$.maxRotation", is(12)))
+				.andExpect(jsonPath("$.maxAmount", is(45000)))
+				.andExpect(jsonPath("$.responsible",is("Fabian Yanez"))).andReturn();
 	}
 	
 }
