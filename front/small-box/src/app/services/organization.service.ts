@@ -56,9 +56,17 @@ export class OrganizationService {
     return this.http.put<OrganizationDto>(`${ORGANIZATION_BASE_URL}/update-organization`,organization,this.httpOptions)
     .pipe(catchError(this.handleError));
    }
+   getResponsibleById(id:number):Observable<OrganizationResponsibleDto>{
+    return this.http.get<OrganizationResponsibleDto>(`${ORGANIZATION_BASE_URL}/responsible/${id}`).pipe(catchError(this.handleError));
+   }
 
    newResponsible(responsibleDto:OrganizationResponsibleDto):Observable<OrganizationResponsibleDto>{
     return this.http.post<OrganizationResponsibleDto>(`${ORGANIZATION_BASE_URL}/new-responsible`,responsibleDto,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+
+   updateResponsible(responsibleDto:OrganizationResponsibleDto):Observable<OrganizationResponsibleDto>{
+    return this.http.put<OrganizationResponsibleDto>(`${ORGANIZATION_BASE_URL}/update-responsible`,responsibleDto,this.httpOptions)
     .pipe(catchError(this.handleError));
    }
 

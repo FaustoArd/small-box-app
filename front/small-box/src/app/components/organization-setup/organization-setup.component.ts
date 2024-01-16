@@ -22,6 +22,7 @@ export class OrganizationSetupComponent implements OnInit {
   updateOrganizationDto!:OrganizationDto;
   organizationUpdateDto!:OrganizationDto;
   responsibleDto!: OrganizationResponsibleDto;
+  updateResponsibleDto!:OrganizationResponsibleDto;
   responsiblesOrgs:OrganizationResponsibleDto[] = [];
   organizationsDto:OrganizationDto[]= [];
   responsiblesDto:OrganizationResponsibleDto[]=[];
@@ -76,13 +77,88 @@ export class OrganizationSetupComponent implements OnInit {
       });
     }
   }
+updateOrganizationForm = this.formBuilder.group({
+    id:[0],
+    organizationName: ['', Validators.required],
+    organizationNumber: [0, Validators.required],
+    maxRotation: [0, Validators.required],
+    maxAmount: [0, Validators.required],
+    responsibleId:[0, Validators.required]
+
+  });
+
+  onUpdateOrganizationShow(org:OrganizationDto):void{
+    
+    this.updateOrganizationForm.patchValue({
+      id:this.organizationUpdateDto.id,
+      organizationName:this.organizationUpdateDto.organizationName,
+      organizationNumber:this.organizationUpdateDto.organizationNumber,
+      maxRotation:this.organizationUpdateDto.maxRotation,
+      maxAmount:this.organizationUpdateDto.maxAmount,
+      responsibleId:this.organizationUpdateDto.responsibleId
+
+    });
+  }
+
+  openDialogUpdateOrganization(id:number,template:TemplateRef<any>){
+    this.getOrganizationbyId(id);
+    this.getResponsibles();
+    this.matDialogRef = this.dialogService.openDialogCreation({
+      template
+    });
+    this.matDialogRef.afterClosed().subscribe();
+    this.updateOrganizationForm.reset();
+  }
+
+  create():void{
+    this.matDialogRef.close();
+    this.updateOrganizationForm.reset();
+   }
+
+   updateOrganization():void{
+    if(this.updateOrganizationForm.valid){
+      this.organizationUpdateDto = new OrganizationDto();
+      this.organizationUpdateDto = Object.assign(this.organizationUpdateDto,this.updateOrganizationForm.value);
+      this.organizationService.updateOrganization(this.organizationUpdateDto).subscribe({
+        next:(orgData)=>{
+          this.snackBarService.openSnackBar('Se actializo la organization: ' + orgData.organizationName,'Cerrar',3000);
+        },
+        error:(errorData)=>{
+          this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+        }
+      });
+    }
+   }
+   getOrganizationbyId(id:number):void{
+    this.organizationService.getOrganizationById(id).subscribe({
+      next:(orgData)=>{
+        this.organizationUpdateDto = orgData;
+        this.onUpdateOrganizationShow(this.organizationUpdateDto);
+      
+      },
+      error:(errorData)=>{
+        this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+      },
+      complete:()=>{
+       
+      }
+    });
+  }
+
+  getOrganizations(){
+    this.organizationService.getAllOrganizations().subscribe({
+      next:(orgsData)=>{
+        this.organizationsDto = orgsData;
+      },
+      error:(errorData)=>{
+        this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+      }
+    });
+  };
 
   responsibleForm = this.formBuilder.group({
-
-
-    name: ['', Validators.required],
-
-    lastname: ['', Validators.required],
+  name: ['', Validators.required],
+  lastname: ['', Validators.required],
 
    
   });
@@ -115,68 +191,65 @@ export class OrganizationSetupComponent implements OnInit {
     }
   };
 
-  updateOrganizationForm = this.formBuilder.group({
+  updateResponsibleForm = this.formBuilder.group({
     id:[0],
-    organizationName: ['', Validators.required],
-    organizationNumber: [0, Validators.required],
-    maxRotation: [0, Validators.required],
-    maxAmount: [0, Validators.required],
-    responsibleId:[0, Validators.required]
+    name: ['', Validators.required],
 
-  });
+    lastname: ['', Validators.required],
 
-  onUpdateOrganizationShow():void{
-    this.updateOrganizationForm.patchValue({
-      id:this.organizationUpdateDto.id,
-      organizationName:this.organizationUpdateDto.organizationName,
-      organizationNumber:this.organizationUpdateDto.organizationNumber,
-      maxRotation:this.organizationUpdateDto.maxRotation,
-      maxAmount:this.organizationUpdateDto.maxAmount,
-      responsibleId:this.organizationUpdateDto.responsibleId
+  })
 
+  updateResponsibleShow(responsible:OrganizationResponsibleDto):void{
+    this.updateResponsibleForm.patchValue({
+      id:this.updateResponsibleDto.id,
+      name:this.updateResponsibleDto.name,
+      lastname:this.updateResponsibleDto.lastname
     });
   }
-
-  openDialogUpdateOrganization(id:number,template:TemplateRef<any>){
-    this.getOrganizationbyId(id);
-    this.getResponsibles();
+  openDialogUpdateResponsible(id:number,template:TemplateRef<any>){
+    this.getResponsibleById(id);
     this.matDialogRef = this.dialogService.openDialogCreation({
       template
     });
     this.matDialogRef.afterClosed().subscribe();
-    this.updateOrganizationForm.reset();
+    this.updateResponsibleForm.reset();
+
   }
 
-  create():void{
-    this.matDialogRef.close();
-    this.updateOrganizationForm.reset();
-   }
-
-   updateOrganization():void{
-    if(this.updateOrganizationForm.valid){
-      this.updateOrganizationDto = Object.assign(this.updateOrganizationDto,this.updateOrganizationForm.value);
-      this.organizationService.updateOrganization(this.updateOrganizationDto).subscribe({
-        next:(orgData)=>{
-          this.snackBarService.openSnackBar('Se actializo la organization: ' + orgData.organizationName,'Cerrar',3000);
+  updateResponsible():void{
+   
+    if(this.updateResponsibleForm.valid){
+      this.updateResponsibleDto = new OrganizationResponsibleDto();
+      this.updateResponsibleDto = Object.assign(this.updateResponsibleDto,this.updateResponsibleForm.value);
+      this.organizationService.updateResponsible(this.updateResponsibleDto).subscribe({
+        next:(respData)=>{
+          this.snackBarService.openSnackBar('Se actualizo el responsable: ' + respData.name + ' ' + respData.lastname,'Cerrar',3000);
         },
         error:(errorData)=>{
           this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+        },
+        complete:()=>{
+          this.getOrganizations();
+          this.getResponsibles();
         }
       });
     }
-   }
 
+  }
 
-  getOrganizations(){
-    this.organizationService.getAllOrganizations().subscribe({
-      next:(orgsData)=>{
-        this.organizationsDto = orgsData;
+  getResponsibleById(id:number):void{
+    this.organizationService.getResponsibleById(id).subscribe({
+      next:(respData)=>{
+        this.updateResponsibleDto = respData;
+        console.log(this.updateResponsibleDto);
+        this.updateResponsibleShow(this.updateResponsibleDto);
       },
       error:(errorData)=>{
         this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
       }
-    });
-  };
+    })
+
+  }
 
 getResponsibles(){
   this.organizationService.getAllResponsibles().subscribe({
@@ -193,15 +266,6 @@ getResponsibles(){
   })
 }
 
-getOrganizationbyId(id:number):void{
-  this.organizationService.getOrganizationById(id).subscribe({
-    next:(orgData)=>{
-      this.organizationUpdateDto = orgData;
-    },
-    error:(errorData)=>{
-      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
-    }
-  });
-}
+
 
 }

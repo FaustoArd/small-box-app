@@ -46,6 +46,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 
 	@Override
 	public Organization save(Organization organization) {
+		
 		log.info("Save organization");
 		OrganizationResponsible responsible = organizationResponsibleRepository.findById(organization.getResponsible().getId())
 				.orElseThrow(()-> new ItemNotFoundException("Responsible not found"));
@@ -56,6 +57,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	@Override
 	public Organization update(Organization organization) {
 		log.info("Update organization");
+		System.err.println(organization.getOrganizationName());
 		OrganizationResponsible responsible = organizationResponsibleRepository.findById(organization.getResponsible().getId())
 				.orElseThrow(()-> new ItemNotFoundException("Responsible not found"));
 		organization.setResponsible(responsible);

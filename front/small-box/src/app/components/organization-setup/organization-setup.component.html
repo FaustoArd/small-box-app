@@ -119,7 +119,7 @@
                       
                       
                        <td>
-                          <button class="btn btn-sm mx-2" >-</button>
+                          <button (click)="openDialogUpdateResponsible(res.id,updateResponsibleTemplate)" class="btn btn-sm mx-2" >-</button>
                         
                         </td>
                        
@@ -166,7 +166,7 @@
         </div>
     </div>
     <ng-template #updateOrganizationTemplate>
-      <form [formGroup]="organizationForm"  class="form-group p-3 bg-light border border-dark fw-bold ">
+      <form [formGroup]="updateOrganizationForm"  class="form-group p-3 bg-light border border-dark fw-bold ">
         <div class="form-group  mt-3">
             <label for="organization-name" class="form-label fs-7">Nombre</label>
             <input class="form-control  border-dark" type="text" formControlName="organizationName" id="organizationName">
@@ -223,7 +223,30 @@
                 </div>
         </select>
     </div>
-        <button type="submit" (click)="newOrganization()" class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
+        <button type="submit" (click)="updateOrganization()" class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
+    </form>
+    </ng-template>
+    <ng-template #updateResponsibleTemplate>
+      <form [formGroup]="updateResponsibleForm"  class="form-group p-3 bg-light border border-dark fw-bold ">
+        <div class="form-group  mt-3">
+            <label for="name" class="form-label fs-7">Nombre</label>
+            <input class="form-control  border-dark" type="text" formControlName="name" id="name">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
+            <div *ngIf="name.errors?.['required']">
+            Falta el nombre...
+            </div>
+           </div>
+        </div>
+        <div class="form-group  mt-3">
+            <label for="lastname" class="form-label fs-7">Apellido</label>
+            <input class="form-control  border-dark" type="text" formControlName="lastname" id="lastname">
+            <div *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)" class="text-danger">
+            <div *ngIf="lastname.errors?.['required']">
+            Falta el nombre...
+            </div>
+           </div>
+        </div>
+       <button type="submit" (click)="updateResponsible()" class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
     </form>
     </ng-template>
 </body>

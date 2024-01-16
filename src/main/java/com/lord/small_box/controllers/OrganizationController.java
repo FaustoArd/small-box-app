@@ -83,6 +83,12 @@ public class OrganizationController {
 		return new ResponseEntity<OrganizationDto>(updatedOrgDto,HttpStatus.OK);
 	}
 	
+	@GetMapping("/responsible/{id}")
+	ResponseEntity<OrganizationResponsibleDto> findResponsibleById(@PathVariable("id")Long id){
+		OrganizationResponsibleDto responsibleDto = organizationResponsibleService.findById(id);
+		return ResponseEntity.ok(responsibleDto);
+	}
+	
 	@PostMapping("/new-responsible")
 	ResponseEntity<OrganizationResponsibleDto> newResponsible(@RequestBody OrganizationResponsibleDto organizationResponsibleDto){
 		OrganizationResponsibleDto responseOrganizationResponsibleDto = organizationResponsibleService.save(organizationResponsibleDto);
@@ -91,7 +97,7 @@ public class OrganizationController {
 	
 	@PutMapping("/update-responsible")
 	ResponseEntity<OrganizationResponsibleDto> updateResponsible(@RequestBody OrganizationResponsibleDto organizationResponsibleDto){
-		OrganizationResponsibleDto respoOrganizationResponsibleDto = organizationResponsibleService.save(organizationResponsibleDto);
+		OrganizationResponsibleDto respoOrganizationResponsibleDto = organizationResponsibleService.update(organizationResponsibleDto);
 		return new ResponseEntity<OrganizationResponsibleDto>(respoOrganizationResponsibleDto,HttpStatus.CREATED);
 	}
 	
