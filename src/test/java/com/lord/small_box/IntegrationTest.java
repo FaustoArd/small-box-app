@@ -180,4 +180,10 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.responsible",is("Fabian Yanez"))).andReturn();
 	}
 	
+	@Test
+	@Order(7)
+	void addOrganizationToUserPedro()throws Exception{
+		
+	}
+	
 }
