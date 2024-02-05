@@ -26,6 +26,7 @@ import { RegistrationComponent } from './components/authorization/registration/r
 import { AuthInterceptor } from './components/interceptor/auth-interceptor';
 import { OrganizationComponent } from './components/authorization/organization/organization.component';
 import { OrganizationSetupComponent } from './components/organization-setup/organization-setup.component';
+import { MemoSingleComponent } from './components/work-template/memo-single/memo-single.component';
 
 
 
@@ -45,7 +46,8 @@ import { OrganizationSetupComponent } from './components/organization-setup/orga
     LoginComponent,
     RegistrationComponent,
     OrganizationComponent,
-    OrganizationSetupComponent
+    OrganizationSetupComponent,
+    MemoSingleComponent
     
   ],
   imports: [
