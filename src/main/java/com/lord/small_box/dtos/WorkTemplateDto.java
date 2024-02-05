@@ -20,8 +20,10 @@ public class WorkTemplateDto {
 	
 	private String producedBy;
 	
-	private ArrayList<String> to;
+	private ArrayList<String> destination;
 	
 	private String text;
+	
+	private Long organizationId;
 
 }

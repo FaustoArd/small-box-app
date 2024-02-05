@@ -8,9 +8,9 @@ import com.lord.small_box.models.WorkTemplate;
 
 public interface WorkTemplateService {
 
-	public WorkTemplate createTemplate(WorkTemplateDto workTemplateDto);
+	public WorkTemplate createTemplate(WorkTemplate workTemplate);
 	
 	public WorkTemplate findWorkTemplateById(Long id);
 	
-	public List<WorkTemplate> findAllWorkTemplatesByOrganization(Organization organization);
+	public List<WorkTemplate> findAllWorkTemplatesByOrganization(Long organizationId);
 }

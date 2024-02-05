@@ -13,7 +13,7 @@ public interface WorkTemplateMapper {
 
 	public static WorkTemplateMapper INSTANCE = Mappers.getMapper(WorkTemplateMapper.class);
 	
-	@Mapping(target="organization", ignore = true)
+	@Mapping(target="organization.id", source ="organizationId")
 	public WorkTemplate toWorkTemplate(WorkTemplateDto workTemplateDto);
 	
 	public WorkTemplateDto toWorkTemplateDto(WorkTemplate workTemplate);
