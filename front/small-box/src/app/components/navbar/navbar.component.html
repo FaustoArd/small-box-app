@@ -17,10 +17,17 @@
                 <button mat-menu-item  routerLink="/org">Asignar dependencia</button>
          </mat-menu>
         </div>
-         <div *ngIf="auth" class="col-md-4 ms-5">
+         <div *ngIf="auth" class="col-md-1 ms-5">
             <button mat-button [matMenuTriggerFor]="orgMenu" class="text-white">Organizacion</button>
             <mat-menu #orgMenu yPosition="above">
                 <button mat-menu-item routerLink="/org-setup">Panel</button>
+               
+         </mat-menu>
+        </div>
+        <div *ngIf="auth" class="col-md-3 ms-5">
+            <button mat-button [matMenuTriggerFor]="templateMenu" class="text-white">Plantillas</button>
+            <mat-menu #templateMenu yPosition="above">
+                <button mat-menu-item routerLink="/memo-create">Memo</button>
                
          </mat-menu>
         </div>

@@ -13,6 +13,7 @@ export class NavbarComponent implements OnInit {
 
 auth!:boolean;
 currentUsername!:string;
+destinationsList!:Array<string>
 
 constructor(private cookieService:CookieStorageService,private router:Router){}
 
@@ -22,6 +23,8 @@ ngOnInit(): void {
     this.currentUsername = this.cookieService.getCurrentUsername();
     
 }
+
+
 
   onLogout(){
     this.cookieService.deleteToken();

@@ -1,1 +1,65 @@
-<p>memo-single works!</p>
+<app-navbar></app-navbar>
+<body>
+    
+
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-2"></div>
+        <div class="col-4  mt-3">
+            <h1 class="text-center mt-2">Memo</h1>
+            <form class="text-center" [formGroup]="memoFormBuilder">
+            <div class="form-group">
+                <label for="date" class="form-label">Fecha</label>
+                <input  type="date" class="form-control "formControlName="date" id="date">
+                <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger">
+                    <div *ngIf="date.errors?.['required']">
+                    Falta la fecha
+                    </div>
+                   </div>
+            </div>
+            <div class="form-group">
+                <label for="corresponds" class="form-label">Corresponde</label>
+                <input type="text" class="form-control "formControlName="corresponds" id="corresponds">
+                <div *ngIf="corresponds.invalid && (corresponds.dirty || corresponds.touched)" class="text-danger">
+                    <div *ngIf="corresponds.errors?.['required']">
+                    Falta la fecha
+                    </div>
+                   </div>
+            </div>
+            <div class="form-group">
+                <label for="producedBy" class="form-label">Producido por</label>
+                <input type="text" class="form-control "formControlName="producedBy" id="producedBy">
+                <div *ngIf="producedBy.invalid && (producedBy.dirty || producedBy.touched)" class="text-danger">
+                    <div *ngIf="producedBy.errors?.['required']">
+                    Falta la fecha
+                    </div>
+                   </div>
+            </div>
+          
+            <div class="form-group">
+                <label for="producedBy" class="form-label">Texto</label>
+                <textarea id="input-text" type="text" class="form-control" formControlName="text"></textarea>
+               
+            </div>
+           </form>
+        </div>
+        <div class="col-2 "></div>
+        <div class="col-4 mt-5">
+            <h2 id="destTitle">Seleccionar destinatarios</h2>
+            <form [formGroup]="destinationsFormBuilder">
+                <div class="form-group w-75 text-center ">
+                    <label for="destinations" class="form-label fs-7  ">Destinatario</label>
+                    <select id="destinations" formControlName="destinations" class="form-select  border-dark ">
+                        <option type="text" class="form-control border-dark " *ngFor="let destination of destinationsList"
+                            id="destinations" [value]="destination">
+                            {{destination}}</option>
+                           
+                    </select>
+                   
+                </div>
+           
+            </form>
+        </div>
+    </div>
+</div>
+</body>

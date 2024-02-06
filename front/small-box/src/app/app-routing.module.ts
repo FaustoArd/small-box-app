@@ -10,6 +10,7 @@ import { LoginComponent } from './components/authorization/login/login.component
 import { RegistrationComponent } from './components/authorization/registration/registration.component';
 import { OrganizationComponent } from './components/authorization/organization/organization.component';
 import { OrganizationSetupComponent } from './components/organization-setup/organization-setup.component';
+import { MemoSingleComponent } from './components/work-template/memo-single/memo-single.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -23,7 +24,8 @@ const routes: Routes = [
   { path:'login', component:LoginComponent },
   { path:'register', component:RegistrationComponent},
   { path:'org', component:OrganizationComponent},
-  { path:'org-setup', component:OrganizationSetupComponent}
+  { path:'org-setup', component:OrganizationSetupComponent},
+  { path:'memo-create', component:MemoSingleComponent}
 ];
 
 @NgModule({
