@@ -36,7 +36,7 @@ public class WorkTemplate {
 	
 	private String producedBy;
 	
-	private ArrayList<String> destination;
+	private ArrayList<String> destinations;
 	
 	private String text;
 	
