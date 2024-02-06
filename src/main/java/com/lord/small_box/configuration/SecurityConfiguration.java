@@ -72,6 +72,7 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/small-box/organization/update-responsible").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/all-responsibles").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/all-orgs-by-user").hasAnyRole("USER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/**").hasAnyRole("SUPERUSER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/users/**").hasRole("ADMIN");
 			auth.anyRequest().authenticated();
 			
