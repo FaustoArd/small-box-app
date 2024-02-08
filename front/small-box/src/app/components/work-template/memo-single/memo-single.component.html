@@ -26,14 +26,15 @@
                     </div>
                    </div>
             </div>
-            <div class="form-group">
-                <label for="producedBy" class="form-label">Producido por</label>
-                <input type="text" class="form-control "formControlName="producedBy" id="producedBy">
-                <div *ngIf="producedBy.invalid && (producedBy.dirty || producedBy.touched)" class="text-danger">
-                    <div *ngIf="producedBy.errors?.['required']">
-                    Falta la fecha
-                    </div>
-                   </div>
+            <div class="form-group w-75 text-center ">
+                <label for="organizationId" class="form-label fs-7  ">Producido por</label>
+                <select id="organizationId" formControlName="organizationId" class="form-select  border-dark ">
+                    <option type="text" class="form-control border-dark " *ngFor="let org of organizations"
+                        id="organizationId" [value]="org.id">
+                        {{org.organizationName}}</option>
+                       
+                </select>
+               
             </div>
           
             <div class="form-group">
@@ -41,6 +42,7 @@
                 <textarea id="input-text" type="text" class="form-control" formControlName="text"></textarea>
                
             </div>
+            <button (click)="createMemo()">Finalizar</button>
            </form>
         </div>
         <div class="col-2 "></div>
@@ -48,16 +50,16 @@
             <h2 id="destTitle">Seleccionar destinatarios</h2>
             <form [formGroup]="destinationsFormBuilder">
                 <div class="form-group w-75 text-center ">
-                    <label for="destinations" class="form-label fs-7  ">Destinatario</label>
-                    <select id="destinations" formControlName="destinations" class="form-select  border-dark ">
+                    <label for="destination" class="form-label fs-7  ">Destinatario</label>
+                    <select id="destination" formControlName="destination" class="form-select  border-dark ">
                         <option type="text" class="form-control border-dark " *ngFor="let destination of destinationsList"
-                            id="destinations" [value]="destination">
+                            id="destination" [value]="destination">
                             {{destination}}</option>
                            
                     </select>
                    
                 </div>
-           
+                <button (click)="addDestination()">Agregar</button>
             </form>
         </div>
     </div>

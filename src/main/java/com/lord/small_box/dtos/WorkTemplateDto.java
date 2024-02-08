@@ -20,7 +20,7 @@ public class WorkTemplateDto {
 	
 	private String producedBy;
 	
-	private ArrayList<String> destination;
+	private ArrayList<String> destinations;
 	
 	private String text;
 	

@@ -16,6 +16,7 @@ public interface WorkTemplateMapper {
 	@Mapping(target="organization.id", source ="organizationId")
 	public WorkTemplate toWorkTemplate(WorkTemplateDto workTemplateDto);
 	
+	@Mapping(target = "producedBy", source = "organization.organizationName")
 	public WorkTemplateDto toWorkTemplateDto(WorkTemplate workTemplate);
 	
 	public List<WorkTemplateDto> toWorkTemplateDtoList(List<WorkTemplate> workTemplates);

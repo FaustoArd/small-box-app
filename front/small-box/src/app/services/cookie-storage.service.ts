@@ -52,4 +52,16 @@ export class CookieStorageService {
   deleteCurrentUsername(){
     this.cookieService.delete('username');
   }
+
+  setDestinationsList(destinationsList:Array<string>){
+    const destinationsListResult = JSON.stringify(destinationsList);
+    this.cookieService.set('destinationsList',destinationsListResult);
+  }
+  getDestinationsList(){
+   const destinationListResult = this.cookieService.get('destinationsList');
+   return  JSON.parse("[" + destinationListResult + "]");
+  }
+  deleteDestinationsList(){
+    this.cookieService.delete('destinationsList');
+  }
 }
