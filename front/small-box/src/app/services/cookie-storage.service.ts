@@ -64,4 +64,15 @@ export class CookieStorageService {
   deleteDestinationsList(){
     this.cookieService.delete('destinationsList');
   }
+
+  setCurrentWorkTemplateId(workTemplateid:string){
+    this.cookieService.set('workTemplateid', workTemplateid);
+  }
+  getCurrentWorkTemplateId(){
+    return this.cookieService.get('workTemplateid');
+       
+    }
+  deleteCurrentWorkTemplateId(){
+    this.cookieService.delete('workTemplateid');
+  }
 }

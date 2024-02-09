@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Destination } from 'src/app/models/destination';
 import { OrganizationDto } from 'src/app/models/organizationDto';
 import { WorkTemplate } from 'src/app/models/workTemplate';
@@ -19,10 +20,12 @@ workTemplate!:WorkTemplate;
 returnedWorkTemplate!:WorkTemplate;
 destinationsList!:Array<string>
 destinations:Array<string> = [];
-dest!:Destination;
+destinationsPartial!:Destination;
 organizations:OrganizationDto[]=[];
+
   constructor(private workTemplateService:WorkTemplateService,private cookieService:CookieStorageService
-    ,private formBuilder:FormBuilder,private snackBarService:SnackBarService ,private organizationService:OrganizationService){}
+    ,private formBuilder:FormBuilder,private snackBarService:SnackBarService 
+    ,private organizationService:OrganizationService, private router:Router){}
 
 
 ngOnInit(): void {
@@ -35,21 +38,30 @@ ngOnInit(): void {
     
     }
 
-    addDestination(){
-      this.dest = new Destination();
-      this.dest =  Object.assign(this.dest, this.destinationsFormBuilder.value)
-      let result = this.destinations.filter(des=> des ==this.dest.destination).toString()
-      console.log(result);
-      if(result===this.dest.destination){
+    addSelectedDestination(){
+      this.destinationsPartial = new Destination();
+      this.destinationsPartial =  Object.assign(this.destinationsPartial, this.destinationsFormBuilder.value)
+      let result = this.destinations.filter(des=> des ==this.destinationsPartial.destination).toString()
+      if(result===this.destinationsPartial.destination){
         this.snackBarService.openSnackBar('La dependencia ya ha sido agregada','Cerrar',3000);
       }else{
-     
-     
-     this.destinations.push(this.dest.destination)
+      this.destinations.push(this.destinationsPartial.destination)
       this.cookieService.setDestinationsList(this.destinations);
     console.log(this.cookieService.getDestinationsList());
       this.getDestinationsList();
       }
+    }
+
+    deleteSelectedDestination(destination:string){
+      this.destinations.forEach((item,index)=>{
+        if(item==destination){
+          this.destinations.splice(index,1);
+          this.cookieService.setDestinationsList(this.destinations);
+          this.getDestinationsList();
+          this.snackBarService.openSnackBar('Se elimino: ' + destination,'Cerrar',3000);
+        }
+      });
+
     }
 
     memoFormBuilder = this.formBuilder.group({
@@ -71,11 +83,14 @@ ngOnInit(): void {
         this.workTemplateService.createWorkTemplate(this.workTemplate).subscribe({
           next:(memoData)=>{
             this.returnedWorkTemplate = memoData;
-            console.log(this.returnedWorkTemplate)
-            this.snackBarService.openSnackBar('Listo','Cerrar',3000);
+            this.cookieService.setCurrentWorkTemplateId(JSON.stringify(this.returnedWorkTemplate.id));
+           this.snackBarService.openSnackBar('Listo','Cerrar',3000);
           },
           error:(errorData)=>{
             this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+          },
+          complete:()=>{
+            this.router.navigateByUrl('memo-show');
           }
         });
       }

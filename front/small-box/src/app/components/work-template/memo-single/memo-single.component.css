@@ -5,6 +5,11 @@ body{
 button{
     background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
 }
+#btn_delete{
+    border-radius: 15%;
+    color:white;
+    background: linear-gradient(245.59deg, rgb(192, 73, 73) 0%, rgb(175, 66, 66) 28.53%, #ab1628 75.52%);
+}
 
 #create{
     background: linear-gradient(245.59deg, rgb(192, 73, 83) 0%,  rgb(192, 73, 83) 0%, #cf2f6c 75.52%); 
@@ -17,13 +22,20 @@ p{
 label{
     font-size: 1.2rem;
     margin-top: 0.7rem;
+    font-weight: bold;
 }
 input{
+    border: 1px solid black;
     font-family: 'Quattrocento', serif;
 }
 h1{
     font-family: 'Quattrocento', serif;
     font-size: 3rem;
+}
+
+li{
+    font-family: 'Quattrocento', serif;
+    font-size: 1.3rem;  
 }
 #input-text{
     font-family: 'Quattrocento', serif;

@@ -1,0 +1,28 @@
+#line{
+    margin-left: 0.7rem;
+    width: 97rem;
+}
+h2{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+  
+}
+h3{
+    font-family: 'Quattrocento', serif;
+   font-weight: bold;
+}
+h4{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+   
+}
+#footDep{
+    font-size: 0.6rem;
+    font-weight: bold;
+}
+#footAddress{
+    font-size: 0.5rem;
+}
+small{
+    font-size: 0.6rem;
+}

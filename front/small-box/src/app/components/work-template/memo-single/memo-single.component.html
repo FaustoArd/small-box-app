@@ -42,26 +42,33 @@
                 <textarea id="input-text" type="text" class="form-control" formControlName="text"></textarea>
                
             </div>
-            <button (click)="createMemo()">Finalizar</button>
+            <button class="btn mt-1" (click)="createMemo()">Finalizar</button>
            </form>
         </div>
-        <div class="col-2 "></div>
-        <div class="col-4 mt-5">
+        <div class="col-md-1"></div>
+        <div class="col-4 mt-3">
             <h2 id="destTitle">Seleccionar destinatarios</h2>
             <form [formGroup]="destinationsFormBuilder">
-                <div class="form-group w-75 text-center ">
-                    <label for="destination" class="form-label fs-7  ">Destinatario</label>
-                    <select id="destination" formControlName="destination" class="form-select  border-dark ">
+                <div class="form-group w-75 text-center ms-2 ">
+                   <select id="destination" formControlName="destination" class="form-select  border-dark ">
                         <option type="text" class="form-control border-dark " *ngFor="let destination of destinationsList"
                             id="destination" [value]="destination">
                             {{destination}}</option>
                            
                     </select>
-                   
+                    <button class="btn mt-1" (click)="addSelectedDestination()">Agregar</button>
                 </div>
-                <button (click)="addDestination()">Agregar</button>
+               
             </form>
+            <div class="mt-4">
+                <h2 *ngIf="destinations.length>0" class="ms-4">Destinos Agregados:</h2>
+                <ul  *ngFor="let dest of destinations">
+                    <li class="d-inline">{{dest}}</li>
+                    <button id="btn_delete" class="btn-sm d-inline ms-2 mb-2" (click)="deleteSelectedDestination(dest)">Eliminar</button>
+                </ul>
+            </div>
         </div>
+     
     </div>
 </div>
 </body>

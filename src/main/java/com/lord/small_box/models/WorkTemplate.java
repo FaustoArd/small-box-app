@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -38,6 +39,7 @@ public class WorkTemplate {
 	
 	private ArrayList<String> destinations;
 	
+	@Column(name="text", length = 800)
 	private String text;
 	
 	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)
