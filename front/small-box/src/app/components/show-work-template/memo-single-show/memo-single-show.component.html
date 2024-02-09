@@ -1,70 +1,79 @@
-
 <app-navbar *ngIf="downloaded"></app-navbar>
+
 <body #screen>
-    <div class="ms-3 mt-3">
-    <button routerLink="/small-box" class="btn" *ngIf="downloaded">Volver a editar</button>
-</div>
-    <div id="containerCSS"  class="container-fluid">
-    <div class="row">
-        <a id="logo" (click)="captureScreen()" class="col text-center">
-            <img     class="w-25" src="./assets/img/logomoron.png" alt="">
-        </a>
-    </div>
-    <div class="row">
-        <div class="col mt-1">
-            <h1 id="title" class="text-center">MEMO</h1>
+    <div class="container-flex">
+        <div class="ms-3 mt-3">
+            <button routerLink="/small-box" class="btn" *ngIf="downloaded">Volver a editar</button>
+        </div>
+        <div id="containerCSS" class="container-fluid">
+
+            <div class="row">
+                <a id="logo" (click)="captureScreen()" class="col text-center">
+                    <img class="w-25" src="./assets/img/logomoron.png" alt="">
+                </a>
+            </div>
+            <div class="row">
+                <div class="col mt-1">
+                    <h1 id="title" class="text-center">MEMO</h1>
+                </div>
+            </div>
+
+
+            <div class="row mt-4">
+                <div class="col-md-10">
+                    <h2 id="rendicion">Corresponde: {{workTemplate.corresponds}}</h2>
+                    <h2 id="rendicion">Producido por: {{workTemplate.producedBy}}</h2>
+                    <div *ngFor="let destinations of workTemplate.destinations">
+                        <h2>A: {{destinations}}</h2>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row">
+                <hr id="line" class="my-4">
+                <div class="col-md-11"></div>
+                <div class="col-md-1">
+
+                    <h5 class="fw-bold">Moron, {{workTemplate.date | date:
+                        'dd-MM-yyyy'}} </h5>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">
+                    <h3 class="mt-2">Ref:</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <h3 class="text-decoration-underline mt-2">Objeto:</h3>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-11">
+                    <h4>{{workTemplate.text}}</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-9">
+                <div class="col-2">
+            <div class="position-absolute bottom-0 end-0">
+
+
+                <h5 id="footDep" class="mt-0 mb-0">{{workTemplate.producedBy}}</h5>
+                <h5 id="footAddress" class="mt-0 mb-0">Pellegrini 622 (B1708EFR). Morón. Bs. As</h5>
+
+
+            </div>
+        </div>
+        </div>
         </div>
     </div>
-    <div class="row">
-     
-    </div>
-    <div class="row mt-4">
-        <div class="col-md-10">
-        <h2 id="rendicion">Corresponde Memo: {{workTemplate.corresponds}}</h2>
-        <h2 id="rendicion">Producido por: {{workTemplate.producedBy}}</h2>
-        <div *ngFor="let destinations of workTemplate.destinations">
-        <h2>A: {{destinations}}</h2>
-        </div>
-    </div>
-   
-    </div>
-   
-    <div class="row">
-        <hr id="line" class="my-4">
-        <div class="col-md-11"></div>
-        <div class="col-md-1">
-          
-                <h5 class="fw-bold">Moron, {{workTemplate.date | date:
-                    'dd-MM-yyyy'}} </h5>
-           
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8"></div>
-        <div class="col-md-4">
-            <h3 class="mt-2" >Ref:</h3>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <h3 class="text-decoration-underline mt-2">Objeto:</h3>
-        </div>
-        
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-11">
-            <h4>{{workTemplate.text}}</h4>
-        </div>
-    </div>
-<div class="row">
-    <div class="col-md-10"></div>
-    <div class="col-md-2 mt-5 ">
-       <footer>
-      <h5 id="footDep" class="mt-0 mb-0">{{workTemplate.producedBy}}</h5>
-        <h5 id="footAddress"  class="mt-0 mb-0">Pellegrini 622 (B1708EFR). Morón. Bs. As</h5>
-    </footer>
-    </div>
-</div>
 </div>
 </body>

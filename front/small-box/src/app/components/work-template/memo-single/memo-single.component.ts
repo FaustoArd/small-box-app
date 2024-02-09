@@ -67,7 +67,9 @@ ngOnInit(): void {
     memoFormBuilder = this.formBuilder.group({
       date:['',Validators.required],
       corresponds:['', Validators.required],
-      text:[''],
+      correspondsNumber:['',Validators.required],
+      ref:['', Validators.required],
+      text:['',Validators.required],
       organizationId:[0]
     });
 
@@ -115,9 +117,14 @@ ngOnInit(): void {
     get corresponds(){
       return this.memoFormBuilder.controls.corresponds;
     }
+    get ref(){
+      return this.memoFormBuilder.controls.ref;
+    }
   
     get destination(){
       return this.destinationsFormBuilder.controls.destination;
     }
+
+   
     
 }

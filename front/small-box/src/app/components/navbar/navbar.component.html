@@ -1,49 +1,48 @@
-<div class="container-flex">
+
+<div class="container-fluid">
+    <div class="row">
     <mat-toolbar class="bg-dark">
-        <div class="col-md-2">
+        <div class="col-md-1">
             <button class=" btn btn-lg text-white"routerLink="/home" >Inicio</button>
         </div>
-        <div class="col-md-1">
+        <div class="col-md-1  ms-2">
             <button mat-button [matMenuTriggerFor]="containerMenu" class="text-white">Rendicion</button>
             <mat-menu #containerMenu yPosition="above">
                 <button mat-menu-item routerLink="/container">Crear</button>
                 <button mat-menu-item routerLink="/open-container">Abrir</button>
          </mat-menu>
         </div>
-        <div *ngIf="auth" class="col-md-1 ms-5">
+        <div *ngIf="auth" class="col-md-1 ms-3">
             <button mat-button [matMenuTriggerFor]="userMenu" class="text-white">Usuarios</button>
             <mat-menu #userMenu yPosition="above">
                 <button mat-menu-item routerLink="/register">Nuevo</button>
                 <button mat-menu-item  routerLink="/org">Asignar dependencia</button>
          </mat-menu>
         </div>
-         <div *ngIf="auth" class="col-md-1 ms-5">
+         <div *ngIf="auth" class="col-md-1 ms-3">
             <button mat-button [matMenuTriggerFor]="orgMenu" class="text-white">Organizacion</button>
             <mat-menu #orgMenu yPosition="above">
                 <button mat-menu-item routerLink="/org-setup">Panel</button>
                
          </mat-menu>
         </div>
-        <div *ngIf="auth" class="col-md-3 ms-5">
+        <div *ngIf="auth" class="col-md-5 ms-3">
             <button mat-button [matMenuTriggerFor]="templateMenu" class="text-white">Plantillas</button>
             <mat-menu #templateMenu yPosition="above">
                 <button mat-menu-item routerLink="/memo-create">Memo</button>
                
          </mat-menu>
         </div>
-        <div *ngIf="!auth" class="col-md-5 ms-5"></div>
-       <div class="col-md-2 ms-5">
-      <h4  class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>
+      <div *ngIf="!auth" class="col-md-4 ms-5"></div>
+       
+       <div class="col-md-1 ms-5 mt-1">
+      <h4 id="user-name" class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>
+     
        </div>
-       
-       
-            <div class="col-md-1 top-0 end-0 mt-1">
-              
-                <button id="btnSession" (click)="onLogout()" class="btn btn-sm">Cerrar sesion</button>
-            </div>
-          
-      
-     </mat-toolbar>
-   
+       <div class="col-md-2 top-0 end-0 mt-1"> 
+        <button id="btnSession" (click)="onLogout()" class="btn btn-sm ms-3">Cerrar sesion</button>
+       </div>
+       </mat-toolbar>
+    </div>
 </div>
 

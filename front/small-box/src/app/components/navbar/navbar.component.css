@@ -12,8 +12,14 @@ span{
     color: white;
   
 }
-h4{
-    font-family: 'Rubik Glitch', system-ui;
+#user-name{
+   
+    border-width: 0.2rem;
+    padding: 0.3rem;
+    border-style: groove;
+    border-color:rgb(12, 12, 161);
+    border-radius: 0.6rem;
+    font-family: 'Quattrocento', serif;
     font-size: 14px;
-    color: rgb(235, 26, 40);
+    color: rgb(226, 225, 232);
 }

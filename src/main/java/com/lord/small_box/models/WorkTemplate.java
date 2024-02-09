@@ -35,12 +35,16 @@ public class WorkTemplate {
 	
 	private String corresponds;
 	
+	private String correspondsNumber;
+	
 	private String producedBy;
 	
 	private ArrayList<String> destinations;
 	
 	@Column(name="text", length = 800)
 	private String text;
+	
+	 private ArrayList<String> refs;
 	
 	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="organization_id", referencedColumnName = "id")

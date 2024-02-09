@@ -4,8 +4,8 @@
 
 <div class="container-fluid">
     <div class="row ">
-        <div class="col-2"></div>
-        <div class="col-4  mt-3">
+        <div class="col-md-1"></div>
+        <div class="col-md-4  mt-3">
             <h1 class="text-center mt-2">Memo</h1>
             <form class="text-center" [formGroup]="memoFormBuilder">
             <div class="form-group">
@@ -22,7 +22,16 @@
                 <input type="text" class="form-control "formControlName="corresponds" id="corresponds">
                 <div *ngIf="corresponds.invalid && (corresponds.dirty || corresponds.touched)" class="text-danger">
                     <div *ngIf="corresponds.errors?.['required']">
-                    Falta la fecha
+                    Falta a que corresponde
+                    </div>
+                   </div>
+            </div>
+            <div class="form-group">
+                <label for="ref" class="form-label">Referencia</label>
+                <input type="text" class="form-control "formControlName="ref" id="ref">
+                <div *ngIf="ref.invalid && (ref.dirty || ref.touched)" class="text-danger">
+                    <div *ngIf="ref.errors?.['required']">
+                    Falta la referencia
                     </div>
                    </div>
             </div>
@@ -39,15 +48,14 @@
           
             <div class="form-group">
                 <label for="producedBy" class="form-label">Texto</label>
-                <textarea id="input-text" type="text" class="form-control" formControlName="text"></textarea>
+                <textarea id="input-text" type="text" class="form-control border-dark" formControlName="text"></textarea>
                
             </div>
             <button class="btn mt-1" (click)="createMemo()">Finalizar</button>
            </form>
         </div>
-        <div class="col-md-1"></div>
-        <div class="col-4 mt-3">
-            <h2 id="destTitle">Seleccionar destinatarios</h2>
+        <div class="col-md-3 mt-5 ms-3">
+            <h2 class="mt-4" id="destTitle">Seleccionar destinatarios</h2>
             <form [formGroup]="destinationsFormBuilder">
                 <div class="form-group w-75 text-center ms-2 ">
                    <select id="destination" formControlName="destination" class="form-select  border-dark ">
@@ -60,15 +68,22 @@
                 </div>
                
             </form>
-            <div class="mt-4">
-                <h2 *ngIf="destinations.length>0" class="ms-4">Destinos Agregados:</h2>
-                <ul  *ngFor="let dest of destinations">
-                    <li class="d-inline">{{dest}}</li>
-                    <button id="btn_delete" class="btn-sm d-inline ms-2 mb-2" (click)="deleteSelectedDestination(dest)">Eliminar</button>
-                </ul>
-            </div>
+        </div>
+          
+        <div class="col-md-3 mt-5"  *ngIf="destinations.length>0">
+            <h2 class="mt-4" id="destTitle">Destinatarios:</h2>
+            <div id="destination-list" class="mt-1">
+          
+             <ul  *ngFor="let dest of destinations">
+                 <li class="ms-4">{{dest}}</li>
+                 <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2" 
+                 (click)="deleteSelectedDestination(dest)">Eliminar</button>
+                 <hr class="my-1">
+             </ul>
+         </div>
+     </div>
         </div>
      
     </div>
-</div>
+
 </body>

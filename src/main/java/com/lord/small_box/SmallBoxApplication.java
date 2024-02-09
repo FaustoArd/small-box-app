@@ -52,10 +52,12 @@ public class SmallBoxApplication {
 			admin.setAuthority(AuthorityName.ADMIN);
 			Authority user = new Authority();
 			user.setAuthority(AuthorityName.USER);
+			Authority superUser = new Authority();
+			superUser.setAuthority(AuthorityName.SUPERUSER);
 			
 			authorityRepository.save(admin);
 			authorityRepository.save(user);
-			
+			authorityRepository.save(superUser);
 			AppUserRegistrationDto userDto = new AppUserRegistrationDto();
 			userDto.setName("Carlos");
 			userDto.setLastname("Marroin");

@@ -18,9 +18,13 @@ public class WorkTemplateDto {
 	
 	private String corresponds;
 	
+	private String correspondsNumber;
+	
 	private String producedBy;
 	
 	private ArrayList<String> destinations;
+	
+	private ArrayList<String> refs;
 	
 	private String text;
 	
