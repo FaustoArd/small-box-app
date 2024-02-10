@@ -21,7 +21,7 @@
 
             <div class="row mt-4">
                 <div class="col-md-10">
-                    <h2 id="rendicion">Corresponde: {{workTemplate.corresponds}}</h2>
+                    <h2 id="rendicion">Corresponde: {{workTemplate.corresponds + ' ' + workTemplate.correspondsNumber}}</h2>
                     <h2 id="rendicion">Producido por: {{workTemplate.producedBy}}</h2>
                     <div *ngFor="let destinations of workTemplate.destinations">
                         <h2>A: {{destinations}}</h2>
@@ -43,8 +43,11 @@
             </div>
             <div class="row">
                 <div class="col-md-8"></div>
-                <div class="col-md-4">
-                    <h3 class="mt-2">Ref:</h3>
+                <div class="col-md-4 text-decoration-underline">
+                    <h3 class="mt-2 d-inline">Ref:</h3>
+                   <div class="d-inline" *ngFor="let ref of workTemplate.refs">
+                <span clasS="d-inline"> {{ref}}, </span>
+                </div>
                 </div>
             </div>
             <div class="row">
