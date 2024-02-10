@@ -12,6 +12,7 @@ import { OrganizationComponent } from './components/authorization/organization/o
 import { OrganizationSetupComponent } from './components/organization-setup/organization-setup.component';
 import { MemoSingleComponent } from './components/work-template/memo-single/memo-single.component';
 import { MemoSingleShowComponent } from './components/show-work-template/memo-single-show/memo-single-show.component';
+import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -27,7 +28,8 @@ const routes: Routes = [
   { path:'org', component:OrganizationComponent},
   { path:'org-setup', component:OrganizationSetupComponent},
   { path:'memo-create', component:MemoSingleComponent},
-  { path:'memo-show', component:MemoSingleShowComponent}
+  { path:'memo-show', component:MemoSingleShowComponent},
+  { path:'work-template-list', component:WorkTemplateListComponent}
 ];
 
 @NgModule({

@@ -3,6 +3,7 @@ package com.lord.small_box.services;
 import java.util.List;
 
 import com.lord.small_box.dtos.OrganizationDto;
+import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 
@@ -24,5 +25,7 @@ public interface OrganizationService {
 	
 	public List<OrganizationDto> findAllById(List<Long> organizationsId);
 	
+	public List<Long> getAllOrganizationsIdByUserId(Long userId);
 	
+	public List<Organization> findAllOrganizationsByUsers(Long userId);
 }

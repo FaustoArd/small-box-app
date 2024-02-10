@@ -1,5 +1,7 @@
 package com.lord.small_box.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +38,21 @@ public class WorkTemplateController {
 		WorkTemplate template = workTemplateService.findWorkTemplateById(id);
 		WorkTemplateDto templateDto = WorkTemplateMapper.INSTANCE.toWorkTemplateDto(template);
 		return ResponseEntity.ok(templateDto);
+	}
+	
+	@GetMapping("/by_organization_id/{id}")
+	ResponseEntity<List<WorkTemplateDto>> findWorkTemplatesByOrganizationId(@PathVariable("id")Long id){
+		List<WorkTemplate> templates = workTemplateService.findAllWorkTemplatesByOrganization(id);
+		List<WorkTemplateDto> templatesDto = WorkTemplateMapper.INSTANCE.toWorkTemplateDtoList(templates);
+		return ResponseEntity.ok(templatesDto);
+		
+	}
+	
+	@GetMapping("/by_user_id/{userId}")
+	ResponseEntity<List<WorkTemplateDto>> findWorkTemplatesByuserId(@PathVariable("userId")Long userId){
+		List<WorkTemplate> templates = workTemplateService.finalAllWorkTemplatesByOrganizationsId(userId);
+		List<WorkTemplateDto> templatesDto = WorkTemplateMapper.INSTANCE.toWorkTemplateDtoList(templates);
+		return ResponseEntity.ok(templatesDto);
 	}
 	
 	

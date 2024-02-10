@@ -13,4 +13,6 @@ public interface WorkTemplateService {
 	public WorkTemplate findWorkTemplateById(Long id);
 	
 	public List<WorkTemplate> findAllWorkTemplatesByOrganization(Long organizationId);
+	
+	public List<WorkTemplate> finalAllWorkTemplatesByOrganizationsId(Long userId);
 }

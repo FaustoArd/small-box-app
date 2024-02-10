@@ -28,6 +28,7 @@ import { OrganizationComponent } from './components/authorization/organization/o
 import { OrganizationSetupComponent } from './components/organization-setup/organization-setup.component';
 import { MemoSingleComponent } from './components/work-template/memo-single/memo-single.component';
 import { MemoSingleShowComponent } from './components/show-work-template/memo-single-show/memo-single-show.component';
+import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 
 
 
@@ -49,7 +50,8 @@ import { MemoSingleShowComponent } from './components/show-work-template/memo-si
     OrganizationComponent,
     OrganizationSetupComponent,
     MemoSingleComponent,
-    MemoSingleShowComponent
+    MemoSingleShowComponent,
+    WorkTemplateListComponent
     
   ],
   imports: [

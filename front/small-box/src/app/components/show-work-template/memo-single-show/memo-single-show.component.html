@@ -46,7 +46,9 @@
                 <div class="col-md-4 text-decoration-underline">
                     <h3 class="mt-2 d-inline">Ref:</h3>
                    <div class="d-inline" *ngFor="let ref of workTemplate.refs">
-                <span clasS="d-inline"> {{ref}}, </span>
+                <span clasS="d-inline"> {{ref}}<small *ngIf="workTemplate.refs.length>1">,</small>
+                   
+                 </span>
                 </div>
                 </div>
             </div>

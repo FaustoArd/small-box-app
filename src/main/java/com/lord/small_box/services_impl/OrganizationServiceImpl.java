@@ -119,8 +119,23 @@ public class OrganizationServiceImpl implements OrganizationService{
 		if(Optional.of(organizationsId).isEmpty()) {
 			return null;
 		}
+		
 	List<Organization> orgs = organizationRepository.findAllById(organizationsId);
 	return  OrganizationMapper.INSTANCE.toOrganizationsDto(orgs);
+	}
+
+	@Override
+	public List<Long> getAllOrganizationsIdByUserId(Long userId) {
+		List<Long> organizationsIds = appUserService.findById(userId).getOrganizations().stream().map(org -> org.getId()).toList();
+		return organizationsIds;
+	}
+
+	@Override
+	public List<Organization> findAllOrganizationsByUsers(Long userId) {
+		log.info("Find all organizations by user id");
+		AppUser findedUser =appUserService.findById(userId);
+		List<Organization> orgs = organizationRepository.findAllOrganizationsByUsers(findedUser);
+		return orgs;
 	}
 
 	

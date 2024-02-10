@@ -1,0 +1,38 @@
+<app-navbar></app-navbar>
+<div class="container-flex">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-6 mt-5">
+            <table id="pdfDiv" class="table table-fluid  table-bordered border border-dark">
+                <thead>
+                    <tr class=" fw-bold text-center">
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Producido por</th>
+                        <th scope="col">Corresponde</th>
+                        <th scope="col">Destinos</th>
+                        <th scope="col">Texto</th>
+                       
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr   class="text-center" *ngFor="let template of workTemplates">
+                        <td scope="row" class="fw-light">{{template.date | date:
+                            'dd-MM-yyyy'}}</td>
+                        <td scope="row" id="rowCompleted"  class="fw-bold "></td>
+                        <td scope="row"class="fw-light">{{template.producedBy}}
+                        </td>
+                        <td scope="row" class="fw-light">{{template.corresponds + ' ' + template.correspondsNumber}}</td>
+                      
+                        <td scope="row" id="rowCompleted"  class="fw-bold">{{template.destinations}}</td>
+                       
+                        <td scope="row" class="fw-light">{{template.refs}}</td>
+                        <td scope="row" id="rowCompleted"  class="fw-bold">{{template.text}}</td>
+                     
+                     </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 package com.lord.small_box.models;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -68,7 +69,7 @@ public class AppUser implements UserDetails {
 	
 	@ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinTable(name = "user_organization_junction", joinColumns = { @JoinColumn(name="user_id", referencedColumnName = "id") },
-	inverseJoinColumns = { @JoinColumn(name="organization", referencedColumnName = "id") })
+	inverseJoinColumns = { @JoinColumn(name="organization_id", referencedColumnName = "id") })
 	private List<Organization> organizations;
 	
 	public AppUser() {

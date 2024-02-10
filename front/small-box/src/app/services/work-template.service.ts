@@ -33,4 +33,8 @@ httpOptions = {
     return this.http.get<WorkTemplate>(`${WORK_TEMPLATE_BASE_URL}/by_id/${id}`,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
+
+  findAllWorkTemplatesByUserId(userId:number):Observable<WorkTemplate[]>{
+    return this.http.get<WorkTemplate[]>(`${WORK_TEMPLATE_BASE_URL}/by_user_id/${userId}`,this.httpOptions).pipe(catchError(this.handleError));
+  }
 }
