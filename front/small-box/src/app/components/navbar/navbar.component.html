@@ -12,28 +12,28 @@
                 <button mat-menu-item routerLink="/open-container">Abrir</button>
          </mat-menu>
         </div>
-        <div *ngIf="auth" class="col-md-1 ms-3">
+        <div *ngIf="adminAuth" class="col-md-1 ms-3">
             <button mat-button [matMenuTriggerFor]="userMenu" class="text-white">Usuarios</button>
             <mat-menu #userMenu yPosition="above">
                 <button mat-menu-item routerLink="/register">Nuevo</button>
                 <button mat-menu-item  routerLink="/org">Asignar dependencia</button>
          </mat-menu>
         </div>
-         <div *ngIf="auth" class="col-md-1 ms-3">
+         <div *ngIf="adminAuth" class="col-md-1 ms-3">
             <button mat-button [matMenuTriggerFor]="orgMenu" class="text-white">Organizacion</button>
             <mat-menu #orgMenu yPosition="above">
                 <button mat-menu-item routerLink="/org-setup">Panel</button>
                
          </mat-menu>
         </div>
-        <div *ngIf="auth" class="col-md-5 ms-3">
+        <div *ngIf="adminAuth  || superUserAuth" class="col-md-5 ms-3">
             <button mat-button [matMenuTriggerFor]="templateMenu" class="text-white">Plantillas</button>
             <mat-menu #templateMenu yPosition="above">
                 <button mat-menu-item routerLink="/memo-create">Memo</button>
                 <button mat-menu-item routerLink="/work-template-list">Ver</button>
          </mat-menu>
         </div>
-      <div *ngIf="!auth" class="col-md-4 ms-5"></div>
+      <div *ngIf="!adminAuth || superUserAuth " class="col-md-7 ms-5"></div>
        
        <div class="col-md-1 ms-5 mt-1">
       <h4 id="user-name" class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>

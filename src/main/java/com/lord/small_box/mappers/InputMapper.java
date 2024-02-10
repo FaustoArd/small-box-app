@@ -3,6 +3,7 @@ package com.lord.small_box.mappers;
 import java.util.List;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.lord.small_box.dtos.InputDto;
@@ -13,6 +14,7 @@ public interface InputMapper {
 
 	public static InputMapper INSTNACE  = Mappers.getMapper(InputMapper.class);
 	
+	@Mapping(target="subtotal", ignore=true)
 	public Input toInput(InputDto inputDto);
 	
 	public InputDto toInputDto(Input input);

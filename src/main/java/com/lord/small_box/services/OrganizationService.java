@@ -21,11 +21,7 @@ public interface OrganizationService {
 	
 	public String addOrganizationToUser(Long userId,List<Long> organizationsId);
 	
-	public List<OrganizationDto> findOrganizationByUser(Long userId);
-	
 	public List<OrganizationDto> findAllById(List<Long> organizationsId);
-	
-	public List<Long> getAllOrganizationsIdByUserId(Long userId);
 	
 	public List<Organization> findAllOrganizationsByUsers(Long userId);
 }

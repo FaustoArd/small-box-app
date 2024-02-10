@@ -96,22 +96,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 					.orElse( "Ninguna");
 		}
 
-	@Override
-	public List<OrganizationDto> findOrganizationByUser(Long userId) {
-		log.info("Fetching organization by user ID");
-		List<OrganizationDto> orgsDto =  appUserService.findById(userId).getOrganizations().stream().map(org -> {
-			OrganizationDto orgDto = new OrganizationDto();
-			orgDto.setId(org.getId());
-			orgDto.setOrganizationName(org.getOrganizationName());
-			orgDto.setOrganizationNumber(org.getOrganizationNumber());
-			orgDto.setMaxRotation(org.getMaxRotation());
-			orgDto.setMaxAmount(org.getMaxAmount());
-			return orgDto;
-		
-		}).toList();
-		
-		return orgsDto;
-	}
+	
 
 	@Override
 	public List<OrganizationDto> findAllById(List<Long> organizationsId) {
@@ -124,11 +109,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	return  OrganizationMapper.INSTANCE.toOrganizationsDto(orgs);
 	}
 
-	@Override
-	public List<Long> getAllOrganizationsIdByUserId(Long userId) {
-		List<Long> organizationsIds = appUserService.findById(userId).getOrganizations().stream().map(org -> org.getId()).toList();
-		return organizationsIds;
-	}
+	
 
 	@Override
 	public List<Organization> findAllOrganizationsByUsers(Long userId) {

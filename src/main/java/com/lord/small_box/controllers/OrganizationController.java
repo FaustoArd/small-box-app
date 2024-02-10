@@ -63,7 +63,8 @@ public class OrganizationController {
 	
 	@GetMapping("/all-orgs-by-user")
 	ResponseEntity<List<OrganizationDto>> findOrganizationsByUser(@RequestParam("userId")Long userId){
-		List<OrganizationDto> orgsDto = organizationService.findOrganizationByUser(userId);
+		List<Organization> orgs = organizationService.findAllOrganizationsByUsers(userId);
+		List<OrganizationDto> orgsDto = OrganizationMapper.INSTANCE.toOrganizationsDto(orgs);
 		return ResponseEntity.ok(orgsDto);
 	}
 	

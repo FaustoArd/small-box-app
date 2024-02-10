@@ -57,9 +57,9 @@ public class SecurityConfiguration {
 		
 		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth ->{
 			auth.requestMatchers("/api/v1/small-box/authorization/**").permitAll();
-			auth.requestMatchers("/api/v1/small-box/containers/**").hasAnyRole("USER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/inputs/**").hasAnyRole("USER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/smallboxes/**").hasAnyRole("USER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/containers/**").hasAnyRole("USER","SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/inputs/**").hasAnyRole("USER","SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/smallboxes/**").hasAnyRole("USER","SUPERUSER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/registration/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/all-orgs").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/org/**").hasRole("ADMIN");
@@ -71,7 +71,7 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/small-box/organization/responsible/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/update-responsible").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/all-responsibles").hasRole("ADMIN");
-			auth.requestMatchers("/api/v1/small-box/organization/all-orgs-by-user").hasAnyRole("USER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/organization/all-orgs-by-user").hasAnyRole("USER","SUPERUSER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/work-templates/**").hasAnyRole("SUPERUSER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/users/**").hasRole("ADMIN");
 			auth.anyRequest().authenticated();

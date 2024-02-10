@@ -11,7 +11,8 @@ import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 export class NavbarComponent implements OnInit {
 
 
-auth!:boolean;
+adminAuth!:boolean;
+superUserAuth!:boolean;
 currentUsername!:string;
 destinationsList!:Array<string>
 
@@ -19,7 +20,8 @@ constructor(private cookieService:CookieStorageService,private router:Router){}
 
 
 ngOnInit(): void {
-    this.auth = this.decodeToken();
+    this.adminAuth = this.decodeAdminToken();
+    this.superUserAuth = this.decodeSuperUserToken();
     this.currentUsername = this.cookieService.getCurrentUsername();
     
 }
@@ -31,10 +33,19 @@ ngOnInit(): void {
     this.router.navigateByUrl("/login")
   }
   
-  decodeToken():boolean{
+  decodeAdminToken():boolean{
     let token = this.cookieService.getToken();
     let decodedJWT = JSON.parse(window.atob(token.split('.')[1]));
     if(decodedJWT.roles==='ADMIN'){
+      return true;
+    }
+    return false;
+  }
+
+  decodeSuperUserToken():boolean{
+    let token = this.cookieService.getToken();
+    let decodedJWT = JSON.parse(window.atob(token.split('.')[1]));
+    if(decodedJWT.roles==='SUPERUSER'){
       return true;
     }
     return false;
