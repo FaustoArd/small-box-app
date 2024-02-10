@@ -11,6 +11,6 @@ public interface WorkTemplateRepository extends JpaRepository<WorkTemplate, Long
 	
 	public List<WorkTemplate> findAllWorkTemplatesByOrganization(Organization organization);
 	
-	public List<WorkTemplate> findAllWorkTemplatesByOrganizationIn(List<Long> organizationId); 
+	public List<WorkTemplate> findAllWorkTemplatesByOrganizationIn(List<Organization> organizations); 
 
 }

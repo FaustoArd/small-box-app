@@ -1,0 +1,13 @@
+table{
+    font-family:'Quattrocento', serif; 
+}
+
+th{
+    background-color: rgb(236, 239, 230);
+    font-size: 1.0rem;
+}
+
+td{
+    background-color: rgb(226, 231, 238);
+}
+
