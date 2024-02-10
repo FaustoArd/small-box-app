@@ -107,6 +107,7 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public Container findById(Long id) {
+		log.info("Find container by id");
 		Container container = containerRepository.findById(id)
 				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
 		OrganizationResponsible organizationResponsible = organizationResponsibleRepository
@@ -118,6 +119,7 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public void deleteById(Long id) {
+		log.info("Delete container by id");
 		if (containerRepository.existsById(id)) {
 			containerRepository.deleteById(id);
 		} else {
@@ -134,6 +136,7 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public void setContainerTotalWrite(Long containerId, String totalWrite) {
+		log.info("Setting container total write");
 		Container container = containerRepository.findById(containerId)
 				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
 		container.setTotalWrite(totalWrite);

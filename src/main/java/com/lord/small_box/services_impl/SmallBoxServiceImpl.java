@@ -1,16 +1,13 @@
 package com.lord.small_box.services_impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.exceptions.MaxAmountExeededException;
 import com.lord.small_box.models.Container;

@@ -1,14 +1,11 @@
 package com.lord.small_box.services_impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.WorkTemplate;
-import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.WorkTemplateRepository;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.WorkTemplateService;
