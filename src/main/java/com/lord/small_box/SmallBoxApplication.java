@@ -66,6 +66,14 @@ public class SmallBoxApplication {
 			userDto.setPassword("123");
 			authorizationService.register(userDto, "ADMIN");
 			
+			SmallBoxType chica = SmallBoxType.builder()
+					.smallBoxType("CHICA").build();
+					SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
+			
+			SmallBoxType especial = SmallBoxType.builder().smallBoxType("ESPECIAL")
+					.build();
+			SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
+			
 			
 			
 			
@@ -90,9 +98,6 @@ public class SmallBoxApplication {
 		inputs.add(i223);
 		inputRepository.saveAll(inputs);
 			
-		//List<Input> inputs = inputRepository.findAll();
-		//List<Input> result = inputs.stream().filter(f -> f.getInputNumber()<250).map(m -> m).collect(Collectors.toList());
-		//result.forEach(e -> System.out.println(e));
 		OrganizationResponsible reyes = new OrganizationResponsible();
 		reyes.setName("Blasa");
 		reyes.setLastname("Reyes");
@@ -110,13 +115,7 @@ public class SmallBoxApplication {
 		fontova.setLastname("Fontova");
 		OrganizationResponsible saveFontova = organizationResponsibleRepository.save(fontova);
 		
-			SmallBoxType chica = SmallBoxType.builder()
-					.smallBoxType("CHICA").build();
-					SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
 			
-			SmallBoxType especial = SmallBoxType.builder().smallBoxType("ESPECIAL")
-					.build();
-			SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
 					
 		
 			Organization org1= new Organization();
@@ -199,7 +198,7 @@ public class SmallBoxApplication {
 			SmallBox smallBox7 = SmallBox.builder().date(cal1).ticketNumber("03809-23448239")
 					.input(input219).provider("Carlos Boro").ticketTotal(new BigDecimal(6700.80)).build();
 			SmallBox savedSmallBox7 = smallBoxService.save(smallBox7, savedContainer.getId());
-		
+	
 		};
 	}
 }

@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -45,7 +46,9 @@ import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.dtos.LoginResponseDto;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
+import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.repositories.AuthorityRepository;
+import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.AuthorizationService;
 import com.nimbusds.jose.JWSObject;
 
@@ -60,6 +63,9 @@ public class IntegrationTest {
 
 	@Autowired
 	private AuthorizationService authorizationService;
+	
+	@Autowired
+	private SmallBoxTypeRepository smallBoxTypeRepository;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -97,6 +103,14 @@ public class IntegrationTest {
 		userDto.setUsername("car");
 		userDto.setPassword("123");
 		authorizationService.register(userDto, "ADMIN");
+		
+		SmallBoxType chica = SmallBoxType.builder()
+				.smallBoxType("CHICA").build();
+				SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
+		
+		SmallBoxType especial = SmallBoxType.builder().smallBoxType("ESPECIAL")
+				.build();
+		SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
 	}
 
 	@Test
@@ -289,5 +303,22 @@ public class IntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().is(403));
 			
+	}
+	
+	@Test
+	@Order(13)
+	void createContainerWithUserPedro()throws Exception{
+	 mvcResult = 	this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/containers/")
+			 .content("{\"smallBoxType\":\"CHICA\",\"organization\":\"1\"}")
+			 .header("Authorization", "Bearer " + userPedrojwtToken)
+			 .contentType(MediaType.APPLICATION_JSON))
+			 .andExpect(status().is(201)).andDo(MockMvcResultHandlers.print())
+			 .andExpect(jsonPath("$.id", is(notNullValue())))
+			 .andExpect(jsonPath("$.id", is(not(0))))
+			 .andExpect(jsonPath("$.smallBoxType", is("CHICA")))
+			 .andExpect(jsonPath("$.organization", is("Dir  de Logistica")))
+			 .andExpect(jsonPath("$.responsible", is("Fabian Yanez")))
+			 .andExpect(jsonPath("$.smalBoxDate[0]", is(2024)))
+			.andReturn();
 	}
 }

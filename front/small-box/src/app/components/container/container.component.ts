@@ -69,6 +69,7 @@ get smallBoxType(){
     if(this.containerFormBuilder.valid){
    this.container = new ContainerDto();
       this.container = Object.assign(this.container,this.containerFormBuilder.value)
+      console.log(this.container);
       this.containerService.createContainer(this.container).subscribe({
         next:(contData)=>{
           this.returnedData = contData;
