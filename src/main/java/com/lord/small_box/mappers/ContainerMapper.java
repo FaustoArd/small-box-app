@@ -16,7 +16,7 @@ public abstract class ContainerMapper {
 
 	public static ContainerMapper INSTANCE = Mappers.getMapper(ContainerMapper.class);
 	
-	@Mapping(target="organization.id", source="organization")
+	@Mapping(target="organization.id", source="organizationId")
 	@Mapping(target="responsible", ignore = true)
 	@Mapping(target = "smallBoxType.smallBoxType", source="smallBoxType")
 	public abstract Container toContainer(ContainerDto containerDto);

@@ -9,6 +9,8 @@ export class ContainerDto{
     
     organization!:string;
 
+    organizationId!:number;
+
     responsible!:string;
     
     smallBoxDate!:Date;

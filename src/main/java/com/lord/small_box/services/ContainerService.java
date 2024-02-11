@@ -10,7 +10,7 @@ public interface ContainerService {
 
 	public List<Container> findAll();
 	
-	public Container save(Container container);
+	public Container createContainer(Container container);
 	
 	public Container findById(Long id);
 	

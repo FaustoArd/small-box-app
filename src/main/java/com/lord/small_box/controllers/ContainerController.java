@@ -62,7 +62,7 @@ public class ContainerController {
 	ResponseEntity<ContainerDto> createContainer(@RequestBody ContainerDto containerDto){
 		log.info("Create new container");
 		Container container = ContainerMapper.INSTANCE.toContainer(containerDto);
-		Container savedContainer = containerService.save(container);
+		Container savedContainer = containerService.createContainer(container);
 		ContainerDto savedContainerDto = ContainerMapper.INSTANCE.toContainerDto(savedContainer);
 		return new ResponseEntity<ContainerDto>(savedContainerDto,HttpStatus.CREATED);
 		

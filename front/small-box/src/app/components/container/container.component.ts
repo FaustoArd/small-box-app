@@ -52,15 +52,15 @@ organizations:OrganizationDto[]=[];
 
   containerFormBuilder = this.formBuilder.group({
    smallBoxType:['', Validators.required],
-    organization:['', Validators.required]
+    organizationId:[0, Validators.required]
    
 });
 
 get smallBoxType(){
     return this.containerFormBuilder.controls.smallBoxType;
   }
-  get organization(){
-    return this.containerFormBuilder.controls.organization;
+  get organizationId(){
+    return this.containerFormBuilder.controls.organizationId;
   }
 
  

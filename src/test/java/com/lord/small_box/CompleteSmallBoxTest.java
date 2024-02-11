@@ -113,7 +113,7 @@ public class CompleteSmallBoxTest {
 		
 		Container container = Container.builder().smallBoxDate(now)
 				.smallBoxType(savedCHica).organization(savedSecDesSocial).responsible(savedSecDesSocial.getResponsible()).build();
-		Container savedContainer = containerService.save(container); 
+		Container savedContainer = containerService.createContainer(container); 
 		containerId = savedContainer.getId();
 		Input input211 = inputService.findById(1l);
 		Input input212 = inputService.findById(2l);

@@ -57,8 +57,7 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Transactional
 	@Override
-	public Container save(Container container) throws MaxRotationExceededException {
-		System.err.println(container.getSmallBoxType().getSmallBoxType());
+	public Container createContainer(Container container) throws MaxRotationExceededException {
 		log.info("Save container");
 		SmallBoxType smallBoxType = smallBoxTypeRepository
 				.findBySmallBoxType(container.getSmallBoxType().getSmallBoxType())
@@ -72,13 +71,15 @@ public class ContainerServiceImpl implements ContainerService {
 				throw new MaxRotationExceededException("Ya se supero la rotacion maxima de rendiciones de caja chica");
 			}
 			organization.setCurrentRotation(organization.getCurrentRotation() + 1);
-			organizationRepository.save(organization);
+			
 		}
+		Organization savedOrganization =  organizationRepository.save(organization);
 		OrganizationResponsible organizationResponsible = organizationResponsibleRepository
 				.findById(organization.getResponsible().getId())
 				.orElseThrow(() -> new ItemNotFoundException("Responsible not found"));
 		
 		container.setResponsible(organizationResponsible);
+		container.setOrganization(savedOrganization);
 		container.setSmallBoxDate(now);
 		container.setSmallBoxType(smallBoxType);
 		return containerRepository.save(container);

@@ -17,6 +17,8 @@ public class ContainerDto {
 	
 	private String organization;
 	
+	private Long organizationId;
+	
 	private String responsible;
 	
 	private Calendar smallBoxDate;

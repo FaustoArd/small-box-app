@@ -156,7 +156,7 @@ public class SmallBoxApplication {
 			Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)
 					.smallBoxType(savedCHica).organization(dirAdmDesp).responsible(dirAdmDesp.getResponsible()).smallBoxCreated(true).build();
-			Container savedContainer = containerService.save(container); 
+			Container savedContainer = containerService.createContainer(container); 
 			
 			Input input211 = inputService.findById(1l);
 			Input input212 = inputService.findById(2l);
