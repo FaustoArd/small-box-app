@@ -1,14 +1,21 @@
 package com.lord.small_box;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -26,7 +33,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
@@ -68,9 +78,12 @@ public class IntegrationTest {
 		admin.setAuthority(AuthorityName.ADMIN);
 		Authority user = new Authority();
 		user.setAuthority(AuthorityName.USER);
+		Authority superUser = new Authority();
+		superUser.setAuthority(AuthorityName.SUPERUSER);
 
 		authorityRepository.save(admin);
 		authorityRepository.save(user);
+		authorityRepository.save(superUser);
 
 		AppUserRegistrationDto userDto = new AppUserRegistrationDto();
 		userDto.setName("Carlos");
@@ -183,7 +196,22 @@ public class IntegrationTest {
 	@Test
 	@Order(7)
 	void addOrganizationToUserPedro()throws Exception{
+	
+		
+		
+		
+		mvcResult =  this.mockMvc.perform(put("http://localhost:8080/api/v1/small-box/organization/add-organization")
+				.param("userId", "2")
+				.param("organizationsId", "1,2")
+				.header("Authorization", "Bearer " + jwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
+				.andReturn();
+		String stringResult = mvcResult.getResponse().getContentAsString();
+		boolean doesContain = stringResult.contains("El usuario: Pedro Mozart Tiene asignada las siguientes dependencias:"
+				+ " Dir  de personas en situacion de calle, Dir  de Logistica");
+		assertTrue(doesContain);
+		
 		
 	}
-	
 }

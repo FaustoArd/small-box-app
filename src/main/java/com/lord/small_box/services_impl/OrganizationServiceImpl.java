@@ -90,8 +90,8 @@ public class OrganizationServiceImpl implements OrganizationService{
 		List<Organization> organizations = organizationRepository.findAllById(organizationsId);
 			user.setOrganizations(organizations);
 			AppUser updatedUser = appUserService.save(user);
-			return "El usuario: " + updatedUser.getName()+ " " + updatedUser.getLastname() +
-					"Tiene asignada las siguientes dependencias: " + updatedUser.getOrganizations().stream().map(o -> o.getOrganizationName())
+			return "El usuario: " + updatedUser.getName() + " " + updatedUser.getLastname() +
+					" Tiene asignada las siguientes dependencias: " + updatedUser.getOrganizations().stream().map(o -> o.getOrganizationName())
 					.reduce((org , element) -> org +  ", " + element)
 					.orElse( "Ninguna");
 		}
