@@ -16,15 +16,17 @@ public class WorkTemplateDto {
 	
 	private Calendar date;
 	
-	private String corresponds;
+	private String correspond;
 	
-	private String correspondsNumber;
+	private String correspondNumber;
 	
 	private String producedBy;
 	
 	private ArrayList<String> destinations;
 	
 	private ArrayList<String> refs;
+	
+	private ArrayList<String> items;
 	
 	private String text;
 	

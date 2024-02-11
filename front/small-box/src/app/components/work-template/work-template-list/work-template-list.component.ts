@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WorkTemplate } from 'src/app/models/workTemplate';
+import { WorkTemplateDto } from 'src/app/models/workTemplateDto';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { WorkTemplateService } from 'src/app/services/work-template.service';
@@ -14,7 +14,7 @@ export class WorkTemplateListComponent implements OnInit {
   constructor(private workTemplateService:WorkTemplateService,private cookieService:CookieStorageService
     ,private snackBarService:SnackBarService){}
 
-    workTemplates:WorkTemplate[]=[];
+    workTemplates:WorkTemplateDto[]=[];
 
     ngOnInit(): void {
         this.getAllWorkTemplatesByUserId();

@@ -34,9 +34,9 @@ public class WorkTemplate {
 	
 	private Calendar date;
 	
-	private String corresponds;
+	private String correspond;
 	
-	private String correspondsNumber;
+	private String correspondNumber;
 	
 	private String producedBy;
 	
@@ -46,6 +46,8 @@ public class WorkTemplate {
 	private String text;
 	
 	 private ArrayList<String> refs;
+	 
+	 private ArrayList<String> items;
 	
 	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="organization_id", referencedColumnName = "id")

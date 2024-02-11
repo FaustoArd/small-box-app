@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { WorkTemplate } from 'src/app/models/workTemplate';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgxCaptureService } from 'ngx-capture';
+import { tap } from 'rxjs';
+import { WorkTemplateDto } from 'src/app/models/workTemplateDto';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { WorkTemplateService } from 'src/app/services/work-template.service';
@@ -11,22 +13,39 @@ import { WorkTemplateService } from 'src/app/services/work-template.service';
 })
 export class MemoSingleShowComponent implements OnInit {
 
+  @ViewChild ('screen', { static:true})  screen: any;
 
+  imgBase64 = '';
   downloaded!:boolean;
 
   constructor(private cookieService:CookieStorageService,private workTemplateService:WorkTemplateService,
-    private snackBarService:SnackBarService){}
+    private snackBarService:SnackBarService,private captureService:NgxCaptureService){}
 
-  workTemplate!:WorkTemplate;
+  workTemplate!:WorkTemplateDto;
+
+  
+
+
 
 
 ngOnInit(): void {
     this.getWorkTemplateById();
 }
 
-  captureScreen(){
-
-  }
+captureScreen():void{
+   
+  this.captureService
+  .getImage(document.body, true)
+  .pipe(
+    tap((img) => {
+      console.log(img);
+    }),
+    tap((img) => this.captureService.downloadImage(img))
+  )
+  .subscribe();
+    this.snackBarService.openSnackBar('Se descargo el memo!', 'Cerrar', 3000);
+    this.downloaded = true;
+}
 
   getWorkTemplateById(){
     const id = this.cookieService.getCurrentWorkTemplateId();

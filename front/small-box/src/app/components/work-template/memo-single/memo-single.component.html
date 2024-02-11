@@ -5,7 +5,11 @@
 
     <div class="container-fluid">
         <div class="row ">
-            <div class="col-md-1"></div>
+         <div class="col-md-1">
+            <button id="btn-create-destination" class="btn btn-sm mt-2 text-center" 
+            (click)="openDialogTemplateDestination(createTemplateDestinationTemplate)">Crear Destinatario</button>
+
+         </div>
             <div class="col-md-4  mt-3">
                 <h1 class="text-center mt-2">Memo</h1>
                 <form class="text-center" [formGroup]="memoFormBuilder">
@@ -19,18 +23,18 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="corresponds" class="form-label">Corresponde</label>
-                        <select id="corresponds" formControlName="corresponds" class="form-select  border-dark ">
+                        <label for="correspond" class="form-label">Corresponde</label>
+                        <select id="correspond" formControlName="correspond" class="form-select  border-dark ">
                             <option type="text" class="form-control border-dark " *ngFor="let ref of refsList"
-                                id="corresponds" [value]="ref">
+                                id="correspond" [value]="ref">
                                 {{ref}}</option>
 
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="correspondsNumber" class="form-label">Numero</label>
-                        <input type="text" class="form-control " formControlName="correspondsNumber"
-                            id="correspondsNumber">
+                        <label for="correspondNumber" class="form-label">Numero</label>
+                        <input type="text" class="form-control " formControlName="correspondNumber"
+                            id="correspondNumber">
                         <div *ngIf="correspondsNumber.invalid && (correspondsNumber.dirty || correspondsNumber.touched)"
                             class="text-danger">
                             <div *ngIf="correspondsNumber.errors?.['required']">
@@ -45,7 +49,7 @@
                             <option type="text" class="form-control border-dark " *ngFor="let org of organizations"
                                 id="organizationId" [value]="org.id">
                                 {{org.organizationName}}</option>
-
+                                    
                         </select>
 
                     </div>
@@ -59,20 +63,29 @@
                     <button class="btn mt-1" (click)="createMemo()">Finalizar</button>
                 </form>
             </div>
-            <div class="col-md-3 mt-5 ms-3">
-                <h2 class="mt-4" id="destTitle">Seleccionar destinatarios</h2>
+          
+            <div  class="col-md-3 mt-5 ms-3">
+            <h2 class="mt-4" id="destTitle">Seleccionar destinatarios</h2>
                 <form [formGroup]="destinationsFormBuilder">
                     <div class="form-group w-75 text-center ms-2 ">
                         <select id="destination" formControlName="destination" class="form-select  border-dark ">
                             <option type="text" class="form-control border-dark "
-                                *ngFor="let destination of destinationsList" id="destination" [value]="destination">
-                                {{destination}}</option>
-
+                                *ngFor="let destination of destinationsDtoList" id="destination" [value]="destination.destination">
+                                {{destination.destination}}</option>
+                              
                         </select>
+                        
+                        <div *ngIf="destination.invalid && (destination.dirty || destination.touched)"
+                        class="text-danger">
+                        <div *ngIf="destination.errors?.['required']">
+                           Debe seleccionar un destino
+                        </div>
+                    </div>
                         <button class="btn mt-1" (click)="addSelectedDestination()">Agregar</button>
                     </div>
 
                 </form>
+
                 <div class="mt-5">
                     <h2 class="mt-4" id="destTitle">Seleccionar Referencias</h2>
                     <form [formGroup]="refFormBuilder">
@@ -128,12 +141,28 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 mt-5" *ngIf="refs.length>0">
-
-            </div>
+        
         </div>
 
 
     </div>
+<ng-template #createTemplateDestinationTemplate>
+   
+<form [formGroup]="createDestinationFormBuilder">
+   
+    <div id="template-destination-form" class="form-group text-center">
+        <label for="destination" class="form-label mt-1 mx-1 mb-1">Destino</label>
+        <input type="text" class="form-control " formControlName="destination" id="template-destination">
+        <div *ngIf="destination.invalid && (destination.dirty || destination.touched)"
+            class="text-danger">
+            <div *ngIf="ref.errors?.['required']">
+                Falta el destino
+            </div>
+        </div>
+        <button class="btn mt-1 text-center" (click)="createTemplateDestinaton()">Agregar</button>
+    </div>
 
+</form>
+
+</ng-template>
 </body>

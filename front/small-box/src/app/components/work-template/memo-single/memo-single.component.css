@@ -12,6 +12,11 @@ button{
     background: linear-gradient(245.59deg, rgb(192, 73, 73) 0%, rgb(175, 66, 66) 28.53%, #ab1628 75.52%);
 }
 
+#btn-create-destination{
+    color: white;
+    background: linear-gradient(245.59deg, rgb(192, 73, 73) 0%, rgb(175, 66, 66) 28.53%, #ab1628 75.52%);
+}
+
 #create{
     background: linear-gradient(245.59deg, rgb(192, 73, 83) 0%,  rgb(192, 73, 83) 0%, #cf2f6c 75.52%); 
 }
@@ -53,6 +58,15 @@ li{
     font-family: 'Quattrocento', serif;
     font-weight: bold;
     margin-left: 4.5rem;
+}
+
+#template-destination-form{
+    width: 32rem;
+}
+#template-destination{
+    width: 30rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 

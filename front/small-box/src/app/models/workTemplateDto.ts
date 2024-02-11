@@ -1,11 +1,12 @@
-export class WorkTemplate{
+export class WorkTemplateDto{
     id!:number;
     date!:Date;
-    corresponds!:string;
-    correspondsNumber!:string;
+    correspond!:string;
+    correspondNumber!:string;
     producedBy!:string;
     destinations!:Array<string>;
     refs!:Array<string>;
+    items!:Array<string>;
     text!:string;
     organizationId!:number;
 }

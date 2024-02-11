@@ -2,9 +2,21 @@
 
 <body #screen>
     <div class="container-flex">
-        <div class="ms-3 mt-3">
-            <button routerLink="/small-box" class="btn" *ngIf="downloaded">Volver a editar</button>
+        <div class="row">
+            <div class="col-md-10"></div>
+            <div class="col-md-2">
+              
+                    <div>
+                        <h5 id="footDep" class="mb-0">{{workTemplate.producedBy}}</h5>
+                        <h5 id="footAddress" class="mt-0 mb-0">Pellegrini 622 (B1708EFR). Morón. Bs. As</h5>
+                    </div>
+
+               
+            </div>
         </div>
+    </div>
+    <div class="container-flex">
+       
         <div id="containerCSS" class="container-fluid">
 
             <div class="row">
@@ -21,7 +33,8 @@
 
             <div class="row mt-4">
                 <div class="col-md-10">
-                    <h2 id="rendicion">Corresponde: {{workTemplate.corresponds + ' ' + workTemplate.correspondsNumber}}</h2>
+                    <h2 id="rendicion">Corresponde: {{workTemplate.correspond + ' ' + workTemplate.correspondNumber}}
+                    </h2>
                     <h2 id="rendicion">Producido por: {{workTemplate.producedBy}}</h2>
                     <div *ngFor="let destinations of workTemplate.destinations">
                         <h2>A: {{destinations}}</h2>
@@ -45,11 +58,11 @@
                 <div class="col-md-8"></div>
                 <div class="col-md-4 text-decoration-underline">
                     <h3 class="mt-2 d-inline">Ref:</h3>
-                   <div class="d-inline" *ngFor="let ref of workTemplate.refs">
-                <span clasS="d-inline"> {{ref}}<small *ngIf="workTemplate.refs.length>1">,</small>
-                   
-                 </span>
-                </div>
+                    <div class="d-inline" *ngFor="let ref of workTemplate.refs">
+                        <span clasS="d-inline"> {{ref}}<small *ngIf="workTemplate.refs.length>1">,</small>
+
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -65,20 +78,11 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-9">
-                <div class="col-2">
-            <div class="position-absolute bottom-0 end-0">
 
 
-                <h5 id="footDep" class="mt-0 mb-0">{{workTemplate.producedBy}}</h5>
-                <h5 id="footAddress" class="mt-0 mb-0">Pellegrini 622 (B1708EFR). Morón. Bs. As</h5>
 
-
-            </div>
         </div>
-        </div>
-        </div>
+
     </div>
-</div>
+   
 </body>
