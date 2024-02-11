@@ -67,6 +67,9 @@ public class IntegrationTest {
 	private MvcResult mvcResult;
 
 	private String jwtToken;
+	
+	private String userPedrojwtToken;
+	
 
 	private Long lagunasId;
 
@@ -233,5 +236,58 @@ public class IntegrationTest {
 				.andReturn();
 		
 		
+	}
+	
+	@Test
+	@Order(9)
+	void loginAsUserPedro()throws Exception{
+		mvcResult = mockMvc
+				.perform(post("http://localhost:8080/api/v1/small-box/authorization/login")
+						.content("{\"username\":\"pedro29\",\"password\":\"pass\"}").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.userId", is(notNullValue()))).andExpect(jsonPath("$.token", is(notNullValue())))
+				.andReturn();
+
+		String[] list = mvcResult.getResponse().getContentAsString().split("\"");
+		for (String str : list) {
+			if (str.length() > 200) {
+				userPedrojwtToken = str;
+			}
+		}
+	}
+	
+	@Test
+	@Order(10)
+	void whenTryToCreateResponsibleWithUserPedroMustReturn403Forbidden()throws Exception{
+		 this.mockMvc
+				.perform(post("http://localhost:8080/api/v1/small-box/organization/new-responsible")
+						.content("{\"name\":\"Alfonso\",\"lastname\":\"Gomez\"}")
+						.header("Authorization", "Bearer " + userPedrojwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(403))
+				.andReturn();
+			
+		
+	}
+	@Test
+	@Order(11)
+	void whenTryToCreateOrganizationWithUserPedroMustReturn403Forbidden()throws Exception{
+		 this.mockMvc
+				.perform(post("http://localhost:8080/api/v1/small-box/organization/new-organization").content(
+						"{\"organizationName\":\"Dir. de Presuspuesto\",\"organizationNumber\":14,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
+						.header("Authorization", "Bearer " + userPedrojwtToken)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(403));
+				
+			}
+	
+	@Test
+	@Order(12)
+	void whenTryToRegisterUserWithUserPedroMustReturn403Forbidden()throws Exception{
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/registration/register").content(
+				"{\"name\":\"Mariano\",\"lastname\":\"Pergamino\",\"username\":\"marper\",\"email\":\"mar@gmail.com\",\"password\":\"123\"}")
+				.header("Authorization", "Bearer " + userPedrojwtToken).param("authority", "ADMIN")
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().is(403));
+			
 	}
 }
