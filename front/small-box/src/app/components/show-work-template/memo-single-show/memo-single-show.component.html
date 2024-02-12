@@ -5,20 +5,15 @@
         <div class="row">
             <div class="col-md-10"></div>
             <div class="col-md-2">
-              
-                    <div>
-                        <h5 id="footDep" class="mb-0">{{workTemplate.producedBy}}</h5>
-                        <h5 id="footAddress" class="mt-0 mb-0">Pellegrini 622 (B1708EFR). Morón. Bs. As</h5>
-                    </div>
-
-               
+                <div>
+                    <h5 id="footDep" class="mb-0">{{workTemplate.producedBy}}</h5>
+                    <h5 id="footAddress" class="mt-0 mb-0">Pellegrini 622 (B1708EFR). Morón. Bs. As</h5>
+                </div>
             </div>
         </div>
     </div>
     <div class="container-flex">
-       
         <div id="containerCSS" class="container-fluid">
-
             <div class="row">
                 <a id="logo" (click)="captureScreen()" class="col text-center">
                     <img class="w-25" src="./assets/img/logomoron.png" alt="">
@@ -29,29 +24,25 @@
                     <h1 id="title" class="text-center">MEMO</h1>
                 </div>
             </div>
-
-
             <div class="row mt-4">
                 <div class="col-md-10">
-                    <h2 id="rendicion">Corresponde: {{workTemplate.correspond + ' ' + workTemplate.correspondNumber}}
+                    <h2 id="rendicion">Corresponde: {{workTemplate.correspond + ' N° ' + workTemplate.correspondNumber}}
                     </h2>
                     <h2 id="rendicion">Producido por: {{workTemplate.producedBy}}</h2>
                     <div *ngFor="let destinations of workTemplate.destinations">
-                        <h2>A: {{destinations}}</h2>
+                        <h2 class="text-decoration-underline">A: {{destinations}}</h2>
+                    </div>
+                    <div *ngFor="let beforeBy of workTemplate.beforeBy">
+                        <h2 class="text-decoration-underline">Previo paso por: {{beforeBy}}</h2>
                     </div>
                 </div>
-
             </div>
-
-
             <div class="row">
                 <hr id="line" class="my-4">
                 <div class="col-md-11"></div>
                 <div class="col-md-1">
-
                     <h5 class="fw-bold">Moron, {{workTemplate.date | date:
                         'dd-MM-yyyy'}} </h5>
-
                 </div>
             </div>
             <div class="row">
@@ -60,7 +51,6 @@
                     <h3 class="mt-2 d-inline">Ref:</h3>
                     <div class="d-inline" *ngFor="let ref of workTemplate.refs">
                         <span clasS="d-inline"> {{ref}}<small *ngIf="workTemplate.refs.length>1">,</small>
-
                         </span>
                     </div>
                 </div>
@@ -69,7 +59,6 @@
                 <div class="col-md-2">
                     <h3 class="text-decoration-underline mt-2">Objeto:</h3>
                 </div>
-
             </div>
             <div class="row">
                 <div class="col-md-1"></div>
@@ -77,12 +66,6 @@
                     <h4>{{workTemplate.text}}</h4>
                 </div>
             </div>
-
-
-
-
         </div>
-
     </div>
-   
 </body>

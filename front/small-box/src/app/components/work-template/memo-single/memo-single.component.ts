@@ -13,6 +13,7 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { WorkTemplateService } from 'src/app/services/work-template.service';
 import { DialogTemplateComponent } from '../../dialog/dialog-template/dialog-template.component';
 import { DestinationDto } from 'src/app/models/destinationDto';
+import { BeforeBy } from 'src/app/models/beforeBy';
 
 @Component({
   selector: 'app-memo-single',
@@ -27,12 +28,15 @@ export class MemoSingleComponent implements OnInit {
   destinationsList!: Array<string>
   destinations: Array<string> = [];
   refsList!: Array<string>;
+  textTemplateList:Array<string> = [];
   refs: Array<string> = [];
   refPartial!: Ref;
   destinationPartial!: Destination;
   destinationsDtoList: DestinationDto[] = [];
   destinationDto!: DestinationDto;
   organizations: OrganizationDto[] = [];
+  beforeBys: Array<string> = [];
+  beforeByPartial!:BeforeBy;
 
   constructor(private workTemplateService: WorkTemplateService, private cookieService: CookieStorageService
     , private formBuilder: FormBuilder, private snackBarService: SnackBarService
@@ -44,6 +48,12 @@ export class MemoSingleComponent implements OnInit {
     this.getAllTemplateDestinationsList();
     this.getRefsList();
   }
+
+  getTextTemplates():void{
+
+  }
+
+ 
 
   refFormBuilder = this.formBuilder.group({
     ref: ['', Validators.required],
@@ -77,8 +87,40 @@ export class MemoSingleComponent implements OnInit {
     this.refsList = ["MEMO", "NOTA", "EXP", "OC"];
   }
 
+  beforeByFormBuilder = this.formBuilder.group({
+    beforeBy:['',Validators.required]
+  });
 
-  destinationsFormBuilder = this.formBuilder.group({
+  addSelectedBeforeBy(){
+    if(this.beforeByFormBuilder.valid){
+      this.beforeByPartial = new BeforeBy();
+      this.beforeByPartial = Object.assign(this.beforeByPartial,this.beforeByFormBuilder.value);
+     let result = this.beforeBys.filter(bef => bef == this.beforeByPartial.beforeBy).toString();
+      console.log(this.beforeByPartial)
+      if(result === this.beforeByPartial.beforeBy){
+        this.snackBarService.openSnackBar('La dependencia ya ha sido agregada', 'Cerrar', 3000);
+      }else{
+        this.beforeBys.push(this.beforeByPartial.beforeBy);
+        console.log(this.beforeBys);
+        this.beforeByFormBuilder.reset();
+        this.snackBarService.openSnackBar('Se agrego la Dependencia: ' + this.beforeByPartial.beforeBy, 'Cerrar', 3000);
+        this.getAllTemplateDestinationsList();
+      }
+    }
+  }
+  deleteSelectedBeforeBy(beforeBy:string):void{
+    this.beforeBys.forEach((item,index)=>{
+      if(item == beforeBy){
+        this.beforeBys.splice(index,1);
+        this.snackBarService.openSnackBar('Se elimino: ' + beforeBy, 'Cerrar', 3000);
+        this.getAllTemplateDestinationsList();
+      }
+    })
+  }
+
+
+
+destinationsFormBuilder = this.formBuilder.group({
     destination: ['', Validators.required]
   });
 
@@ -90,7 +132,7 @@ export class MemoSingleComponent implements OnInit {
     if (result === this.destinationPartial.destination) {
       this.snackBarService.openSnackBar('La dependencia ya ha sido agregada', 'Cerrar', 3000);
     } else {
-      this.destinations.push(this.destinationPartial.destination)
+      this.destinations.push(this.destinationPartial.destination);
       this.destinationsFormBuilder.reset();
      this.getAllTemplateDestinationsList();
      
@@ -136,6 +178,7 @@ export class MemoSingleComponent implements OnInit {
       this.workTemplate = Object.assign(this.workTemplate, this.memoFormBuilder.value);
       this.workTemplate.destinations = this.destinations;
       this.workTemplate.refs = this.refs;
+      this.workTemplate.beforeBy = this.beforeBys;
       this.workTemplateService.createWorkTemplate(this.workTemplate).subscribe({
         next: (memoData) => {
           this.returnedWorkTemplate = memoData;
@@ -220,6 +263,10 @@ export class MemoSingleComponent implements OnInit {
   }
   get refNumber() {
     return this.refFormBuilder.controls.refNumber;
+  }
+
+  get beforeBy(){
+    return this.beforeByFormBuilder.controls.beforeBy;
   }
 
   get destination() {

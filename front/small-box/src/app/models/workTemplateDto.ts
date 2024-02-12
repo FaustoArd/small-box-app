@@ -5,6 +5,7 @@ export class WorkTemplateDto{
     correspondNumber!:string;
     producedBy!:string;
     destinations!:Array<string>;
+    beforeBy!:Array<string>;
     refs!:Array<string>;
     items!:Array<string>;
     text!:string;

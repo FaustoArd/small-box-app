@@ -4,12 +4,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
 import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
@@ -36,7 +34,7 @@ public class SmallBoxApplication {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
 
-	//@Bean
+	@Bean
 	CommandLineRunner run(InputRepository inputRepository,
 			ContainerService containerService,
 			SmallBoxService smallBoxService,
@@ -46,6 +44,7 @@ public class SmallBoxApplication {
 			AuthorityRepository authorityRepository,
 			AuthorizationService authorizationService,
 			OrganizationResponsibleRepository organizationResponsibleRepository) {
+		
 		return args ->{
 			
 			Authority admin = new Authority();

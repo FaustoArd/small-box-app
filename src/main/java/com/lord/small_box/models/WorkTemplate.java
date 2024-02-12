@@ -40,6 +40,8 @@ public class WorkTemplate {
 	
 	private String producedBy;
 	
+	private ArrayList<String> beforeBy;
+	
 	private ArrayList<String> destinations;
 	
 	@Column(name="text", length = 800)

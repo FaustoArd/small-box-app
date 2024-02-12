@@ -24,6 +24,8 @@ public class WorkTemplateDto {
 	
 	private ArrayList<String> destinations;
 	
+	private ArrayList<String> beforeBy;
+	
 	private ArrayList<String> refs;
 	
 	private ArrayList<String> items;

@@ -64,7 +64,7 @@ export class ManualReferComponent {
     createRefer(){
       if(this.referFormBuilder.valid){
         this.workTemplate = new WorkTemplateDto();
-        var 
+       
       }
     }
   

@@ -3,12 +3,12 @@
 <body>
 
 
-    <div class="container-fluid">
+    <div class="container-flex">
         <div class="row ">
          <div class="col-md-1">
-            <button id="btn-create-destination" class="btn btn-sm mt-2 text-center" 
+            <button id="btn-create-destination" class="btn btn-sm mt-2 text-center d-inline" 
             (click)="openDialogTemplateDestination(createTemplateDestinationTemplate)">Crear Destinatario</button>
-
+                <small class="d-inline">Crea una dependecia para usar en destinatarios o previo paso</small>
          </div>
             <div class="col-md-4  mt-3">
                 <h1 class="text-center mt-2">Memo</h1>
@@ -65,7 +65,7 @@
             </div>
           
             <div  class="col-md-3 mt-5 ms-3">
-            <h2 class="mt-4" id="destTitle">Seleccionar destinatarios</h2>
+            <h2 class="mt-4 mx-3" id="destTitle">Seleccionar destinatarios</h2>
                 <form [formGroup]="destinationsFormBuilder">
                     <div class="form-group w-75 text-center ms-2 ">
                         <select id="destination" formControlName="destination" class="form-select  border-dark ">
@@ -85,10 +85,29 @@
                     </div>
 
                 </form>
+                <h2 class="mt-4 mx-3" id="destTitle">Seleccionar Previo paso por</h2>
+                <form [formGroup]="beforeByFormBuilder">
+                    <div class="form-group w-75 text-center ms-2 ">
+                        <select id="beforeBy" formControlName="beforeBy" class="form-select  border-dark ">
+                            <option type="text" class="form-control border-dark "
+                                *ngFor="let destination of destinationsDtoList" id="beforeBy" [value]="destination.destination">
+                                {{destination.destination}}</option>
+                              
+                        </select>
+                        
+                        <div *ngIf="destination.invalid && (destination.dirty || destination.touched)"
+                        class="text-danger">
+                        <div *ngIf="destination.errors?.['required']">
+                           Debe seleccionar un destino
+                        </div>
+                    </div>
+                        <button class="btn mt-1" (click)="addSelectedBeforeBy()">Agregar</button>
+                    </div>
 
-                <div class="mt-5">
-                    <h2 class="mt-4" id="destTitle">Seleccionar Referencias</h2>
-                    <form [formGroup]="refFormBuilder">
+                </form>
+                <div class="mt-5 ">
+                   
+                    <form class=" w-75 text-center" [formGroup]="refFormBuilder">
                         <div class="form-group">
                             <label for="ref" class="form-label">Referencia</label>
                             <select id="ref" formControlName="ref" class="form-select  border-dark ">
@@ -98,7 +117,7 @@
 
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group ">
                             <label for="refNumber" class="form-label">Numero</label>
                             <input type="text" class="form-control " formControlName="refNumber" id="refNumber">
                             <div *ngIf="refNumber.invalid && (refNumber.dirty || refNumber.touched)"
@@ -107,9 +126,9 @@
                                     Falta el numero de la referencia
                                 </div>
                             </div>
-
+                            <button class="btn mt-1 " (click)="addSelectedRef()">Agregar</button>
                         </div>
-                        <button class="btn mt-1 text-center" (click)="addSelectedRef()">Agregar</button>
+                       
                     </form>
                 </div>
 
@@ -124,6 +143,18 @@
                             <li class="ms-4">{{dest}}</li>
                             <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
                                 (click)="deleteSelectedDestination(dest)">Eliminar</button>
+                            <hr class="my-1">
+                        </ul>
+                    </div>
+                </div>
+                <div *ngIf="beforeBys.length>0">
+                    <h2 class="mt-4" id="destTitle">Previo paso por:</h2>
+                    <div id="destination-list" class="mt-1">
+
+                        <ul *ngFor="let beforeBy of beforeBys">
+                            <li class="ms-4">{{beforeBy}}</li>
+                            <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
+                                (click)="deleteSelectedBeforeBy(beforeBy)">Eliminar</button>
                             <hr class="my-1">
                         </ul>
                     </div>
@@ -143,9 +174,7 @@
             </div>
         
         </div>
-
-
-    </div>
+ </div>
 <ng-template #createTemplateDestinationTemplate>
    
 <form [formGroup]="createDestinationFormBuilder">
