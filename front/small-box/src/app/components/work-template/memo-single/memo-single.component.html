@@ -42,12 +42,14 @@
                         <label for="correspondNumber" class="form-label">Numero</label>
                         <input type="text" class="form-control " formControlName="correspondNumber"
                             id="correspondNumber">
+                            <button id="btnSn" class="btn btn-sm mt-1" (click)="setNoNumberCorrespond()">S/N</button>
                         <div *ngIf="correspondNumber.invalid && (correspondNumber.dirty || correspondNumber.touched)"
                             class="text-danger">
                             <div *ngIf="correspondNumber.errors?.['required']">
                                 Falta El numero
                             </div>
                         </div>
+                      
                     </div>
 
                     <div class="form-group w-75 text-center ">
@@ -176,6 +178,18 @@
                             <li class="ms-4">{{ref}}</li>
                             <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
                                 (click)="deleteSelectedRef(ref)">Eliminar</button>
+                            <hr class="my-1">
+                        </ul>
+                    </div>
+                </div>
+                <div *ngIf="items.length>0">
+                    <h2 class="mt-4" id="destTitle">Items:</h2>
+                    <div id="destination-list" class="mt-1">
+
+                        <ul *ngFor="let item of items">
+                            <li class="ms-4">{{item}}</li>
+                            <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
+                                (click)="deleteSelectedItem(item)">Eliminar</button>
                             <hr class="my-1">
                         </ul>
                     </div>

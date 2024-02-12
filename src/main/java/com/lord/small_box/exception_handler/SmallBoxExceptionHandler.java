@@ -40,5 +40,8 @@ public class SmallBoxExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	
+	}
+	
+	
 
-}
+

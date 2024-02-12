@@ -19,6 +19,7 @@ export class MemoSingleShowComponent implements OnInit {
   downloaded!:boolean;
   img!:any;
   workTemplate!:WorkTemplateDto;
+  lineJump:string = '\n\n';
 
   constructor(private cookieService:CookieStorageService,private workTemplateService:WorkTemplateService,
     private snackBarService:SnackBarService,private captureService:NgxCaptureService){}

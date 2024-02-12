@@ -60,10 +60,10 @@ export class MemoSingleComponent implements OnInit {
 
   //Text templates
   getTextTemplates(): void {
-    this.textTemplatesMap.set('Pedido de expedientes', 'En el dia de la fecha se solicitan los siguientes Expedientes:');
-    this.textTemplatesMap.set('Envio de comprobantes', 'En el dia de la fecha se hace envio de los siguientes comprobantes:');
-    //this.textTemplatesIndex.push('Pedido de expedientes');
-    //this.textTemplatesIndex.push('Envio de comprobantes');
+    this.textTemplatesMap.set('Pedido de expedientes', 'En el dia de la fecha se solicitan los siguientes expedientes detallados a continuacion: ');
+    this.textTemplatesMap.set('Envio de comprobantes', 'En el dia de la fecha se hace envio de los siguientes comprobantes detallados a continuacion: ');
+    this.textTemplatesMap.set('Envio de expedientes', 'En el dia de la fecha se hace envio de los siguientes expedientes detallados a continuacion: ');
+    this.textTemplatesMap.set('Envio de suministros', 'En el dia de la fecha se hace envio de los siguientes suministros detallados a continuacion: ');
     this.textTemplatesMap.forEach((value, key) => {
       this.textTemplatesIndex.push(key);
     })
@@ -108,12 +108,13 @@ export class MemoSingleComponent implements OnInit {
     });
   }
   getSelectedItemsComplete(): void {
-    let result = this.items.map(item => item).toString();
-    result.split(',');
-    this.memoFormBuilder.patchValue({
-      text: this.memoFormBuilder.value.text + '\n\n' + result,
+    /* let result = this.items.map(item => item).toString();
+     result.split(',');
+     this.memoFormBuilder.patchValue({
+       text: this.memoFormBuilder.value.text + '\n' + result + '\n',
+ 
+     });*/
 
-    });
     this.matDialogRef.close();
   }
 
@@ -157,7 +158,7 @@ export class MemoSingleComponent implements OnInit {
   }
 
   getRefsList(): void {
-    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM", "FACTURA", "REMITO"];
+    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM","REMITO INTERNO", "FACTURA", "REMITO"];
   }
 
 
@@ -248,6 +249,12 @@ export class MemoSingleComponent implements OnInit {
     organizationId: [0]
   });
 
+  setNoNumberCorrespond(){
+    this.memoFormBuilder.patchValue({
+      correspondNumber: 'S/N'
+    });
+  }
+
   createMemo() {
     if (this.memoFormBuilder.valid) {
       this.workTemplate = new WorkTemplateDto();
@@ -255,6 +262,7 @@ export class MemoSingleComponent implements OnInit {
       this.workTemplate.destinations = this.destinations;
       this.workTemplate.refs = this.refs;
       this.workTemplate.beforeBy = this.beforeBys;
+      this.workTemplate.items = this.items;
       this.workTemplateService.createWorkTemplate(this.workTemplate).subscribe({
         next: (memoData) => {
           this.returnedWorkTemplate = memoData;
@@ -310,20 +318,20 @@ export class MemoSingleComponent implements OnInit {
     if (this.createDestinationFormBuilder.valid) {
       this.destinationDto = new DestinationDto();
       this.destinationDto = Object.assign(this.destinationDto, this.createDestinationFormBuilder.value);
-      
-        this.workTemplateService.createTemplateDestination(this.destinationDto).subscribe({
-          next: (responseData) => {
-            this.snackBarService.openSnackBar('Se agrego el destino: ' + responseData, 'Cerrar', 3000);
-          },
-          error: (errorData) => {
-            this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
-          },
-          complete: () => {
-            this.update();
-            this.getAllTemplateDestinationsList();
-          }
-        });
-      }
+
+      this.workTemplateService.createTemplateDestination(this.destinationDto).subscribe({
+        next: (responseData) => {
+          this.snackBarService.openSnackBar('Se agrego el destino: ' + responseData, 'Cerrar', 3000);
+        },
+        error: (errorData) => {
+          this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+        },
+        complete: () => {
+          this.update();
+          this.getAllTemplateDestinationsList();
+        }
+      });
+    }
   }
 
 

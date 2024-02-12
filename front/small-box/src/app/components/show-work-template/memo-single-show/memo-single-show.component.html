@@ -78,7 +78,13 @@
                 <div class="col-md-1"></div>
                 <div class="col-md-11">
                     <h4>{{workTemplate.text}}</h4>
+                    <div class="col-md-11" *ngFor="let item of workTemplate.items">
+                        <h4>{{item}}</h4>
+                    </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                   
             </div>
         </div>
     </div>

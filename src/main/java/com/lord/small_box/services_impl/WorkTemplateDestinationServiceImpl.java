@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.lord.small_box.dtos.WorkTemplateDestinationDto;
+import com.lord.small_box.exceptions.DuplicateItemException;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.WorkTemplateDestination;
 import com.lord.small_box.repositories.WorkTemplateDestinationRepository;
@@ -41,9 +42,15 @@ public class WorkTemplateDestinationServiceImpl implements WorkTemplateDestinati
 	@Override
 	public String createDestination(WorkTemplateDestinationDto workTemplateDestinationDto){
 		log.info("Create new template destination");
-		WorkTemplateDestination workTemplateDestination = WorkTemplateDestination.builder()
-				.id(workTemplateDestinationDto.getId()).destination(workTemplateDestinationDto.getDestination()).build();
-		return workTemplateDestinationRepository.save(workTemplateDestination).getDestination();
+		try {
+			WorkTemplateDestination workTemplateDestination = WorkTemplateDestination.builder()
+					.id(workTemplateDestinationDto.getId()).destination(workTemplateDestinationDto.getDestination()).build();
+			return workTemplateDestinationRepository.save(workTemplateDestination).getDestination();
+			
+		} catch (DataIntegrityViolationException ex) {
+			throw new DuplicateItemException("Ya existe la dependencia: " + workTemplateDestinationDto.getDestination());
+		}
+		
 	}
 
 	@Override
