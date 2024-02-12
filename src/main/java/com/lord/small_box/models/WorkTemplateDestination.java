@@ -1,5 +1,6 @@
 package com.lord.small_box.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,7 @@ public class WorkTemplateDestination {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
+	@Column(name="destination",unique = true)
 	private String destination;
 	
 	 

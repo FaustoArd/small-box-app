@@ -4,10 +4,20 @@
 
 
     <div id="main-container" class="container-flex">
-        <div class="row ">
-         <div class="col-md-5  mt-0 ms-3">
+        <div class="row">
+            <div class="col-md-1">
                 <button id="btn-create-destination" class="btn btn-sm mt-2 text-center d-inline ms-2" 
                 (click)="openDialogTemplateDestination(createTemplateDestinationTemplate)">Crear Destinatario</button>
+            </div>
+            <div class="col-md-3"></div>
+            <div class="col-md-1">
+                <button id="btn-create-destination" class="btn btn-sm mt-2 text-center d-inline ms-2" 
+                (click)="openDialogItemSelection(itemTemplateTemplate)">Crear Items</button>
+            </div>
+        </div>
+        <div class="row ">
+         <div class="col-md-5  mt-0 ms-3">
+               
                 <h1 class="text-center mt-2">Memo</h1>
                 <form class="text-center" [formGroup]="memoFormBuilder">
                     <div class="form-group">
@@ -206,8 +216,56 @@
         <tbody>
             <tr *ngFor="let text of textTemplatesIndex">
                 <td>{{text}}</td>
-                <td><button (click)="getSelectedTextTemplate(text)" class="btn btn-sm">-</button></td>
+                <td><button (click)="getSelectedTextTemplate(text);openDialogTextTemplates(itemTemplateTemplate)" class="btn btn-sm">-</button></td>
             </tr>
         </tbody>
     </table>
+</ng-template>
+<ng-template #itemTemplateTemplate>
+<div id="itemTemplateCSS" class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <form class="text-center" [formGroup]="itemFormBuilder">
+                <div class="form-group">
+                    <label for="item" class="form-label">Referencia</label>
+                    <select id="item" formControlName="item" class="form-select  border-dark ">
+                        <option type="text" class="form-control border-dark " *ngFor="let ref of refsList"
+                            id="item" [value]="ref">
+                            {{ref}}</option>
+
+                    </select>
+                </div>
+                <div class="form-group ">
+                    <label for="itemNumber" class="form-label">Numero</label>
+                    <input type="text" class="form-control " formControlName="itemNumber" id="itemNumber">
+                    <div *ngIf="refNumber.invalid && (refNumber.dirty || refNumber.touched)"
+                        class="text-danger">
+                        <div *ngIf="ref.errors?.['required']">
+                            Falta el numero de la referencia
+                        </div>
+                    </div>
+                    <button class="btn mt-1 " (click)="addSelectedItem()">Agregar</button>
+                </div>
+               
+            </form>
+        </div>
+        <div class="col-4">
+            <div *ngIf="items.length>0">
+                <h2 class="mt-4" id="destTitle">Referencias:</h2>
+                <div id="destination-list" class="mt-1">
+
+                    <ul *ngFor="let item of items">
+                        <li class="ms-4">{{item}}</li>
+                        <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
+                            (click)="deleteSelectedItem(item)">Eliminar</button>
+                        <hr class="my-1">
+                    </ul>
+                </div>
+                <button (click)="getSelectedItemsComplete()" class="btn btn-sm text-center">Finalizar</button>
+            </div>
+           
+        </div>
+        
+    </div>
+</div>
 </ng-template>

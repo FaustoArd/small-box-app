@@ -13,4 +13,12 @@ export class DialogService {
   openDialogCreation(data:DialogTemplateData){
     return this.matDialog.open(DialogTemplateComponent,{ data });
   }
+
+  openDialogItemCreation(data:DialogTemplateData){
+    return this.matDialog.open(DialogTemplateComponent,{
+      width:'40%',
+      height:'70%',
+      data
+    })
+  }
 }

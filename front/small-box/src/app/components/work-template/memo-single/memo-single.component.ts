@@ -14,6 +14,7 @@ import { WorkTemplateService } from 'src/app/services/work-template.service';
 import { DialogTemplateComponent } from '../../dialog/dialog-template/dialog-template.component';
 import { DestinationDto } from 'src/app/models/destinationDto';
 import { BeforeBy } from 'src/app/models/beforeBy';
+import { Item } from 'src/app/models/item';
 
 @Component({
   selector: 'app-memo-single',
@@ -28,7 +29,7 @@ export class MemoSingleComponent implements OnInit {
   destinationsList!: Array<string>
   destinations: Array<string> = [];
   refsList!: Array<string>;
-  textTemplateList:Array<string> = [];
+  textTemplateList: Array<string> = [];
   refs: Array<string> = [];
   refPartial!: Ref;
   destinationPartial!: Destination;
@@ -36,9 +37,12 @@ export class MemoSingleComponent implements OnInit {
   destinationDto!: DestinationDto;
   organizations: OrganizationDto[] = [];
   beforeBys: Array<string> = [];
-  beforeByPartial!:BeforeBy;
-  textTemplatesMap:Map<string,string>  = new Map();
-  textTemplatesIndex:Array<string> = [];
+  beforeByPartial!: BeforeBy;
+  textTemplatesMap: Map<string, string> = new Map();
+  textTemplatesIndex: Array<string> = [];
+  items: Array<string> = [];
+  item!: Item;
+  itemPartial!: Item;
 
   constructor(private workTemplateService: WorkTemplateService, private cookieService: CookieStorageService
     , private formBuilder: FormBuilder, private snackBarService: SnackBarService
@@ -49,30 +53,82 @@ export class MemoSingleComponent implements OnInit {
     this.getAllOrganizationsByUser();
     this.getAllTemplateDestinationsList();
     this.getRefsList();
+    this.getTextTemplates();
   }
 
+
+
   //Text templates
-  getTextTemplates():void{
-    this.textTemplatesMap.set('Pedido de expedientes','En el dia de la fecha se solicitan los siguientes Expedientes:');
+  getTextTemplates(): void {
+    this.textTemplatesMap.set('Pedido de expedientes', 'En el dia de la fecha se solicitan los siguientes Expedientes:');
     this.textTemplatesMap.set('Envio de comprobantes', 'En el dia de la fecha se hace envio de los siguientes comprobantes:');
-   this.textTemplatesIndex.push('Pedido de expedientes');
-   this.textTemplatesIndex.push('Envio de comprobantes');
+    //this.textTemplatesIndex.push('Pedido de expedientes');
+    //this.textTemplatesIndex.push('Envio de comprobantes');
+    this.textTemplatesMap.forEach((value, key) => {
+      this.textTemplatesIndex.push(key);
+    })
   }
-  getSelectedTextTemplate(text:string):void{
+  getSelectedTextTemplate(text: string): void {
+
     this.memoFormBuilder.patchValue({
       text: this.textTemplatesMap.get(text)
     });
     this.matDialogRef.close();
   }
 
-  openDialogTextTemplates(template:TemplateRef<any>){
-    this.getTextTemplates();
-    this.matDialogRef = this.dialogService.openDialogCreation({
+  openDialogTextTemplates(template: TemplateRef<any>) {
+
+    this.matDialogRef = this.dialogService.openDialogItemCreation({
       template
     });
   }
 
-refFormBuilder = this.formBuilder.group({
+
+
+  //Items
+  itemFormBuilder = this.formBuilder.group({
+    item: ['', Validators.required],
+    itemNumber: ['']
+  });
+
+  addSelectedItem() {
+    this.itemPartial = new Item();
+    this.itemPartial = Object.assign(this.itemPartial, this.itemFormBuilder.value);
+    let itemComplete = this.itemPartial.item + ' N° ' + this.itemPartial.itemNumber + '\n';
+    this.items.push(itemComplete);
+    this.getRefsList();
+  }
+
+  deleteSelectedItem(itemSelected: string) {
+    this.items.forEach((item, index) => {
+      if (item == itemSelected) {
+        this.items.splice(index, 1);
+        this.snackBarService.openSnackBar('Se elimino' + itemSelected, 'Cerrar', 3000);
+      }
+    });
+  }
+  getSelectedItemsComplete(): void {
+    let result = this.items.map(item => item).toString();
+    result.split(',');
+    this.memoFormBuilder.patchValue({
+      text: this.memoFormBuilder.value.text + '\n\n' + result,
+
+    });
+    this.matDialogRef.close();
+  }
+
+  openDialogItemSelection(template: TemplateRef<any>) {
+    this.matDialogRef = this.dialogService.openDialogItemCreation({
+      template
+    });
+    this.matDialogRef.afterClosed().subscribe();
+    this.itemFormBuilder.reset();
+
+  }
+
+  //Refs
+
+  refFormBuilder = this.formBuilder.group({
     ref: ['', Validators.required],
     refNumber: ['', Validators.required]
   });
@@ -97,26 +153,28 @@ refFormBuilder = this.formBuilder.group({
         this.refs.splice(index, 1);
         this.snackBarService.openSnackBar('Se elimino' + ref, 'Cerrar', 3000);
       }
-    })
+    });
   }
 
   getRefsList(): void {
-    this.refsList = ["MEMO", "NOTA", "EXP", "OC"];
+    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM", "FACTURA", "REMITO"];
   }
 
+
+  //BeforeBy
   beforeByFormBuilder = this.formBuilder.group({
-    beforeBy:['',Validators.required]
+    beforeBy: ['', Validators.required]
   });
 
-  addSelectedBeforeBy(){
-    if(this.beforeByFormBuilder.valid){
+  addSelectedBeforeBy() {
+    if (this.beforeByFormBuilder.valid) {
       this.beforeByPartial = new BeforeBy();
-      this.beforeByPartial = Object.assign(this.beforeByPartial,this.beforeByFormBuilder.value);
-     let result = this.beforeBys.filter(bef => bef == this.beforeByPartial.beforeBy).toString();
+      this.beforeByPartial = Object.assign(this.beforeByPartial, this.beforeByFormBuilder.value);
+      let result = this.beforeBys.filter(bef => bef == this.beforeByPartial.beforeBy).toString();
       console.log(this.beforeByPartial)
-      if(result === this.beforeByPartial.beforeBy){
+      if (result === this.beforeByPartial.beforeBy) {
         this.snackBarService.openSnackBar('La dependencia ya ha sido agregada', 'Cerrar', 3000);
-      }else{
+      } else {
         this.beforeBys.push(this.beforeByPartial.beforeBy);
         console.log(this.beforeBys);
         this.beforeByFormBuilder.reset();
@@ -125,39 +183,38 @@ refFormBuilder = this.formBuilder.group({
       }
     }
   }
-  deleteSelectedBeforeBy(beforeBy:string):void{
-    this.beforeBys.forEach((item,index)=>{
-      if(item == beforeBy){
-        this.beforeBys.splice(index,1);
+  deleteSelectedBeforeBy(beforeBy: string): void {
+    this.beforeBys.forEach((item, index) => {
+      if (item == beforeBy) {
+        this.beforeBys.splice(index, 1);
         this.snackBarService.openSnackBar('Se elimino: ' + beforeBy, 'Cerrar', 3000);
         this.getAllTemplateDestinationsList();
       }
-    })
+    });
   }
 
-
-
-destinationsFormBuilder = this.formBuilder.group({
+  //Destination
+  destinationsFormBuilder = this.formBuilder.group({
     destination: ['', Validators.required]
   });
 
   addSelectedDestination() {
-    if(this.destinationsFormBuilder.valid){
-    this.destinationPartial = new Destination();
-    this.destinationPartial = Object.assign(this.destinationPartial, this.destinationsFormBuilder.value);
-    let result = this.destinations.filter(des => des == this.destinationPartial.destination).toString();
-    if (result === this.destinationPartial.destination) {
-      this.snackBarService.openSnackBar('La dependencia ya ha sido agregada', 'Cerrar', 3000);
+    if (this.destinationsFormBuilder.valid) {
+      this.destinationPartial = new Destination();
+      this.destinationPartial = Object.assign(this.destinationPartial, this.destinationsFormBuilder.value);
+      let result = this.destinations.filter(des => des == this.destinationPartial.destination).toString();
+      if (result === this.destinationPartial.destination) {
+        this.snackBarService.openSnackBar('La dependencia ya ha sido agregada', 'Cerrar', 3000);
+      } else {
+        this.destinations.push(this.destinationPartial.destination);
+        this.destinationsFormBuilder.reset();
+        this.getAllTemplateDestinationsList();
+
+      }
     } else {
-      this.destinations.push(this.destinationPartial.destination);
       this.destinationsFormBuilder.reset();
-     this.getAllTemplateDestinationsList();
-     
+      this.snackBarService.openSnackBar('Debe seleccionar un destino', 'Cerrar', 3000);
     }
-  }else{
-    this.destinationsFormBuilder.reset();
-    this.snackBarService.openSnackBar('Debe seleccionar un destino','Cerrar',3000);
-  }
   }
 
   deleteSelectedDestination(destination: string) {
@@ -181,6 +238,8 @@ destinationsFormBuilder = this.formBuilder.group({
     });
   }
 
+
+  //Memo
   memoFormBuilder = this.formBuilder.group({
     date: ['', Validators.required],
     correspond: ['', Validators.required],
@@ -220,23 +279,21 @@ destinationsFormBuilder = this.formBuilder.group({
       error: (errorData) => {
         this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
       }
-    })
+    });
   }
 
 
+  //Destination
   private matDialogRef!: MatDialogRef<DialogTemplateComponent>
-
   openDialogTemplateDestination(template: TemplateRef<any>) {
-    
     this.matDialogRef = this.dialogService.openDialogCreation({
       template
-    })
+    });
 
     this.matDialogRef.afterClosed().subscribe();
     this.createDestinationFormBuilder.reset();
 
   }
-
 
   createDestinationFormBuilder = this.formBuilder.group({
     destination: ['', Validators.required]
@@ -248,26 +305,29 @@ destinationsFormBuilder = this.formBuilder.group({
   }
 
 
-  //Crear destino para usar en destinatarios o previo paso por.
+  //Create destination to use in destination or beforeBy.
   createTemplateDestinaton() {
     if (this.createDestinationFormBuilder.valid) {
       this.destinationDto = new DestinationDto();
       this.destinationDto = Object.assign(this.destinationDto, this.createDestinationFormBuilder.value);
-      this.workTemplateService.createTemplateDestination(this.destinationDto).subscribe({
-        next: (responseData) => {
-          this.snackBarService.openSnackBar('Se agrego el destino: ' + responseData, 'Cerrar', 3000);
-        },
-        error: (errorData) => {
-          this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
-        },
-        complete:()=>{
-        this.update();
-        this.getAllTemplateDestinationsList();
-        }
-      });
-    }
+      
+        this.workTemplateService.createTemplateDestination(this.destinationDto).subscribe({
+          next: (responseData) => {
+            this.snackBarService.openSnackBar('Se agrego el destino: ' + responseData, 'Cerrar', 3000);
+          },
+          error: (errorData) => {
+            this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+          },
+          complete: () => {
+            this.update();
+            this.getAllTemplateDestinationsList();
+          }
+        });
+      }
   }
 
+
+  //Validation Control getters
   get date() {
     return this.memoFormBuilder.controls.date;
   }
@@ -281,7 +341,7 @@ destinationsFormBuilder = this.formBuilder.group({
     return this.refFormBuilder.controls.refNumber;
   }
 
-  get beforeBy(){
+  get beforeBy() {
     return this.beforeByFormBuilder.controls.beforeBy;
   }
 
@@ -291,6 +351,10 @@ destinationsFormBuilder = this.formBuilder.group({
   get correspondNumber() {
     return this.memoFormBuilder.controls.correspondNumber;
   }
+  get itemSelection() {
+    return this.itemFormBuilder.controls.item;
+  }
+
 
 
 

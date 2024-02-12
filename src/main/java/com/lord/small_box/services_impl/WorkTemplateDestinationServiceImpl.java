@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.lord.small_box.dtos.WorkTemplateDestinationDto;
@@ -38,7 +39,7 @@ public class WorkTemplateDestinationServiceImpl implements WorkTemplateDestinati
 	}
 
 	@Override
-	public String createDestination(WorkTemplateDestinationDto workTemplateDestinationDto) {
+	public String createDestination(WorkTemplateDestinationDto workTemplateDestinationDto){
 		log.info("Create new template destination");
 		WorkTemplateDestination workTemplateDestination = WorkTemplateDestination.builder()
 				.id(workTemplateDestinationDto.getId()).destination(workTemplateDestinationDto.getDestination()).build();
