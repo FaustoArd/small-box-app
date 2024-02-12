@@ -13,6 +13,7 @@ import { OrganizationSetupComponent } from './components/organization-setup/orga
 import { MemoSingleComponent } from './components/work-template/memo-single/memo-single.component';
 import { MemoSingleShowComponent } from './components/show-work-template/memo-single-show/memo-single-show.component';
 import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
+import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -29,7 +30,8 @@ const routes: Routes = [
   { path:'org-setup', component:OrganizationSetupComponent},
   { path:'memo-create', component:MemoSingleComponent},
   { path:'memo-show', component:MemoSingleShowComponent},
-  { path:'work-template-list', component:WorkTemplateListComponent}
+  { path:'work-template-list', component:WorkTemplateListComponent},
+  { path:'refer-create',component:ManualReferComponent},
 ];
 
 @NgModule({
