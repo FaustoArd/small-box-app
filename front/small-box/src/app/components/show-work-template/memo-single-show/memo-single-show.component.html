@@ -1,6 +1,12 @@
-<app-navbar *ngIf="downloaded"></app-navbar>
-
-<body #screen>
+<app-navbar></app-navbar>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <button (click)="captureScreen()" >Capturar</button>
+        </div>
+    </div>
+</div>
+<div id="print-section"  #screen>
     <div class="container-flex">
         <div class="row">
             <div class="col-md-10"></div>
@@ -15,7 +21,7 @@
     <div class="container-flex">
         <div id="containerCSS" class="container-fluid">
             <div class="row">
-                <a id="logo" (click)="captureScreen()" class="col text-center">
+                <a id="logo" class="col text-center">
                     <img class="w-25" src="./assets/img/logomoron.png" alt="">
                 </a>
             </div>
@@ -68,4 +74,4 @@
             </div>
         </div>
     </div>
-</body>
+</div>

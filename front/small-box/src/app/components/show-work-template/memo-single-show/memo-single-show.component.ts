@@ -35,7 +35,7 @@ ngOnInit(): void {
 captureScreen():void{
    
   this.captureService
-  .getImage(document.body, true)
+  .getImage(this.screen.nativeElement, true)
   .pipe(
     tap((img) => {
       console.log(img);

@@ -30,6 +30,7 @@ import { MemoSingleComponent } from './components/work-template/memo-single/memo
 import { MemoSingleShowComponent } from './components/show-work-template/memo-single-show/memo-single-show.component';
 import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
+import { NgxPrintModule } from 'ngx-print';
 
 
 
@@ -70,6 +71,7 @@ import { ManualReferComponent } from './components/work-template/manual-refer/ma
      HttpClientModule,
      MatDialogModule,
      NgxCaptureModule,
+     NgxPrintModule
     
     
   ],
