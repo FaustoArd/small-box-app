@@ -1,6 +1,13 @@
-<app-navbar *ngIf="downloaded"></app-navbar>
-
-<body #screen>
+<app-navbar></app-navbar>
+<div class="container-flex">
+    <div class="row">
+        <div class="col-md-10"></div>
+        <div class="col-md-2">
+            <button class="btn btn-sm ms-3 mt-2" (click)="captureScreen()">Descargar</button>
+        </div>
+    </div>
+</div>
+<div #screen>
     <div class="container-flex">
         <div class="row">
             <div class="col-md-10"></div>
@@ -15,9 +22,9 @@
     <div class="container-flex">
         <div id="containerCSS" class="container-fluid">
             <div class="row">
-                <a id="logo" (click)="captureScreen()" class="col text-center">
+                <div id="logo" class="col text-center">
                     <img class="w-25" src="./assets/img/logomoron.png" alt="">
-                </a>
+                </div>
             </div>
             <div class="row">
                 <div class="col mt-1">
@@ -26,14 +33,21 @@
             </div>
             <div class="row mt-4">
                 <div class="col-md-10">
-                    <h2 id="rendicion">Corresponde: {{workTemplate.correspond + ' N° ' + workTemplate.correspondNumber}}
-                    </h2>
-                    <h2 id="rendicion">Producido por: {{workTemplate.producedBy}}</h2>
-                    <div *ngFor="let destinations of workTemplate.destinations">
-                        <h2 class="text-decoration-underline">A: {{destinations}}</h2>
+                    <div>
+                    <h2 class="d-inline  text-decoration-underline" id="rendicion">Corresponde:</h2>
+                    <h2 class="d-inline"> {{workTemplate.correspond + ' N° ' + workTemplate.correspondNumber}}</h2>
+                </div>
+                    <div >
+                        <h2 id="rendicion" class=" text-decoration-underline d-inline">Producido por:</h2>
+                        <h2 class="d-inline"> {{workTemplate.producedBy}}</h2>
                     </div>
-                    <div *ngFor="let beforeBy of workTemplate.beforeBy">
-                        <h2 class="text-decoration-underline">Previo paso por: {{beforeBy}}</h2>
+                    <div class="mt-2" *ngFor="let destinations of workTemplate.destinations">
+                        <h2 class="text-decoration-underline d-inline">A:</h2>
+                        <h2 class="d-inline"> {{destinations}}</h2>
+                    </div>
+                    <div class="mt-2" *ngFor="let beforeBy of workTemplate.beforeBy">
+                        <h2 class="text-decoration-underline d-inline">Previo paso por:</h2>
+                        <h2 class="d-inline"> {{beforeBy}}</h2>
                     </div>
                 </div>
             </div>
@@ -68,4 +82,4 @@
             </div>
         </div>
     </div>
-</body>
+</div>

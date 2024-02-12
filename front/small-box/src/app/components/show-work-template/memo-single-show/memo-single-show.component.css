@@ -1,4 +1,12 @@
 
+
+
+button{
+    color: white;
+    background: linear-gradient(245.59deg, rgb(202, 22, 15) 0%, rgb(234, 37, 23) 28.53%, #dc0808 75.52%); 
+
+}
+
 .container-flex{
     background-color: white;
 }

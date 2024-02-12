@@ -17,6 +17,7 @@ export class MemoSingleShowComponent implements OnInit {
 
   imgBase64 = '';
   downloaded!:boolean;
+  img!:any;
 
   constructor(private cookieService:CookieStorageService,private workTemplateService:WorkTemplateService,
     private snackBarService:SnackBarService,private captureService:NgxCaptureService){}
@@ -35,7 +36,7 @@ ngOnInit(): void {
 captureScreen():void{
    
   this.captureService
-  .getImage(document.body, true)
+  .getImage(this.screen.nativeElement, true)
   .pipe(
     tap((img) => {
       console.log(img);
