@@ -1,16 +1,13 @@
 <app-navbar></app-navbar>
 
-<body>
 
 
-    <div class="container-flex">
+
+    <div id="main-container" class="container-flex">
         <div class="row ">
-         <div class="col-md-1">
-            <button id="btn-create-destination" class="btn btn-sm mt-2 text-center d-inline" 
-            (click)="openDialogTemplateDestination(createTemplateDestinationTemplate)">Crear Destinatario</button>
-                <small class="d-inline">Crea una dependecia para usar en destinatarios o previo paso</small>
-         </div>
-            <div class="col-md-4  mt-3">
+         <div class="col-md-5  mt-0 ms-3">
+                <button id="btn-create-destination" class="btn btn-sm mt-2 text-center d-inline ms-2" 
+                (click)="openDialogTemplateDestination(createTemplateDestinationTemplate)">Crear Destinatario</button>
                 <h1 class="text-center mt-2">Memo</h1>
                 <form class="text-center" [formGroup]="memoFormBuilder">
                     <div class="form-group">
@@ -64,8 +61,8 @@
                 </form>
             </div>
           
-            <div  class="col-md-3 mt-5 ms-3">
-            <h2 class="mt-4 mx-3" id="destTitle">Seleccionar destinatarios</h2>
+            <div  class="col-md-3 mt-3 ms-3">
+            <h2 class="mt-5 mx-3" id="destTitle">Seleccionar destinatarios</h2>
                 <form [formGroup]="destinationsFormBuilder">
                     <div class="form-group w-75 text-center ms-2 ">
                         <select id="destination" formControlName="destination" class="form-select  border-dark ">
@@ -85,7 +82,7 @@
                     </div>
 
                 </form>
-                <h2 class="mt-4 mx-3" id="destTitle">Seleccionar Previo paso por</h2>
+                <h2 class="mt-5 mx-3" id="destTitle">Seleccionar Previo paso por</h2>
                 <form [formGroup]="beforeByFormBuilder">
                     <div class="form-group w-75 text-center ms-2 ">
                         <select id="beforeBy" formControlName="beforeBy" class="form-select  border-dark ">
@@ -131,7 +128,9 @@
                        
                     </form>
                 </div>
-
+                <div>
+                    <button (click)="openDialogTextTemplates(textTemplateTemplate)" class="btn btn-sm mt-5">Plantillas de texto</button>
+                </div>
             </div>
 
             <div class="col-md-3 mt-5" >
@@ -147,7 +146,7 @@
                         </ul>
                     </div>
                 </div>
-                <div *ngIf="beforeBys.length>0">
+                <div  *ngIf="beforeBys.length>0">
                     <h2 class="mt-4" id="destTitle">Previo paso por:</h2>
                     <div id="destination-list" class="mt-1">
 
@@ -171,10 +170,12 @@
                         </ul>
                     </div>
                 </div>
+               
             </div>
         
         </div>
  </div>
+
 <ng-template #createTemplateDestinationTemplate>
    
 <form [formGroup]="createDestinationFormBuilder">
@@ -194,4 +195,19 @@
 </form>
 
 </ng-template>
-</body>
+<ng-template #textTemplateTemplate>
+    <table class="table table-sm table-bordered table-striped text-center">
+        <thead>
+            <tr>
+                <th>Texto</th>
+                <th>Seleccion</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let text of textTemplatesIndex">
+                <td>{{text}}</td>
+                <td><button (click)="getSelectedTextTemplate(text)" class="btn btn-sm">-</button></td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>

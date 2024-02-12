@@ -1,10 +1,16 @@
-body{
+#main-container{
+  
     background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
     font-family: 'Quattrocento', serif;
 }
 button{
+    color:white;
     background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
 }
+button:hover{
+    background: linear-gradient(245.59deg, rgb(73, 192, 83) 0%, rgb(66, 175, 68) 28.53%, #76b987 75.52%); 
+}
+
 #btn_delete{
     border-radius: 15%;
     font-size: 0.5rem;

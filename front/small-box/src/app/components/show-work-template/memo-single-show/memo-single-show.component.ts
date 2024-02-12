@@ -18,16 +18,10 @@ export class MemoSingleShowComponent implements OnInit {
   imgBase64 = '';
   downloaded!:boolean;
   img!:any;
+  workTemplate!:WorkTemplateDto;
 
   constructor(private cookieService:CookieStorageService,private workTemplateService:WorkTemplateService,
     private snackBarService:SnackBarService,private captureService:NgxCaptureService){}
-
-  workTemplate!:WorkTemplateDto;
-
-  
-
-
-
 
 ngOnInit(): void {
     this.getWorkTemplateById();
@@ -38,13 +32,11 @@ captureScreen():void{
   this.captureService
   .getImage(this.screen.nativeElement, true)
   .pipe(
-    tap((img) => {
-      console.log(img);
-    }),
+  
     tap((img) => this.captureService.downloadImage(img))
   )
   .subscribe();
-    this.snackBarService.openSnackBar('Se descargo el memo!', 'Cerrar', 3000);
+    this.snackBarService.openSnackBar('Se descargo el documento que corresponde a: ' + this.workTemplate.correspond + ' '+ this.workTemplate.correspondNumber, 'Cerrar', 3000);
     this.downloaded = true;
 }
 

@@ -37,6 +37,8 @@ export class MemoSingleComponent implements OnInit {
   organizations: OrganizationDto[] = [];
   beforeBys: Array<string> = [];
   beforeByPartial!:BeforeBy;
+  textTemplatesMap:Map<string,string>  = new Map();
+  textTemplatesIndex:Array<string> = [];
 
   constructor(private workTemplateService: WorkTemplateService, private cookieService: CookieStorageService
     , private formBuilder: FormBuilder, private snackBarService: SnackBarService
@@ -49,13 +51,28 @@ export class MemoSingleComponent implements OnInit {
     this.getRefsList();
   }
 
+  //Text templates
   getTextTemplates():void{
-
+    this.textTemplatesMap.set('Pedido de expedientes','En el dia de la fecha se solicitan los siguientes Expedientes:');
+    this.textTemplatesMap.set('Envio de comprobantes', 'En el dia de la fecha se hace envio de los siguientes comprobantes:');
+   this.textTemplatesIndex.push('Pedido de expedientes');
+   this.textTemplatesIndex.push('Envio de comprobantes');
+  }
+  getSelectedTextTemplate(text:string):void{
+    this.memoFormBuilder.patchValue({
+      text: this.textTemplatesMap.get(text)
+    });
+    this.matDialogRef.close();
   }
 
- 
+  openDialogTextTemplates(template:TemplateRef<any>){
+    this.getTextTemplates();
+    this.matDialogRef = this.dialogService.openDialogCreation({
+      template
+    });
+  }
 
-  refFormBuilder = this.formBuilder.group({
+refFormBuilder = this.formBuilder.group({
     ref: ['', Validators.required],
     refNumber: ['', Validators.required]
   });
@@ -230,13 +247,15 @@ destinationsFormBuilder = this.formBuilder.group({
     this.matDialogRef.close();
   }
 
+
+  //Crear destino para usar en destinatarios o previo paso por.
   createTemplateDestinaton() {
     if (this.createDestinationFormBuilder.valid) {
       this.destinationDto = new DestinationDto();
       this.destinationDto = Object.assign(this.destinationDto, this.createDestinationFormBuilder.value);
       this.workTemplateService.createTemplateDestination(this.destinationDto).subscribe({
         next: (responseData) => {
-          this.snackBarService.openSnackBar(responseData, 'Cerrar', 3000);
+          this.snackBarService.openSnackBar('Se agrego el destino: ' + responseData, 'Cerrar', 3000);
         },
         error: (errorData) => {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
@@ -248,9 +267,6 @@ destinationsFormBuilder = this.formBuilder.group({
       });
     }
   }
-
-
-
 
   get date() {
     return this.memoFormBuilder.controls.date;
