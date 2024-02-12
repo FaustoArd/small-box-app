@@ -212,7 +212,7 @@ export class MemoSingleComponent implements OnInit {
   get date() {
     return this.memoFormBuilder.controls.date;
   }
-  get corresponds() {
+  get correspond() {
     return this.memoFormBuilder.controls.correspond;
   }
   get ref() {
@@ -225,7 +225,7 @@ export class MemoSingleComponent implements OnInit {
   get destination() {
     return this.destinationsFormBuilder.controls.destination;
   }
-  get correspondsNumber() {
+  get correspondNumber() {
     return this.memoFormBuilder.controls.correspondNumber;
   }
 

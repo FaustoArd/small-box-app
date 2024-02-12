@@ -35,9 +35,9 @@
                         <label for="correspondNumber" class="form-label">Numero</label>
                         <input type="text" class="form-control " formControlName="correspondNumber"
                             id="correspondNumber">
-                        <div *ngIf="correspondsNumber.invalid && (correspondsNumber.dirty || correspondsNumber.touched)"
+                        <div *ngIf="correspondNumber.invalid && (correspondNumber.dirty || correspondNumber.touched)"
                             class="text-danger">
-                            <div *ngIf="correspondsNumber.errors?.['required']">
+                            <div *ngIf="correspondNumber.errors?.['required']">
                                 Falta El numero
                             </div>
                         </div>

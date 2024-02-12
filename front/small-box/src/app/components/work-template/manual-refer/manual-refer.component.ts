@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Destination } from 'src/app/models/destination';
 import { OrganizationDto } from 'src/app/models/organizationDto';
@@ -33,5 +33,39 @@ export class ManualReferComponent {
     , private organizationService: OrganizationService, private router: Router) { }
 
 
-    
+
+    referFormBuilder = this.formBuilder.group({
+      date:['',Validators.required],
+    destination:['', Validators.required],
+      organizationId:['']
+    });
+
+    itemFormBuilder = this.formBuilder.group({
+      item:['', Validators.required],
+      itemNumber:['',Validators.required]
+    });
+
+    get date() {
+      return this.referFormBuilder.controls.date;
+    }
+
+    get item(){
+      return this.itemFormBuilder.controls.item;
+    }
+   
+  get destination() {
+      return this.referFormBuilder.controls.destination;
+    }
+
+    addItem(){
+      
+    }
+   
+    createRefer(){
+      if(this.referFormBuilder.valid){
+        this.workTemplate = new WorkTemplateDto();
+        var 
+      }
+    }
+  
 }
