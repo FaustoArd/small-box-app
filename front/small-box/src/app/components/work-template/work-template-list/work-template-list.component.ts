@@ -19,6 +19,7 @@ export class WorkTemplateListComponent implements OnInit {
   filteredWorkTemplates: WorkTemplateDto[] = [];
   filters!: Array<string>;
   myArrayObservable$!: Observable<WorkTemplateDto>;
+  obj!:object;
 
   constructor(private workTemplateService: WorkTemplateService, private cookieService: CookieStorageService
     , private snackBarService: SnackBarService, private formBuilder: FormBuilder,) {
@@ -48,9 +49,13 @@ export class WorkTemplateListComponent implements OnInit {
     filter: ['']
   });
 
+
+ 
+
  
 
   filterWorktemplate() {
+   
     if (this.findByExampleFormBuilder.valid) {
       const value = Object.assign(this.findByExampleFormBuilder.value);
       if (value.filter === 'Fecha') {
@@ -69,6 +74,9 @@ export class WorkTemplateListComponent implements OnInit {
         console.log('correspondNumber')
         this.workTemplates = this.workTemplates.filter(wt => wt.correspondNumber.toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
 
+        if(this.workTemplates.length ==0){
+          this.getAllWorkTemplatesByUserId();
+        }
       }else if (value.filter == 'Destino') {
         console.log('destinations')
         this.workTemplates = this.workTemplates.filter(wt => wt.destinations.map(wt => wt).toString().toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
@@ -87,7 +95,9 @@ export class WorkTemplateListComponent implements OnInit {
       else if (value.filter == 'Items') {
         console.log('items')
         this.workTemplates = this.workTemplates.filter(wt => wt.items.map(wt => wt).toString().toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
-
+        if(this.workTemplates.length ==0){
+          this.getAllWorkTemplatesByUserId();
+        }
       }
     } else {
       this.getAllWorkTemplatesByUserId();
