@@ -62,7 +62,7 @@ public class WorkTemplateController {
 	
 	@GetMapping("/by_user_id/{userId}")
 	ResponseEntity<List<WorkTemplateDto>> findWorkTemplatesByuserId(@PathVariable("userId")Long userId){
-		List<WorkTemplate> templates = workTemplateService.finalAllWorkTemplatesByOrganizationsId(userId);
+		List<WorkTemplate> templates = workTemplateService.finalAllWorkTemplatesByOrganizationByUserId(userId);
 		List<WorkTemplateDto> templatesDto = WorkTemplateMapper.INSTANCE.toWorkTemplateDtoList(templates);
 		return ResponseEntity.ok(templatesDto);
 	}

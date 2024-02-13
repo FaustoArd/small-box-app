@@ -46,7 +46,7 @@ public class WorkTemplateServiceImpl implements WorkTemplateService {
 	}
 
 	@Override
-	public List<WorkTemplate> finalAllWorkTemplatesByOrganizationsId(Long userId) {
+	public List<WorkTemplate> finalAllWorkTemplatesByOrganizationByUserId(Long userId) {
 		List<Organization> organizations = organizationService.findAllOrganizationsByUsers(userId);
 		List<WorkTemplate> workTemplates = workTemplateRepository.findAllWorkTemplatesByOrganizationIn(organizations);
 		return workTemplates;
