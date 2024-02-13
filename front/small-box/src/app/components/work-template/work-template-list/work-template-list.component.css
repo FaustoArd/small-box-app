@@ -1,5 +1,12 @@
+#main-container{
+    background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
+}
+
 table{
     font-family:'Quattrocento', serif; 
+}
+form{
+    font-family:'Quattrocento', serif;  
 }
 
 th{
@@ -24,4 +31,7 @@ input{
 #btnFind{
 
     width: 16rem;
+}
+#filterForm{
+    width: 8rem;
 }
