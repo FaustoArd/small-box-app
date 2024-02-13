@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <div class="container-fluid">
 <div class="row">
-  <div class="col-md-4"></div>
+  <div class="col-md-2"></div>
   <div class="col-md-4 mt-5">
         <form class="form-group justify-center mt-3" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
@@ -88,6 +88,17 @@
           <button type="submit"  class="btn btn-primary btn-block mb-4">Guardar</button>
         </form>
       </div>
-      <div class="col-md-4"></div>
+      <div class="col-md-1"></div>
+      <div class="col-md-4 mt-5">
+        <div id="passReq" class="mt-5 text-center">
+        <h2>Requisitos del Password</h2>
+        <h5>Debe tener por lo menos un digito (0-9)</h5>
+        <h5>Debe tener por lo menos una letra en minuscula</h5>
+        <h5>Debe tener por lo menos una letra en mayuscula</h5>
+        <h5>Puede tener caracteres especiales, Caracteres admitidos:  @#$%^&+= </h5>
+        <h5>No se permiten espacios</h5>
+        <h5>Debe tener por lo menos una longitud de 8 caracteres</h5>
+      </div>
+      </div>
     </div>
 </div>

@@ -33,7 +33,7 @@ public class SmallBoxApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
-
+	
 	@Bean
 	CommandLineRunner run(InputRepository inputRepository,
 			ContainerService containerService,
@@ -62,7 +62,7 @@ public class SmallBoxApplication {
 			userDto.setLastname("Marroin");
 			userDto.setEmail("car@mail.com");
 			userDto.setUsername("car");
-			userDto.setPassword("123");
+			userDto.setPassword("Pta1919az");
 			authorizationService.register(userDto, "ADMIN");
 			
 			SmallBoxType chica = SmallBoxType.builder()

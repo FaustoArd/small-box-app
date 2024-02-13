@@ -17,3 +17,11 @@ button{
 button:hover{
     background: linear-gradient(245.59deg, rgb(73, 192, 83) 0%, rgb(66, 175, 68) 28.53%, #76b987 75.52%); 
 }
+input{
+    border: solid 1px black;
+}
+
+#btnFind{
+
+    width: 16rem;
+}

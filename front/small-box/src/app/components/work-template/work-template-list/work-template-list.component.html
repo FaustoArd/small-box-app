@@ -1,9 +1,38 @@
 <app-navbar></app-navbar>
 <div class="container-flex">
     <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-6">
+            <form class="d-inline mt-2" [formGroup]="findByExampleFormBuilder">
+
+                <div class="form-group w-75">
+                    <input type="text" class="form-control" formControlName="example" id="example"
+                        placeholder="Ingrese una referencia...">
+                    <div *ngIf="example.invalid && (example.dirty || example.touched)" class="text-danger">
+                        <div *ngIf="example.errors?.['required']">
+                            Debe ingresar un dato valido
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group w-25">
+                    <label for="filter" class="form-label fs-7  ">Filtrar por:</label>
+                    <select id="filter" formControlName="filter" class=" form-select  border-dark ">
+                        <option type="text" class="form-control border-dark " *ngFor="let filter of filters"
+                            id="organizationId" [value]="filter">
+                            {{filter}}</option>
+
+                    </select>
+                    
+                </div>
+                <button (click)="findWorkTemplateByExample()" id="btnFind" class="btn  mt-1">Buscar</button>
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10 mt-5">
-            <table  class="table table-fluid table-bordered border border-dark">
+            <table class="table table-fluid table-bordered border border-dark">
                 <thead>
                     <tr class=" fw-bold text-center">
                         <th scope="col">Fecha</th>
@@ -12,25 +41,27 @@
                         <th scope="col">Destinos</th>
                         <th scope="col">Ref</th>
                         <th scope="col">Texto</th>
+                        <th scope="col">Items</th>
                         <th scope="col">Abrir</th>
 
 
                     </tr>
                 </thead>
                 <tbody>
-                    <tr   class="text-center" *ngFor="let template of workTemplates">
+                    <tr class="text-center" *ngFor="let template of workTemplates">
                         <td scope="row" class="fw-bold">{{template.date | date:
                             'dd-MM-yyyy'}}</td>
-                      
-                        <td scope="row"class="fw-bold">{{template.producedBy}}</td>
+
+                        <td scope="row" class="fw-bold">{{template.producedBy}}</td>
                         <td scope="row" class="fw-bold">{{template.correspond + ' ' + template.correspondNumber}}</td>
-                      
+
                         <td scope="row" class="fw-bold">{{template.destinations}}</td>
-                       
+
                         <td scope="row" class="fw-bold">{{template.refs}}</td>
-                        <td scope="row" id="rowCompleted"  class="fw-bold">{{template.text}}</td>
-                            <td><button class="btn btn-sm" routerLink="/memo-edit/{{template.id}}">-</button></td>
-                     </tr>
+                        <td scope="row" id="rowCompleted" class="fw-bold">{{template.text}}</td>
+                        <td scope="row" class="fw-bold">{{template.items}}</td>
+                        <td><button class="btn btn-sm" routerLink="/memo-edit/{{template.id}}">-</button></td>
+                    </tr>
                 </tbody>
             </table>
         </div>

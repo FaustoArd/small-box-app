@@ -2,6 +2,7 @@ package com.lord.small_box.models;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,6 +27,7 @@ public class Authority implements GrantedAuthority {
 	private Long id;
 	
 	@Enumerated(EnumType.STRING)
+	@Column(name="authoriry", unique = true)
 	private AuthorityName authority;
 	
 	

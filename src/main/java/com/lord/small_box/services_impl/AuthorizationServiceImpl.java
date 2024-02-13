@@ -2,6 +2,8 @@ package com.lord.small_box.services_impl;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.dtos.LoginResponseDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.exceptions.LoginException;
+import com.lord.small_box.exceptions.PasswordInvalidException;
+import com.lord.small_box.exceptions.UsernameExistException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
@@ -25,79 +29,77 @@ import com.lord.small_box.services.AppUserService;
 import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.JwtTokenService;
 
-
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class AuthorizationServiceImpl implements AuthorizationService {
-	
+
 	@Autowired
 	private final AppUserService appUserService;
-	
+
 	@Autowired
 	private final PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private final AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	private final JwtEncoder jwtEncoder;
-	
+
 	@Autowired
 	private final AuthorityRepository authorityRepository;
-	
+
 	@Autowired
 	private final JwtTokenService tokenService;
-	
+
 	private static final Logger log = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
-	
-	
 
 	@Override
 	public AppUserRegistrationDto register(AppUserRegistrationDto userDto, String authority) {
 		log.info("Register user");
-		if(appUserService.checkUsername(userDto.getUsername())) {
-			throw new RuntimeException("El nombre de usuario ya existe");
-		}else {
-			Authority role = authorityRepository.findByAuthority(AuthorityName.valueOf(authority)).orElseThrow(()-> new ItemNotFoundException("Role not found"));
+		if (appUserService.checkUsername(userDto.getUsername())) {
+			throw new UsernameExistException("El nombre de usuario ya existe");
+		}
+		if (!validatePassword(userDto.getPassword())) {
+			throw new PasswordInvalidException("Password invalido, lea los requisitos");
+		} else {
+			log.info("Buscando el rol");
+			Authority role = authorityRepository.findByAuthority(AuthorityName.valueOf(authority))
+					.orElseThrow(() -> new ItemNotFoundException("Role not found"));
 			Set<Authority> roles = new HashSet<>();
 			roles.add(role);
-			
-			AppUser user = new AppUser(userDto.getName(),
-					userDto.getLastname(),
-					userDto.getUsername(),
-					userDto.getEmail(),
-					passwordEncoder.encode(userDto.getPassword()),
-							true, true, true, true,roles);
-			AppUser registeredUser =  appUserService.save(user);
-			
+
+			AppUser user = new AppUser(userDto.getName(), userDto.getLastname(), userDto.getUsername(),
+					userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), true, true, true, true, roles);
+			AppUser registeredUser = appUserService.save(user);
+
 			return mapUserToDto(registeredUser);
 		}
-		
+
 	}
 
 	@Override
 	public LoginResponseDto login(AppUserLoginDto appUserLoginDto) throws AuthenticationException {
 		log.info("Login user");
 		try {
-	Authentication auth  = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUserLoginDto.getUsername(), appUserLoginDto.getPassword()));
-	String token = tokenService.generateJwt(auth);
-	LoginResponseDto loginResponseDto = new LoginResponseDto();
-	AppUser loggedUser =  appUserService.findByUsername(appUserLoginDto.getUsername());
-	loginResponseDto.serUsername(loggedUser.getUsername());
-	loginResponseDto.setToken(token);
-	loginResponseDto.setUserId(loggedUser.getId());
-	return loginResponseDto;
-	
-		}catch(AuthenticationException ex) {
+			Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+					appUserLoginDto.getUsername(), appUserLoginDto.getPassword()));
+			String token = tokenService.generateJwt(auth);
+			LoginResponseDto loginResponseDto = new LoginResponseDto();
+			AppUser loggedUser = appUserService.findByUsername(appUserLoginDto.getUsername());
+			loginResponseDto.serUsername(loggedUser.getUsername());
+			loginResponseDto.setToken(token);
+			loginResponseDto.setUserId(loggedUser.getId());
+			return loginResponseDto;
+
+		} catch (AuthenticationException ex) {
 			throw new LoginException("Usuario o contraseña invalido");
 		}
 	}
-	
-	
+
 	private static AppUserRegistrationDto mapUserToDto(AppUser user) {
-		if(user==null){
+		if (user == null) {
 			return null;
 		}
 		AppUserRegistrationDto userDto = new AppUserRegistrationDto();
@@ -107,6 +109,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		userDto.setEmail(user.getEmail());
 		userDto.setPassword(null);
 		return userDto;
+	}
+
+	@Override
+	public boolean validatePassword(String password) {
+		return Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?![@#$%^&+=])(?=\\S+$).{8,}$", password);
 	}
 
 }

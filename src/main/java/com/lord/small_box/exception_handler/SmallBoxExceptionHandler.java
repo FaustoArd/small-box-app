@@ -9,6 +9,7 @@ import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.exceptions.LoginException;
 import com.lord.small_box.exceptions.MaxAmountExeededException;
 import com.lord.small_box.exceptions.MaxRotationExceededException;
+import com.lord.small_box.exceptions.PasswordInvalidException;
 
 @ControllerAdvice
 public class SmallBoxExceptionHandler extends ResponseEntityExceptionHandler {
@@ -36,6 +37,11 @@ public class SmallBoxExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(MaxAmountExeededException.class)
 	ResponseEntity<String> handleMaxAmount(MaxAmountExeededException ex){
+		return new ResponseEntity<String>(ex.getMessage(),HttpStatus.EXPECTATION_FAILED);
+	}
+	
+	@ExceptionHandler(PasswordInvalidException.class)
+	ResponseEntity<String> handlePasswordInvalid(PasswordInvalidException ex){
 		return new ResponseEntity<String>(ex.getMessage(),HttpStatus.EXPECTATION_FAILED);
 	}
 	

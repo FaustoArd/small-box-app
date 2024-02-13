@@ -2,6 +2,9 @@ package com.lord.small_box.services_impl;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Service;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.Organization;
@@ -46,11 +49,24 @@ public class WorkTemplateServiceImpl implements WorkTemplateService {
 	}
 
 	@Override
-	public List<WorkTemplate> finalAllWorkTemplatesByOrganizationByUserId(Long userId) {
+	public List<WorkTemplate> findAllWorkTemplatesByOrganizationByUserId(Long userId) {
 		List<Organization> organizations = organizationService.findAllOrganizationsByUsers(userId);
 		List<WorkTemplate> workTemplates = workTemplateRepository.findAllWorkTemplatesByOrganizationIn(organizations);
 		return workTemplates;
 	}
+
+	@Override
+	public List<WorkTemplate> FindWorkTemplateByExampleAndUserId(WorkTemplate workTemplate,Long userId) {
+		List<Long> organizationsId = organizationService.findAllOrganizationsByUsers(userId).stream().map(org -> org.getId()).toList();
+		StringMatcher match = StringMatcher.CONTAINING;
+		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(match).withIgnoreCase();
+		Example<WorkTemplate> example = Example.of(workTemplate,matcher);
+		List<WorkTemplate> results = workTemplateRepository.findAll(example).stream()
+				.filter(wt -> wt.getOrganization().getId()==organizationsId.stream().map(id -> id).findAny().get()).toList();
+		return null;
+	}
+
+	
 
 	
 

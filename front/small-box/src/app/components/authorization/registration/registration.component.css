@@ -24,3 +24,15 @@ button{
 select{
     font-family: 'Quattrocento', serif;
 }
+
+#passReq{
+    border: 1px solid black;
+}
+h2{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
+h5{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;  
+}

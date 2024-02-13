@@ -13,6 +13,6 @@ public interface AuthorizationService {
 	
 	public LoginResponseDto login(AppUserLoginDto appUserLoginDto) throws AuthenticationException;
 	
-	
+	public boolean validatePassword(String password);
 
 }

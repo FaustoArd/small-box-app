@@ -2,7 +2,8 @@ package com.lord.small_box.services;
 
 import java.util.List;
 
-import com.lord.small_box.dtos.WorkTemplateDto;
+import org.springframework.data.domain.Example;
+
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.WorkTemplate;
 
@@ -14,7 +15,7 @@ public interface WorkTemplateService {
 	
 	public List<WorkTemplate> findAllWorkTemplatesByOrganization(Long organizationId);
 	
-	public List<WorkTemplate> finalAllWorkTemplatesByOrganizationByUserId(Long userId);
+	public List<WorkTemplate> findAllWorkTemplatesByOrganizationByUserId(Long userId);
 	
-	
+	public List<WorkTemplate> FindWorkTemplateByExampleAndUserId(WorkTemplate example,Long userId);
 }
