@@ -1,0 +1,286 @@
+<app-navbar></app-navbar>
+
+
+
+
+    <div id="main-container" class="container-flex">
+        <div class="row">
+            <div class="col-md-1">
+                <button id="btn-create-destination" class="btn btn-sm mt-2 text-center d-inline ms-2" 
+                (click)="openDialogTemplateDestination(createTemplateDestinationTemplate)">Crear Destinatario</button>
+            </div>
+            <div class="col-md-3"></div>
+            <div class="col-md-1">
+                <button id="btn-create-destination" class="btn btn-sm mt-2 text-center d-inline ms-2" 
+                (click)="openDialogItemSelection(itemTemplateTemplate)">Crear Items</button>
+            </div>
+        </div>
+        <div class="row ">
+         <div class="col-md-5  mt-0 ms-3">
+               
+                <h1 class="text-center mt-2">Memo</h1>
+                <form class="text-center" [formGroup]="memoFormBuilder">
+                    <div class="form-group">
+                        <label for="date" class="form-label">Fecha</label>
+                        <input type="date" class="form-control " formControlName="date" id="date">
+                        <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger">
+                            <div *ngIf="date.errors?.['required']">
+                                Falta la fecha
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="correspond" class="form-label">Corresponde</label>
+                        <select id="correspond" formControlName="correspond" class="form-select  border-dark ">
+                            <option type="text" class="form-control border-dark " *ngFor="let ref of refsList"
+                                id="correspond" [value]="ref">
+                                {{ref}}</option>
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="correspondNumber" class="form-label">Numero</label>
+                        <input type="text" class="form-control " formControlName="correspondNumber"
+                            id="correspondNumber">
+                            <button id="btnSn" class="btn btn-sm mt-1" (click)="setNoNumberCorrespond()">S/N</button>
+                        <div *ngIf="correspondNumber.invalid && (correspondNumber.dirty || correspondNumber.touched)"
+                            class="text-danger">
+                            <div *ngIf="correspondNumber.errors?.['required']">
+                                Falta El numero
+                            </div>
+                        </div>
+                      
+                    </div>
+
+                    <div class="form-group w-75 text-center ">
+                        <label for="organizationId" class="form-label fs-7  ">Producido por</label>
+                        <select id="organizationId" formControlName="organizationId" class="form-select  border-dark ">
+                            <option type="text" class="form-control border-dark " *ngFor="let org of organizations"
+                                id="organizationId" [value]="org.id">
+                                {{org.organizationName}}</option>
+                                    
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="producedBy" class="form-label">Texto</label>
+                        <textarea id="input-text" type="text" class="form-control border-dark"
+                            formControlName="text"></textarea>
+
+                    </div>
+                    <button class="btn mt-1" (click)="createMemo()">Finalizar</button>
+                </form>
+            </div>
+          
+            <div  class="col-md-3 mt-3 ms-3">
+            <h2 class="mt-5 mx-3" id="destTitle">Seleccionar destinatarios</h2>
+                <form [formGroup]="destinationsFormBuilder">
+                    <div class="form-group w-75 text-center ms-2 ">
+                        <select id="destination" formControlName="destination" class="form-select  border-dark ">
+                            <option type="text" class="form-control border-dark "
+                                *ngFor="let destination of destinationsDtoList" id="destination" [value]="destination.destination">
+                                {{destination.destination}}</option>
+                              
+                        </select>
+                        
+                        <div *ngIf="destination.invalid && (destination.dirty || destination.touched)"
+                        class="text-danger">
+                        <div *ngIf="destination.errors?.['required']">
+                           Debe seleccionar un destino
+                        </div>
+                    </div>
+                        <button class="btn mt-1" (click)="addSelectedDestination()">Agregar</button>
+                    </div>
+
+                </form>
+                <h2 class="mt-5 mx-3" id="destTitle">Seleccionar Previo paso por</h2>
+                <form [formGroup]="beforeByFormBuilder">
+                    <div class="form-group w-75 text-center ms-2 ">
+                        <select id="beforeBy" formControlName="beforeBy" class="form-select  border-dark ">
+                            <option type="text" class="form-control border-dark "
+                                *ngFor="let destination of destinationsDtoList" id="beforeBy" [value]="destination.destination">
+                                {{destination.destination}}</option>
+                              
+                        </select>
+                        
+                        <div *ngIf="destination.invalid && (destination.dirty || destination.touched)"
+                        class="text-danger">
+                        <div *ngIf="destination.errors?.['required']">
+                           Debe seleccionar un destino
+                        </div>
+                    </div>
+                        <button class="btn mt-1" (click)="addSelectedBeforeBy()">Agregar</button>
+                    </div>
+
+                </form>
+                <div class="mt-5 ">
+                   
+                    <form class=" w-75 text-center" [formGroup]="refFormBuilder">
+                        <div class="form-group">
+                            <label for="ref" class="form-label">Referencia</label>
+                            <select id="ref" formControlName="ref" class="form-select  border-dark ">
+                                <option type="text" class="form-control border-dark " *ngFor="let ref of refsList"
+                                    id="ref" [value]="ref">
+                                    {{ref}}</option>
+
+                            </select>
+                        </div>
+                        <div class="form-group ">
+                            <label for="refNumber" class="form-label">Numero</label>
+                            <input type="text" class="form-control " formControlName="refNumber" id="refNumber">
+                            <div *ngIf="refNumber.invalid && (refNumber.dirty || refNumber.touched)"
+                                class="text-danger">
+                                <div *ngIf="ref.errors?.['required']">
+                                    Falta el numero de la referencia
+                                </div>
+                            </div>
+                            <button class="btn mt-1 " (click)="addSelectedRef()">Agregar</button>
+                        </div>
+                       
+                    </form>
+                </div>
+                <div>
+                    <button (click)="openDialogTextTemplates(textTemplateTemplate)" class="btn btn-sm mt-5">Plantillas de texto</button>
+                </div>
+            </div>
+
+            <div class="col-md-3 mt-5" >
+                <div *ngIf="destinations.length>0">
+                    <h2 class="mt-4" id="destTitle">Destinatarios:</h2>
+                    <div id="destination-list" class="mt-1">
+
+                        <ul *ngFor="let dest of destinations">
+                            <li class="ms-4">{{dest}}</li>
+                            <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
+                                (click)="deleteSelectedDestination(dest)">Eliminar</button>
+                            <hr class="my-1">
+                        </ul>
+                    </div>
+                </div>
+                <div  *ngIf="beforeBys.length>0">
+                    <h2 class="mt-4" id="destTitle">Previo paso por:</h2>
+                    <div id="destination-list" class="mt-1">
+
+                        <ul *ngFor="let beforeBy of beforeBys">
+                            <li class="ms-4">{{beforeBy}}</li>
+                            <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
+                                (click)="deleteSelectedBeforeBy(beforeBy)">Eliminar</button>
+                            <hr class="my-1">
+                        </ul>
+                    </div>
+                </div>
+                <div *ngIf="refs.length>0">
+                    <h2 class="mt-4" id="destTitle">Referencias:</h2>
+                    <div id="destination-list" class="mt-1">
+
+                        <ul *ngFor="let ref of refs">
+                            <li class="ms-4">{{ref}}</li>
+                            <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
+                                (click)="deleteSelectedRef(ref)">Eliminar</button>
+                            <hr class="my-1">
+                        </ul>
+                    </div>
+                </div>
+                <div *ngIf="items.length>0">
+                    <h2 class="mt-4" id="destTitle">Items:</h2>
+                    <div id="destination-list" class="mt-1">
+
+                        <ul *ngFor="let item of items">
+                            <li class="ms-4">{{item}}</li>
+                            <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
+                                (click)="deleteSelectedItem(item)">Eliminar</button>
+                            <hr class="my-1">
+                        </ul>
+                    </div>
+                </div>
+               
+            </div>
+        
+        </div>
+ </div>
+
+<ng-template #createTemplateDestinationTemplate>
+   
+<form [formGroup]="createDestinationFormBuilder">
+   
+    <div id="template-destination-form" class="form-group text-center">
+        <label for="destination" class="form-label mt-1 mx-1 mb-1">Destino</label>
+        <input type="text" class="form-control " formControlName="destination" id="template-destination">
+        <div *ngIf="destination.invalid && (destination.dirty || destination.touched)"
+            class="text-danger">
+            <div *ngIf="ref.errors?.['required']">
+                Falta el destino
+            </div>
+        </div>
+        <button class="btn mt-1 text-center" (click)="createTemplateDestinaton()">Agregar</button>
+    </div>
+
+</form>
+
+</ng-template>
+<ng-template #textTemplateTemplate>
+    <table class="table table-sm table-bordered table-striped text-center">
+        <thead>
+            <tr>
+                <th>Texto</th>
+                <th>Seleccion</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let text of textTemplatesIndex">
+                <td>{{text}}</td>
+                <td><button (click)="getSelectedTextTemplate(text);openDialogTextTemplates(itemTemplateTemplate)" class="btn btn-sm">-</button></td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>
+<ng-template #itemTemplateTemplate>
+<div id="itemTemplateCSS" class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <form class="text-center" [formGroup]="itemFormBuilder">
+                <div class="form-group">
+                    <label for="item" class="form-label">Referencia</label>
+                    <select id="item" formControlName="item" class="form-select  border-dark ">
+                        <option type="text" class="form-control border-dark " *ngFor="let ref of refsList"
+                            id="item" [value]="ref">
+                            {{ref}}</option>
+
+                    </select>
+                </div>
+                <div class="form-group ">
+                    <label for="itemNumber" class="form-label">Numero</label>
+                    <input type="text" class="form-control " formControlName="itemNumber" id="itemNumber">
+                    <div *ngIf="refNumber.invalid && (refNumber.dirty || refNumber.touched)"
+                        class="text-danger">
+                        <div *ngIf="ref.errors?.['required']">
+                            Falta el numero de la referencia
+                        </div>
+                    </div>
+                    <button class="btn mt-1 " (click)="addSelectedItem()">Agregar</button>
+                </div>
+               
+            </form>
+        </div>
+        <div class="col-4">
+            <div *ngIf="items.length>0">
+                <h2 class="mt-4" id="destTitle">Referencias:</h2>
+                <div id="destination-list" class="mt-1">
+
+                    <ul *ngFor="let item of items">
+                        <li class="ms-4">{{item}}</li>
+                        <button id="btn_delete" class="btn btn-sm d-inline ms-2 mb-2"
+                            (click)="deleteSelectedItem(item)">Eliminar</button>
+                        <hr class="my-1">
+                    </ul>
+                </div>
+                <button (click)="getSelectedItemsComplete()" class="btn btn-sm text-center">Finalizar</button>
+            </div>
+           
+        </div>
+        
+    </div>
+</div>
+</ng-template>
+

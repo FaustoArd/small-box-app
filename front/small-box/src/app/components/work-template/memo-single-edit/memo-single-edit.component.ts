@@ -1,8 +1,11 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, TemplateRef } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BeforeBy } from 'src/app/models/beforeBy';
 import { Destination } from 'src/app/models/destination';
+import { DestinationDto } from 'src/app/models/destinationDto';
+import { Item } from 'src/app/models/item';
 import { OrganizationDto } from 'src/app/models/organizationDto';
 import { Ref } from 'src/app/models/ref';
 import { WorkTemplateDto } from 'src/app/models/workTemplateDto';
@@ -12,18 +15,16 @@ import { OrganizationService } from 'src/app/services/organization.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { WorkTemplateService } from 'src/app/services/work-template.service';
 import { DialogTemplateComponent } from '../../dialog/dialog-template/dialog-template.component';
-import { DestinationDto } from 'src/app/models/destinationDto';
-import { BeforeBy } from 'src/app/models/beforeBy';
-import { Item } from 'src/app/models/item';
 
 @Component({
-  selector: 'app-memo-single',
-  templateUrl: './memo-single.component.html',
-  styleUrls: ['./memo-single.component.css']
+  selector: 'app-memo-single-edit',
+  templateUrl: './memo-single-edit.component.html',
+  styleUrls: ['./memo-single-edit.component.css']
 })
-export class MemoSingleComponent implements OnInit {
+export class MemoSingleEditComponent {
 
   workTemplate!: WorkTemplateDto;
+  findedWorkTemplate!: WorkTemplateDto;
   returnedWorkTemplate!: WorkTemplateDto;
   strDestination: string = '';
   destinationsList!: Array<string>
@@ -47,10 +48,11 @@ export class MemoSingleComponent implements OnInit {
   constructor(private workTemplateService: WorkTemplateService, private cookieService: CookieStorageService
     , private formBuilder: FormBuilder, private snackBarService: SnackBarService
     , private organizationService: OrganizationService, private router: Router,
-    private dialogService: DialogService) { }
+    private dialogService: DialogService, private route: ActivatedRoute) { }
 
 
   ngOnInit(): void {
+    this.getWorkTemplateById();
     this.getAllOrganizationsByUser();
     this.getAllTemplateDestinationsList();
     this.getRefsList();
@@ -159,7 +161,7 @@ export class MemoSingleComponent implements OnInit {
   }
 
   getRefsList(): void {
-    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM","REMITO INTERNO", "FACTURA", "REMITO"];
+    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM", "REMITO INTERNO", "FACTURA", "REMITO"];
   }
 
 
@@ -250,7 +252,7 @@ export class MemoSingleComponent implements OnInit {
     organizationId: [0]
   });
 
-  setNoNumberCorrespond(){
+  setNoNumberCorrespond() {
     this.memoFormBuilder.patchValue({
       correspondNumber: 'S/N'
     });
@@ -335,8 +337,45 @@ export class MemoSingleComponent implements OnInit {
     }
   }
 
- 
 
+  getWorkTemplateById() {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.workTemplateService.findWorkTemplateById(id).subscribe({
+      next: (workData) => {
+        console.log('hola')
+       console.log(workData);
+        this.findedWorkTemplate = workData;
+        this.updateWorkTemplateShow();
+        this.destinations = this.findedWorkTemplate.destinations;
+        this.refs = this.findedWorkTemplate.refs;
+        this.beforeBys = this.findedWorkTemplate.beforeBy;
+        this.items = this.findedWorkTemplate.items;
+      },
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+  }
+
+  updateMemoFormBuilder = this.formBuilder.group({
+    id: [0],
+    date: ['', Validators.required],
+    correspond: ['', Validators.required],
+    correspondNumber: ['', Validators.required],
+    text: ['', Validators.required],
+    organizationId: [0]
+  });
+
+  updateWorkTemplateShow() {
+    this.memoFormBuilder.patchValue({
+     
+      date: this.findedWorkTemplate.date.toString(),
+      correspond: this.findedWorkTemplate.correspond,
+      correspondNumber: this.findedWorkTemplate.correspondNumber,
+      text: this.findedWorkTemplate.text,
+      organizationId: this.findedWorkTemplate.organizationId,
+    });
+  }
 
 
   //Validation Control getters
@@ -366,9 +405,4 @@ export class MemoSingleComponent implements OnInit {
   get itemSelection() {
     return this.itemFormBuilder.controls.item;
   }
-
-
-
-
-
 }

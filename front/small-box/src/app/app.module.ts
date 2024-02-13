@@ -30,6 +30,7 @@ import { MemoSingleComponent } from './components/work-template/memo-single/memo
 import { MemoSingleShowComponent } from './components/show-work-template/memo-single-show/memo-single-show.component';
 import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
+import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
 
 
 
@@ -53,7 +54,8 @@ import { ManualReferComponent } from './components/work-template/manual-refer/ma
     MemoSingleComponent,
     MemoSingleShowComponent,
     WorkTemplateListComponent,
-    ManualReferComponent
+    ManualReferComponent,
+    MemoSingleEditComponent
     
   ],
   imports: [

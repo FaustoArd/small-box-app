@@ -22,8 +22,7 @@ export class WorkTemplateListComponent implements OnInit {
 
     getAllWorkTemplatesByUserId(){
       const userId = Number(this.cookieService.getCurrentUserId());
-      console.log(userId)
-      this.workTemplateService.findAllWorkTemplatesByUserId(userId).subscribe({
+     this.workTemplateService.findAllWorkTemplatesByUserId(userId).subscribe({
         next:(templateData)=>{
           this.workTemplates = templateData;
         },
@@ -33,5 +32,6 @@ export class WorkTemplateListComponent implements OnInit {
       });
     }
 
+   
   }
 

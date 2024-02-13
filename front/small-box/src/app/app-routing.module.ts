@@ -14,6 +14,7 @@ import { MemoSingleComponent } from './components/work-template/memo-single/memo
 import { MemoSingleShowComponent } from './components/show-work-template/memo-single-show/memo-single-show.component';
 import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
+import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path:'org', component:OrganizationComponent},
   { path:'org-setup', component:OrganizationSetupComponent},
   { path:'memo-create', component:MemoSingleComponent},
+  { path:'memo-edit/:id',component:MemoSingleEditComponent},
   { path:'memo-show', component:MemoSingleShowComponent},
   { path:'work-template-list', component:WorkTemplateListComponent},
   { path:'refer-create',component:ManualReferComponent},

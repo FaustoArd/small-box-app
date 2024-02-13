@@ -1,0 +1,94 @@
+#main-container{
+  
+    background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
+    font-family: 'Quattrocento', serif;
+}
+button{
+    color:white;
+    background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
+}
+button:hover{
+    background: linear-gradient(245.59deg, rgb(73, 192, 83) 0%, rgb(66, 175, 68) 28.53%, #76b987 75.52%); 
+}
+
+#btn_delete{
+    border-radius: 15%;
+    font-size: 0.5rem;
+    color:white;
+    background: linear-gradient(245.59deg, rgb(192, 73, 73) 0%, rgb(175, 66, 66) 28.53%, #ab1628 75.52%);
+}
+
+#btn-create-destination{
+    color: white;
+    background: linear-gradient(245.59deg, rgb(192, 73, 73) 0%, rgb(175, 66, 66) 28.53%, #ab1628 75.52%);
+}
+
+#btnSn{
+    color: white;
+    background: linear-gradient(245.59deg, rgb(192, 73, 73) 0%, rgb(175, 66, 66) 28.53%, #ab1628 75.52%);
+}
+#btnSn:hover{
+    background: linear-gradient(245.59deg, rgb(73, 192, 101) 0%, rgb(66, 175, 73) 28.53%, #16ab2f 75.52%);
+}
+
+#create{
+    background: linear-gradient(245.59deg, rgb(192, 73, 83) 0%,  rgb(192, 73, 83) 0%, #cf2f6c 75.52%); 
+}
+p{
+    color: rgb(199, 10, 10);
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+}
+label{
+    font-size: 1.2rem;
+    margin-top: 0.7rem;
+    font-weight: bold;
+}
+input{
+    border: 1px solid black;
+    font-family: 'Quattrocento', serif;
+}
+h1{
+    font-family: 'Quattrocento', serif;
+    font-size: 3rem;
+}
+
+h3{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
+
+li{
+    font-family: 'Quattrocento', serif;
+    font-size: 0.8rem;  
+}
+#input-text{
+    font-family: 'Quattrocento', serif;
+    
+    height: 16rem;
+   
+}
+#destTitle{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+    margin-left: 4.5rem;
+}
+
+#template-destination-form{
+    width: 32rem;
+}
+#template-destination{
+    width: 30rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+small{
+    font-size: 0.7rem;
+}
+
+
+
+
+
+

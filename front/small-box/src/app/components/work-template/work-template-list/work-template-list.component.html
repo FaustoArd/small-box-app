@@ -2,8 +2,8 @@
 <div class="container-flex">
     <div class="row">
         <div class="col-md-1"></div>
-        <div class="col-md-8 mt-5">
-            <table id="pdfDiv" class="table table-fluid table-bordered border border-dark">
+        <div class="col-md-10 mt-5">
+            <table  class="table table-fluid table-bordered border border-dark">
                 <thead>
                     <tr class=" fw-bold text-center">
                         <th scope="col">Fecha</th>
@@ -12,7 +12,7 @@
                         <th scope="col">Destinos</th>
                         <th scope="col">Ref</th>
                         <th scope="col">Texto</th>
-                       
+                        <th scope="col">Abrir</th>
 
 
                     </tr>
@@ -29,7 +29,7 @@
                        
                         <td scope="row" class="fw-bold">{{template.refs}}</td>
                         <td scope="row" id="rowCompleted"  class="fw-bold">{{template.text}}</td>
-                     
+                            <td><button class="btn btn-sm" routerLink="/memo-edit/{{template.id}}">-</button></td>
                      </tr>
                 </tbody>
             </table>
