@@ -10,7 +10,7 @@
                 <div class="input-group">
                 <div class="form-group w-50 text-center">
                     <input type="text" class="form-control" formControlName="example" id="example"
-                        placeholder="Ingrese una referencia..." (ngModelChange)="filterWorktemplate()">
+                        placeholder="Ingrese una referencia..." (ngModelChange)="filterWorkTemplateTest()">
                     <div *ngIf="example.invalid && (example.dirty || example.touched)" class="text-danger">
                         <div *ngIf="example.errors?.['required']">
                             Debe ingresar un dato valido
@@ -18,7 +18,7 @@
                     </div>
                     <!-- <button (click)="findWorkTemplateByExample()" id="btnFind" class="btn btn-sm  mt-1 ">Buscar</button> -->
                 </div>
-                <div id="filterForm" class="form-group ms-1">
+                <!-- <div id="filterForm" class="form-group ms-1">
                     <select id="filter" formControlName="filter" class=" form-select  border-dark ">
                         <option value="">Filtrar por:</option>
                         <option type="text" class="form-control border-dark " *ngFor="let filter of filters"
@@ -27,7 +27,7 @@
 
                     </select>
                    
-                </div>
+                </div> -->
                 
             </div>
             </form>
