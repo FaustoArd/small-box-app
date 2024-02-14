@@ -274,11 +274,19 @@ export class MemoSingleComponent implements OnInit {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         },
         complete: () => {
-          this.router.navigateByUrl('memo-show');
+         this.navigateAssociates();
         }
       });
     }
   }
+  navigateAssociates() {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/memo-show'])
+    );
+  
+    window.open(url, '_blank');
+  }
+
 
   getAllOrganizationsByUser() {
     this.organizationService.getAllOrganizationsByUser(Number(this.cookieService.getCurrentUserId())).subscribe({
