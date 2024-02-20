@@ -34,7 +34,7 @@ public class SmallBoxApplication {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
 	
-	//@Bean
+	@Bean
 	CommandLineRunner run(InputRepository inputRepository,
 			ContainerService containerService,
 			SmallBoxService smallBoxService,
@@ -85,6 +85,15 @@ public class SmallBoxApplication {
 		Input i221 = Input.builder().description("Hilados y Telas").inputNumber("221").build();
 		Input i222 = Input.builder().description("Prendas de Vestir").inputNumber("222").build();
 		Input i223 = Input.builder().description("Confecciones Textiles").inputNumber("223").build();
+		Input i229 = Input.builder().description("Otros").inputNumber("229").build();
+		Input i231 = Input.builder().description("Papel de escritorio y carton").inputNumber("231").build();
+		Input i232 = Input.builder().description("Papel para computacion").inputNumber("232").build();
+		Input i233 = Input.builder().description("Productos de artes graficas").inputNumber("233").build();
+		Input i234 = Input.builder().description("Productos de papel y carton").inputNumber("234").build();
+		Input i235 = Input.builder().description("Libros, revistas y periodicos").inputNumber("235").build();
+		Input i236 = Input.builder().description("Textos de enseñanza").inputNumber("236").build();
+		Input i296 = Input.builder().description("Repuestos y accesorios").inputNumber("296").build();
+		Input i255 = Input.builder().description("Tintas, pinturas y colorantes").inputNumber("255").build();
 		List<Input> inputs = new ArrayList<>();
 		inputs.add(i211);
 		inputs.add(i212);
@@ -95,6 +104,15 @@ public class SmallBoxApplication {
 		inputs.add(i221);
 		inputs.add(i222);
 		inputs.add(i223);
+		inputs.add(i229);
+		inputs.add(i231);
+		inputs.add(i232);
+		inputs.add(i233);
+		inputs.add(i234);
+		inputs.add(i235);
+		inputs.add(i236);
+		inputs.add(i296);
+		inputs.add(i255);
 		inputRepository.saveAll(inputs);
 			
 		OrganizationResponsible reyes = new OrganizationResponsible();
@@ -128,7 +146,7 @@ public class SmallBoxApplication {
 			org2.setOrganizationName("Direccion de administracion y despacho");
 			org2.setOrganizationNumber(2);
 			org2.setMaxRotation(12);
-			org2.setMaxAmount(new BigDecimal(45000));
+			org2.setMaxAmount(new BigDecimal(80000));
 			org2.setResponsible(savedReyes);
 			
 			Organization org3 = new Organization();
