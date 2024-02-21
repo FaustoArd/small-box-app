@@ -12,4 +12,6 @@ public interface LocationContractService {
 	public LocationContract findLocationContractById(Long id);
 	
 	public List<LocationContractDto> findAllLocationContracts();
+	
+	public List<LocationContract> findAllLocationContractByOrganizationByUserId(Long userId);
 }
