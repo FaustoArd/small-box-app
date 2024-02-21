@@ -83,6 +83,12 @@ public class WorkTemplateController {
 		String result = workTemplateDestinationService.deleteDestinationById(id);
 		return  ResponseEntity.ok(gson.toJson(result));
 	}
+	@DeleteMapping("/delete_work_template_by_id/{id}")
+	ResponseEntity<String> deleteWorkTemplatebyId(@PathVariable("id")Long id){
+		String result = workTemplateService.deleteWorkTemplateById(id);
+		return ResponseEntity.ok(gson.toJson(result));
+	}
+	
 	
 	
 

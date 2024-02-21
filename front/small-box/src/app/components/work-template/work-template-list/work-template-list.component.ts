@@ -51,7 +51,19 @@ export class WorkTemplateListComponent implements OnInit {
     //filter: ['']
   });
 
-
+deleteWorkTemplateById(id:number){
+  this.workTemplateService.deleteWorkTemplateById(id).subscribe({
+    next:(strData)=>{
+      this.snackBarService.openSnackBar(strData,'Cerrar',3000);
+    },
+    error:(errorData)=>{
+      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+    },
+    complete:()=>{
+      this.getAllWorkTemplatesByUserId();
+    }
+  })
+}
 
   filterWorkTemplateTest() {
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lord.small_box.dtos.LocationContractDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.LocationContractMapper;
 import com.lord.small_box.models.LocationContract;
 import com.lord.small_box.repositories.LocationContractRepository;
@@ -29,7 +30,6 @@ public class LocationContractServiceImpl implements LocationContractService{
 
 	@Override
 	public LocationContract findLocationContractById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return locationContractRepository.findById(id).orElseThrow(()-> new ItemNotFoundException("No se encontro el contrato de locacion"));
 	}
 }

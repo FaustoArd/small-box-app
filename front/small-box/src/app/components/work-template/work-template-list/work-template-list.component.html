@@ -48,6 +48,7 @@
                         <th scope="col">Texto</th>
                         <th scope="col">Items</th>
                         <th scope="col">Abrir</th>
+                        <th scope="col">Eliminar</th>
 
 
                     </tr>
@@ -66,6 +67,7 @@
                         <td scope="row" id="rowCompleted" class="fw-bold">{{template.text}}</td>
                         <td scope="row" class="fw-bold">{{template.items}}</td>
                         <td><button class="btn btn-sm" routerLink="/memo-edit/{{template.id}}">-</button></td>
+                        <td><button class="btn btn-sm" (click)="deleteWorkTemplateById(template.id)">-</button></td>
                     </tr>
                 </tbody>
             </table>

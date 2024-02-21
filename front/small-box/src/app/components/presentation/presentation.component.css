@@ -1,10 +1,13 @@
 
 
-#containerCSS{
-  
-    
+body {
+   
+    height: 842px;
+    width: 590;
+    /* to centre page on screen*/
+    margin-left: auto;
+    margin-right: auto;
 }
-
 
 #logo:hover{
     background-image: none;

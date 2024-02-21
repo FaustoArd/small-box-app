@@ -66,6 +66,17 @@ public class WorkTemplateServiceImpl implements WorkTemplateService {
 		return null;
 	}
 
+	@Override
+	public String deleteWorkTemplateById(Long id) {
+		if(workTemplateRepository.existsById(id)) {
+			String result = workTemplateRepository.findById(id).map(wt -> wt.getCorrespond()+ " " + wt.getCorrespondNumber()).toString();
+			workTemplateRepository.deleteById(id);
+			return "Se elimino el documento" + result;
+		}else {
+			throw new ItemNotFoundException("No se encontro el template de trabajo");
+		}
+	}
+
 	
 
 	

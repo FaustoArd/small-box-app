@@ -1,8 +1,6 @@
 package com.lord.small_box.models;
 
 import java.util.Calendar;
-
-import jakarta.annotation.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
