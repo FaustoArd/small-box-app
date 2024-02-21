@@ -38,7 +38,7 @@ public class WorkTemplate {
 	
 	private String correspondNumber;
 	
-	private String producedBy;
+	//private String producedBy;
 	
 	private ArrayList<String> beforeBy;
 	

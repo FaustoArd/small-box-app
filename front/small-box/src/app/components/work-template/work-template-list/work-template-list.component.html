@@ -47,7 +47,8 @@
                         <th scope="col">Ref</th>
                         <th scope="col">Texto</th>
                         <th scope="col">Items</th>
-                        <th scope="col">Abrir</th>
+                        <th scope="col">Modificar</th>
+                        <th scope="col">Crear copia</th>
                         <th scope="col">Eliminar</th>
 
 
@@ -67,6 +68,7 @@
                         <td scope="row" id="rowCompleted" class="fw-bold">{{template.text}}</td>
                         <td scope="row" class="fw-bold">{{template.items}}</td>
                         <td><button class="btn btn-sm" routerLink="/memo-edit/{{template.id}}">-</button></td>
+                        <td><button class="btn btn-sm" (click)="copyWorkTemplate(template.id)">-</button></td>
                         <td><button class="btn btn-sm" (click)="deleteWorkTemplateById(template.id)">-</button></td>
                     </tr>
                 </tbody>

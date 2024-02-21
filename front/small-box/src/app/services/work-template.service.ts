@@ -23,6 +23,9 @@ httpOptions = {
 }
 
   handleError(error:HttpErrorResponse){
+    if(error.status===403){
+      return throwError(()=> new Error('Debe ser administrador para eliminar documentos'))
+    }
     return throwError(()=> new Error(error.error));
   }
 

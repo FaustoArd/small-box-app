@@ -17,7 +17,9 @@ export class WorkTemplateListComponent implements OnInit {
 
 
   workTemplates: WorkTemplateDto[] = [];
-  workTemplatesCopy: WorkTemplateDto[] = [];
+  workTemplate!:WorkTemplateDto;
+  workTemplateCopy!:WorkTemplateDto;
+  workTemplatesFilter: WorkTemplateDto[] = [];
   filteredWorkTemplates: WorkTemplateDto[] = [];
   filters!: Array<string>;
   myArrayObservable$!: Observable<WorkTemplateDto>;
@@ -65,13 +67,31 @@ deleteWorkTemplateById(id:number){
   })
 }
 
+copyWorkTemplate(id:number){
+  this.workTemplateService.findWorkTemplateById(id).subscribe({
+    next:(wtData)=>{
+      this.workTemplateCopy = wtData;
+     this.workTemplateCopy.id = 0;
+      this.workTemplateService.createWorkTemplate(this.workTemplateCopy).subscribe();
+    },
+    error:(errorData)=>{
+      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+    },
+    complete:()=>{
+      this.snackBarService.openSnackBar('Se creo copia del documento: ' + this.workTemplateCopy.correspond + ' ' + 
+      this.workTemplateCopy.correspondNumber,'Cerrar',3000);
+      this.getAllWorkTemplatesByUserId();
+    }
+  })
+}
+
   filterWorkTemplateTest() {
 
     if (this.findByExampleFormBuilder.valid) {
-      this.workTemplatesCopy = this.workTemplates;
+      this.workTemplatesFilter = this.workTemplates;
       this.workTemplates = [];
       const value = Object.assign(this.findByExampleFormBuilder.value);
-      this.workTemplatesCopy.forEach(wt => {
+      this.workTemplatesFilter.forEach(wt => {
         if (wt.date.toString().toLowerCase().includes(value.example.toLowerCase()) ||
           wt.producedBy.toLowerCase().includes(value.example.toLowerCase()) ||
           wt.correspond.toLowerCase().includes(value.example.toLowerCase()) ||
@@ -93,55 +113,7 @@ deleteWorkTemplateById(id:number){
   }
 
 
-  filterWorktemplate() {
-
-    if (this.findByExampleFormBuilder.valid) {
-      const value = Object.assign(this.findByExampleFormBuilder.value);
-      if (value.filter === 'Fecha') {
-        console.log('date')
-        this.workTemplates = this.workTemplates.filter(wt => wt.date.toString().includes(value.example.toLowerCase())).map(wt => wt);
-
-      } else if (value.filter === 'Producido por') {
-        console.log('porducedBY')
-        this.workTemplates = this.workTemplates.filter(wt => wt.producedBy.toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
-
-      } else if (value.filter === 'Corresponde') {
-        console.log('correspond')
-        this.workTemplates = this.workTemplates.filter(wt => wt.correspond.toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
-
-      } else if (value.filter == 'Numero') {
-        console.log('correspondNumber')
-        this.workTemplates = this.workTemplates.filter(wt => wt.correspondNumber.toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
-
-        if (this.workTemplates.length == 0) {
-          this.getAllWorkTemplatesByUserId();
-        }
-      } else if (value.filter == 'Destino') {
-        console.log('destinations')
-        this.workTemplates = this.workTemplates.filter(wt => wt.destinations.map(wt => wt).toString().toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
-
-      }
-      else if (value.filter == 'Ref') {
-        console.log('refs')
-        this.workTemplates = this.workTemplates.filter(wt => wt.refs.map(wt => wt).toString().toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
-
-      }
-      else if (value.filter == 'Texto') {
-        console.log('text')
-        this.workTemplates = this.workTemplates.filter(wt => wt.text.toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
-
-      }
-      else if (value.filter == 'Items') {
-        console.log('items')
-        this.workTemplates = this.workTemplates.filter(wt => wt.items.map(wt => wt).toString().toLowerCase().includes(value.example.toLowerCase())).map(wt => wt);
-        if (this.workTemplates.length == 0) {
-          this.getAllWorkTemplatesByUserId();
-        }
-      }
-    } else {
-      this.getAllWorkTemplatesByUserId();
-    }
-  }
+ 
 
   get example() {
     return this.findByExampleFormBuilder.controls.example;

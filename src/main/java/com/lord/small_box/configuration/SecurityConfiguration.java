@@ -72,7 +72,13 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/small-box/organization/update-responsible").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/all-responsibles").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/all-orgs-by-user").hasAnyRole("USER","SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/work-templates/**").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/create").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/by_id/**").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/by_user_id/**").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/all_template_destinations").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/create_template_destination").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/delete_template_destination/**").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/delete_work_template_by_id/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/location-contracts/**").hasAnyRole("SUPERUSER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/users/**").hasRole("ADMIN");
 			auth.anyRequest().authenticated();
