@@ -1,5 +1,7 @@
 package com.lord.small_box.mappers;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -14,4 +16,6 @@ public interface LocationContractMapper {
 	public LocationContract dtoToLocationContract(LocationContractDto locationContractDto);
 	
 	public LocationContractDto locationContractToDto(LocationContract locationContract);
+	
+	public List<LocationContractDto> locationContractsToDtos(List<LocationContract> contracts);
 }

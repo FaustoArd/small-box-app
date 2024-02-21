@@ -1,5 +1,7 @@
 package com.lord.small_box.services_impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +33,11 @@ public class LocationContractServiceImpl implements LocationContractService{
 	@Override
 	public LocationContract findLocationContractById(Long id) {
 		return locationContractRepository.findById(id).orElseThrow(()-> new ItemNotFoundException("No se encontro el contrato de locacion"));
+	}
+
+	@Override
+	public List<LocationContractDto> findAllLocationContracts() {
+		List<LocationContract> locationContracts = locationContractRepository.findAll();
+		return LocationContractMapper.INSTANCE.locationContractsToDtos(locationContracts);
 	}
 }
