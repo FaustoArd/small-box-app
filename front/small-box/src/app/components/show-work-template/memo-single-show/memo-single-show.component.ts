@@ -43,6 +43,7 @@ captureScreen():void{
 
   getWorkTemplateById(){
     const id = this.cookieService.getCurrentWorkTemplateId();
+    console.log(id);
     this.workTemplateService.findWorkTemplateById(Number(id)).subscribe({
       next:(workData)=>{
         this.workTemplate = workData;

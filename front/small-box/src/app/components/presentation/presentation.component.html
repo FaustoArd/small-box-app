@@ -1,129 +1,140 @@
+<app-navbar></app-navbar>
+<div class="row">
+    <div class="col-md-4">
+        <div class="ms-3 mt-3">
+            <button routerLink="/small-box" class="btn">Volver a editar</button>
+        </div>
+    </div>
+    <div class="col-md-6"></div>
+    <div class="col-md-2 mt-3">
+        <button (click)="captureScreen()" class="btn">Descargar</button>
+    </div>
+</div>
 
-<app-navbar *ngIf="downloaded"></app-navbar>
 <body #screen>
-    <div class="ms-3 mt-3">
-    <button routerLink="/small-box" class="btn" *ngIf="downloaded">Volver a editar</button>
-</div>
-    <div id="containerCSS"  class="container-fluid">
-    <div class="row">
-        <a id="logo" (click)="captureScreen()" class="col text-center">
-            <img     class="w-25" src="./assets/img/logomoron.png" alt="">
-        </a>
-    </div>
-    <div class="row">
-        <div class="col mt-1">
-            <h1 id="title" class="text-center">RENDICION CAJA {{container.smallBoxType}}</h1>
+    <div class="container">
+        <div class="row">
+            <a id="logo" (click)="captureScreen()" class="col text-center">
+                <img class="w-25" src="./assets/img/logomoron.png" alt="">
+            </a>
         </div>
-    </div>
-    <div class="row">
-        <div class="col text-center">
-        <h5>Formulario 46</h5>
-    </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-md-10">
-        <span id="rendicion">RENDICIÓN DE COMPROBANTES CANCELADOS CON FONDOS DE CAJA {{container.smallBoxType}}</span>
-    </div>
-    <div class="col ms-5">
-        <h5 class="fw-bold">Moron, {{container.smallBoxDate | date:
-            'dd-MM-yyyy'}} </h5>
-    </div>
-    </div>
-    <div class="row mt-2">
-        <div class="col-md-1">
-            <h4>Ejercicio:</h4>
-        </div>
-        <div class="col-md-2  ms-4" *ngIf="container">
-            <h3 class=" ">2024</h3>
-        </div>
-    </div>
-    <div class="row mt-0 mb-0">
-        <div class="col-md-1">
-            <h4>Tipo de caja:</h4>
-        </div>
-        <div class="col-md-2  ms-4" *ngIf="container">
-            <h3 class=" "> CAJA {{container.smallBoxType}}</h3>
-        </div>
-    </div>
-    <div class="row mt-0 mb-0">
-        <div class="col-md-1 ">
-            <h4> Dependencia:</h4>
-        </div>
-        <div class="col-md-4  ms-4 " *ngIf="container">
-            <h3 class=" ">{{container.organization}}</h3>
-
-        </div>
-
-    </div>
-    <div class="row mt-0">
-        <div class="col-md-1">
-            <h4> Responsable: </h4>
-        </div>
-        <div class="col-md-2 ms-4" *ngIf="container">
-            <h3 class=" "> {{container.responsible}}</h3>
-        </div>
-
-    </div>
-    <div class="row">
-        <div class="col mt-2">
-
-            <table id="pdfDiv" class="table table-fluid  table-bordered border border-dark">
-                <thead>
-                    <tr class=" fw-bold text-center">
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Numero de factura</th>
-                        <th scope="col">Razon social</th>
-                        <th scope="col">Descripcion</th>
-                        <th scope="col">Importe</th>
-                        <th scope="col">Input</th>
-
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr   class="text-center" *ngFor="let completed of completedSmallBox">
-                        <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.date | date:
-                            'dd-MM-yyyy'}}</td>
-                        <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold "></td>
-                        <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketNumber}}
-                        </td>
-                        <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold"></td>
-                        <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.provider}}</td>
-                        <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold "></td>
-                        <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.description}}</td>
-                        <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold"></td>
-                        <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketTotal |
-                            currency: '$': 'symbol'}}</td>
-                        <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold  text-dark">
-                            {{completed.subtotalTitle}}</td>
-                        <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold   text-dark">
-                            {{completed.subtotal | currency: '$': 'symbol'}}</td>
-                        <td scope="row"  *ngIf="completed.subtotal==null" class="fw-light">{{completed.inputNumber}}</td>
-                     </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div *ngIf="container" class="row">
-        <div class="col-md-9 ms-5"></div>
-        <div  class="col-md-1 mt-0 ms-2 ">
-            <h2 class="d-inline" >Total:</h2>
-        </div>
-        <div class="col-md-1">
-            <h2 class="d-inline ms-3" >{{container.total | currency: '$'}}</h2>
-        </div>
-    </div>
-    <div id="totalWrite" class="row mt-2">
-       
-       <div class="col-md-4 ms-1">
-           <div class="d-inline">Importa la presente rendición de cuentas la suma de pesos:</div>
-               
+        <div class="row">
+            <div class="col mt-1">
+                <h1 id="title" class="text-center">RENDICION CAJA {{container.smallBoxType}}</h1>
             </div>
-            <div class="col d-inline">
-                <div class="d-inline" >{{container.totalWrite}}</div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <h5>Formulario 46</h5>
             </div>
-       
-    </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-10">
+                <span id="rendicion">RENDICIÓN DE COMPROBANTES CANCELADOS CON FONDOS DE CAJA
+                    {{container.smallBoxType}}</span>
+            </div>
+            <div class="col ms-5">
+                <h5 class="fw-bold">Moron, {{container.smallBoxDate | date:
+                    'dd-MM-yyyy'}} </h5>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-1">
+                <h4>Ejercicio:</h4>
+            </div>
+            <div class="col-md-2  ms-4" *ngIf="container">
+                <h3 class=" ">2024</h3>
+            </div>
+        </div>
+        <div class="row mt-0 mb-0">
+            <div class="col-md-1">
+                <h4>Tipo de caja:</h4>
+            </div>
+            <div class="col-md-2  ms-4" *ngIf="container">
+                <h3 class=" "> CAJA {{container.smallBoxType}}</h3>
+            </div>
+        </div>
+        <div class="row mt-0 mb-0">
+            <div class="col-md-1 ">
+                <h4> Dependencia:</h4>
+            </div>
+            <div class="col-md-4  ms-4 " *ngIf="container">
+                <h3 class=" ">{{container.organization}}</h3>
 
-</div>
+            </div>
+
+        </div>
+        <div class="row mt-0">
+            <div class="col-md-1">
+                <h4> Responsable: </h4>
+            </div>
+            <div class="col-md-2 ms-4" *ngIf="container">
+                <h3 class=" "> {{container.responsible}}</h3>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col mt-2">
+
+                <table id="pdfDiv" class="table table-fluid  table-bordered border border-dark">
+                    <thead>
+                        <tr class=" fw-bold text-center">
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Numero de factura</th>
+                            <th scope="col">Razon social</th>
+                            <th scope="col">Descripcion</th>
+                            <th scope="col">Importe</th>
+                            <th scope="col">Input</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" *ngFor="let completed of completedSmallBox">
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.date | date:
+                                'dd-MM-yyyy'}}</td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold "></td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketNumber}}
+                            </td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold"></td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.provider}}
+                            </td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold "></td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.description}}
+                            </td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold"></td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketTotal |
+                                currency: '$': 'symbol'}}</td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null"
+                                class="fw-bold  text-dark">
+                                {{completed.subtotalTitle}}</td>
+                            <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null"
+                                class="fw-bold   text-dark">
+                                {{completed.subtotal | currency: '$': 'symbol'}}</td>
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.inputNumber}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div *ngIf="container" class="row">
+            <div class="col-md-9 ms-5"></div>
+            <div class="col-md-1 mt-0 ms-2 ">
+                <h2 class="d-inline">Total:</h2>
+            </div>
+            <div class="col-md-1">
+                <h2 class="d-inline ms-3">{{container.total | currency: '$'}}</h2>
+            </div>
+        </div>
+        <div id="totalWrite" class="row mt-2">
+            <div class="col-md-8">
+                <div class="d-inline">Importa la presente rendición de cuentas la suma de pesos:</div>
+                <div class="d-inline ms-1">{{container.totalWrite}}</div>
+            </div>
+          
+            
+        </div>
+
+    </div>
 </body>

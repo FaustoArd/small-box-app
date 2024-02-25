@@ -1,4 +1,4 @@
-<app-navbar></app-navbar>
+<!-- <app-navbar></app-navbar>
 <div class="container-flex">
     <div class="row">
         <div class="col-md-10"></div>
@@ -6,32 +6,38 @@
             <button class="btn btn-sm ms-3 mt-2" (click)="captureScreen()">Descargar</button>
         </div>
     </div>
-</div>
-<div #screen>
-    <div class="container-flex">
+</div> -->
+<body  #screen>
+    <!-- <div id="containerHeader" class="container-flex">
         <div class="row">
-            <div class="col-md-10"></div>
-            <div class="col-md-2">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
                 <div>
-                    <h5 id="footDep" class="mb-0">{{workTemplate.producedBy}}</h5>
-                    <h5 id="footAddress" class="mt-0 mb-0">Pellegrini 622 (B1708EFR). Morón. Bs. As</h5>
+                    <h5 id="footDep" class="mb-0">{{workTemplate.producedBy.toUpperCase()}}</h5>
+                    <h5 id="footAddress" class="mt-0 mb-0">Pellegrini 622 (B1708EFR). Morón. Bs. As</h5> 
                 </div>
             </div>
         </div>
-    </div>
-    <div class="container-flex">
-        <div id="containerCSS" class="container-fluid">
+    </div> -->
+   
+        <div id="containerCSS" class="container-flex">
             <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
                 <div id="logo" class="col text-center">
-                    <img class="w-25" src="./assets/img/logomoron.png" alt="">
+                    <img class="w-50" src="./assets/img/logomoron.png" alt="">
                 </div>
+            </div>
+            <div class="col-md-3">
+                <h5 id="footDep" class="mb-0">{{workTemplate.producedBy.toUpperCase()}}</h5>
+            </div>
             </div>
             <div class="row">
-                <div class="col mt-1">
-                    <h1 id="title" class="text-center">MEMO</h1>
+                <div class="col mt-1 ms-1">
+                    <h1 id="title" class="text-center">{{workTemplate.correspond}}</h1>
                 </div>
             </div>
-            <div class="row mt-4">
+            <div class="row mt-4 ms-4">
                 <div class="col-md-10">
                     <div>
                     <h2 class="d-inline  text-decoration-underline" id="rendicion">Corresponde:</h2>
@@ -39,29 +45,29 @@
                 </div>
                     <div >
                         <h2 id="rendicion" class=" text-decoration-underline d-inline">Producido por:</h2>
-                        <h2 class="d-inline"> {{workTemplate.producedBy}}</h2>
+                        <h2 class="d-inline"> {{workTemplate.producedBy.toUpperCase()}}</h2>
                     </div>
                     <div class="mt-2" *ngFor="let destinations of workTemplate.destinations">
                         <h2 class="text-decoration-underline d-inline">A:</h2>
-                        <h2 class="d-inline"> {{destinations}}</h2>
+                        <h2 class="d-inline"> {{destinations.toUpperCase()}}</h2>
                     </div>
                     <div class="mt-2" *ngFor="let beforeBy of workTemplate.beforeBy">
                         <h2 class="text-decoration-underline d-inline">Previo paso por:</h2>
-                        <h2 class="d-inline"> {{beforeBy}}</h2>
+                        <h2 class="d-inline"> {{beforeBy.toUpperCase()}}</h2>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row ">
                 <hr id="line" class="my-4">
-                <div class="col-md-11"></div>
-                <div class="col-md-1">
-                    <h5 class="fw-bold">Moron, {{workTemplate.date | date:
+                <div class="col-md-8"></div>
+                <div class="col-md-3">
+                    <h5 id="date" class="fw-bold">Moron, {{workTemplate.date | date:
                         'dd-MM-yyyy'}} </h5>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-8"></div>
-                <div class="col-md-4 text-decoration-underline">
+            <div class="row ms-1">
+                <div class="col-md-6"></div>
+                <div class="col-md-4 ms-5 text-decoration-underline">
                     <h3 class="mt-2 d-inline">Ref:</h3>
                     <div class="d-inline" *ngFor="let ref of workTemplate.refs">
                         <span clasS="d-inline"> {{ref}}<small *ngIf="workTemplate.refs.length>1">,</small>
@@ -69,7 +75,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row ms-4">
                 <div class="col-md-2">
                     <h3 class="text-decoration-underline mt-2">Objeto:</h3>
                 </div>
@@ -82,10 +88,14 @@
                         <h4>{{item}}</h4>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-1"></div>
-                   
-            </div>
+              
         </div>
+        <!-- <div class="row">
+            <div class="col-md-8">
+               
+            </div>
+          
+           
+    </div> -->
     </div>
-</div>
+</body>

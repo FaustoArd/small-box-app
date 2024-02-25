@@ -38,9 +38,6 @@ constructor(private cookieService:CookieStorageService,private containerService:
 
 ngOnInit(): void {
     this.getContainerById();
-    this.snackBarService.openSnackBar('Haga click en el logo de Moron para descargar', 'Cerrar',1000);
-   
-   
    
 }
 
@@ -73,11 +70,9 @@ ngOnInit(): void {
   captureScreen():void{
    
     this.captureService
-    .getImage(document.body, true)
+    .getImage(this.screen.nativeElement, true)
     .pipe(
-      tap((img) => {
-        console.log(img);
-      }),
+    
       tap((img) => this.captureService.downloadImage(img))
     )
     .subscribe();

@@ -253,15 +253,15 @@ export class MemoSingleEditComponent {
   });
 
   setNoNumberCorrespond() {
-    this.memoFormBuilder.patchValue({
+    this.updateMemoFormBuilder.patchValue({
       correspondNumber: 'S/N'
     });
   }
 
-  createMemo() {
-    if (this.memoFormBuilder.valid) {
+  updateMemo() {
+    if (this.updateMemoFormBuilder.valid) {
       this.workTemplate = new WorkTemplateDto();
-      this.workTemplate = Object.assign(this.workTemplate, this.memoFormBuilder.value);
+      this.workTemplate = Object.assign(this.workTemplate, this.updateMemoFormBuilder.value);
       this.workTemplate.destinations = this.destinations;
       this.workTemplate.refs = this.refs;
       this.workTemplate.beforeBy = this.beforeBys;
@@ -269,6 +269,7 @@ export class MemoSingleEditComponent {
       this.workTemplateService.createWorkTemplate(this.workTemplate).subscribe({
         next: (memoData) => {
           this.returnedWorkTemplate = memoData;
+          console.log(this.returnedWorkTemplate.id);
           this.cookieService.setCurrentWorkTemplateId(JSON.stringify(this.returnedWorkTemplate.id));
           this.snackBarService.openSnackBar('Listo', 'Cerrar', 3000);
         },
@@ -276,10 +277,18 @@ export class MemoSingleEditComponent {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         },
         complete: () => {
-          this.router.navigateByUrl('memo-show');
+          this.navigateAssociates();
         }
       });
     }
+  }
+
+  navigateAssociates() {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/memo-show'])
+    );
+  
+    window.open(url, '_blank');
   }
 
   getAllOrganizationsByUser() {
@@ -357,6 +366,7 @@ export class MemoSingleEditComponent {
     });
   }
 
+
   updateMemoFormBuilder = this.formBuilder.group({
     id: [0],
     date: ['', Validators.required],
@@ -367,8 +377,8 @@ export class MemoSingleEditComponent {
   });
 
   updateWorkTemplateShow() {
-    this.memoFormBuilder.patchValue({
-     
+    this.updateMemoFormBuilder.patchValue({
+      id: this.findedWorkTemplate.id,
       date: this.findedWorkTemplate.date.toString(),
       correspond: this.findedWorkTemplate.correspond,
       correspondNumber: this.findedWorkTemplate.correspondNumber,

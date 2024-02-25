@@ -19,7 +19,7 @@
          <div class="col-md-5  mt-0 ms-3">
                
                 <h1 class="text-center mt-2">Memo</h1>
-                <form class="text-center" [formGroup]="memoFormBuilder">
+                <form class="text-center" [formGroup]="updateMemoFormBuilder">
                     <div class="form-group">
                         <label for="date" class="form-label">Fecha</label>
                         <input type="date" class="form-control " formControlName="date" id="date">
@@ -69,7 +69,7 @@
                             formControlName="text"></textarea>
 
                     </div>
-                    <button class="btn mt-1" (click)="createMemo()">Finalizar</button>
+                    <button class="btn mt-1" (click)="updateMemo()">Finalizar</button>
                 </form>
             </div>
           

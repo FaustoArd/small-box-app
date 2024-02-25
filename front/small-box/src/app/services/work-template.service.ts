@@ -23,6 +23,9 @@ httpOptions = {
 }
 
   handleError(error:HttpErrorResponse){
+    if(error.status===403){
+      return throwError(()=> new Error('Debe ser administrador para eliminar documentos'))
+    }
     return throwError(()=> new Error(error.error));
   }
 
@@ -53,6 +56,10 @@ httpOptions = {
 
   deleteTemplateDestinationById(id:number):Observable<string>{
     return this.http.get<string>(`${WORK_TEMPLATE_BASE_URL}/delete_template_destination/${id}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  deleteWorkTemplateById(id:number):Observable<string>{
+    return this.http.delete<string>(`${WORK_TEMPLATE_BASE_URL}/delete_work_template_by_id/${id}`)
     .pipe(catchError(this.handleError));
   }
 

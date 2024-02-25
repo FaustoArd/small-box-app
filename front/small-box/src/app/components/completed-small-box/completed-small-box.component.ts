@@ -98,6 +98,14 @@ export class CompletedSmallBoxComponent implements OnInit {
     this.smallBoxService.deleteAllUnifiedSamllBoxByContainerId(containerId).subscribe();
   }
 
+  navigateAssociates() {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/presentation'])
+    );
+  
+    window.open(url, '_blank');
+  }
+
  
   
 
@@ -123,7 +131,7 @@ export class CompletedSmallBoxComponent implements OnInit {
         this.snackBarService.openSnackBar(errorData,'Cerrar',4000);
       },
       complete:()=>{
-        this.router.navigateByUrl("/presentation")
+        this.navigateAssociates();
       }
     })
   }

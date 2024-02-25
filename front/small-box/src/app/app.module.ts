@@ -31,6 +31,7 @@ import { MemoSingleShowComponent } from './components/show-work-template/memo-si
 import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
 import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
+import { LocationContractComponent } from './components/contract/location-contract/location-contract.component';
 
 
 
@@ -55,7 +56,8 @@ import { MemoSingleEditComponent } from './components/work-template/memo-single-
     MemoSingleShowComponent,
     WorkTemplateListComponent,
     ManualReferComponent,
-    MemoSingleEditComponent
+    MemoSingleEditComponent,
+    LocationContractComponent
     
   ],
   imports: [

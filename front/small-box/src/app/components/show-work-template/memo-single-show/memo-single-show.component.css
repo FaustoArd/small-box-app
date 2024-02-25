@@ -1,5 +1,19 @@
 
-
+body {
+   
+    height: 842px;
+    width: 590;
+    /* to centre page on screen*/
+    margin-left: auto;
+    margin-right: auto;
+}
+#containerHeader{
+   
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
 
 button{
     color: white;
@@ -17,7 +31,7 @@ button{
 h2{
     font-family: 'Quattrocento', serif;
     font-weight: bold;
-  
+  font-size: 1rem;
 }
 h3{
     font-family: 'Quattrocento', serif;
@@ -27,6 +41,10 @@ h4{
     font-family: 'Quattrocento', serif;
     font-weight: bold;
    
+}
+
+#date{
+    margin-left: 4rem;
 }
 
 /* .footer{
@@ -41,6 +59,10 @@ h4{
 #footDep{
     font-size: 0.6rem;
     font-weight: bold;
+    font-size: 0.4rem;
+    /* margin-top: 32rem;
+    margin-left: 5.5rem; */
+   
 }
 #footAddress{
     font-size: 0.5rem;

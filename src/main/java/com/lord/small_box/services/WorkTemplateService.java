@@ -18,4 +18,6 @@ public interface WorkTemplateService {
 	public List<WorkTemplate> findAllWorkTemplatesByOrganizationByUserId(Long userId);
 	
 	public List<WorkTemplate> FindWorkTemplateByExampleAndUserId(WorkTemplate example,Long userId);
+	
+	public String deleteWorkTemplateById(Long id);
 }
