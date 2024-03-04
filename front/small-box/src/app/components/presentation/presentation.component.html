@@ -14,7 +14,7 @@
 <body #screen>
     <div class="container">
         <div class="row">
-            <a id="logo" (click)="captureScreen()" class="col text-center">
+            <a id="logo"  class="col text-center">
                 <img class="w-25" src="./assets/img/logomoron.png" alt="">
             </a>
         </div>
@@ -48,7 +48,7 @@
         </div>
         <div class="row mt-0 mb-0">
             <div class="col-md-1">
-                <h4>Tipo de caja:</h4>
+                <h4>Tipo de rendicion:</h4>
             </div>
             <div class="col-md-2  ms-4" *ngIf="container">
                 <h3 class=" "> CAJA {{container.smallBoxType}}</h3>
@@ -130,7 +130,7 @@
         <div id="totalWrite" class="row mt-2">
             <div class="col-md-8">
                 <div class="d-inline">Importa la presente rendición de cuentas la suma de pesos:</div>
-                <div class="d-inline ms-1">{{container.totalWrite}}</div>
+                <div id="totalWrite" class="d-inline ms-1">{{container.totalWrite}}</div>
             </div>
           
             

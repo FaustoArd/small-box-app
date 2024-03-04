@@ -24,6 +24,7 @@ import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.ContainerService;
+import com.lord.small_box.services.DocumentAIService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
 
@@ -34,7 +35,7 @@ public class SmallBoxApplication {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
 	
-	//@Bean
+	@Bean
 	CommandLineRunner run(InputRepository inputRepository,
 			ContainerService containerService,
 			SmallBoxService smallBoxService,
@@ -43,7 +44,8 @@ public class SmallBoxApplication {
 			OrganizationRepository organizationRepository,
 			AuthorityRepository authorityRepository,
 			AuthorizationService authorizationService,
-			OrganizationResponsibleRepository organizationResponsibleRepository) {
+			OrganizationResponsibleRepository organizationResponsibleRepository
+			) {
 		
 		return args ->{
 			
@@ -170,7 +172,7 @@ public class SmallBoxApplication {
 			
 			
 		
-			/*Calendar now = Calendar.getInstance();
+			Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)
 					.smallBoxType(savedCHica).organization(dirAdmDesp).responsible(dirAdmDesp.getResponsible()).smallBoxCreated(true).build();
 			Container savedContainer = containerService.createContainer(container); 
@@ -214,7 +216,7 @@ public class SmallBoxApplication {
 			
 			SmallBox smallBox7 = SmallBox.builder().date(cal1).ticketNumber("03809-23448239")
 					.input(input219).provider("Carlos Boro").ticketTotal(new BigDecimal(6700.80)).build();
-			SmallBox savedSmallBox7 = smallBoxService.save(smallBox7, savedContainer.getId());*/
+			SmallBox savedSmallBox7 = smallBoxService.save(smallBox7, savedContainer.getId());
 	
 		};
 	}

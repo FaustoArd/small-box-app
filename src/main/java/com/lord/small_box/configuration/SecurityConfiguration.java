@@ -81,6 +81,7 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/small-box/work-templates/delete_work_template_by_id/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/location-contracts/**").hasAnyRole("SUPERUSER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/users/**").hasRole("ADMIN");
+			auth.requestMatchers("/api/v1/small-box/document_ai/**").hasRole("ADMIN");
 			auth.anyRequest().authenticated();
 			
 			
