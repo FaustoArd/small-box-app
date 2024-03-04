@@ -21,7 +21,7 @@ public class ReceiptDto {
 	
 	private String receipt_date;
 	
-	private ArrayList<String> receipt_code;
+	private String receipt_code;
 	
 	private ArrayList<String> supplier_name;
 
