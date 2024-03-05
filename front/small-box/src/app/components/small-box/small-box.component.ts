@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SmallBoxDto } from 'src/app/models/smallBoxDto';
 import { InputService } from 'src/app/services/input.service';
@@ -7,21 +7,24 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { InputDto } from 'src/app/models/inputDto';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
-
+import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
 import { formatDate } from '@angular/common';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { FileDetails } from 'src/app/models/fileDetails';
+import { ReceiptDto } from 'src/app/models/receiptDto';
 
 @Component({
   selector: 'app-small-box',
   templateUrl: './small-box.component.html',
   styleUrls: ['./small-box.component.css']
 })
-export class SmallBoxComponent implements OnInit {
 
+export class SmallBoxComponent implements OnInit {
+  
   inputs: InputDto[] = [];
   smallboxes: SmallBoxDto[] = [];
   smallbox!: SmallBoxDto;
@@ -29,6 +32,8 @@ export class SmallBoxComponent implements OnInit {
   errorData!: string;
   updatedData!: string;
   formatedDate!: Date;
+  receiptDto!:ReceiptDto;
+ 
 
 
   constructor(private smallBoxService: SmallBoxService, private inputService: InputService
@@ -49,7 +54,7 @@ export class SmallBoxComponent implements OnInit {
     inputId: [0],
     description: [''],
     ticketTotal: [0, Validators.required],
-   
+
   });
   get date() {
 
@@ -61,7 +66,7 @@ export class SmallBoxComponent implements OnInit {
   get provider() {
     return this.smallBoxForm.controls.provider
   }
- 
+
   get description() {
     return this.smallBoxForm.controls.description
   }
@@ -117,7 +122,7 @@ export class SmallBoxComponent implements OnInit {
       inputId: this.updatedSmallBox.inputId,
       description: this.updatedSmallBox.description,
       ticketTotal: this.updatedSmallBox.ticketTotal
-     
+
     });
   }
 
@@ -219,6 +224,59 @@ export class SmallBoxComponent implements OnInit {
 
     })
   }
+  file!:File;
+  fileDetails!: FileDetails;
+  fileUris:Array<string> = [];
+  //Upload file last
+  selectFile(event:any){
+    console.log("select file: " + event.target.files.item(0))
+    this.file = event.target.files.item(0);
+  }
 
- 
+   template:any
+
+  uploadFile(){
+    this.smallBoxService.sendFileToBackEnd(this.file).subscribe({
+      next:(receiptData) =>{
+        this.receiptDto = receiptData;
+       console.log(this.receiptDto)
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      },
+      complete:()=>{
+        this.snackBar.openSnackBar("Se ejecuto el analisis de la factura: " + this.receiptDto.receipt_code,'Cerrar',3000);
+        this.openDialogSmallBoxDocumentAI(this.receiptDto);
+      }
+    })
+  }
+  
+
+  @ViewChild('documentAISmallBoxTemplate') docAITemplateRef!: TemplateRef<any>
+
+  openDialogSmallBoxDocumentAI(receipt:ReceiptDto) {
+    this.getAllInputs();
+    const template = this.docAITemplateRef;
+    this.onDocumentAISmallBoxShow(receipt);
+    this.matDialogRef = this.dialogService.openDialogCreation({
+      template
+    })
+
+    this.matDialogRef.afterClosed().subscribe();
+    this.updateSmallBoxForm.reset();
+
+  }
+
+  onDocumentAISmallBoxShow(receipt:ReceiptDto): void {
+    this.updateSmallBoxForm.patchValue({
+     
+      date: receipt.receipt_date,
+      ticketNumber: receipt.receipt_code,
+      provider: receipt.supplier_name.map(e => e).toString(),
+      ticketTotal:Number (receipt.total_price),
+
+    });
+  }
+  
+  
 }

@@ -33,7 +33,7 @@ public class WebConfiguration {
 				 HttpMethod.PUT.name(),
 				 HttpMethod.DELETE.name()
 				 ));
-		 
+		
 		 config.setMaxAge(3600L);
 		 source.registerCorsConfiguration("/**", config);
 		 FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));

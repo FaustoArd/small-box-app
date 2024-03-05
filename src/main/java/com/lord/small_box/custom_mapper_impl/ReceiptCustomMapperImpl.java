@@ -17,34 +17,31 @@ public class ReceiptCustomMapperImpl implements ReceiptCustomMapper {
 		ReceiptDto receiptDto = new ReceiptDto();
 		
 		ArrayList<String> lineItem = new ArrayList<>();
-		lineItem.add(entities.get("line_item").toString());
+		lineItem.add(entities.get("line_item").toString().replace("[", "").replace("]", ""));
 		receiptDto.setLine_item(lineItem);
 		
-		/*ArrayList<String> receipt_code =  new ArrayList<>();
-		receipt_code.add(entities.get("receipt_code").toString());
-		receiptDto.setReceipt_code(receipt_code);*/
 		String result = "";
 		if(entities.get("receipt_code").size()==2) {
 			Iterator<String> it =  entities.get("receipt_code").iterator();
 			while(it.hasNext()) {
 				result =  it.next();
-				result = it.next() + result ;
+				result = it.next() + "-"  + result ;
 				
 			}
 			receiptDto.setReceipt_code(result);
 		}else {
-			receiptDto.setReceipt_code(entities.get("receipt_code").toString());
+			receiptDto.setReceipt_code(entities.get("receipt_code").toString().replace("[", "").replace("]", ""));
 		}
 		
 		receiptDto.setPayment_type(entities.get("payment_type").toString());
 		
 		ArrayList<String> supplies_city = new ArrayList<>();
-		supplies_city.add(entities.get("supplier_city").toString());
+		supplies_city.add(entities.get("supplier_city").toString().replace("[", "").replace("]", ""));
 		receiptDto.setSupplier_city(supplies_city);
 		
-		receiptDto.setSupplier_address(entities.get("supplier_address").toString());
-		receiptDto.setReceipt_date(entities.get("receipt_date").toString());
-		receiptDto.setTotal_price(entities.get("total_price").toString());
+		receiptDto.setSupplier_address(entities.get("supplier_address").toString().replace("[", "").replace("]", ""));
+		receiptDto.setReceipt_date(entities.get("receipt_date").toString().replace("[", "").replace("]", ""));
+		receiptDto.setTotal_price(entities.get("total_price").toString().replace("[", "").replace("]", ""));
 		
 		ArrayList<String> supplier_name = new ArrayList<>();
 		supplier_name.add(entities.get("supplier_name").toString());

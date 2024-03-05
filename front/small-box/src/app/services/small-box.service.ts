@@ -3,8 +3,12 @@ import { HttpClient,HttpHeaders,HttpErrorResponse} from '@angular/common/http'
 import { Observable,catchError,throwError} from 'rxjs';
 import { SmallBoxDto } from '../models/smallBoxDto';
 import { SmallBoxUnifierDto } from '../models/smallBoxUnifierDto';
+import { ReceiptDto } from '../models/receiptDto';
 
 const SMALL_BOX_BASE_URL = 'http://localhost:8080/api/v1/small-box/smallboxes';
+
+const DOCUMENTAI_BASE_URL = 'http://localhost:8080/api/v1/small-box/document_ai';
+
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +19,14 @@ export class SmallBoxService {
 
   httpOptions = { 
     headers: new HttpHeaders({'Content-Type': 'application/json'})
+  }
+
+ httpOptionsForm = {
+    headers: new HttpHeaders({'Content-Type': 'multipart/form-data'})
+  }
+
+  httpCustomForm = {
+    headers: new HttpHeaders({'security-token':'mytoken'})
   }
 
   handleError(error:HttpErrorResponse):Observable<any>{
@@ -64,7 +76,14 @@ export class SmallBoxService {
   }
 
   checkMaxAmount(containerId:number,userId:number):Observable<string>{
+    
     return this.http.get<string>(`${SMALL_BOX_BASE_URL}/check-max-amount?containerId=${containerId}&userId=${userId}`, this.httpOptions).pipe(catchError(this.handleError));
+  }
+
+  sendFileToBackEnd(file:File):Observable<ReceiptDto>{
+   const formData: FormData = new FormData;
+   formData.append('file', file);
+    return this.http.post<ReceiptDto>(`${DOCUMENTAI_BASE_URL}/upload_file`,formData).pipe(catchError(this.handleError));
   }
 
   
