@@ -39,16 +39,16 @@ public class DocumentAIServiceImpl {
 
 	public Multimap<String, String> quickStart() throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
-		String projectId = "document-api-test-415412";
+		String projectId = "";
 		String location = "us";
-		String processorId = "df14759270deb167";
+		String processorId = "";
 		String filePath = "D:\\filetest\\oeste-receipt-test1.pdf";
 		String endpoint = String.format("%s-documentai.googleapis.com:443", location);
 		
 		DocumentProcessorServiceSettings settings = DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint)
 				.build();
 		try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create(settings)) {
-			String name = String.format("projects/43864352815/locations/us/processors/df14759270deb167", projectId,
+			String name = String.format("", projectId,
 					location, processorId);
 
 			// Read the file.
