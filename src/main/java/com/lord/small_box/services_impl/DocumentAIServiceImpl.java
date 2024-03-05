@@ -31,7 +31,7 @@ import com.lord.small_box.services.DocumentAIService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+
 public class DocumentAIServiceImpl {
 	
 	
@@ -40,10 +40,10 @@ public class DocumentAIServiceImpl {
 	private String processorId = "df14759270deb167";
 	private String endpoint = String.format("%s-documentai.googleapis.com:443", location);
 
-<<<<<<< HEAD
+
 	public Multimap<String, String> getDocumentResponse(String fullFileName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
-		String filePath = "D:\\filetest\\" + fullFileName;
-=======
+		String filePath = "D:\\filetest\\" + fullFileName ;
+
 	public Multimap<String, String> quickStart() throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
 		String projectId = "";
@@ -52,7 +52,7 @@ public class DocumentAIServiceImpl {
 		String filePath = "D:\\filetest\\oeste-receipt-test1.pdf";
 		String endpoint = String.format("%s-documentai.googleapis.com:443", location);
 		
->>>>>>> 2ca53b8779d394e739a9a29f09ae78c53a77684f
+
 		DocumentProcessorServiceSettings settings = DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint)
 				.build();
 		try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create(settings)) {
