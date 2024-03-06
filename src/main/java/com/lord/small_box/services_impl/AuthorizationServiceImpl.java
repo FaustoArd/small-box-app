@@ -59,17 +59,19 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	public AppUserRegistrationDto register(AppUserRegistrationDto userDto, String authority) {
 		log.info("Register user");
 		if (appUserService.checkUsername(userDto.getUsername())) {
+			log.warn("username already exist");
 			throw new UsernameExistException("El nombre de usuario ya existe");
 		}
 		if (!validatePassword(userDto.getPassword())) {
+			log.warn("Invalid password");
 			throw new PasswordInvalidException("Password invalido, lea los requisitos");
 		} else {
-			log.info("Buscando el rol");
+			log.info("looking for role");
 			Authority role = authorityRepository.findByAuthority(AuthorityName.valueOf(authority))
-					.orElseThrow(() -> new ItemNotFoundException("Role not found"));
+					.orElseThrow(() -> new ItemNotFoundException("No se encontro el rol"));
 			Set<Authority> roles = new HashSet<>();
 			roles.add(role);
-
+			log.info("saving user");
 			AppUser user = new AppUser(userDto.getName(), userDto.getLastname(), userDto.getUsername(),
 					userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), true, true, true, true, roles);
 			AppUser registeredUser = appUserService.save(user);
