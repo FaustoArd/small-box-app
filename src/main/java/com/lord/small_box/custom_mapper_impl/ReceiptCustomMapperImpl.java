@@ -28,6 +28,7 @@ public class ReceiptCustomMapperImpl implements ReceiptCustomMapper {
 		String result = "";
 		if(entities.get("receipt_code").size()==2) {
 			Iterator<String> it =  entities.get("receipt_code").iterator();
+			
 			while(it.hasNext()) {
 				result =  it.next();
 				result = it.next() + "-"  + result ;
@@ -43,18 +44,19 @@ public class ReceiptCustomMapperImpl implements ReceiptCustomMapper {
 		supplies_city.add(entities.get("supplier_city").toString().replace("[", "").replace("]", ""));
 		receiptDto.setSupplier_city(supplies_city);
 		receiptDto.setSupplier_address(entities.get("supplier_address").toString().replace("[", "").replace("]", ""));
-		receiptDto.setTotal_price(entities.get("total_price").toString().replace("[", "").replace("]", ""));
+		receiptDto.setTotal_price(entities.get("total_price").toString().replace("[", "").replace("]", "").replace(",", "."));
+		
 		ArrayList<String> supplier_name = new ArrayList<>();
 		supplier_name.add(entities.get("supplier_name").toString().replace("[", "").replace("]", ""));
 		receiptDto.setSupplier_name(supplier_name);
 		
-		SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+		SimpleDateFormat dmyFormat = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
 		String dateResponse = entities.get("receipt_date").toString().replace("[", "").replace("]", "").replace("/", "-");
 		try {
 			Date formattedDate = dmyFormat.parse(dateResponse);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(formattedDate);
-			receiptDto.setReceipt_date(calendar.getTime().toString());
+			receiptDto.setReceipt_date(calendar);
 			
 			return receiptDto;
 		} catch (ParseException e) {

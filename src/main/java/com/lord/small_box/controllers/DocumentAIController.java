@@ -59,7 +59,7 @@ public class DocumentAIController {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(formattedDate);
 			
-		return new ResponseEntity<String>(gson.toJson(calendar.getTime()),HttpStatus.OK);
+		return new ResponseEntity<String>(gson.toJson(calendar),HttpStatus.OK);
 			} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

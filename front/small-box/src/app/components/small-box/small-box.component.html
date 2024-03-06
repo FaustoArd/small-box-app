@@ -10,21 +10,18 @@
             <div class="row">
                 <!-- Upload file -->
                 <div class="col-md-5">
-                    <div class="container d-flex justify-content-center">
-                        <div class="mt-5 row justify-content-center">
                     
-                            <div class="col-10 mb-3">
-                                <label class="px-3">Select File: </label>
+                    
+                            <div class="col-4 mb-3 mt-5">
+                              
                                 <input type="file" (change)="selectFile($event)" />
                             </div>
-                    
-                            <div class="col-2">
+                             <div class="col-2">
                                 <button class="btn btn-success btn-sm" (click)="uploadFile()">
                                     Upload
                                 </button>
                             </div>
-                        </div>
-                    </div>
+                    
                     <div class="container">
                         <div class="mt-5 row justify-content-center">
                             <div class="col-10 mb-3">
@@ -307,7 +304,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label for="ticketTotal" class="form-label fs-7 ">Precio</label>
+                            <label for="ticketTotal" class="form-label fs-7 ">Total</label>
                             <input class="form-control border-dark " type="number" formControlName="ticketTotal"
                                 id="ticketTotal">
 

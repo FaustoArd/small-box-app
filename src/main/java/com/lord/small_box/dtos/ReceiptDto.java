@@ -1,6 +1,7 @@
 package com.lord.small_box.dtos;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public class ReceiptDto {
 	
 	private String total_price;
 	
-	private String receipt_date;
+	private Calendar receipt_date;
 	
 	private String receipt_code;
 	
