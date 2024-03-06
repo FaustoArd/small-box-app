@@ -42,16 +42,8 @@ public class DocumentAIServiceImpl {
 
 
 	public Multimap<String, String> getDocumentResponse(String fullFileName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
-		String filePath = "D:\\filetest\\" + fullFileName ;
-
-	public Multimap<String, String> quickStart() throws IOException, InterruptedException, ExecutionException, TimeoutException {
-
-		String projectId = "";
-		String location = "us";
-		String processorId = "";
-		String filePath = "D:\\filetest\\oeste-receipt-test1.pdf";
-		String endpoint = String.format("%s-documentai.googleapis.com:443", location);
 		
+		String filePath = "D:\\filetest\\" + fullFileName ;
 
 		DocumentProcessorServiceSettings settings = DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint)
 				.build();
@@ -83,21 +75,6 @@ public class DocumentAIServiceImpl {
 			});
 			 
 			  return mapEntity;
-		
-			// Get all of the document text as one big string
-			/*String text = documentResponse.getText();*/
-
-			// Read the text recognition output from the processor
-
-			/*Document.Page firstPage = documentResponse.getPages(0);
-			List<Document.Page.Paragraph> paragraphs = firstPage.getParagraphsList();*/
-
-			/*String paragraphText = "";
-			for (Document.Page.Paragraph paragraph : paragraphs) {
-				paragraphText = paragraphText + getText(paragraph.getLayout().getTextAnchor(), text);
-			}*/
-
-			
 		}
 
 	}
