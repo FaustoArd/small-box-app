@@ -296,17 +296,12 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="description" class="form-label fs-7 ">Descripcion</label>
-                            <select id="description" formControlName="description" class="form-select  border-dark">
-                                <option>{{updatedSmallBox.description}}</option>
+                            <select id="description" formControlName="inputId" class="form-select  border-dark">
+                                <option>Seleccione una descripcion</option>
                                 <option type="number" class="form-control border-dark " *ngFor="let input of inputs"
-                                    id="categoryId" [value]="input.description">
+                                    id="categoryId" [value]="input.id">
                                     {{input.description}}</option>
-                                <div *ngIf="description.invalid && (description.dirty || description.touched)"
-                                    class="text-danger">
-                                    <div *ngIf="description.errors?.['invalid']">
-                                        Debes seleccionar una descripcion
-                                    </div>
-                                </div>
+
                             </select>
                         </div>
                     </div>

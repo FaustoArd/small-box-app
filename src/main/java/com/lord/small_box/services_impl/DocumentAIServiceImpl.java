@@ -48,7 +48,7 @@ public class DocumentAIServiceImpl {
 		DocumentProcessorServiceSettings settings = DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint)
 				.build();
 		try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create(settings)) {
-			String name = String.format("", projectId,
+			String name = String.format("projects/43864352815/locations/us/processors/df14759270deb167", projectId,
 					location, processorId);
 
 			// Read the file.

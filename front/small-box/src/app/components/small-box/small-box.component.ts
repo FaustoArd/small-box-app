@@ -7,7 +7,7 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { InputDto } from 'src/app/models/inputDto';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
-import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
+
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
@@ -49,7 +49,7 @@ export class SmallBoxComponent implements OnInit {
 
   smallBoxForm = this.formBuilder.group({
     date: ['', Validators.required],
-    ticketNumber: [0, Validators.required],
+    ticketNumber: ['', Validators.required],
     provider: ['', Validators.required],
     inputId: [0],
     description: [''],
@@ -92,6 +92,7 @@ export class SmallBoxComponent implements OnInit {
           this.snackBar.openSnackBar("Se agrego el ticket!", 'Cerrar', 3000);
           this.smallBoxForm.reset();
           this.getAllSmallBoxesByContainerId();
+          this.matDialogRef.close();
         }
       });
     }
@@ -248,7 +249,8 @@ export class SmallBoxComponent implements OnInit {
         this.snackBar.openSnackBar("Se ejecuto el analisis de la factura: " + this.receiptDto.receipt_code,'Cerrar',3000);
         this.openDialogSmallBoxDocumentAI(this.receiptDto);
       }
-    })
+    });
+   
   }
   
 
@@ -257,22 +259,25 @@ export class SmallBoxComponent implements OnInit {
   openDialogSmallBoxDocumentAI(receipt:ReceiptDto) {
     this.getAllInputs();
     const template = this.docAITemplateRef;
+    
     this.onDocumentAISmallBoxShow(receipt);
     this.matDialogRef = this.dialogService.openDialogCreation({
       template
     })
 
     this.matDialogRef.afterClosed().subscribe();
-    this.updateSmallBoxForm.reset();
-
+    
+   
+   
   }
 
   onDocumentAISmallBoxShow(receipt:ReceiptDto): void {
-    this.updateSmallBoxForm.patchValue({
+    this.smallBoxForm.patchValue({
      
       date: receipt.receipt_date,
-      ticketNumber: receipt.receipt_code,
+      ticketNumber:receipt.receipt_code,
       provider: receipt.supplier_name.map(e => e).toString(),
+      
       ticketTotal:Number (receipt.total_price),
 
     });

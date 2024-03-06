@@ -1,7 +1,12 @@
 package com.lord.small_box.custom_mapper_impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 
 import org.springframework.stereotype.Component;
 
@@ -34,19 +39,28 @@ public class ReceiptCustomMapperImpl implements ReceiptCustomMapper {
 		}
 		
 		receiptDto.setPayment_type(entities.get("payment_type").toString());
-		
 		ArrayList<String> supplies_city = new ArrayList<>();
 		supplies_city.add(entities.get("supplier_city").toString().replace("[", "").replace("]", ""));
 		receiptDto.setSupplier_city(supplies_city);
-		
 		receiptDto.setSupplier_address(entities.get("supplier_address").toString().replace("[", "").replace("]", ""));
-		receiptDto.setReceipt_date(entities.get("receipt_date").toString().replace("[", "").replace("]", ""));
 		receiptDto.setTotal_price(entities.get("total_price").toString().replace("[", "").replace("]", ""));
-		
 		ArrayList<String> supplier_name = new ArrayList<>();
-		supplier_name.add(entities.get("supplier_name").toString());
+		supplier_name.add(entities.get("supplier_name").toString().replace("[", "").replace("]", ""));
 		receiptDto.setSupplier_name(supplier_name);
 		
+		SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+		String dateResponse = entities.get("receipt_date").toString().replace("[", "").replace("]", "").replace("/", "-");
+		try {
+			Date formattedDate = dmyFormat.parse(dateResponse);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(formattedDate);
+			receiptDto.setReceipt_date(calendar.getTime().toString());
+			
+			return receiptDto;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return receiptDto;
 	}
 
