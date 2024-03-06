@@ -45,7 +45,7 @@ public class DispatchControlController {
 		return ResponseEntity.ok(gson.toJson(result));
 	}
 	
-	@GetMapping("/find_dispatch_by_id/{id}")
+	@GetMapping("/find_dispatch/{id}")
 	ResponseEntity<DispatchControlDto> findDistpachById(@PathVariable("id")Long id){
 		DispatchControl dispatchControl = dispatchControlService.findById(id);
 		DispatchControlDto dispatchControlDto = DispatchControlMapper.INSTANCE.dispatchToDto(dispatchControl);

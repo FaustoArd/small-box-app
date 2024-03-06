@@ -15,6 +15,7 @@ import { MemoSingleShowComponent } from './components/show-work-template/memo-si
 import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
 import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
+import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path:'memo-show', component:MemoSingleShowComponent},
   { path:'work-template-list', component:WorkTemplateListComponent},
   { path:'refer-create',component:ManualReferComponent},
+  { path:'dispatch',component:DispatchMainComponent},
 ];
 
 @NgModule({

@@ -1,0 +1,101 @@
+<div class="container-flex">
+    <div class="row">
+        <div class="col">
+            <form class="text-center" [formGroup]="dispatchCreateForm">
+                <div class="form-group">
+                    <label for="date" class="form-label">Fecha</label>
+                    <input type="date" class="form-control " formControlName="date" id="date">
+                    <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger">
+                        <div *ngIf="date.errors?.['required']">
+                            Falta la fecha
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="correspond" class="form-label">Corresponde</label>
+                    <select id="correspond" formControlName="correspond" class="form-select  border-dark ">
+                        <option type="text" class="form-control border-dark " *ngFor="let ref of refsList"
+                            id="correspond" [value]="ref">
+                            {{ref}}</option>
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="correspondNumber" class="form-label">Numero</label>
+                    <input type="text" class="form-control " formControlName="correspondNumber"
+                        id="correspondNumber">
+                        <button id="btnSn" class="btn btn-sm mt-1" (click)="setNoNumberCorrespond()">S/N</button>
+                    <div *ngIf="correspondNumber.invalid && (correspondNumber.dirty || correspondNumber.touched)"
+                        class="text-danger">
+                        <div *ngIf="correspondNumber.errors?.['required']">
+                            Falta El numero
+                        </div>
+                    </div>
+                  
+                </div>
+
+                <div class="form-group w-75 text-center ">
+                    <label for="organizationId" class="form-label fs-7  ">Producido por</label>
+                    <select id="organizationId" formControlName="organizationId" class="form-select  border-dark ">
+                        <option type="text" class="form-control border-dark " *ngFor="let org of organizations"
+                            id="organizationId" [value]="org.id">
+                            {{org.organizationName}}</option>
+                                
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="producedBy" class="form-label">Texto</label>
+                    <textarea id="input-text" type="text" class="form-control border-dark"
+                        formControlName="text"></textarea>
+
+                </div>
+                <button class="btn mt-1" (click)="createMemo()">Finalizar</button>
+            </form>
+        </div>
+      
+        <div  class="col-md-3 mt-3 ms-3">
+        <h2 class="mt-5 mx-3" id="destTitle">Seleccionar destinatarios</h2>
+            <form [formGroup]="destinationsFormBuilder">
+                <div class="form-group w-75 text-center ms-2 ">
+                    <select id="destination" formControlName="destination" class="form-select  border-dark ">
+                        <option type="text" class="form-control border-dark "
+                            *ngFor="let destination of destinationsDtoList" id="destination" [value]="destination.destination">
+                            {{destination.destination}}</option>
+                          
+                    </select>
+                    
+                    <div *ngIf="destination.invalid && (destination.dirty || destination.touched)"
+                    class="text-danger">
+                    <div *ngIf="destination.errors?.['required']">
+                       Debe seleccionar un destino
+                    </div>
+                </div>
+                    <button class="btn mt-1" (click)="addSelectedDestination()">Agregar</button>
+                </div>
+
+            </form>
+            <h2 class="mt-5 mx-3" id="destTitle">Seleccionar Previo paso por</h2>
+            <form [formGroup]="beforeByFormBuilder">
+                <div class="form-group w-75 text-center ms-2 ">
+                    <select id="beforeBy" formControlName="beforeBy" class="form-select  border-dark ">
+                        <option type="text" class="form-control border-dark "
+                            *ngFor="let destination of destinationsDtoList" id="beforeBy" [value]="destination.destination">
+                            {{destination.destination}}</option>
+                          
+                    </select>
+                    
+                    <div *ngIf="destination.invalid && (destination.dirty || destination.touched)"
+                    class="text-danger">
+                    <div *ngIf="destination.errors?.['required']">
+                       Debe seleccionar un destino
+                    </div>
+                </div>
+                    <button class="btn mt-1" (click)="addSelectedBeforeBy()">Agregar</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

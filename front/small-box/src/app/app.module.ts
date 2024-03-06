@@ -32,6 +32,7 @@ import { WorkTemplateListComponent } from './components/work-template/work-templ
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
 import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
 import { LocationContractComponent } from './components/contract/location-contract/location-contract.component';
+import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
 
 
 
@@ -57,7 +58,8 @@ import { LocationContractComponent } from './components/contract/location-contra
     WorkTemplateListComponent,
     ManualReferComponent,
     MemoSingleEditComponent,
-    LocationContractComponent
+    LocationContractComponent,
+    DispatchMainComponent
     
   ],
   imports: [
