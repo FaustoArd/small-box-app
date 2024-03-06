@@ -23,5 +23,7 @@ public class OrganizationDto {
 	private int maxRotation;
 
 	private BigDecimal maxAmount;
+	
+	
 
 }
