@@ -92,7 +92,7 @@
             </form>
         </div>
     </div>
-</body>
+
 <ng-template #createTemplateDestinationTemplate>
    
     <form [formGroup]="createDestinationFormBuilder">
@@ -112,3 +112,26 @@
     </form>
     
     </ng-template>
+
+    <ng-template #organizationSelectionTemplate>
+        <div class="container-flex">
+            <div class="row">
+                <div class="col">
+        <form [formGroup]="currentOrganizationForm">
+       <div  class="form-group text-center">
+        <label for="organizationId" class="form-label">Tipo</label>
+        <select id="organizationId" formControlName="organizationId" class="form-select  border-dark ">
+            <option type="text" class="form-control border-dark " *ngFor="let org of organizations"
+                id="organizationId" [value]="org.id">
+                {{org.organizationName}}</option>
+
+        </select>
+                <button class="btn mt-1 text-center" >Agregar</button>
+            </div>
+        
+        </form>
+    </div>
+    </div>
+    </div>
+    </ng-template>
+</body>

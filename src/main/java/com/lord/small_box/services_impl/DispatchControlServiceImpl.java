@@ -67,12 +67,15 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 		return (List<DispatchControl>) dispatchControlRepository.findAllDistpachControlsByOrganizationIn(organizations);
 	}
 
+	
+
 	@Override
-	public List<DispatchControl> findAllDispatchsByOrganizationByUserId(Long userId) {
-		log.info("Find All dispatchs  by Organization by UserId");
-		List<Organization> organizations = organizationService.findAllOrganizationsByUsers(userId);
-		List<DispatchControl> dispatchControls = findAllDistpachControlsByOrganizationIn(organizations);
-		return dispatchControls;
+	public List<DispatchControl> findAllDistpachControlsByOrganization(Long organizationId) {
+		Organization org = organizationService.findById(organizationId);
+		
+		return (List<DispatchControl>)dispatchControlRepository.findAllDistpachControlsByOrganization(org);
 	}
+
+	
 
 }

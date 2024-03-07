@@ -18,7 +18,9 @@ import com.google.gson.Gson;
 import com.lord.small_box.dtos.DispatchControlDto;
 import com.lord.small_box.mappers.DispatchControlMapper;
 import com.lord.small_box.models.DispatchControl;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.services.DispatchControlService;
+import com.lord.small_box.services.OrganizationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +31,9 @@ public class DispatchControlController {
 	
 	@Autowired
 	private final DispatchControlService dispatchControlService;
+	
+	@Autowired
+	private final OrganizationService organizationService;
 	
 	private static final Gson gson = new Gson();
 	
@@ -51,11 +56,12 @@ public class DispatchControlController {
 		DispatchControlDto dispatchControlDto = DispatchControlMapper.INSTANCE.dispatchToDto(dispatchControl);
 		return ResponseEntity.ok(dispatchControlDto);
 	}
-	@GetMapping("/find_all_dispatch_controls_by_user")
-	ResponseEntity<List<DispatchControlDto>> findAllDispatchByOrgByUserId(@RequestParam("userId")Long userId){
-		List<DispatchControl> dispatchControls = dispatchControlService.findAllDispatchsByOrganizationByUserId(userId);
+	@GetMapping("/find_all_dispatch_by_org")
+	ResponseEntity<List<DispatchControlDto>> findAllDispatchsByOrganizationId(@RequestParam("organizationId")Long organizationId){
+		List<DispatchControl> dispatchControls = dispatchControlService.findAllDistpachControlsByOrganization(organizationId);
 		List<DispatchControlDto> dispatchControlDtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(dispatchControls);
 		return ResponseEntity.ok(dispatchControlDtos);
 	}
+	
 
 }

@@ -66,14 +66,25 @@ export class CookieStorageService {
     this.cookieService.delete('destinationsList');
   }
 
-  setCurrentWorkTemplateId(workTemplateid:string){
-    this.cookieService.set('workTemplateid', workTemplateid);
+  setCurrentWorkTemplateId(workTemplateId:string){
+    this.cookieService.set('workTemplateId', workTemplateId);
   }
   getCurrentWorkTemplateId(){
-    return this.cookieService.get('workTemplateid');
+    return this.cookieService.get('workTemplateId');
        
     }
   deleteCurrentWorkTemplateId(){
-    this.cookieService.delete('workTemplateid');
+    this.cookieService.delete('workTemplateId');
   }
+
+  getCurrentDispatchOrganizationId(){
+    return this.cookieService.get('organizationId');
+  }
+  setCurrentDispatchOrganizationId(organizationId:string){
+     this.cookieService.set('organizationId',organizationId);
+ }
+ deleteCurrentDispatchOrganizationId(){
+  this.cookieService.delete('organizationId');
+ }
+
 }

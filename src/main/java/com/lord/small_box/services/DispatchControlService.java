@@ -16,7 +16,11 @@ public interface DispatchControlService {
 	
 	public String deleteById(Long id);
 	
-	public List<DispatchControl> findAllDispatchsByOrganizationByUserId(Long userId);
-	
 	public List<DispatchControl> findAllDistpachControlsByOrganizationIn(List<Organization> organizations); 
+	
+	public List<DispatchControl> findAllDistpachControlsByOrganization(Long organizationId);
+	
+	
+		
+	
 }
