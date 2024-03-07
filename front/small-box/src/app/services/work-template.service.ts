@@ -43,21 +43,7 @@ httpOptions = {
     return this.http.get<WorkTemplateDto[]>(`${WORK_TEMPLATE_BASE_URL}/by_user_id/${userId}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
-  getAllWorkTemplateDestinations():Observable<DestinationDto[]>{
-    return this.http.get<DestinationDto[]>(`${WORK_TEMPLATE_BASE_URL}/all_template_destinations`,this.httpOptions)
-    .pipe(catchError(this.handleError));
-  }
-
-  createTemplateDestination(destination:DestinationDto):Observable<string>{
-    const result = destination.destination;
-    return this.http.post<string>(`${WORK_TEMPLATE_BASE_URL}/create_template_destination?destination=${result}`,this.httpOptions)
-    .pipe(catchError(this.handleError));
-  }
-
-  deleteTemplateDestinationById(id:number):Observable<string>{
-    return this.http.get<string>(`${WORK_TEMPLATE_BASE_URL}/delete_template_destination/${id}`,this.httpOptions)
-    .pipe(catchError(this.handleError));
-  }
+  
   deleteWorkTemplateById(id:number):Observable<string>{
     return this.http.delete<string>(`${WORK_TEMPLATE_BASE_URL}/delete_work_template_by_id/${id}`)
     .pipe(catchError(this.handleError));

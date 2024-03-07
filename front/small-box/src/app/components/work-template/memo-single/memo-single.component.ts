@@ -15,6 +15,7 @@ import { DialogTemplateComponent } from '../../dialog/dialog-template/dialog-tem
 import { DestinationDto } from 'src/app/models/destinationDto';
 import { BeforeBy } from 'src/app/models/beforeBy';
 import { Item } from 'src/app/models/item';
+import { TemplateDestinationService } from 'src/app/services/template-destination.service';
 
 @Component({
   selector: 'app-memo-single',
@@ -47,7 +48,7 @@ export class MemoSingleComponent implements OnInit {
   constructor(private workTemplateService: WorkTemplateService, private cookieService: CookieStorageService
     , private formBuilder: FormBuilder, private snackBarService: SnackBarService
     , private organizationService: OrganizationService, private router: Router,
-    private dialogService: DialogService) { }
+    private dialogService: DialogService,private templateDestinationService:TemplateDestinationService) { }
 
 
   ngOnInit(): void {
@@ -230,7 +231,7 @@ export class MemoSingleComponent implements OnInit {
   }
 
   getAllTemplateDestinationsList() {
-    this.workTemplateService.getAllWorkTemplateDestinations().subscribe({
+    this.templateDestinationService.getAllWorkTemplateDestinations().subscribe({
       next: (templateDestinationData) => {
         this.destinationsDtoList = templateDestinationData;
       },
@@ -328,7 +329,7 @@ export class MemoSingleComponent implements OnInit {
       this.destinationDto = new DestinationDto();
       this.destinationDto = Object.assign(this.destinationDto, this.createDestinationFormBuilder.value);
 
-      this.workTemplateService.createTemplateDestination(this.destinationDto).subscribe({
+      this.templateDestinationService.createTemplateDestination(this.destinationDto).subscribe({
         next: (responseData) => {
           this.snackBarService.openSnackBar('Se agrego el destino: ' + responseData, 'Cerrar', 3000);
         },

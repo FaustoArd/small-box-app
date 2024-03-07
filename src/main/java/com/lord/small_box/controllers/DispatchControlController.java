@@ -52,7 +52,7 @@ public class DispatchControlController {
 		return ResponseEntity.ok(dispatchControlDto);
 	}
 	@GetMapping("/find_all_dispatch_controls_by_user")
-	ResponseEntity<List<DispatchControlDto>> findAllDispatchByOrgByUserId(@RequestParam("id")Long userId){
+	ResponseEntity<List<DispatchControlDto>> findAllDispatchByOrgByUserId(@RequestParam("userId")Long userId){
 		List<DispatchControl> dispatchControls = dispatchControlService.findAllDispatchsByOrganizationByUserId(userId);
 		List<DispatchControlDto> dispatchControlDtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(dispatchControls);
 		return ResponseEntity.ok(dispatchControlDtos);

@@ -32,7 +32,7 @@ public class DispatchControl {
 	
 	private String type;
 	
-	private String number;
+	private String docNumber;
 	
 	private String volumeNumber;
 	

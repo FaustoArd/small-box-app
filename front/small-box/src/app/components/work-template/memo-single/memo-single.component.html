@@ -209,7 +209,7 @@
         <input type="text" class="form-control " formControlName="destination" id="template-destination">
         <div *ngIf="destination.invalid && (destination.dirty || destination.touched)"
             class="text-danger">
-            <div *ngIf="ref.errors?.['required']">
+            <div *ngIf="destination.errors?.['required']">
                 Falta el destino
             </div>
         </div>
