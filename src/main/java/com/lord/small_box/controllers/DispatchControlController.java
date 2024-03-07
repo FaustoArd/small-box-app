@@ -32,9 +32,6 @@ public class DispatchControlController {
 	@Autowired
 	private final DispatchControlService dispatchControlService;
 	
-	@Autowired
-	private final OrganizationService organizationService;
-	
 	private static final Gson gson = new Gson();
 	
 	@PostMapping("/create_dispatch")

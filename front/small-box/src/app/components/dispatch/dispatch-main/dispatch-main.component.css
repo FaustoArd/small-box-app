@@ -12,12 +12,16 @@ label{
 }
 
 input{
-    background-color: rgb(232, 226, 219);
+    background-color: rgb(240, 235, 230);
+    font-weight: bold;
+}
+#searchInput{
+    background-color: rgb(255, 253, 250);
     font-weight: bold;
 }
 
 select{
-    background-color: rgb(232, 226, 219);
+    background-color: rgb(240, 235, 230);
 }
 
 option{

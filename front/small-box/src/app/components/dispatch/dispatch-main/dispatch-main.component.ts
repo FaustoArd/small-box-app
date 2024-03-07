@@ -36,16 +36,55 @@ export class DispatchMainComponent implements OnInit {
 
 
   ngOnInit(): void {
-    const check = this.cookieService.getCurrentDispatchOrganizationId();
-    if (check != null || undefined) {
-      this.openDialogOrganizationSelection();
-      this.snackBarService.openSnackBar('Debes seleccionar una dependencia', 'Cerrar', 3000);
+    // const check = this.cookieService.getCurrentDispatchOrganizationId();
+    // if (check != null || undefined) {
+    //   this.openDialogOrganizationSelection();
+    //   this.snackBarService.openSnackBar('Debes seleccionar una dependencia', 'Cerrar', 3000);
      
 
+    // } else {
+     
+    // }
+    this.getAllDispatchByOrganizationId();
+    this.dispatchTypeList = this.getTypeList();
+    this.getAllTemplateDestinationsList();
+  }
+
+  findByExampleFormBuilder = this.formBuilder.group({
+    example: ['', Validators.required],
+    //filter: ['']
+  });
+
+  get example(){
+    return this.findByExampleFormBuilder.controls.example;
+  }
+
+  
+  dispatchControlsFilter:DispatchControlDto[]= [];
+
+  filterWorkTemplateTest() {
+
+    if (this.findByExampleFormBuilder.valid) {
+      this.dispatchControlsFilter = this.dispatchs;
+      this.dispatchs = [];
+      const value = Object.assign(this.findByExampleFormBuilder.value);
+      this.dispatchControlsFilter.forEach(dp => {
+        if (dp.date.toString().toLowerCase().includes(value.example.toLowerCase()) ||
+          dp.type.toLowerCase().includes(value.example.toLowerCase()) ||
+          dp.docNumber.toLowerCase().includes(value.example.toLowerCase()) ||
+          dp.volumeNumber.toLowerCase().includes(value.example.toLowerCase()) ||
+          dp.description.toLowerCase().includes(value.example.toLowerCase()) ||
+          dp.toDependency.toLowerCase().includes(value.example.toLowerCase())) {
+          this.dispatchs.push(dp);
+       
+        }
+      });
     } else {
-      this.dispatchTypeList = this.getTypeList();
-      this.getAllTemplateDestinationsList();
+      this.getAllDispatchByOrganizationId();
     }
+
+
+
   }
 
   private matDialogRef!: MatDialogRef<DialogTemplateComponent>;
@@ -120,7 +159,7 @@ export class DispatchMainComponent implements OnInit {
     const orgId = Number(this.cookieService.getCurrentDispatchOrganizationId());
 
     console.log(orgId)
-    this.dispatchService.findAllDispatchsByOrganizationId(orgId).subscribe({
+    this.dispatchService.findAllDispatchsByOrganizationId(2).subscribe({
       next: (dispatchsData) => {
         this.dispatchs = dispatchsData;
       },

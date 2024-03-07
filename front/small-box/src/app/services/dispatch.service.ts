@@ -35,7 +35,7 @@ httpOptions = {
     .pipe(catchError(this.handleError));
   }
   findAllDispatchsByOrganizationId(organizationId:number):Observable<DispatchControlDto[]>{
-    return this.http.get<DispatchControlDto[]>(`${DISPATCH_CONTROL_BASE_URL}/find_all_dispatch_by_org?userId=${organizationId}`).pipe(catchError(this.handleError));
+    return this.http.get<DispatchControlDto[]>(`${DISPATCH_CONTROL_BASE_URL}/find_all_dispatch_by_org?organizationId=${organizationId}`).pipe(catchError(this.handleError));
   }
 
   deleteDispatchById(id:number):Observable<string>{
