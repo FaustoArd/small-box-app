@@ -14,7 +14,12 @@ export class ConfirmDialogComponent implements OnInit {
   btnCancelText!:string;
 
 constructor(public dialogRef:MatDialogRef<ConfirmDialogComponent>,
-  @Inject(MAT_DIALOG_DATA)public data:ConfirmDialogComponent){}
+  @Inject(MAT_DIALOG_DATA)public data:ConfirmDialogComponent){
+    this.title = data.title;
+    this.message = data.message;
+    this.btnOkText = data.btnOkText;
+    this.btnCancelText = data.btnCancelText;
+  }
 
   ngOnInit(): void {
       

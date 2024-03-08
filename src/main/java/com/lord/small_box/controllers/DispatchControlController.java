@@ -54,14 +54,18 @@ public class DispatchControlController {
 		return ResponseEntity.ok(dispatchControlDto);
 	}
 	@GetMapping("/find_all_dispatch_by_org")
-	ResponseEntity<List<DispatchControlDto>> findAllDispatchsByOrganizationId(@RequestParam("organizationId")Long organizationId){
-		List<DispatchControl> dispatchControls = dispatchControlService.findAllDistpachControlsByOrganization(organizationId);
+	ResponseEntity<List<DispatchControlDto>> findAllDispatchsByOrganizationId(@RequestParam("organizationId")Long organizationId,
+			@RequestParam(defaultValue = "0")Integer pageNo,
+			@RequestParam(defaultValue = "10")Integer pageSize,
+			@RequestParam(defaultValue = "date")String sortBy){
+		List<DispatchControl> dispatchControls = dispatchControlService
+				.findAllDispatchControlByOrganizationPagingAndSorting(organizationId,pageNo,pageSize,sortBy);
 		List<DispatchControlDto> dispatchControlDtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(dispatchControls);
 		return ResponseEntity.ok(dispatchControlDtos);
 	}
 	
 	@PostMapping("/dispatch_work_template")
-	ResponseEntity<String> dispatchWorkTemplate(@RequestParam("workTeamplateId")Long workTemplateId){
+	ResponseEntity<String> dispatchWorkTemplate(@RequestParam("workTemplateId")Long workTemplateId){
 		String dispatchResult = dispatchControlService.dispatchWorkTemplate(workTemplateId);
 		return new ResponseEntity<String>(gson.toJson(dispatchResult),HttpStatus.OK);
 	}

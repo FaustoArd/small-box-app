@@ -1,1 +1,11 @@
-<p>confirm-dialog works!</p>
+<div id="containerId" class="container   text-center">
+
+    <div mat-dialog-content class="border-dark">
+        <p  class="text-dark fw-bold" > {{message}}</p>
+    </div>
+    <div mat-dialog-actions class="border-dark text-center"> 
+    <button mat-button color="dark"  class="btn btn-primary border border-dark mx-5"  (click)="confirm()">Confirmar</button>
+    <button mat-button color="dark"  class="btn btn-warning  border border-dark" (click)="cancel()">Cancelar</button>
+    
+    </div>
+    </div>

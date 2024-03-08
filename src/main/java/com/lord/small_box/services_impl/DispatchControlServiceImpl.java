@@ -1,11 +1,16 @@
 package com.lord.small_box.services_impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.DispatchControl;
@@ -84,15 +89,17 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 
 	@Override
 	public String dispatchWorkTemplate(Long workTemplateId) {
+		log.info("Dispatching Document");
 		WorkTemplate workTemplate = workTemplateRepository.findById(workTemplateId)
 				.orElseThrow(()-> new ItemNotFoundException("No se encontro el Documento"));
 		Organization org = organizationService.findById(workTemplate.getOrganization().getId());
-		
 		DispatchControl dispatchControl = workTemplateToDispatch(workTemplate, org);
-		return "Se despacho el documento: " + dispatchControl.getType() + " " + dispatchControl.getDocNumber();
+		DispatchControl savedDispatchControl = dispatchControlRepository.save(dispatchControl);
+		return "Se despacho el documento: " + savedDispatchControl.getType() + " " + savedDispatchControl.getDocNumber();
 	}
 	
 	private static DispatchControl workTemplateToDispatch(WorkTemplate workTemplate,Organization organization) {
+		log.info("Map workTemplate do DispatchControl");
 		DispatchControl dispatchControl = new DispatchControl();
 		dispatchControl.setDate(workTemplate.getDate());
 		dispatchControl.setType(workTemplate.getCorrespond());
@@ -102,5 +109,15 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 				.stream().map(m -> m).collect(Collectors.joining(",")));
 		dispatchControl.setOrganization(organization);
 		return dispatchControl;
+	}
+
+	@Override
+	public List<DispatchControl> findAllDispatchControlByOrganizationPagingAndSorting(Long organizationId,Integer pageNo,Integer pageSize,String sortBy) {
+		Pageable paging = PageRequest.of(pageNo, pageSize,Sort.by(sortBy).descending());
+		
+		Organization org = organizationService.findById(organizationId);
+		List<DispatchControl> pageResult = dispatchControlRepository.findAllDispatchControlsByOrganization(org, paging);
+		return pageResult;
+		
 	}
 }

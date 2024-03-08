@@ -50,8 +50,8 @@ export class MemoSingleComponent implements OnInit {
   constructor(private workTemplateService: WorkTemplateService, private cookieService: CookieStorageService
     , private formBuilder: FormBuilder, private snackBarService: SnackBarService
     , private organizationService: OrganizationService, private router: Router,
-    private dialogService: DialogService,private templateDestinationService:TemplateDestinationService,
-    private confirmDialogService:ConfirmDialogService,private dispatchControlService:DispatchService) { }
+    private dialogService: DialogService, private templateDestinationService: TemplateDestinationService,
+    private confirmDialogService: ConfirmDialogService, private dispatchControlService: DispatchService) { }
 
 
   ngOnInit(): void {
@@ -163,7 +163,7 @@ export class MemoSingleComponent implements OnInit {
   }
 
   getRefsList(): void {
-    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM","REMITO INTERNO", "FACTURA", "REMITO"];
+    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM", "REMITO INTERNO", "FACTURA", "REMITO"];
   }
 
 
@@ -254,16 +254,17 @@ export class MemoSingleComponent implements OnInit {
     organizationId: [0]
   });
 
-  setNoNumberCorrespond(){
+  setNoNumberCorrespond() {
     this.memoFormBuilder.patchValue({
       correspondNumber: 'S/N'
     });
   }
 
-  confirmText:string = 'Desea despachar este documento?';
-  confirmData!:boolean;
+
   createMemo() {
+  
     if (this.memoFormBuilder.valid) {
+    
       this.workTemplate = new WorkTemplateDto();
       this.workTemplate = Object.assign(this.workTemplate, this.memoFormBuilder.value);
       this.workTemplate.destinations = this.destinations;
@@ -280,35 +281,62 @@ export class MemoSingleComponent implements OnInit {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         },
         complete: () => {
-          this.confirmDialogService.confirmDialog(this.confirmText).subscribe({
-            next:(confirmData)=>{
-              this.confirmData = confirmData;
-              if(this.confirmData){
-                  this.dispatchWorkTemplate(this.returnedWorkTemplate.id);
-              }
-            }
-          })
-         this.navigateAssociates();
+          if(this.confirmData){
+            console.log('Confirm: ' + this.confirmData);
+             var result =  this.dispatchWorkTemplate(this.returnedWorkTemplate.id);
+            this.snackBarService.openSnackBar(result,'Cerrar',3000);
+            this.navigateAssociates();
+          }else{
+            this.snackBarService.openSnackBar('Despacho cancelado','Cerrar',3000);
+            this.navigateAssociates();
+          }
+         
         }
       });
     }
   }
-dispatchWorkTemplate(workTemplateId:number){
-  this.dispatchControlService.dispatchWorkTemplate(workTemplateId).subscribe({
-    next:(dispatchData)=>{
-      this.snackBarService.openSnackBar(dispatchData,'Cerrrar',3000);
-    },
-    error:(errorData)=>{
-      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+
+  
+  confirmData!: boolean;
+
+  confirmDispatch():void{
+    if(this.memoFormBuilder.valid){
+      var confirmText =  'Desea despachar este documento?';
+      this.confirmDialogService.confirmDialog(confirmText).subscribe({
+        next:(confirmData)=>{
+          this.confirmData = confirmData;
+          this.snackBarService.openSnackBar(String(this.confirmData),'Cerrar',3000);
+         },
+         error:(errorData)=>{
+          this.snackBarService.openSnackBar(String(this.confirmData),'Cerrar',3000);
+         },
+         complete:()=>{
+          this.createMemo();
+         }
+      });
     }
-  })
-}
+    
+  }
+
+  strDispatchResponse!:string;
+  dispatchWorkTemplate(workTemplateId: number):string {
+    this.dispatchControlService.dispatchWorkTemplate(workTemplateId).subscribe({
+      next: (dispatchData) => {
+        this.strDispatchResponse = dispatchData;
+        
+      },
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+    return this.strDispatchResponse;
+  }
 
   navigateAssociates() {
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['/memo-show'])
     );
-  
+
     window.open(url, '_blank');
   }
 
@@ -368,7 +396,7 @@ dispatchWorkTemplate(workTemplateId:number){
     }
   }
 
- 
+
 
 
 
