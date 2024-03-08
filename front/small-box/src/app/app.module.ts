@@ -33,6 +33,7 @@ import { ManualReferComponent } from './components/work-template/manual-refer/ma
 import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
 import { LocationContractComponent } from './components/contract/location-contract/location-contract.component';
 import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog/confirm-dialog.component';
 
 
 
@@ -59,7 +60,8 @@ import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispa
     ManualReferComponent,
     MemoSingleEditComponent,
     LocationContractComponent,
-    DispatchMainComponent
+    DispatchMainComponent,
+    ConfirmDialogComponent
     
   ],
   imports: [

@@ -174,7 +174,7 @@ public class SmallBoxApplication {
 			organizationRepository.save(org3);
 			organizationRepository.save(org4);
 			
-			fileReaderUtils.readFile();
+			//fileReaderUtils.readFile();
 		
 			/*Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)

@@ -1,6 +1,7 @@
 package com.lord.small_box.services_impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.DispatchControl;
 import com.lord.small_box.models.Organization;
+import com.lord.small_box.models.WorkTemplate;
 import com.lord.small_box.repositories.DispatchControlRepository;
+import com.lord.small_box.repositories.WorkTemplateRepository;
 import com.lord.small_box.services.DispatchControlService;
 import com.lord.small_box.services.OrganizationService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,9 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 
 	@Autowired
 	private final OrganizationService organizationService;
+	
+	@Autowired
+	private final WorkTemplateRepository workTemplateRepository;
 	
 	private static final Logger log = LoggerFactory.getLogger(DispatchControlServiceImpl.class);
 
@@ -76,6 +82,25 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 		return (List<DispatchControl>)dispatchControlRepository.findAllDistpachControlsByOrganization(org);
 	}
 
+	@Override
+	public String dispatchWorkTemplate(Long workTemplateId) {
+		WorkTemplate workTemplate = workTemplateRepository.findById(workTemplateId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el Documento"));
+		Organization org = organizationService.findById(workTemplate.getOrganization().getId());
+		
+		DispatchControl dispatchControl = workTemplateToDispatch(workTemplate, org);
+		return "Se despacho el documento: " + dispatchControl.getType() + " " + dispatchControl.getDocNumber();
+	}
 	
-
+	private static DispatchControl workTemplateToDispatch(WorkTemplate workTemplate,Organization organization) {
+		DispatchControl dispatchControl = new DispatchControl();
+		dispatchControl.setDate(workTemplate.getDate());
+		dispatchControl.setType(workTemplate.getCorrespond());
+		dispatchControl.setDocNumber(workTemplate.getCorrespondNumber());
+		dispatchControl.setDescription(workTemplate.getText());
+		dispatchControl.setToDependency(workTemplate.getDestinations()
+				.stream().map(m -> m).collect(Collectors.joining(",")));
+		dispatchControl.setOrganization(organization);
+		return dispatchControl;
+	}
 }

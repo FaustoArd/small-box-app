@@ -16,6 +16,8 @@ import { DestinationDto } from 'src/app/models/destinationDto';
 import { BeforeBy } from 'src/app/models/beforeBy';
 import { Item } from 'src/app/models/item';
 import { TemplateDestinationService } from 'src/app/services/template-destination.service';
+import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
+import { DispatchService } from 'src/app/services/dispatch.service';
 
 @Component({
   selector: 'app-memo-single',
@@ -48,7 +50,8 @@ export class MemoSingleComponent implements OnInit {
   constructor(private workTemplateService: WorkTemplateService, private cookieService: CookieStorageService
     , private formBuilder: FormBuilder, private snackBarService: SnackBarService
     , private organizationService: OrganizationService, private router: Router,
-    private dialogService: DialogService,private templateDestinationService:TemplateDestinationService) { }
+    private dialogService: DialogService,private templateDestinationService:TemplateDestinationService,
+    private confirmDialogService:ConfirmDialogService,private dispatchControlService:DispatchService) { }
 
 
   ngOnInit(): void {
@@ -257,6 +260,8 @@ export class MemoSingleComponent implements OnInit {
     });
   }
 
+  confirmText:string = 'Desea despachar este documento?';
+  confirmData!:boolean;
   createMemo() {
     if (this.memoFormBuilder.valid) {
       this.workTemplate = new WorkTemplateDto();
@@ -275,11 +280,30 @@ export class MemoSingleComponent implements OnInit {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         },
         complete: () => {
+          this.confirmDialogService.confirmDialog(this.confirmText).subscribe({
+            next:(confirmData)=>{
+              this.confirmData = confirmData;
+              if(this.confirmData){
+                  this.dispatchWorkTemplate(this.returnedWorkTemplate.id);
+              }
+            }
+          })
          this.navigateAssociates();
         }
       });
     }
   }
+dispatchWorkTemplate(workTemplateId:number){
+  this.dispatchControlService.dispatchWorkTemplate(workTemplateId).subscribe({
+    next:(dispatchData)=>{
+      this.snackBarService.openSnackBar(dispatchData,'Cerrrar',3000);
+    },
+    error:(errorData)=>{
+      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+    }
+  })
+}
+
   navigateAssociates() {
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['/memo-show'])

@@ -41,9 +41,16 @@ public class FileReaderUtils {
 	private OrganizationRepository organizationRepository;
 	
 	
+	
+	public void deleteFinalDotComma() throws IOException {
+		String filePath = "\\\\canaima\\Usuarios\\Secretarias\\Desarrollo social\\SEC DSARROLLO SOCIAL\\ADMINISTRACION\\DESPACHO DIGITAL\\DESPACHO DIGITAL 2022 V4-cvs-v1-7.csv";	
+		File file = new File(filePath);
+		List<String> data = FileUtils.readLines(file, "UTF-8");
+		
+	}
 
 	public List<String> readFile() throws IOException, URISyntaxException {
-		String filePath = "D:\\filetest\\despacho_digital_csv_v1-11.csv";
+		String filePath = "\\\\canaima\\Usuarios\\Secretarias\\Desarrollo social\\SEC DSARROLLO SOCIAL\\ADMINISTRACION\\DESPACHO DIGITAL\\DESPACHO DIGITAL 2022 V4-cvs-v1-7.csv";
 		File file = new File(filePath);
 		List<String> data = FileUtils.readLines(file, "UTF-8");
 		

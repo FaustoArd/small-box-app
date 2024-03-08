@@ -20,4 +20,7 @@ public interface WorkTemplateService {
 	public List<WorkTemplate> FindWorkTemplateByExampleAndUserId(WorkTemplate example,Long userId);
 	
 	public String deleteWorkTemplateById(Long id);
+	
+	
+	
 }

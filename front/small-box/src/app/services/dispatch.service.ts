@@ -43,4 +43,9 @@ httpOptions = {
     .pipe(catchError(this.handleError));
   }
 
+  dispatchWorkTemplate(workTemplateId:number):Observable<string>{
+    return this.http.post<string>(`${DISPATCH_CONTROL_BASE_URL}/dispatch_work_template?workTemplateId=${workTemplateId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 }

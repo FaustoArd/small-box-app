@@ -60,5 +60,11 @@ public class DispatchControlController {
 		return ResponseEntity.ok(dispatchControlDtos);
 	}
 	
+	@PostMapping("/dispatch_work_template")
+	ResponseEntity<String> dispatchWorkTemplate(@RequestParam("workTeamplateId")Long workTemplateId){
+		String dispatchResult = dispatchControlService.dispatchWorkTemplate(workTemplateId);
+		return new ResponseEntity<String>(gson.toJson(dispatchResult),HttpStatus.OK);
+	}
+	
 
 }

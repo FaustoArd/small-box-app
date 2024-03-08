@@ -20,6 +20,8 @@ public interface DispatchControlService {
 	
 	public List<DispatchControl> findAllDistpachControlsByOrganization(Long organizationId);
 	
+	public String dispatchWorkTemplate(Long workTemplateId);
+	
 	
 		
 	
