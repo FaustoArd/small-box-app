@@ -18,14 +18,17 @@ import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.repositories.AuthorityRepository;
+import com.lord.small_box.repositories.DispatchControlRepository;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.ContainerService;
+import com.lord.small_box.services.DispatchControlService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
+import com.lord.small_box.utils.FileReaderUtils;
 
 @SpringBootApplication
 public class SmallBoxApplication {
@@ -43,9 +46,12 @@ public class SmallBoxApplication {
 			OrganizationRepository organizationRepository,
 			AuthorityRepository authorityRepository,
 			AuthorizationService authorizationService,
-			OrganizationResponsibleRepository organizationResponsibleRepository) {
+			OrganizationResponsibleRepository organizationResponsibleRepository
+			,FileReaderUtils fileReaderUtils) {
 		
 		return args ->{
+			
+			
 			
 			Authority admin = new Authority();
 			admin.setAuthority(AuthorityName.ADMIN);
@@ -168,7 +174,7 @@ public class SmallBoxApplication {
 			organizationRepository.save(org3);
 			organizationRepository.save(org4);
 			
-			
+			fileReaderUtils.readFile();
 		
 			/*Calendar now = Calendar.getInstance();
 			Container container = Container.builder().smallBoxDate(now)

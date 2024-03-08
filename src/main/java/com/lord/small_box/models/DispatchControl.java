@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Entity
-@Table(name="despacho_digital")
+@Table(name="digital_dispatch")
 public class DispatchControl {
 
 	@Id
