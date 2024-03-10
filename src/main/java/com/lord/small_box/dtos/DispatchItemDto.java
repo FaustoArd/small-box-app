@@ -7,8 +7,13 @@ import lombok.Setter;
 @Getter
 public class DispatchItemDto {
 	
-	private String type;
+	private String itemType;
 	
 	private String itemNumber;
-
+	
+	private String volumeNumber;
+	
+	private String description;
+	
+	
 }

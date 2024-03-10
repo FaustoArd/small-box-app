@@ -52,9 +52,9 @@ public class PdfToStringUtilsController {
 		return ResponseEntity.ok(receiptDto);
 	}
 	@GetMapping("/pdf_to_dispatch")
-	ResponseEntity<DispatchControlDto> pdfToDispatch(@RequestParam("file")String file) throws Exception{
+	ResponseEntity<List<DispatchControlDto>> pdfToDispatch(@RequestParam("file")String file) throws Exception{
 		List<String> pdfList = pdfToStringUtils.pdfToList(file);
-		DispatchControlDto dispatchControlDto = textToDispatch.textToDispatch(pdfList);
+		List<DispatchControlDto> dispatchControlDto = textToDispatch.textToDispatch(pdfList);
 		return ResponseEntity.ok(dispatchControlDto);
 	}
 	
