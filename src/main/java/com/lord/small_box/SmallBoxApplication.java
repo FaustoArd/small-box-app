@@ -26,6 +26,7 @@ import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
+import com.lord.small_box.utils.PdfToStringUtils;
 
 @SpringBootApplication
 public class SmallBoxApplication {
@@ -43,7 +44,8 @@ public class SmallBoxApplication {
 			OrganizationRepository organizationRepository,
 			AuthorityRepository authorityRepository,
 			AuthorizationService authorizationService,
-			OrganizationResponsibleRepository organizationResponsibleRepository) {
+			OrganizationResponsibleRepository organizationResponsibleRepository
+			,PdfToStringUtils pdfToStringUtils) {
 		
 		return args ->{
 			
@@ -215,7 +217,8 @@ public class SmallBoxApplication {
 			SmallBox smallBox7 = SmallBox.builder().date(cal1).ticketNumber("03809-23448239")
 					.input(input219).provider("Carlos Boro").ticketTotal(new BigDecimal(6700.80)).build();
 			SmallBox savedSmallBox7 = smallBoxService.save(smallBox7, savedContainer.getId());*/
-	
+			
+			
 		};
 	}
 }
