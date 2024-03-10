@@ -16,6 +16,7 @@ import { WorkTemplateListComponent } from './components/work-template/work-templ
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
 import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
 import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
+import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -36,6 +37,7 @@ const routes: Routes = [
   { path:'work-template-list', component:WorkTemplateListComponent},
   { path:'refer-create',component:ManualReferComponent},
   { path:'dispatch',component:DispatchMainComponent},
+  { path:'dispatch-page',component:DispatchMatComponent},
 ];
 
 @NgModule({

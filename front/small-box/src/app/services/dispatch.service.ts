@@ -38,6 +38,14 @@ httpOptions = {
     return this.http.get<DispatchControlDto[]>(`${DISPATCH_CONTROL_BASE_URL}/find_all_dispatch_by_org?organizationId=${organizationId}`).pipe(catchError(this.handleError));
   }
 
+  findAllDispatchsByOrganizationIdExamplePaging(organizationId:number,example:string):Observable<DispatchControlDto[]>{
+    return this.http.get<DispatchControlDto[]>
+    (`${DISPATCH_CONTROL_BASE_URL}/find_all_dispatch_by_org_example_paging?organizationId=${organizationId}&example=${example}`)
+    .pipe(catchError(this.handleError));
+  }
+
+
+
   deleteDispatchById(id:number):Observable<string>{
     return this.http.delete<string>(`${DISPATCH_CONTROL_BASE_URL}/delete_dispatch/${id}`,this.httpOptions)
     .pipe(catchError(this.handleError));

@@ -1,5 +1,6 @@
 package com.lord.small_box.services;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,11 @@ public interface DispatchControlService {
 	public String dispatchWorkTemplate(Long workTemplateId);
 	
 	public List<DispatchControl> findAllDispatchControlByOrganizationPagingAndSorting(Long organizationId,Integer pageNo,Integer pageSize,String sortBy);
+	
+	public List<DispatchControl> findAllDispatchControlByOrgByExamplePagingAndSorting
+	(Long organizationId,String example,Integer pageNo,Integer pageSize,String sortBy);
+	
+	public DispatchControl exampleMatchToDispatchObject(String example)throws ParseException;
 	
 	
 		

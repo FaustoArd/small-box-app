@@ -1,7 +1,8 @@
 package com.lord.small_box.controllers;
 
 import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.DispatchControlDto;
 import com.lord.small_box.mappers.DispatchControlMapper;
 import com.lord.small_box.models.DispatchControl;
-import com.lord.small_box.models.Organization;
 import com.lord.small_box.services.DispatchControlService;
-import com.lord.small_box.services.OrganizationService;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +32,8 @@ public class DispatchControlController {
 	private final DispatchControlService dispatchControlService;
 	
 	private static final Gson gson = new Gson();
+	
+	private static final Logger log = LoggerFactory.getLogger(DispatchControlController.class);
 	
 	@PostMapping("/create_dispatch")
 	 ResponseEntity<String> createDispatch(@RequestBody DispatchControlDto dispatchControlDto){
@@ -53,13 +54,36 @@ public class DispatchControlController {
 		DispatchControlDto dispatchControlDto = DispatchControlMapper.INSTANCE.dispatchToDto(dispatchControl);
 		return ResponseEntity.ok(dispatchControlDto);
 	}
-	@GetMapping("/find_all_dispatch_by_org")
-	ResponseEntity<List<DispatchControlDto>> findAllDispatchsByOrganizationId(@RequestParam("organizationId")Long organizationId,
+	@GetMapping("/find_all_dispatch_by_org_paging")
+	ResponseEntity<List<DispatchControlDto>> findAllDispatchsByOrganizationIdPagingAndSorting(@RequestParam("organizationId")Long organizationId,
 			@RequestParam(defaultValue = "0")Integer pageNo,
 			@RequestParam(defaultValue = "10")Integer pageSize,
 			@RequestParam(defaultValue = "date")String sortBy){
 		List<DispatchControl> dispatchControls = dispatchControlService
 				.findAllDispatchControlByOrganizationPagingAndSorting(organizationId,pageNo,pageSize,sortBy);
+		List<DispatchControlDto> dispatchControlDtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(dispatchControls);
+		return ResponseEntity.ok(dispatchControlDtos);
+	}
+	@GetMapping("/find_all_dispatch_by_org_example_paging")
+	ResponseEntity<List<DispatchControlDto>> findAllDispatchsByOrganizationIdByExamplePagingAndSorting(
+			@RequestParam("organizationId")Long organizationId,
+			@RequestParam("example")String example,
+			@RequestParam(defaultValue = "0")Integer pageNo,
+			@RequestParam(defaultValue = "20")Integer pageSize,
+			@RequestParam(defaultValue = "date")String sortBy){
+		log.info("Find Dispatch By Example. Paging", organizationId, example, pageNo, pageSize, sortBy);
+		
+		System.out.println("Controller example: " + example);
+		List<DispatchControl> dispatchControls = dispatchControlService
+				.findAllDispatchControlByOrgByExamplePagingAndSorting(organizationId,example,pageNo,pageSize,sortBy);
+		List<DispatchControlDto> dispatchControlDtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(dispatchControls);
+		return ResponseEntity.ok(dispatchControlDtos);
+	}
+	
+	@GetMapping("/find_all_dispatch_by_org")
+	ResponseEntity<List<DispatchControlDto>> findAllDistpachControlsByOrganization(@RequestParam("organizationId")Long organizationId){
+		List<DispatchControl> dispatchControls = dispatchControlService
+				.findAllDistpachControlsByOrganization(organizationId);
 		List<DispatchControlDto> dispatchControlDtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(dispatchControls);
 		return ResponseEntity.ok(dispatchControlDtos);
 	}
@@ -69,6 +93,14 @@ public class DispatchControlController {
 		String dispatchResult = dispatchControlService.dispatchWorkTemplate(workTemplateId);
 		return new ResponseEntity<String>(gson.toJson(dispatchResult),HttpStatus.OK);
 	}
+	
+	/*@GetMapping("/pattern_test")
+	ResponseEntity<String> testMatcher(@RequestParam("match")String match){
+		
+		String result = dispatchControlService.exampleMatchToDispatchObject(match);
+		return ResponseEntity.ok(gson.toJson(result));
+	}*/
+	
 	
 
 }

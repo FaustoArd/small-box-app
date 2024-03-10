@@ -80,10 +80,10 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/small-box/work-templates/delete_template_destination/**").hasAnyRole("SUPERUSER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/work-templates/delete_work_template_by_id/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/location-contracts/**").hasAnyRole("SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/dispatchs/**").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/dispatchs/**").permitAll();
 			auth.requestMatchers("/api/v1/small-box/template_destination/**").hasAnyRole("SUPERUSER","ADMIN");
 			auth.requestMatchers("/api/v1/small-box/users/**").hasRole("ADMIN");
-			auth.requestMatchers("/api/v1/small-box/csv_utils/**").hasRole("ADMIN");
+			auth.requestMatchers("/api/v1/small-box/csv_utils/**").permitAll();
 			auth.anyRequest().authenticated();
 			
 			

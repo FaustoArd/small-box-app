@@ -35,6 +35,9 @@ import { LocationContractComponent } from './components/contract/location-contra
 import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog/confirm-dialog.component';
 
+import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
+import {NgxPaginationModule} from 'ngx-pagination';
+import { AdminPanelComponent } from './components/admin-panel/admin-panel/admin-panel.component'; 
 
 
 
@@ -61,7 +64,10 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MemoSingleEditComponent,
     LocationContractComponent,
     DispatchMainComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    DispatchMatComponent,
+    AdminPanelComponent
+    
     
   ],
   imports: [
@@ -78,6 +84,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
      HttpClientModule,
      MatDialogModule,
      NgxCaptureModule,
+     NgxPaginationModule
     
     
   ],

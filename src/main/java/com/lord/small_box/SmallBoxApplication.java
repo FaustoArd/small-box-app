@@ -1,7 +1,9 @@
 package com.lord.small_box;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import org.springframework.boot.CommandLineRunner;
@@ -17,17 +19,20 @@ import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxType;
+import com.lord.small_box.models.WorkTemplateDestination;
 import com.lord.small_box.repositories.AuthorityRepository;
 import com.lord.small_box.repositories.DispatchControlRepository;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
+import com.lord.small_box.repositories.WorkTemplateDestinationRepository;
 import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.DispatchControlService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
+import com.lord.small_box.services.WorkTemplateDestinationService;
 import com.lord.small_box.utils.FileReaderUtils;
 
 @SpringBootApplication
@@ -47,7 +52,8 @@ public class SmallBoxApplication {
 			AuthorityRepository authorityRepository,
 			AuthorizationService authorizationService,
 			OrganizationResponsibleRepository organizationResponsibleRepository
-			,FileReaderUtils fileReaderUtils) {
+			,FileReaderUtils fileReaderUtils,
+			WorkTemplateDestinationRepository workTemplateDestinationRepository) {
 		
 		return args ->{
 			
@@ -79,8 +85,15 @@ public class SmallBoxApplication {
 					.build();
 			SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
 			
-			
-			
+			WorkTemplateDestination wtdDecDesSocial = WorkTemplateDestination.builder()
+					.destination("Secretaria de Desarrollo Social".toUpperCase()).build();
+			WorkTemplateDestination wtdCompras = WorkTemplateDestination.builder()
+					.destination("Direccion de Compras".toUpperCase()).build();
+			WorkTemplateDestination wtdPagos = WorkTemplateDestination.builder()
+					.destination("Direccion de Pagos".toUpperCase()).build();
+			WorkTemplateDestination wtdSecAdm = WorkTemplateDestination.builder()
+					.destination("Secretaria de Administracion".toUpperCase()).build();
+			workTemplateDestinationRepository.saveAll(Arrays.asList(wtdDecDesSocial,wtdCompras,wtdPagos,wtdSecAdm));
 			
 		Input i211 = Input.builder().description("Alimento para personas").inputNumber("211").build();
 		Input i212 = Input.builder().description("Alimento para animales").inputNumber("212").build();

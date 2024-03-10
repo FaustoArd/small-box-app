@@ -1,0 +1,44 @@
+
+h3{
+    
+    font-weight: bold;
+    font-size: 24px;
+    font-family: 'Quattrocento', serif;
+}
+h5{
+    color: rgb(227, 50, 15);
+    font-weight: bold;
+    font-size: 0.8rem;
+    font-family: 'Quattrocento', serif;
+}
+
+h4{
+    color: rgb(45, 17, 228);
+    font-weight: bold;
+    font-size: 15px;
+    font-family: 'Quattrocento', serif;
+}
+#doc_number{
+    color: rgb(45, 17, 228);
+    font-weight: bold;
+    font-size: 17px;
+    font-family: 'Quattrocento', serif;
+}
+
+#main-row{
+    background-color: rgb(246, 246, 242);
+    border-radius :1px;
+   border-bottom: solid 1px;
+   border-left: solid 1px;
+   border-right: solid 1px;
+    border-top: solid 1px;
+}
+
+input{
+    font-family: 'Quattrocento', serif;
+    background-color: rgb(253, 252, 246);
+}
+select{
+    font-family: 'Quattrocento', serif;
+    background-color:  rgb(253, 252, 246);
+}
