@@ -24,22 +24,20 @@ public class TextToDispatch {
 	private final String patternType = "(MEMO|NOTA|EXP|HCD)";
 	private final String patternDocCumber = "[0-9]{1,6}/[0-9]{2}";;
 	private final String patternDesc = "^(([a-z])+(\s)*?)*";
+	private final String patternVolumeNumber = "((Alcance:)[0-9])";
 
 	public List<DispatchControlDto> textToDispatch(List<String> pdfText) throws ParseException {
-		// pdfText.forEach(e -> System.out.println(e));
 		String[] lines = pdfText.stream().collect(Collectors.joining("")).split(" ");
-		// Arrays.stream(lines).forEach(e -> System.out.println(e));
-
 		List<DispatchItemDto> dispatchItemDtos = mapItems(pdfText);
 		List<DispatchControlDto> dispatchs = new ArrayList<>();
 		ListIterator<DispatchItemDto> it = dispatchItemDtos.listIterator();
-
 		it.forEachRemaining(d -> {
 			DispatchControlDto dispatchControlDto = new DispatchControlDto();
 			dispatchControlDto.setDate(getTextDate(lines));
-			dispatchControlDto.setToDependency(getToDependency(lines));
+			dispatchControlDto.setToDependency(getToDependency(pdfText));
 			dispatchControlDto.setType(d.getItemType());
 			dispatchControlDto.setDocNumber(d.getItemNumber());
+			dispatchControlDto.setVolumeNumber(d.getVolumeNumber());
 			dispatchControlDto.setDescription(d.getDescription());
 			dispatchs.add(dispatchControlDto);
 		});
@@ -47,7 +45,6 @@ public class TextToDispatch {
 	}
 
 	private List<DispatchItemDto> mapItems(List<String> pdfText) {
-		// pdfText.forEach(e -> System.out.println(e + e.length()));
 		ListIterator<String> it = pdfText.listIterator();
 		List<DispatchItemDto> items = new ArrayList<DispatchItemDto>();
 		it.forEachRemaining(t -> {
@@ -55,6 +52,7 @@ public class TextToDispatch {
 			if (t.trim().startsWith("Tipo Expediente")) {
 				dto.setItemNumber(getItemNumber(t));
 				dto.setItemType(getItemType(t));
+				dto.setVolumeNumber(getVolumeNumber(t));
 				String descResult = pdfText.get(it.nextIndex() + 4);
 				dto.setDescription(getDescription(descResult));
 				items.add(dto);
@@ -65,9 +63,7 @@ public class TextToDispatch {
 	}
 
 	private String getDescription(String line) {
-		System.out.println("Description: " + line);
 		String result = line.substring(line.indexOf(':') + 1, line.length()).trim();
-		System.out.println("Description: " + result);
 		return result;
 	}
 	
@@ -88,15 +84,15 @@ public class TextToDispatch {
 		}
 		return null;
 	}
-	private String getToDependency(String[]lines) {
-		for(String s:lines) {
-			if(s.toLowerCase().contains("oficina origen")) {
-				String result = s.substring(s.indexOf('n') + 1, s.length()).trim();
-				return result;
-			}
+	private String getToDependency(List<String> pdfText) {
+		return pdfText.stream()
+		.filter(f -> f.toLowerCase()
+				.contains("oficina destino"))
+		.map(m -> m.substring(m.indexOf('o')+1).trim())
+		.collect(Collectors.joining(""));
 		}
-		return null;
-	}
+		
+	
 
 	private String getItemType(String line) {
 		String[] lines = line.split(" ");
@@ -116,6 +112,15 @@ public class TextToDispatch {
 			s = s.replace(".", "").replace(":", "").replaceAll("[a-zA-Z]", "").strip();
 			if (s.matches(patternDocCumber)) {
 				return s;
+			}
+		}
+		return null;
+	}
+	private String getVolumeNumber(String line) {
+		String[] lines = line.split(" ");
+		for(String s:lines) {
+			if(s.trim().matches(patternVolumeNumber)) {
+				return Character.toString(s.charAt(s.indexOf(':') +1));
 			}
 		}
 		return null;
