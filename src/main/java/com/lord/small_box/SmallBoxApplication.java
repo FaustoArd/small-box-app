@@ -98,7 +98,9 @@ public class SmallBoxApplication {
 					.destination("Direccion de Pagos".toUpperCase()).build();
 			WorkTemplateDestination wtdSecAdm = WorkTemplateDestination.builder()
 					.destination("Secretaria de Administracion".toUpperCase()).build();
-			workTemplateDestinationRepository.saveAll(Arrays.asList(wtdDecDesSocial,wtdCompras,wtdPagos,wtdSecAdm));
+			WorkTemplateDestination wtDsPolSocCom = WorkTemplateDestination.builder()
+					.destination("Subsecretaria de Politicas Socio Comunitarias".toUpperCase()).build();
+			workTemplateDestinationRepository.saveAll(Arrays.asList(wtdDecDesSocial,wtdCompras,wtdPagos,wtdSecAdm,wtDsPolSocCom));
 			
 		Input i211 = Input.builder().description("Alimento para personas").inputNumber("211").build();
 		Input i212 = Input.builder().description("Alimento para animales").inputNumber("212").build();
@@ -118,7 +120,14 @@ public class SmallBoxApplication {
 		Input i236 = Input.builder().description("Textos de enseñanza").inputNumber("236").build();
 		Input i296 = Input.builder().description("Repuestos y accesorios").inputNumber("296").build();
 		Input i255 = Input.builder().description("Tintas, pinturas y colorantes").inputNumber("255").build();
+		Input i256 = Input.builder().description("Combustibles y lubricantes").inputNumber("256").build();
+		Input i372 = Input.builder().description("Viaticos").inputNumber("372").build();
+		Input i291 = Input.builder().description("Elementos de limpieza").inputNumber("291").build();
+		Input i252 = Input.builder().description("Productos farmaceuticos y medicinales").inputNumber("252").build();
+		
+		
 		List<Input> inputs = new ArrayList<>();
+		
 		inputs.add(i211);
 		inputs.add(i212);
 		inputs.add(i213);
@@ -135,8 +144,13 @@ public class SmallBoxApplication {
 		inputs.add(i234);
 		inputs.add(i235);
 		inputs.add(i236);
-		inputs.add(i296);
+		inputs.add(i252);
 		inputs.add(i255);
+		inputs.add(i256);
+		inputs.add(i291);
+		inputs.add(i296);
+		inputs.add(i372);
+		
 		inputRepository.saveAll(inputs);
 			
 		OrganizationResponsible reyes = new OrganizationResponsible();
@@ -151,10 +165,11 @@ public class SmallBoxApplication {
 		fabi.setName("Fabian");
 		fabi.setLastname("Yanes");
 		OrganizationResponsible saveFabi = organizationResponsibleRepository.save(fabi);
-		OrganizationResponsible fontova = new OrganizationResponsible();
-		fontova.setName("Carlos");
-		fontova.setLastname("Fontova");
-		OrganizationResponsible saveFontova = organizationResponsibleRepository.save(fontova);
+		
+		OrganizationResponsible iasil = new OrganizationResponsible();
+		iasil.setName("Luciana");
+		iasil.setLastname("Iasil");
+		OrganizationResponsible saveIasil = organizationResponsibleRepository.save(iasil);
 		
 			
 					
@@ -180,17 +195,24 @@ public class SmallBoxApplication {
 			org3.setMaxAmount(new BigDecimal(45000));
 			org3.setResponsible(saveFabi);
 		
-			Organization org4 = new Organization();
+			/*Organization org4 = new Organization();
 			org4.setOrganizationName("Direccion de Niñez");
 			org4.setResponsible(saveFontova);
 			org4.setMaxRotation(12);
 			org4.setMaxAmount(new BigDecimal(45000));
-			org4.setOrganizationNumber(4);
+			org4.setOrganizationNumber(4);*/
 		
+			Organization org5 = new Organization();
+			org5.setOrganizationName("Subsecretria de Politicas Socio Comunitarias");
+			org5.setResponsible(saveIasil);
+			org5.setMaxRotation(12);
+			org5.setMaxAmount(new BigDecimal(100000));
+			org5.setOrganizationNumber(4);
+			
 			Organization secDesSocial = organizationRepository.save(org1);
 			Organization dirAdmDesp = organizationRepository.save(org2);
 			organizationRepository.save(org3);
-			organizationRepository.save(org4);
+			organizationRepository.save(org5);
 			
 			//fileReaderUtils.readFile();
 		

@@ -34,7 +34,6 @@ import { MemoSingleEditComponent } from './components/work-template/memo-single-
 import { LocationContractComponent } from './components/contract/location-contract/location-contract.component';
 import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog/confirm-dialog.component';
-
 import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel/admin-panel.component'; 

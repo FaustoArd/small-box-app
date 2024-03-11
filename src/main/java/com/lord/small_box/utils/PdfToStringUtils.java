@@ -27,7 +27,7 @@ import com.lord.small_box.models.ReceiptDto;
 public class PdfToStringUtils {
 
 	public List<String> pdfToList(String fileName) throws Exception {
-		String filePath = "d:\\filetest\\DOCUMENTAI-REMITOS SISTEMA\\" + fileName ;
+		String filePath = "\\\\canaima\\Usuarios\\Secretarias\\Desarrollo social\\SEC DSARROLLO SOCIAL\\ADMINISTRACION\\FAUSTO\\DOCUMENTAI-REMITOS SISTEMA\\" + fileName ;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
 		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));

@@ -42,3 +42,9 @@ select{
     font-family: 'Quattrocento', serif;
     background-color:  rgb(253, 252, 246);
 }
+#btnUpload{
+    color:white;
+    background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
+    margin-top: 0.2rem;
+    margin-left: 3rem;
+}

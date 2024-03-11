@@ -91,19 +91,19 @@
                     </thead>
                     <tbody>
                         <tr class="text-center" *ngFor="let completed of completedSmallBox">
-                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.date | date:
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-bold">{{completed.date | date:
                                 'dd-MM-yyyy'}}</td>
                             <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold "></td>
-                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketNumber}}
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-bold">{{completed.ticketNumber}}
                             </td>
                             <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold"></td>
-                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.provider}}
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-bold">{{completed.provider}}
                             </td>
                             <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold "></td>
-                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.description}}
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-bold">{{completed.description}}
                             </td>
                             <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null" class="fw-bold"></td>
-                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.ticketTotal |
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-bold">{{completed.ticketTotal |
                                 currency: '$': 'symbol'}}</td>
                             <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null"
                                 class="fw-bold  text-dark">
@@ -111,7 +111,7 @@
                             <td scope="row" id="rowCompleted" *ngIf="completed.subtotal!=null"
                                 class="fw-bold   text-dark">
                                 {{completed.subtotal | currency: '$': 'symbol'}}</td>
-                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-light">{{completed.inputNumber}}
+                            <td scope="row" *ngIf="completed.subtotal==null" class="fw-bold">{{completed.inputNumber}}
                             </td>
                         </tr>
                     </tbody>
