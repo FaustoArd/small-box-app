@@ -34,7 +34,7 @@ public class PdfToStringUtils {
 		PDFTextStripper pdfTextStripper = new PDFTextStripper();
 		pdfTextStripper.setDropThreshold(7);
 		pdfTextStripper.setStartPage(1);
-		pdfTextStripper.setEndPage(1);
+		//pdfTextStripper.setEndPage(0);
 		String documentText = pdfTextStripper.getText(pdfDocument);
 		// System.out.println(documentText);
 		List<String> result = Arrays.asList(documentText.split("\n"));

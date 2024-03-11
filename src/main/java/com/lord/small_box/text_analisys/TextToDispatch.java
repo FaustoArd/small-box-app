@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 
 import com.lord.small_box.dtos.DispatchControlDto;
 import com.lord.small_box.dtos.DispatchItemDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
 
 @Component
 public class TextToDispatch {
 
 	private final String patternDateBackSlash = "^(([0-9]{2})*(/){1}){2}([0-9]{4})";
-	private final String patternDateNoDash = "^(([0-9]{2})*){2}([0-9]{4})";
 	private final String patternType = "(MEMO|NOTA|EXP|HCD)";
 	private final String patternDocCumber = "[0-9]{1,6}/[0-9]{2}";;
 	private final String patternDesc = "^(([a-z])+(\s)*?)*";
@@ -89,7 +89,7 @@ public class TextToDispatch {
 		.filter(f -> f.toLowerCase()
 				.contains("oficina destino"))
 		.map(m -> m.substring(m.indexOf('o')+1).trim())
-		.collect(Collectors.joining(""));
+		.findFirst().orElseThrow(()-> new ItemNotFoundException("No se encontro la dependencia"));
 		}
 		
 	
