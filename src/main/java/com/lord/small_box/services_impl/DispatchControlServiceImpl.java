@@ -203,4 +203,14 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 
 	}
 
+	@Override
+	public List<DispatchControl> saveAllDispatchs(List<DispatchControl> dispatchControls,Long organizationId) {
+		Organization org = organizationService.findById(organizationId);
+		List<DispatchControl> updatedDispatchs = dispatchControls.stream().map(m ->{
+			m.setOrganization(org);
+			return m;
+		}).toList();
+		return dispatchControlRepository.saveAll(updatedDispatchs);
+	}
+
 }

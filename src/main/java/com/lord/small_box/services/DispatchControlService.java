@@ -32,6 +32,8 @@ public interface DispatchControlService {
 	
 	public DispatchControl exampleMatchToDispatchObject(String example)throws ParseException;
 	
+	public List<DispatchControl> saveAllDispatchs(List<DispatchControl> dispatchControls,Long organizatioId);
+	
 	
 		
 	

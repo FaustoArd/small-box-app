@@ -25,8 +25,5 @@ public class DispatchControlDto {
 	
 	public Long organizationId;
 
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> pdf-box

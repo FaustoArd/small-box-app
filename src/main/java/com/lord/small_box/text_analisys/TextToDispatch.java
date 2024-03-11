@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.lord.small_box.dtos.DispatchControlDto;
 import com.lord.small_box.dtos.DispatchItemDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.models.DispatchControl;
 
 @Component
 public class TextToDispatch {
@@ -26,20 +27,20 @@ public class TextToDispatch {
 	private final String patternDesc = "^(([a-z])+(\s)*?)*";
 	private final String patternVolumeNumber = "((Alcance:)[0-9])";
 
-	public List<DispatchControlDto> textToDispatch(List<String> pdfText) throws ParseException {
+	public List<DispatchControl> textToDispatch(List<String> pdfText) throws ParseException {
 		String[] lines = pdfText.stream().collect(Collectors.joining("")).split(" ");
 		List<DispatchItemDto> dispatchItemDtos = mapItems(pdfText);
-		List<DispatchControlDto> dispatchs = new ArrayList<>();
+		List<DispatchControl> dispatchs = new ArrayList<>();
 		ListIterator<DispatchItemDto> it = dispatchItemDtos.listIterator();
 		it.forEachRemaining(d -> {
-			DispatchControlDto dispatchControlDto = new DispatchControlDto();
-			dispatchControlDto.setDate(getTextDate(lines));
-			dispatchControlDto.setToDependency(getToDependency(pdfText));
-			dispatchControlDto.setType(d.getItemType());
-			dispatchControlDto.setDocNumber(d.getItemNumber());
-			dispatchControlDto.setVolumeNumber(d.getVolumeNumber());
-			dispatchControlDto.setDescription(d.getDescription());
-			dispatchs.add(dispatchControlDto);
+			DispatchControl dispatchControl = new DispatchControl();
+			dispatchControl.setDate(getTextDate(lines));
+			dispatchControl.setToDependency(getToDependency(pdfText));
+			dispatchControl.setType(d.getItemType());
+			dispatchControl.setDocNumber(d.getItemNumber());
+			dispatchControl.setVolumeNumber(d.getVolumeNumber());
+			dispatchControl.setDescription(d.getDescription());
+			dispatchs.add(dispatchControl);
 		});
 		return dispatchs;
 	}

@@ -3,6 +3,17 @@
     <app-navbar></app-navbar>
     <div class="container-flex">
         <div class="row">
+            <div class="col-md-5 ms-3 mt-3">
+                    <input type="file" (change)="selectFile($event)" />
+                    <button class="btn btn-success btn-sm" (click)="uploadFile()">
+                        Upload
+                    </button>
+              
+        
+       
+    </div>
+        </div>
+        <div class="row">
             <form class="form-inline text-center ms-3 mt-3" [formGroup]="dispatchCreateForm">
 
                 <div class="row ">

@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.DispatchControlDto;
 import com.lord.small_box.mappers.DispatchControlMapper;
 import com.lord.small_box.models.DispatchControl;
 import com.lord.small_box.services.DispatchControlService;
-
+import com.lord.small_box.text_analisys.TextToDispatch;
+import com.lord.small_box.utils.PdfToStringUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +35,12 @@ public class DispatchControlController {
 	
 	@Autowired
 	private final DispatchControlService dispatchControlService;
+	
+	@Autowired
+	private final PdfToStringUtils pdfToStringUtils;
+	
+	@Autowired
+	private final TextToDispatch textToDispatch;
 	
 	private static final Gson gson = new Gson();
 	
@@ -92,6 +103,16 @@ public class DispatchControlController {
 	ResponseEntity<String> dispatchWorkTemplate(@RequestParam("workTemplateId")Long workTemplateId){
 		String dispatchResult = dispatchControlService.dispatchWorkTemplate(workTemplateId);
 		return new ResponseEntity<String>(gson.toJson(dispatchResult),HttpStatus.OK);
+	}
+	
+	@PostMapping(path = "/upload_file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	ResponseEntity<List<DispatchControlDto>> getPdfToString(@RequestPart("file") MultipartFile file,@RequestParam("organizationId")Long organizationId) throws Exception {
+		List<String> pdfList = pdfToStringUtils.pdfToList(file.getOriginalFilename());
+		List<DispatchControl> dispatchControl = textToDispatch.textToDispatch(pdfList);
+		List<DispatchControl> savedDispatchs = dispatchControlService.saveAllDispatchs(dispatchControl, organizationId);
+		List<DispatchControlDto> dtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(savedDispatchs);
+		return new ResponseEntity<List<DispatchControlDto>>(dtos, HttpStatus.OK);
+
 	}
 	
 	/*@GetMapping("/pattern_test")

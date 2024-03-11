@@ -32,12 +32,11 @@ import com.lord.small_box.services.ContainerService;
 import com.lord.small_box.services.DispatchControlService;
 import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
-<<<<<<< HEAD
+
 import com.lord.small_box.services.WorkTemplateDestinationService;
 import com.lord.small_box.utils.FileReaderUtils;
-=======
+
 import com.lord.small_box.utils.PdfToStringUtils;
->>>>>>> pdf-box
 
 @SpringBootApplication
 public class SmallBoxApplication {
@@ -55,13 +54,11 @@ public class SmallBoxApplication {
 			OrganizationRepository organizationRepository,
 			AuthorityRepository authorityRepository,
 			AuthorizationService authorizationService,
-			OrganizationResponsibleRepository organizationResponsibleRepository
-<<<<<<< HEAD
-			,FileReaderUtils fileReaderUtils,
-			WorkTemplateDestinationRepository workTemplateDestinationRepository) {
-=======
-			,PdfToStringUtils pdfToStringUtils) {
->>>>>>> pdf-box
+			OrganizationResponsibleRepository organizationResponsibleRepository,
+			FileReaderUtils fileReaderUtils,
+			WorkTemplateDestinationRepository workTemplateDestinationRepository,
+			PdfToStringUtils pdfToStringUtils) {
+
 		
 		return args ->{
 			

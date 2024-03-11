@@ -10,6 +10,8 @@ import { DialogTemplateComponent } from '../../dialog/dialog-template/dialog-tem
 import { DialogService } from 'src/app/services/dialog.service';
 import { DestinationDto } from 'src/app/models/destinationDto';
 import { OrganizationDto } from 'src/app/models/organizationDto';
+import { FileDetails } from 'src/app/models/fileDetails';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 
 @Component({
   selector: 'app-dispatch-mat',
@@ -18,7 +20,8 @@ import { OrganizationDto } from 'src/app/models/organizationDto';
 })
 export class DispatchMatComponent implements OnInit {
   constructor(private dispatchControlService: DispatchService, private formBuilder: FormBuilder
-    ,private snackBarService:SnackBarService,private dialogService:DialogService) { }
+    ,private snackBarService:SnackBarService,private dialogService:DialogService,
+   private fileUploadService:FileUploadService,private snackBar:SnackBarService) { }
 
   ngOnInit(): void {
     
@@ -185,6 +188,34 @@ export class DispatchMatComponent implements OnInit {
     }
 
   }
+  file!:File;
+  fileDetails!: FileDetails;
+  fileUris:Array<string> = [];
+  //Upload file last
+  selectFile(event:any){
+    console.log("select file: " + event.target.files.item(0))
+    this.file = event.target.files.item(0);
+  }
+
+  dispatchList:Array<DispatchControlDto> = [];
+
+  uploadFile(){
+    this.fileUploadService.sendFileToBackEnd(this.file,2).subscribe({
+      next:(receiptData) =>{
+        this.dispatchList = receiptData;
+       console.log(this.dispatchList)
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      },
+      complete:()=>{
+       this.getDispatchList();
+      }
+    });
+   
+  }
+  
+
 
   get date() {
     return this.dispatchCreateForm.controls.date;
