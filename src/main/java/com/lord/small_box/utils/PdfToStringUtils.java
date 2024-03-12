@@ -25,20 +25,32 @@ import com.lord.small_box.models.ReceiptDto;
 
 @Component
 public class PdfToStringUtils {
-
-	public List<String> pdfToList(String fileName) throws Exception {
-		String filePath = "\\\\canaima\\Usuarios\\Secretarias\\Desarrollo social\\SEC DSARROLLO SOCIAL\\ADMINISTRACION\\FAUSTO\\DOCUMENTAI-REMITOS SISTEMA\\" + fileName ;
+	
+	
+	public String pdfToString(String filename)throws Exception{
+		String filePath = "D:\\filetest\\FACTURA-40\\" + filename + ".pdf" ;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
 		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
 		PDFTextStripper pdfTextStripper = new PDFTextStripper();
-		pdfTextStripper.setDropThreshold(7);
 		pdfTextStripper.setStartPage(1);
-		//pdfTextStripper.setEndPage(0);
+		pdfTextStripper.setLineSeparator("@@");
+		pdfTextStripper.setSortByPosition(true);
 		String documentText = pdfTextStripper.getText(pdfDocument);
-		// System.out.println(documentText);
+		pdfDocument.close();
+		fis.close();
+		return documentText;
+	}
+
+	public List<String> pdfToList(String fileName) throws Exception {
+		String filePath = "D:\\filetest\\DOCUMENTAI-REMITOS SISTEMA\\" + fileName  ;
+		File file = new File(filePath);
+		FileInputStream fis = new FileInputStream(file);
+		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
+		PDFTextStripper pdfTextStripper = new PDFTextStripper();
+		pdfTextStripper.setStartPage(1);
+		String documentText = pdfTextStripper.getText(pdfDocument);
 		List<String> result = Arrays.asList(documentText.split("\n"));
-		//result.forEach(e -> System.out.println(e));
 		pdfDocument.close();
 		fis.close();
 		return result;

@@ -86,7 +86,7 @@ public class SecurityConfiguration {
 
 			auth.requestMatchers("/api/v1/small-box/csv_utils/**").permitAll();
 
-			auth.requestMatchers("/api/v1/small-box/pdf_to_string/**").permitAll();
+			auth.requestMatchers("/api/v1/small-box/pdf_to_text/**").permitAll();
 			
 
 			auth.anyRequest().authenticated();

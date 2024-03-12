@@ -90,7 +90,7 @@ public class TextToDispatch {
 		.filter(f -> f.toLowerCase()
 				.contains("oficina destino"))
 		.map(m -> m.substring(m.indexOf('o')+1).trim())
-		.findFirst().orElseThrow(()-> new ItemNotFoundException("No se encontro la dependencia"));
+		.findFirst().orElse(null);
 		}
 		
 	

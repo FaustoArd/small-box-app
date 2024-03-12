@@ -1,8 +1,13 @@
 package com.lord.small_box.text_analisys;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,17 +24,59 @@ public class TextToReceipt {
 	private final String patternDateDash = "^(([0-9]{2}){2}[,.]{1})([0-9]{4})$";
 	private final String patternDateV2 = "^(([0-9]{2})*([-/]){1}){2}([0-9]{4})";
 	private final String patternTicketTotal = "^(([0-9]+)+[.,])+([0-9]{2})$";
-
+	private final String patternTicketTotalV2 = "^(([0-9a-zA-Z])*[.,]*([a-zA-Z]{0,2}))+([0-9]{2})$";
+	private final String patternTicketTotalV3 = "^(([0-9]+)+[.,]+)+([0-9]{2})$";
+	
+	
+	public List<String> getPdfList(String pdfText) {
+		Pattern pattern = Pattern.compile(patternTicketTotalV3,Pattern.CASE_INSENSITIVE);
+		Pattern pattern2 = Pattern.compile("([total]+[a-zA-Z]*[a-zA-Z0-9]*)");
+		Matcher matcher;
+		List<String> pdfList = Arrays.asList(pdfText.split("@@"));
+		pdfList.forEach(e -> System.out.println(e));
+		String result = pdfList.stream()
+				.filter(f -> f.toLowerCase().contains("subtotal")).distinct()
+				.filter(f -> f.toLowerCase().strip().contains("total"))
+				//.filter(f -> pattern2.matcher(f).find())
+				.map(this::splitTotal)
+				//.filter(f -> f.matches(patternTicketTotalV3))
+				.findFirst().get();
+				//.collect(Collectors.joining(""));
+				//.filter( f-> Pattern.matches(patternTicketTotalV2, f)).findFirst().get();
+		return Arrays.asList(result);
+		}
+	
+	private String splitTotal(String line) {
+		String[] splitted = line.split(" ");
+		//String result = Stream.of(splitted).filter(f -> f.matches(patternTicketTotalV3)).findFirst().get();
+		String test = "test: " ;
+		for(String s:splitted) {
+			System.out.println(s);
+			/*if(s.toLowerCase().matches("(subtotal)")) {
+				System.out.println("Subtotal!!");
+				continue;
+			}*/
+			if(s.matches(patternTicketTotalV3)) {
+				System.out.println(s);
+				
+				return s.replace(",", ".");
+			}else {
+			test  =s.replace(",", ".");
+			}
+		}
+		return  test;
+	}
+	
 	public ReceiptDto pdfReceiptToReceipt(List<String> pdfText) {
 		ReceiptDto receiptData = mapPdfToReceipt(pdfText);
 		return receiptData;
-
-	}
+		}
+	
 	private ReceiptDto mapPdfToReceipt(List<String> pdfReceipt) {
 		ReceiptDto receiptDto = new ReceiptDto();
 		String strReceipt = pdfReceipt.stream().map(r -> r).collect(Collectors.joining(" "));
-		receiptDto.setReceipt_date(getReceiptDate(strReceipt));
-		receiptDto.setTotal_price(getReceiptTotal(strReceipt));
+		//receiptDto.setReceipt_date(getReceiptDate(strReceipt));
+		//receiptDto.setTotal_price(getReceiptTotal(strReceipt));
 		return receiptDto;
 	}
 	private String getReceiptDate(String text) {
@@ -61,7 +108,7 @@ public class TextToReceipt {
 	// private final String patternDateDash =
 	// "^(([0-9]{2})*(-)*{1}(/)*{1}){2}([0-9]{4})";
 
-	private String getReceiptTotal(String text) {
+	/*private String getReceiptTotal(String text) {
 		String[] arrayTotal = text.split(" ");
 		ArrayList<String> arrayResult = new ArrayList<>();
 		for (String s : arrayTotal) {
@@ -76,6 +123,6 @@ public class TextToReceipt {
 		return arrayResult.stream().filter(f -> f.contains(".")).map(m -> m.replace(".", "").replace(",", "."))
 				.map(m -> Double.parseDouble(m)).max((c2, c1) -> c2.compareTo(c1)).get().toString();
 
-	}
+	}*/
 
 }

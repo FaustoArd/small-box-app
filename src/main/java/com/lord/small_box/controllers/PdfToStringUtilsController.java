@@ -26,7 +26,7 @@ import com.lord.small_box.utils.PdfToStringUtils;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/pdf_to_string")
+@RequestMapping("/api/v1/small-box/pdf_to_text")
 @RequiredArgsConstructor
 public class PdfToStringUtilsController {
 
@@ -42,7 +42,13 @@ public class PdfToStringUtilsController {
 	private static final Gson gson = new Gson();
 
 	@GetMapping("/pdf_to_string")
-	ResponseEntity<List<String>> pdfToString(@RequestParam("file") String file) throws Exception {
+	ResponseEntity<String> pdftoString(@RequestParam("file")String file) throws Exception{
+		String result = pdfToStringUtils.pdfToString(file);
+		return ResponseEntity.ok(gson.toJson(result));
+	}
+	
+	@GetMapping("/pdf_to_list")
+	ResponseEntity<List<String>> pdfToList(@RequestParam("file") String file) throws Exception {
 		List<String> result = pdfToStringUtils.pdfToList(file);
 		// ReceiptDto receiptDto = textToReceipt.pdfReceiptToReceipt(result);
 
@@ -50,10 +56,11 @@ public class PdfToStringUtilsController {
 	}
 
 	@GetMapping("/pdf_to_receipt")
-	ResponseEntity<ReceiptDto> pdfToReceipt(@RequestParam("file") String file) throws Exception {
-		List<String> pdfList = pdfToStringUtils.pdfToList(file);
-		ReceiptDto receiptDto = textToReceipt.pdfReceiptToReceipt(pdfList);
-		return ResponseEntity.ok(receiptDto);
+	ResponseEntity<List<String>> pdfToReceipt(@RequestParam("file") String file) throws Exception {
+		String pdfText = pdfToStringUtils.pdfToString(file);
+		//ReceiptDto receiptDto = textToReceipt.pdfReceiptToReceipt(pdfList);
+		
+		return ResponseEntity.ok(textToReceipt.getPdfList(pdfText));
 	}
 
 	@GetMapping("/pdf_to_dispatch")
