@@ -11,6 +11,7 @@ import java.util.function.BinaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.Loader;
@@ -37,6 +38,7 @@ public class PdfToStringUtils {
 		pdfTextStripper.setLineSeparator("@@");
 		pdfTextStripper.setSortByPosition(true);
 		String documentText = pdfTextStripper.getText(pdfDocument);
+		
 		pdfDocument.close();
 		fis.close();
 		return documentText;

@@ -12,6 +12,7 @@ import { DestinationDto } from 'src/app/models/destinationDto';
 import { OrganizationDto } from 'src/app/models/organizationDto';
 import { FileDetails } from 'src/app/models/fileDetails';
 import { FileUploadService } from 'src/app/services/file-upload.service';
+import { TemplateDestinationService } from 'src/app/services/template-destination.service';
 
 @Component({
   selector: 'app-dispatch-mat',
@@ -21,7 +22,8 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 export class DispatchMatComponent implements OnInit {
   constructor(private dispatchControlService: DispatchService, private formBuilder: FormBuilder
     ,private snackBarService:SnackBarService,private dialogService:DialogService,
-   private fileUploadService:FileUploadService,private snackBar:SnackBarService) { }
+   private fileUploadService:FileUploadService,private snackBar:SnackBarService,
+   private templateDestinationService: TemplateDestinationService) { }
 
   ngOnInit(): void {
     
@@ -155,6 +157,16 @@ export class DispatchMatComponent implements OnInit {
     var list = ['MEMO', 'EXP', 'SUM', 'CORR EXP', 'CORR MEMO', 'COMP', 'MOD PRESUP', 'NOTA']
     return list;
   }
+  getAllTemplateDestinationsList() {
+    this.templateDestinationService.getAllWorkTemplateDestinations().subscribe({
+      next: (templateDestinationData) => {
+        this.destinationsDtoList = templateDestinationData;
+      },
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+  }
   dispatchCreateForm = this.formBuilder.group({
     date: ['', Validators.required],
     type: ['', Validators.required],
@@ -165,7 +177,20 @@ export class DispatchMatComponent implements OnInit {
 
   });
 
+  openDispatchCreationForm(template:any){
+    this.dispatchTypeList = this.getTypeList();
+    this.getAllTemplateDestinationsList();
+   
+    this.matDialogRef = this.dialogService.openDialogCreation({
+      template
+    });
+    this.matDialogRef.afterClosed().subscribe();
+  }
 
+  update(): void {
+    this.dispatchCreateForm.reset();
+    this.matDialogRef.close();
+  }
   createDispatch() {
 
     if (this.dispatchCreateForm.valid) {
@@ -180,11 +205,13 @@ export class DispatchMatComponent implements OnInit {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         },
         complete: () => {
-          //this.getAllDispatchByOrganizationId();
+          this.update();
+          this.getDispatchList();
         }
       });
     } else {
       this.snackBarService.openSnackBar('Algo esta mal escrito', 'Cerrar', 3000);
+   
     }
 
   }

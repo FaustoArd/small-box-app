@@ -30,15 +30,14 @@ import com.nimbusds.jose.proc.SecurityContext;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-	
-	
+
 	@Autowired
 	private final RSAKeyProperties keys;
-	
+
 	public SecurityConfiguration(RSAKeyProperties keys) {
 		this.keys = keys;
 	}
-	
+
 	@Bean
 	AuthenticationManager authManager(UserDetailsService detailsService) {
 		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -46,20 +45,20 @@ public class SecurityConfiguration {
 		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
 		return new ProviderManager(daoAuthenticationProvider);
 	}
-	
+
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
-		
-		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth ->{
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> {
 			auth.requestMatchers("/api/v1/small-box/authorization/**").permitAll();
-			auth.requestMatchers("/api/v1/small-box/containers/**").hasAnyRole("USER","SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/inputs/**").hasAnyRole("USER","SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/smallboxes/**").hasAnyRole("USER","SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/containers/**").hasAnyRole("USER", "SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/small-box/inputs/**").hasAnyRole("USER", "SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/small-box/smallboxes/**").hasAnyRole("USER", "SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/small-box/registration/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/all-orgs").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/org/**").hasRole("ADMIN");
@@ -71,46 +70,47 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/small-box/organization/responsible/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/update-responsible").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/small-box/organization/all-responsibles").hasRole("ADMIN");
-			auth.requestMatchers("/api/v1/small-box/organization/all-orgs-by-user").hasAnyRole("USER","SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/work-templates/create").hasAnyRole("SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/work-templates/by_id/**").hasAnyRole("SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/work-templates/by_user_id/**").hasAnyRole("SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/work-templates/all_template_destinations").hasAnyRole("SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/work-templates/create_template_destination").hasAnyRole("SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/small-box/work-templates/delete_template_destination/**").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/organization/all-orgs-by-user").hasAnyRole("USER", "SUPERUSER",
+					"ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/create").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/by_id/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/by_user_id/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/all_template_destinations").hasAnyRole("SUPERUSER",
+					"ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/create_template_destination").hasAnyRole("SUPERUSER",
+					"ADMIN");
+			auth.requestMatchers("/api/v1/small-box/work-templates/delete_template_destination/**")
+					.hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/small-box/work-templates/delete_work_template_by_id/**").hasRole("ADMIN");
-			auth.requestMatchers("/api/v1/small-box/location-contracts/**").hasAnyRole("SUPERUSER","ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/dispatchs/**").permitAll();
-			auth.requestMatchers("/api/v1/small-box/template_destination/**").hasAnyRole("SUPERUSER","ADMIN");
+			auth.requestMatchers("/api/v1/small-box/location-contracts/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/dispatchs/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/small-box/template_destination/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/small-box/users/**").hasRole("ADMIN");
-
-			auth.requestMatchers("/api/v1/small-box/csv_utils/**").permitAll();
-
-			auth.requestMatchers("/api/v1/small-box/pdf_to_text/**").permitAll();
-			
+			auth.requestMatchers("/api/v1/small-box/csv_utils/**").hasRole("ADMIN");
+			auth.requestMatchers("/api/v1/small-box/pdf_to_text/**").hasRole("ADMIN");
 
 			auth.anyRequest().authenticated();
-			
-			
+
 		});
-		http.oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+		http.oauth2ResourceServer(
+				oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		return http.build();
-		
+
 	}
-	
+
 	@Bean
 	JwtDecoder jwtDecoder() {
 		return NimbusJwtDecoder.withPublicKey(keys.getPublicKey()).build();
 	}
-	
+
 	@Bean
 	JwtEncoder jwtEncoder() {
 		JWK jwk = new RSAKey.Builder(keys.getPublicKey()).privateKey(keys.getPrivateKey()).build();
 		JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 		return new NimbusJwtEncoder(jwks);
 	}
-	
+
 	@Bean
 	JwtAuthenticationConverter jwtAuthenticationConverter() {
 		JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
@@ -120,13 +120,5 @@ public class SecurityConfiguration {
 		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 		return jwtAuthenticationConverter;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }

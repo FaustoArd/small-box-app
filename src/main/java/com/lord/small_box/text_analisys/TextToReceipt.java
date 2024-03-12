@@ -3,6 +3,7 @@ package com.lord.small_box.text_analisys;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,23 +27,29 @@ public class TextToReceipt {
 	private final String patternTicketTotal = "^(([0-9]+)+[.,])+([0-9]{2})$";
 	private final String patternTicketTotalV2 = "^(([0-9a-zA-Z])*[.,]*([a-zA-Z]{0,2}))+([0-9]{2})$";
 	private final String patternTicketTotalV3 = "^(([0-9]+)+[.,]+)+([0-9]{2})$";
+	private final String patterntTotalTitle = "(^(?=.*[total]))";
 	
 	
 	public List<String> getPdfList(String pdfText) {
 		Pattern pattern = Pattern.compile(patternTicketTotalV3,Pattern.CASE_INSENSITIVE);
-		Pattern pattern2 = Pattern.compile("([total]+[a-zA-Z]*[a-zA-Z0-9]*)");
-		Matcher matcher;
+		String pattern2 = "^(?=.*[tTiI\\s]).{1}([tToOaA0-9\\s]).{3}(.?)*$";
+		Pattern p = Pattern.compile(pattern2);
+		
+		Matcher m;// = p.matcher("Total:");
 		List<String> pdfList = Arrays.asList(pdfText.split("@@"));
 		pdfList.forEach(e -> System.out.println(e));
-		String result = pdfList.stream()
-				.filter(f -> f.toLowerCase().contains("subtotal")).distinct()
-				.filter(f -> f.toLowerCase().strip().contains("total"))
-				//.filter(f -> pattern2.matcher(f).find())
+		System.out.println("Doc count:" + Stream.of(pdfText.split("@@")).count());
+		String result = pdfList.stream()//.sorted(Comparator.reverseOrder())
+				//.filter(f -> f.toLowerCase().contains("subtotal")).distinct()
+				.filter(f -> f.toLowerCase().contains("total"))
+				//.filter(f -> f.matches(pattern2))
+				//.filter(f -> p.matcher(patternTicketTotalV3).find())
 				.map(this::splitTotal)
 				//.filter(f -> f.matches(patternTicketTotalV3))
 				.findFirst().get();
 				//.collect(Collectors.joining(""));
 				//.filter( f-> Pattern.matches(patternTicketTotalV2, f)).findFirst().get();
+		
 		return Arrays.asList(result);
 		}
 	
@@ -51,19 +58,20 @@ public class TextToReceipt {
 		//String result = Stream.of(splitted).filter(f -> f.matches(patternTicketTotalV3)).findFirst().get();
 		String test = "test: " ;
 		for(String s:splitted) {
-			System.out.println(s);
-			/*if(s.toLowerCase().matches("(subtotal)")) {
-				System.out.println("Subtotal!!");
+			System.out.println("split for: " + s);
+			if(s.toLowerCase().strip().matches("^(?=.*[tTiI\\s]).{1}([tToOaA0-9\\s]).{3}(.?)*$")) {
+				System.out.println("Pattern total ");
 				continue;
-			}*/
+			}
 			if(s.matches(patternTicketTotalV3)) {
-				System.out.println(s);
+				System.out.println("Matches pticketv3: " +s);
 				
 				return s.replace(",", ".");
 			}else {
 			test  =s.replace(",", ".");
 			}
 		}
+		
 		return  test;
 	}
 	

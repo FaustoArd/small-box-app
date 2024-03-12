@@ -3,114 +3,25 @@
     <app-navbar></app-navbar>
     <div class="container-flex">
         <div class="row">
-            <div class="col-md-4 ms-3 mt-3 ">
-                    <input type="file" (change)="selectFile($event)" />
-                    <button id="btnUpload" class="btn btn-sm" (click)="uploadFile()">
+            <div class="col-md-2 ms-3 mt-3">
+                    <input class="btn btn-sm" type="file" (change)="selectFile($event)"/>
+                    <button id="btnUpload" class="btn btn-sm " (click)="uploadFile()">
                         Subir
                     </button>
-              
-        
-       
-    </div>
-        </div>
-        <div class="row">
-            <form class="form-inline text-center ms-3 mt-3" [formGroup]="dispatchCreateForm">
-
-                <div class="row ">
-                    <div class="col-md-2">
-
-                        <div class="form-group w-75">
-                            <label for="date" class="form-label">Fecha</label>
-                            <input type="date" class="form-control border-dark  " formControlName="date" id="date">
-                            <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger">
-                                <div *ngIf="date.errors?.['required']">
-                                    Falta la fecha
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        <div class="form-group d-inline">
-                            <label for="type" class="form-label">Tipo</label>
-                            <select id="type" formControlName="type" class="form-select  border-dark ">
-                                <option type="text" class="form-control border-dark "
-                                    *ngFor="let type of dispatchTypeList" id="type" [value]="type">
-                                    {{type}}</option>
-
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="docNumber" class="form-label">Numero</label>
-                            <input type="text" class="form-control border-dark  " formControlName="docNumber"
-                                id="docNumber">
-                            <!-- <button id="btnSn" class="btn btn-sm mt-1" (click)="setNoNumberCorrespond()">S/N</button> -->
-                            <div *ngIf="docNumber.invalid && (docNumber.dirty || docNumber.touched)"
-                                class="text-danger">
-                                <div *ngIf="docNumber.errors?.['required']">
-                                    Falta El numero
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        <div class="form-group">
-                            <label for="volumeNumber" class="form-label">Alc.</label>
-                            <input type="text" class="form-control border-dark  " formControlName="volumeNumber"
-                                id="volumeNumber">
-                            <div *ngIf="volumeNumber.invalid && (volumeNumber.dirty || volumeNumber.touched)"
-                                class="text-danger">
-                                <div *ngIf="volumeNumber.errors?.['required']">
-                                    Falta El numero
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group ">
-                            <label for="description" class="form-label">Descripcion</label>
-                            <input type="text" class="form-control border-dark  " formControlName="description"
-                                id="description">
-                            <div *ngIf="description.invalid && (description.dirty || description.touched)"
-                                class="text-danger">
-                                <div *ngIf="description.errors?.['required']">
-                                    Falta la descripcion
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="toDependency" class="form-label">Destino</label>
-                            <select id="toDependency" formControlName="toDependency" class="form-select  border-dark ">
-                                <option type="text" class="form-control border-dark "
-                                    *ngFor="let destination of destinationsDtoList" id="type"
-                                    [value]="destination.destination">
-                                    {{destination.destination}}</option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-                    <div class="col-md-1 mt-4">
-                        <button class="btn mt-1 border-dark" (click)="createDispatch()">Guardar</button>
-                    </div>
-
                 </div>
-            </form>
-        </div>
+           <div class="col-md-6"></div>    
+    <div class="col-md-2 mt-3">
+        <button (click)="openDispatchCreationForm(dispatchCreationTemplate)" class="btn btn-sm ">Ingreso manual</button>
     </div>
-    <div class="container-flex w-75  ms-5 mt-5">
+        </div>
+        
+    </div>
+    <div class="container-flex w-75  ms-5 mt-1">
         <div class="row">
             <div class="col-md-4"> </div>
             <div class="col-md-4 mb-2 ms-2">
                 
-            <form class="form-inline mt-2" [formGroup]="findByExampleFormBuilder">
+            <form class="form-inline mt-1" [formGroup]="findByExampleFormBuilder">
               
                 <div class="input-group">
                     
@@ -185,4 +96,97 @@
 
        
     </div> 
+    <ng-template #dispatchCreationTemplate>
+        <div class="row mt-2 mb-2">
+            <form class="form-inline text-center ms-3 mt-1" [formGroup]="dispatchCreateForm">
+    
+                <div class="row ">
+                    <div class="col-md-2">
+    
+                        <div class="form-group w-75">
+                            <label for="date" class="form-label">Fecha</label>
+                            <input type="date" class="form-control border-dark  " formControlName="date" id="date">
+                            <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger">
+                                <div *ngIf="date.errors?.['required']">
+                                    Falta la fecha
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group d-inline">
+                            <label for="type" class="form-label">Tipo</label>
+                            <select id="type" formControlName="type" class="form-select  border-dark ">
+                                <option type="text" class="form-control border-dark "
+                                    *ngFor="let type of dispatchTypeList" id="type" [value]="type">
+                                    {{type}}</option>
+    
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="docNumber" class="form-label">Numero</label>
+                            <input type="text" class="form-control border-dark  " formControlName="docNumber"
+                                id="docNumber">
+                            <!-- <button id="btnSn" class="btn btn-sm mt-1" (click)="setNoNumberCorrespond()">S/N</button> -->
+                            <div *ngIf="docNumber.invalid && (docNumber.dirty || docNumber.touched)"
+                                class="text-danger">
+                                <div *ngIf="docNumber.errors?.['required']">
+                                    Falta El numero
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label for="volumeNumber" class="form-label">Alc.</label>
+                            <input type="text" class="form-control border-dark  " formControlName="volumeNumber"
+                                id="volumeNumber">
+                            <div *ngIf="volumeNumber.invalid && (volumeNumber.dirty || volumeNumber.touched)"
+                                class="text-danger">
+                                <div *ngIf="volumeNumber.errors?.['required']">
+                                    Falta El numero
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group ">
+                            <label for="description" class="form-label">Descripcion</label>
+                            <input type="text" class="form-control border-dark  " formControlName="description"
+                                id="description">
+                            <div *ngIf="description.invalid && (description.dirty || description.touched)"
+                                class="text-danger">
+                                <div *ngIf="description.errors?.['required']">
+                                    Falta la descripcion
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="toDependency" class="form-label">Destino</label>
+                            <select id="toDependency" formControlName="toDependency" class="form-select  border-dark ">
+                                <option type="text" class="form-control border-dark "
+                                    *ngFor="let destination of destinationsDtoList" id="type"
+                                    [value]="destination.destination">
+                                    {{destination.destination}}</option>
+    
+                            </select>
+    
+                        </div>
+    
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <button class="btn mt-1 border-dark" (click)="createDispatch()">Guardar</button>
+                    </div>
+    
+                </div>
+            </form>
+        </div>
+    </ng-template>
 </body>
