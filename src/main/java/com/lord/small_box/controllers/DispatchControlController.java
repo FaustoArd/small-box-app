@@ -107,7 +107,7 @@ public class DispatchControlController {
 	
 	@PostMapping(path = "/upload_file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<List<DispatchControlDto>> getPdfToString(@RequestPart("file") MultipartFile file,@RequestParam("organizationId")Long organizationId) throws Exception {
-		List<String> pdfList = pdfToStringUtils.pdfToList(file.getOriginalFilename());
+		List<String> pdfList = pdfToStringUtils.pdfToDispatch(file.getOriginalFilename());
 		List<DispatchControl> dispatchControl = textToDispatch.textToDispatch(pdfList);
 		List<DispatchControl> savedDispatchs = dispatchControlService.saveAllDispatchs(dispatchControl, organizationId);
 		List<DispatchControlDto> dtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(savedDispatchs);

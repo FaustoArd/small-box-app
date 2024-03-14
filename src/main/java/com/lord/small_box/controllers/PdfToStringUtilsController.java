@@ -49,7 +49,7 @@ public class PdfToStringUtilsController {
 	
 	@GetMapping("/pdf_to_list")
 	ResponseEntity<List<String>> pdfToList(@RequestParam("file") String file) throws Exception {
-		List<String> result = pdfToStringUtils.pdfToList(file);
+		List<String> result = pdfToStringUtils.pdfToDispatch(file);
 		// ReceiptDto receiptDto = textToReceipt.pdfReceiptToReceipt(result);
 
 		return ResponseEntity.ok(result);
@@ -65,7 +65,7 @@ public class PdfToStringUtilsController {
 
 	@GetMapping("/pdf_to_dispatch")
 	ResponseEntity<List<DispatchControl>> pdfToDispatch(@RequestParam("file") String file) throws Exception {
-		List<String> pdfList = pdfToStringUtils.pdfToList(file);
+		List<String> pdfList = pdfToStringUtils.pdfToDispatch(file);
 		List<DispatchControl> dispatchControl = textToDispatch.textToDispatch(pdfList);
 		return ResponseEntity.ok(dispatchControl);
 	}

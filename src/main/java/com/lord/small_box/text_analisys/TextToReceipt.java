@@ -33,24 +33,15 @@ public class TextToReceipt {
 	public List<String> getPdfList(String pdfText) {
 		Pattern pattern = Pattern.compile(patternTicketTotalV3,Pattern.CASE_INSENSITIVE);
 		String pattern2 = "^(?=.*[tTiI\\s]).{1}([tToOaA0-9\\s]).{3}(.?)*$";
-		Pattern p = Pattern.compile(pattern2);
+		String pattern3 = patterntTotalTitle;
+		Pattern p = Pattern.compile(pattern3);
 		
 		Matcher m;// = p.matcher("Total:");
 		List<String> pdfList = Arrays.asList(pdfText.split("@@"));
 		pdfList.forEach(e -> System.out.println(e));
 		System.out.println("Doc count:" + Stream.of(pdfText.split("@@")).count());
-		String result = pdfList.stream()//.sorted(Comparator.reverseOrder())
-				//.filter(f -> f.toLowerCase().contains("subtotal")).distinct()
-				.filter(f -> f.toLowerCase().contains("total"))
-				//.filter(f -> f.matches(pattern2))
-				//.filter(f -> p.matcher(patternTicketTotalV3).find())
-				.map(this::splitTotal)
-				//.filter(f -> f.matches(patternTicketTotalV3))
-				.findFirst().get();
-				//.collect(Collectors.joining(""));
-				//.filter( f-> Pattern.matches(patternTicketTotalV2, f)).findFirst().get();
-		
-		return Arrays.asList(result);
+		return pdfList;
+	
 		}
 	
 	private String splitTotal(String line) {
@@ -88,11 +79,7 @@ public class TextToReceipt {
 		return receiptDto;
 	}
 	private String getReceiptDate(String text) {
-		/*
-		 * for (String str : text.split("\n")) { if
-		 * (str.toLowerCase().contains("inicio") || str.contains("C.A.E")) { continue; }
-		 * else { arrayFecha.add(str); } }
-		 */
+		
 		String[] arrayFecha = text.split(" ");
 		ArrayList<String> arrayResult = new ArrayList<>();
 		for (String str : arrayFecha) {

@@ -35,16 +35,16 @@ public class PdfToStringUtils {
 		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
 		PDFTextStripper pdfTextStripper = new PDFTextStripper();
 		pdfTextStripper.setStartPage(1);
-		pdfTextStripper.setLineSeparator("@@");
+		//pdfTextStripper.setLineSeparator("@@");
 		pdfTextStripper.setSortByPosition(true);
+		//pdfTextStripper.setDropThreshold(9);
 		String documentText = pdfTextStripper.getText(pdfDocument);
-		
 		pdfDocument.close();
 		fis.close();
 		return documentText;
 	}
 
-	public List<String> pdfToList(String fileName) throws Exception {
+	public List<String> pdfToDispatch(String fileName) throws Exception {
 		String filePath = "D:\\filetest\\DOCUMENTAI-REMITOS SISTEMA\\" + fileName  ;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
