@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.lord.small_box.dtos.DispatchControlDto;
 import com.lord.small_box.models.DispatchControl;
 import com.lord.small_box.models.ReceiptDto;
+import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.text_analisys.TextToDispatch;
 import com.lord.small_box.text_analisys.TextToReceipt;
 import com.lord.small_box.utils.PdfToStringUtils;
@@ -43,7 +44,7 @@ public class PdfToStringUtilsController {
 
 	@GetMapping("/pdf_to_string")
 	ResponseEntity<String> pdftoString(@RequestParam("file")String file) throws Exception{
-		String result = pdfToStringUtils.pdfToString(file);
+		String result = pdfToStringUtils.pdfToReceipt(file);
 		return ResponseEntity.ok(gson.toJson(result));
 	}
 	
@@ -56,11 +57,11 @@ public class PdfToStringUtilsController {
 	}
 
 	@GetMapping("/pdf_to_receipt")
-	ResponseEntity<List<String>> pdfToReceipt(@RequestParam("file") String file) throws Exception {
-		String pdfText = pdfToStringUtils.pdfToString(file);
-		//ReceiptDto receiptDto = textToReceipt.pdfReceiptToReceipt(pdfList);
+	ResponseEntity<List<SmallBox>> pdfToReceipt(@RequestParam("file") String file) throws Exception {
+		String pdfText = pdfToStringUtils.pdfToReceipt(file);
+		List<SmallBox> smList = textToReceipt.getPdfToSmallBoxList(pdfText);
+		return ResponseEntity.ok(smList);
 		
-		return ResponseEntity.ok(textToReceipt.getPdfList(pdfText));
 	}
 
 	@GetMapping("/pdf_to_dispatch")
