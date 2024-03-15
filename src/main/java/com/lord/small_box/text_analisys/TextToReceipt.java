@@ -17,28 +17,29 @@ import com.lord.small_box.utils.PdfToStringUtils;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
 public class TextToReceipt {
 
 	private final String strDateV2 = "^(([0-9]{2})*([-/]){1}){2}([0-9]{2,4})";
 	private final String totalRegex4Current = "^(?=.?[^sub]*?[t]{1}[o]{1}[t]{1}[a]{1}[l]{1}[:;]?\\s*)";
 	private final String strTicketTotalV3 = "^(([0-9]+)+[.,]+)+([0-9]{2})$";
 	private final String strTicketTwoPart = "^.*(?=.*[0-9]{4,5})(.)*([0]{2}[0-9]{6}[.]*)";
-	private final String strTicketTwoPartP1 = "^.*([p][.][v])+(.)*(?=.*[0-9]{4,5})";
+	
 
 	public List<SmallBox> getPdfToSmallBoxList(String pdfText) throws ParseException {
-		return Stream.of(pdfText).map(receipt -> {
+		return Stream.of(pdfText.split("\n")).map(receipt -> {
 			SmallBox smallBox = new SmallBox();
 
 			try {
-				smallBox.setDate(getPurchaseDateFromText(receipt));
+				smallBox.setDate(getPurchaseDateFromText(receipt.split(" ")));
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			smallBox.setTicketNumber(getTwoPartTicketNumberFromText(receipt));
-			BigDecimal total = BigDecimal.valueOf(Double.valueOf(getTotalFromText(receipt)));
-			smallBox.setTicketTotal(total);
+			//String result = getTotalFromText(receipt);
+			//System.out.println("Total result = " + result);
+			//BigDecimal total = BigDecimal.valueOf(Double.valueOf(getTotalFromText(receipt)));
+			//smallBox.setTicketTotal(total);
 			smallBox.setProvider(getProviderNameFromText(receipt));
 
 			return smallBox;
@@ -54,39 +55,26 @@ public class TextToReceipt {
 	}
 
 	private String getTotal(String line) {
+		System.out.println("Total result = " + line);
 		line = line.replace("„", ".").replace(",,", ".").replace(";;", ".").replace("O", "0");
-		return Stream.of(line.split(" ")).filter(f -> f.trim().matches(strTicketTotalV3)).findFirst().get().replace(",",
-				".");
+		return Stream.of(line.split(" "))
+				.filter(f -> f.trim().matches(strTicketTotalV3)).findFirst()
+			
+				.get().replace(",",".");
 	}
 
-	private final Pattern patternTicketNumberFull = Pattern.compile(strTicketTwoPart, Pattern.CASE_INSENSITIVE);
+	
 
-	private String getTicketNumberFromText(String text) {
-		return Stream.of(text).filter(f -> patternTicketNumberFull.matcher(f).find()).map(this::getTicketNumber)
+	
+	private final Pattern patternTicketTwoPart = Pattern.compile(strTicketTwoPart);
+
+	private String getTwoPartTicketNumberFromText(String text) {
+		return Stream.of(text.split("\\n")).filter(f -> patternTicketTwoPart.matcher(f).find())
+				.map(m -> m.replaceAll("[a-z\\D\\r^-]", ""))
 				.findFirst().get();
 
 	}
 
-	private String getTicketNumber(String line) {
-		return Stream.of(line.split(" ")).filter(f -> patternTicketNumberFull.matcher(f.trim()).find()).findFirst()
-				.get();
-	}
-
-	private final Pattern patternTicketTwoPart = Pattern.compile(strTicketTwoPart);
-
-	private String getTwoPartTicketNumberFromText(String text) {
-		return Stream.of(text.split("\\n")).filter(f -> patternTicketTwoPart.matcher(f).find()).findFirst().get();
-
-	}
-
-	private final Pattern patternTicketPartOne = Pattern.compile(strTicketTwoPartP1);
-
-	private String getTicketPartOneFromText(String text) {
-		return Stream.of(text.split("\\n")).filter(f -> patternTicketPartOne.matcher(f.trim()).find()).findFirst()
-				.get();
-	}
-
-	@Test
 	private String getProviderNameFromText(String text) {
 
 		return Stream.of(text.split("\\n")).findFirst().get();
@@ -95,14 +83,13 @@ public class TextToReceipt {
 
 	private final Pattern patternDate = Pattern.compile(strDateV2, Pattern.CASE_INSENSITIVE);
 
-	private Calendar getPurchaseDateFromText(String text) throws ParseException {
+	private Calendar getPurchaseDateFromText(String[] text) throws ParseException {
+		String splittedText = Stream.of(text).collect(Collectors.joining(" "));
+		Stream.of(splittedText).forEach(e -> System.out.println(e));
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-
-		// Stream.of(text.split("\\n")).forEach(e -> System.out.println(e));
-		String[] result = Stream.of(text.split(" ")).filter(f -> patternDate.matcher(f).find())
-				.filter(f -> f.length() == 8)
-				.map(m -> m.replace(m.substring(6, 8), "20" + m.substring(6, 8)).replace("/", "-"))
+		String[] result = Stream.of(splittedText.split(" "))
+				.filter(f -> patternDate.matcher(f).find())
 				.sorted((s2, s1) -> s1.compareTo(s2)).collect(Collectors.joining(" ")).split(" ");
 		for (String s : result) {
 			System.out.println(s);
@@ -110,16 +97,17 @@ public class TextToReceipt {
 		if (result.length == 0) {
 			return null;
 		}
+		
 		try {
 			if (result.length == 1) {
-				cal.setTime(sdf.parse(result[0]));
+				cal.setTime(sdf.parse(result[0].replace(result[0].substring(6, 8), "20" +result[0].substring(6, 8)).replace("/", "-")));
 				return cal;
 			} else {
-				cal.setTime(sdf.parse(result[1]));
+				cal.setTime(sdf.parse(result[1].replace(result[1].substring(6, 8), "20" +result[1].substring(6, 8)).replace("/", "-")));
 				return cal;
 			}
-		} catch (ParseException e) {
-			throw new RuntimeException("Erorr al parsear la fecha");
+		}catch(ParseException e) {
+			throw new RuntimeException("Error al parsear fecha");
 		}
 	}
 

@@ -54,7 +54,7 @@ public class PdfTextToReceiptTest {
 
 	@BeforeAll
 	void setup() throws Exception {
-		text = pdfToStringUtils.pdfToReceipt("2FACTURA-1C");
+		text = pdfToStringUtils.pdfToReceipt("2FACTURA-4");
 		arrTextSplitLine = text.split("\\n");
 	}
 	
@@ -120,16 +120,14 @@ public class PdfTextToReceiptTest {
 		Stream.of(arrTextSplitLine).forEach(e -> System.out.println(e));
 		String[] result=  Stream.of(text.split(" "))
 				.filter(f -> patternDate.matcher(f).find())
-				.filter(f -> f.length()==8)
-				.map(m ->m.replace(m.substring(6, 8), "20" +m.substring(6, 8)).replace("/", "-"))
 				.sorted((s2,s1)-> s1.compareTo(s2))
 				.collect(Collectors.joining(" ")).split(" ");
 		try {
 		if(result.length==1) {
-			cal.setTime(sdf.parse(result[0]));
+			cal.setTime(sdf.parse(result[0].replace(result[0].substring(6, 8), "20" +result[0].substring(6, 8)).replace("/", "-")));
 			System.out.println( "Date Result index0:" + cal.getTime());
 		}else {
-			cal.setTime(sdf.parse(result[1]));
+			cal.setTime(sdf.parse(result[1].replace(result[1].substring(6, 8), "20" +result[1].substring(6, 8)).replace("/", "-")));
 			System.out.println("Date result index1: " +cal.getTime());
 		}
 		}catch (Exception e) {

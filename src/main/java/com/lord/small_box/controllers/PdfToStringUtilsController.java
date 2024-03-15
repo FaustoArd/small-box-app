@@ -33,7 +33,7 @@ public class PdfToStringUtilsController {
 
 	@Autowired
 	private final PdfToStringUtils pdfToStringUtils;
-
+	
 	@Autowired
 	private final TextToReceipt textToReceipt;
 
