@@ -101,7 +101,7 @@ export class SmallBoxComponent implements OnInit {
     description: ['', Validators.required],
     ticketTotal: [0, Validators.required],
     inputNumber: [''],
-  })
+  });
 
   update(): void {
     this.updateSmallBoxForm.reset();
@@ -153,27 +153,28 @@ export class SmallBoxComponent implements OnInit {
   }
 
 
-  getAllSmallBoxes(): void {
-    this.smallBoxService.findSmallBoxes().subscribe({
-      next: (smallData) => {
-        this.smallboxes = smallData;
-      },
-      error: (errorData) => {
-        this.snackBar.openSnackBar(errorData, 'Close', 3000);
-      }
-    })
-  }
-
+  
   getAllSmallBoxesByContainerId(): void {
     this.smallBoxService.findSmallBoxesByContainerId(Number(this.cookieService.getCurrentContainerId())).subscribe({
       next: (smallData) => {
         this.smallboxes = smallData;
+        this.sumTickets(this.smallboxes)
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Close', 3000);
       }
 
     });
+  }
+
+  public ticketsTotal:number = 0;
+
+  sumTickets(smallboxes:SmallBoxDto[]):void{
+     this.ticketsTotal = 0;
+    const result = this.smallboxes.forEach(e => {
+        this.ticketsTotal = this.ticketsTotal + e.ticketTotal;
+    });
+
   }
 
 

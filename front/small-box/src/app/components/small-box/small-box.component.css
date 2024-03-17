@@ -14,3 +14,20 @@ p{
     font-size: 0.9rem;
     font-family: 'Quattrocento', serif;
 }
+h1{
+    font-weight: bold;
+    font-size: 1.6rem;
+    font-family: 'Quattrocento', serif; 
+}
+#totalLetter{
+   
+ 
+    font-weight: bold;
+    color: #cf2f6c;
+    font-size: 1.7rem;
+    font-family: 'Quattrocento', serif; 
+}
+
+#totalCol{
+  
+}
