@@ -18,6 +18,8 @@ import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.junit.platform.commons.logging.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 
@@ -26,17 +28,21 @@ import org.springframework.stereotype.Component;
 public class PdfToStringUtils {
 	
 	
+	
+	
 	public String pdfToReceipt(String filename)throws Exception{
 		String filePath = "D:\\filetest\\FACTURA-40\\" + filename + ".pdf" ;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
 		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
+		
 		PDFTextStripper pdfTextStripper = new PDFTextStripper();
 		pdfTextStripper.setStartPage(1);
 		//pdfTextStripper.setSpacingTolerance(20);
-		pdfTextStripper.setIndentThreshold(-20);
+		//pdfTextStripper.setIndentThreshold(-20);
 		//pdfTextStripper.setLineSeparator("@@");
 		pdfTextStripper.setSortByPosition(true);
+		pdfTextStripper.setPageEnd("PageEnd");
 		//pdfTextStripper.setDropThreshold(9);
 		String documentText = pdfTextStripper.getText(pdfDocument);
 		pdfDocument.close();
@@ -44,22 +50,6 @@ public class PdfToStringUtils {
 		return documentText;
 	}
 	
-	public String pdfParserTest(String filename)throws Exception {
-		String filePath = "D:\\filetest\\FACTURA-40\\" + filename + ".pdf" ;
-		File file = new File(filePath);
-		FileInputStream fis = new FileInputStream(file);
-		PDFParser parser = new PDFParser(new RandomAccessReadBuffer(fis));
-		parser.setEOFLookupRange(20000);
-		PDDocument doc = parser.parse();
-		PDFTextStripper pdfTextStripper = new PDFTextStripper();
-		pdfTextStripper.setStartPage(1);
-		pdfTextStripper.setSortByPosition(true);
-		String documentText = pdfTextStripper.getText(doc);
-		doc.close();
-		fis.close();
-		return documentText;
-	}
-
 	public List<String> pdfToDispatch(String fileName) throws Exception {
 		String filePath = "D:\\filetest\\DOCUMENTAI-REMITOS SISTEMA\\" + fileName  ;
 		File file = new File(filePath);
@@ -73,6 +63,23 @@ public class PdfToStringUtils {
 		fis.close();
 		return result;
 	}
+	
+	/*public String pdfParserTest(String filename)throws Exception {
+		String filePath = "D:\\filetest\\FACTURA-40\\" + filename + ".pdf" ;
+		File file = new File(filePath);
+		FileInputStream fis = new FileInputStream(file);
+		PDFParser parser = new PDFParser(new RandomAccessReadBuffer(fis));
+		PDDocument doc = parser.parse();
+		PDFTextStripper pdfTextStripper = new PDFTextStripper();
+		pdfTextStripper.setStartPage(1);
+		pdfTextStripper.setSortByPosition(true);
+		String documentText = pdfTextStripper.getText(doc);
+		doc.close();
+		fis.close();
+		return documentText;
+	}*/
+
+	
 
 	
 
