@@ -122,8 +122,8 @@ export class CompletedSmallBoxComponent implements OnInit {
 
   checkMaxAmount():void{
     const containerId = Number(this.cookieService.getCurrentContainerId());
-    const userId = Number(this.cookieService.getCurrentUserId());
-    this.smallBoxService.checkMaxAmount(containerId,userId).subscribe({
+   // const userId = Number(this.cookieService.getCurrentUserId());
+    this.smallBoxService.checkMaxAmount(containerId).subscribe({
       next:(checkData)=>{
         this.snackBarService.openSnackBar(checkData,'Cerrar',4000);
       },

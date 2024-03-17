@@ -32,7 +32,7 @@ public interface SmallBoxService {
 	
 	public List<SmallBox> findAllByContainerIdOrderByInputInputNumber(Long containerId);
 	
-	public String checkMaxAmount(Long containerId,Long userId);
+	public String checkMaxAmount(Long containerId);
 	
 	
 

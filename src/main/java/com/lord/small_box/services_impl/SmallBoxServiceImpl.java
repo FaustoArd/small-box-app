@@ -190,7 +190,7 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 
 	@Override
-	public String checkMaxAmount(Long containerId,Long userId)throws MaxAmountExeededException {
+	public String checkMaxAmount(Long containerId)throws MaxAmountExeededException {
 		log.info("Check Total max amount");
 		Container container = containerRepository.findById(containerId).orElseThrow(()-> new ItemNotFoundException(containerNotFound));
 		SmallBoxType smType = smallBoxTypeRepository.findById(container.getSmallBoxType().getId())

@@ -120,8 +120,8 @@ public class SmallBoxController {
 	}
 	
 	@GetMapping("/check-max-amount")
-	ResponseEntity<String> checkMaxAmount(@RequestParam("containerId")Long containerId, @RequestParam("userId")Long userId){
-		String result = smallBoxService.checkMaxAmount(containerId, userId);
+	ResponseEntity<String> checkMaxAmount(@RequestParam("containerId")Long containerId){
+		String result = smallBoxService.checkMaxAmount(containerId);
 		return new ResponseEntity<String>(gson.toJson(result),HttpStatus.OK); 
 	}
 	

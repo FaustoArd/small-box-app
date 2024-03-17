@@ -221,5 +221,27 @@ export class SmallBoxComponent implements OnInit {
     })
   }
 
+  navigateAssociates() {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/completed'])
+    );
+  
+    window.open(url, '_blank');
+  }
+
+  completeSmallBox(){
+    const id = Number(this.cookieService.getCurrentContainerId())
+    this.smallBoxService.checkMaxAmount(id).subscribe({
+      next:(nextData)=>{
+        this.snackBar.openSnackBar(nextData,'Cerrar',3000);
+      },error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      },complete:()=>{
+        this.navigateAssociates();
+      }
+    });
+   
+  }
+
  
 }

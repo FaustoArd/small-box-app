@@ -63,8 +63,8 @@ export class SmallBoxService {
   return  this.http.delete<any>(`${SMALL_BOX_BASE_URL}/unified-all-by-container/${containerId}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
-  checkMaxAmount(containerId:number,userId:number):Observable<string>{
-    return this.http.get<string>(`${SMALL_BOX_BASE_URL}/check-max-amount?containerId=${containerId}&userId=${userId}`, this.httpOptions).pipe(catchError(this.handleError));
+  checkMaxAmount(containerId:number):Observable<string>{
+    return this.http.get<string>(`${SMALL_BOX_BASE_URL}/check-max-amount?containerId=${containerId}`, this.httpOptions).pipe(catchError(this.handleError));
   }
 
   
