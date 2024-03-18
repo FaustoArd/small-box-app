@@ -11,6 +11,7 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
 })
+//This component resgister new user in the application
 export class RegistrationComponent implements OnInit {
 
 registrationDto!:AppUserRegistrationDto;
@@ -33,6 +34,7 @@ authorities:string[] = [];
 
   }
 
+//User register form builder
   registerForm = this.formBuilder.group({
     name:['', Validators.required],
     lastname:['', Validators.required],
@@ -44,12 +46,13 @@ authorities:string[] = [];
     
   });
 
+  //Role form buidler
   authorityForm =  this.formBuilder.group({
     authority:['', Validators.required]
   });
 
  
-
+//Getters for control validators form
   get name(){
     return this.registerForm.controls.name;
   }
@@ -72,22 +75,27 @@ authorities:string[] = [];
   get authority(){
     return this.authorityForm.controls.authority;
   }
+  //Get role list for selection
   getRoles(){
   this.authorities = ['ADMIN','SUPERUSER','USER'];
   }
 
+  //Register user in database
   onSubmit(){
    if(this.registerForm.value.password!==this.registerForm.value.repeatedPassword){
      this.snackBarService.openSnackBar("Los password son distintos!!",'Cerrar',3000);
      
     }else{
       if(this.registerForm.valid && this.authorityForm.valid){
+        //Assign user and authority form values To objects
         this.registrationDto = new AppUserRegistrationDto();
         this.registrationDto = Object.assign(this.registrationDto,this.registerForm.value);
         this.authorityDto = new AuthorityDto();
         this.authorityDto = Object.assign(this.authorityDto,this.authorityForm.value);
+        //Authorization Service class, POST method, recieve RegistrationDto and AuthorityDto classes 
        this.authorizationService.registerUser(this.registrationDto,this.authorityDto.authority).subscribe({
           next:(regData)=>{
+            //Return name and lastname
             this.regResponseDto = regData;
            
           },
@@ -95,7 +103,7 @@ authorities:string[] = [];
             this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
           },
           complete:()=>{
-            this.snackBarService.openSnackBar("Se guardo el usuario: " + this.regResponseDto.name + " " + this.regResponseDto.lastname,'Cerrar',3000);
+            this.snackBarService.openSnackBar("Se registro el usuario: " + this.regResponseDto.name + " " + this.regResponseDto.lastname,'Cerrar',3000);
           }
         });
       }else{

@@ -136,15 +136,22 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 		log.info("Fetch al smallBoxes by container and input number");
 		return (List<SmallBox>) smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
 	}
-	
+	/**This method take charge of  sort by input number,calculate all the tickets subtotals and add title to each subtotal. **/
 	@Transactional
 	@Override
 	public List<SmallBoxUnifier> completeSmallBox(Long containerId) {
 		log.info("Complete small box");
+		//find container
 		Container container = containerRepository.findById(containerId).orElseThrow(() -> new ItemNotFoundException(containerNotFound));
+		//find all SmallBoxes by container and map all the input numbers, return a List string.
 		List<String> smallBoxes = findAllByContainerIdOrderByInputInputNumber(containerId).stream()
 				.map(s -> s.getInput().getInputNumber()).distinct().toList();
+		//Create an input numbers list iterator
 		ListIterator<String> smIt = smallBoxes.listIterator();
+		
+		//while input numbers has next, find all SmallBox by container id and input number, and
+		//iterate with a forEach, then , inside the for each, create a new SmallBoxUnified,
+		//copy the data from the forEach consumer and then save SmallBoxUnified to database
 		while (smIt.hasNext()) {
 			findAllByContainerIdAndInputInputNumber(containerId, smIt.next()).forEach(sm -> {
 				SmallBoxUnifier smUnifier = new SmallBoxUnifier();
@@ -158,6 +165,8 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 				currentInput = sm.getInput().getInputNumber();
 				smallBoxUnifierRepository.save(smUnifier);
 			});
+			//then create a new SmallBoxUnifier to set the subtotal of all  the tickets that correspond
+			//to the input number.
 			SmallBoxUnifier smUnifierSTotal = new SmallBoxUnifier();
 			smUnifierSTotal.setSubtotal(calculateSubtotal(containerId, currentInput).getSubtotal());
 			smUnifierSTotal.setSubtotalTitle("SubTotal");

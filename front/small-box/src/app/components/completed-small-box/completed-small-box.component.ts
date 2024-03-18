@@ -9,7 +9,8 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 
 
-
+/**This component take charge of the completed SmallBox. in this component the user
+can check the tickets for errors and write a letter total amount**/
 @Component({
   selector: 'app-completed-small-box',
   templateUrl: './completed-small-box.component.html',
@@ -32,26 +33,27 @@ export class CompletedSmallBoxComponent implements OnInit {
 
   ngOnInit(): void {
     const containerId = Number(this.cookieService.getCurrentContainerId());
-    this.containerService.getContainerById(containerId).subscribe({
-      next: (containerData) => {
-        this.container = new ContainerDto();
-        this.container = containerData;
-        this.cookieService.setCurrentContainerId(JSON.stringify(containerData.id));
-        this.smallBoxCreated = containerData.smallBoxCreated;
-        this.deleteAllUnifiedSamllBoxByContainerId(Number(this.cookieService.getCurrentContainerId()));
-          this.onCompleteSmallBox();
+    this.getContainerByIdForInit(containerId);
+   
+ }
 
-        
-      }, error: (errorData) => {
-        this.errorData = errorData;
-      }
-    });
+ //This method find the container that keep all the current smallbox
+  getContainerByIdForInit(containerId:number){
+  this.containerService.getContainerById(containerId).subscribe({
+    next: (containerData) => {
+      this.container = new ContainerDto();
+      this.container = containerData;
+      //this.cookieService.setCurrentContainerId(JSON.stringify(containerData.id));
+      this.smallBoxCreated = containerData.smallBoxCreated;
+      this.deleteAllUnifiedSamllBoxByContainerId(Number(this.cookieService.getCurrentContainerId()));
+        this.onCompleteSmallBox();
 
-
-
-
-
-  }
+      
+    }, error: (errorData) => {
+      this.errorData = errorData;
+    }
+  });
+ }
 
 
   onCompleteSmallBox(): void {

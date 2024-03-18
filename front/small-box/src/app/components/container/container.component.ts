@@ -18,6 +18,9 @@ import { SmallBoxTypeDto } from 'src/app/models/smallBoxTypeDto';
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.css']
 })
+
+//This component take charge of the container creation,
+//here, the user select the SmallBox type and the Organization.
 export class ContainerComponent implements OnInit {
 
 
@@ -39,6 +42,7 @@ organizations:OrganizationDto[]=[];
     this.getSmallBoxTypes();
   }
 
+  //Get the smallBoxType from backend
   getSmallBoxTypes(){
    this.containerService.getAllSmallBoxesTypes().subscribe({
     next:(smTypesData)=>{
@@ -49,13 +53,14 @@ organizations:OrganizationDto[]=[];
     }
    })
   }
-
+//Container form Builder
   containerFormBuilder = this.formBuilder.group({
    smallBoxType:['', Validators.required],
     organizationId:[0, Validators.required]
    
 });
 
+//Getters
 get smallBoxType(){
     return this.containerFormBuilder.controls.smallBoxType;
   }
@@ -65,12 +70,14 @@ get smallBoxType(){
 
  
 
+  //Send new container to backend 
   onCreateContainer(){
     if(this.containerFormBuilder.valid){
+      //Assign Form builder to ContainerDto class
    this.container = new ContainerDto();
       this.container = Object.assign(this.container,this.containerFormBuilder.value)
-      console.log(this.container);
-      this.containerService.createContainer(this.container).subscribe({
+   this.containerService.createContainer(this.container).subscribe({
+        //Return container data, set container id to cookies.
         next:(contData)=>{
           this.returnedData = contData;
           this.cookieService.deleteCurrentContainerId();
@@ -87,6 +94,7 @@ get smallBoxType(){
     }
   }
 
+  //Get organizations by current user
   getOrganizationsByUserId():void{
     this.organizationService.getAllOrganizationsByUser(Number(this.cookieService.getCurrentUserId())).subscribe({
       next:(orgsData)=>{

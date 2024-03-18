@@ -100,6 +100,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		}
 	}
 
+	//This method map user registered name and last name values to AppUserRegistrationDto to show in frontEnd
 	private static AppUserRegistrationDto mapUserToDto(AppUser user) {
 		if (user == null) {
 			return null;
@@ -107,8 +108,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		AppUserRegistrationDto userDto = new AppUserRegistrationDto();
 		userDto.setName(user.getName());
 		userDto.setLastname(user.getLastname());
-		userDto.setUsername(user.getUsername());
-		userDto.setEmail(user.getEmail());
+		userDto.setUsername(null);
+		userDto.setEmail(null);
 		userDto.setPassword(null);
 		return userDto;
 	}
