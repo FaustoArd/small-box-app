@@ -13,6 +13,8 @@ import { DialogService } from 'src/app/services/dialog.service';
   templateUrl: './organization-setup.component.html',
   styleUrls: ['./organization-setup.component.css']
 })
+
+/**This component is to create Organizations and Organization responsibles */
 export class OrganizationSetupComponent implements OnInit {
 
   constructor(private organizationService: OrganizationService, private snackBarService: SnackBarService
@@ -34,6 +36,7 @@ export class OrganizationSetupComponent implements OnInit {
 
   }
 
+  //Organization Form Builder
   organizationForm = this.formBuilder.group({
     organizationName: ['', Validators.required],
     organizationNumber: ['', Validators.required],
@@ -42,7 +45,7 @@ export class OrganizationSetupComponent implements OnInit {
     responsibleId:[0, Validators.required]
   });
 
-
+//Getters
   get organizationName() {
     return this.organizationForm.controls.organizationName;
   }
@@ -59,11 +62,14 @@ export class OrganizationSetupComponent implements OnInit {
     return this.organizationForm.controls.responsibleId;
   }
 
+  //Create organization method
   newOrganization() {
+    //Is form valid
     if (this.organizationForm.valid) {
+      //Assign form builder to OrganizationDto class
       this.organizationDto = new OrganizationDto();
       this.organizationDto = Object.assign(this.organizationDto, this.organizationForm.value);
-      console.log(this.organizationDto)
+      //POST method recieves OrganizationDto class
       this.organizationService.newOrganization(this.organizationDto).subscribe({
         next: (orgData) => {
           this.snackBarService.openSnackBar('Se a creado la Organizacion: ' + orgData.organizationName, 'Cerrar', 3000);
@@ -72,11 +78,14 @@ export class OrganizationSetupComponent implements OnInit {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         },
         complete:()=>{
+          //Get Organization List
           this.getOrganizations();
         }
       });
     }
   }
+
+  //Update Organization form Builder
 updateOrganizationForm = this.formBuilder.group({
     id:[0],
     organizationName: ['', Validators.required],
@@ -87,6 +96,7 @@ updateOrganizationForm = this.formBuilder.group({
 
   });
 
+  // this method  Patch values of the organization item to be updated in update Form.
   onUpdateOrganizationShow(org:OrganizationDto):void{
     
     this.updateOrganizationForm.patchValue({
@@ -100,28 +110,36 @@ updateOrganizationForm = this.formBuilder.group({
     });
   }
 
+  // This method open the template dialog form
   openDialogUpdateOrganization(id:number,template:TemplateRef<any>){
+    //Get organization By Id from selection
     this.getOrganizationbyId(id);
+    //Get responsibles to show in form
     this.getResponsibles();
+
     this.matDialogRef = this.dialogService.openDialogCreation({
       template
     });
     this.matDialogRef.afterClosed().subscribe();
     this.updateOrganizationForm.reset();
   }
-
+  //this method reset the update form and close the template dialog
   create():void{
     this.matDialogRef.close();
     this.updateOrganizationForm.reset();
    }
 
+   //Update form method
    updateOrganization():void{
     if(this.updateOrganizationForm.valid){
+      //Assign form to OrganizationDto class
       this.organizationUpdateDto = new OrganizationDto();
       this.organizationUpdateDto = Object.assign(this.organizationUpdateDto,this.updateOrganizationForm.value);
+      //Organization service update POST method, recieves OrganizationDto class
       this.organizationService.updateOrganization(this.organizationUpdateDto).subscribe({
+         //Recieves Organization values
         next:(orgData)=>{
-          this.snackBarService.openSnackBar('Se actializo la organization: ' + orgData.organizationName,'Cerrar',3000);
+         this.snackBarService.openSnackBar('Se actializo la organizacion: ' + orgData.organizationName,'Cerrar',3000);
         },
         error:(errorData)=>{
           this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
@@ -129,6 +147,8 @@ updateOrganizationForm = this.formBuilder.group({
       });
     }
    }
+
+   //Find one organization By id.
    getOrganizationbyId(id:number):void{
     this.organizationService.getOrganizationById(id).subscribe({
       next:(orgData)=>{
@@ -139,12 +159,10 @@ updateOrganizationForm = this.formBuilder.group({
       error:(errorData)=>{
         this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
       },
-      complete:()=>{
-       
-      }
-    });
+      });
   }
 
+  //Get all Organizations.
   getOrganizations(){
     this.organizationService.getAllOrganizations().subscribe({
       next:(orgsData)=>{
@@ -163,6 +181,7 @@ updateOrganizationForm = this.formBuilder.group({
    
   });
 
+  //Organization Responsible Getters
   get name() {
     return this.responsibleForm.controls.name;
   }
@@ -171,12 +190,14 @@ updateOrganizationForm = this.formBuilder.group({
   }
  
 
+  //This method is to create new organization responsible
   newResponsible() {
     if (this.responsibleForm.valid) {
-      
       this.responsibleDto = new OrganizationResponsibleDto();
       this.responsibleDto = Object.assign(this.responsibleDto, this.responsibleForm.value);
+
       console.log("hola " + this.responsibleDto)
+      //Organization Service POST method
       this.organizationService.newResponsible(this.responsibleDto).subscribe({
         next: (respData) => {
           this.snackBarService.openSnackBar('Se a creado el responsable: ' + respData.name + ' ' + respData.lastname, 'Cerrar', 3000);
@@ -191,6 +212,7 @@ updateOrganizationForm = this.formBuilder.group({
     }
   };
 
+  //Update Resposible form builder
   updateResponsibleForm = this.formBuilder.group({
     id:[0],
     name: ['', Validators.required],
@@ -199,6 +221,7 @@ updateOrganizationForm = this.formBuilder.group({
 
   })
 
+  //this method patch values from responsible selected by id to update dialog Form
   updateResponsibleShow(responsible:OrganizationResponsibleDto):void{
     this.updateResponsibleForm.patchValue({
       id:this.updateResponsibleDto.id,
@@ -206,6 +229,7 @@ updateOrganizationForm = this.formBuilder.group({
       lastname:this.updateResponsibleDto.lastname
     });
   }
+  //This method open update responsible template dialog form
   openDialogUpdateResponsible(id:number,template:TemplateRef<any>){
     this.getResponsibleById(id);
     this.matDialogRef = this.dialogService.openDialogCreation({
@@ -216,19 +240,24 @@ updateOrganizationForm = this.formBuilder.group({
 
   }
 
+  //This method update responsible to backend
   updateResponsible():void{
    
     if(this.updateResponsibleForm.valid){
+      //Assign values from form to OrganizationResponsible class
       this.updateResponsibleDto = new OrganizationResponsibleDto();
       this.updateResponsibleDto = Object.assign(this.updateResponsibleDto,this.updateResponsibleForm.value);
+      //Organization Service PUT method 
       this.organizationService.updateResponsible(this.updateResponsibleDto).subscribe({
         next:(respData)=>{
+          //Returns Responsible name and lastname
           this.snackBarService.openSnackBar('Se actualizo el responsable: ' + respData.name + ' ' + respData.lastname,'Cerrar',3000);
         },
         error:(errorData)=>{
           this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
         },
         complete:()=>{
+          //Get all Organization and Responsibles
           this.getOrganizations();
           this.getResponsibles();
         }
@@ -237,6 +266,7 @@ updateOrganizationForm = this.formBuilder.group({
 
   }
 
+  //Get one responsible by id
   getResponsibleById(id:number):void{
     this.organizationService.getResponsibleById(id).subscribe({
       next:(respData)=>{
@@ -251,6 +281,7 @@ updateOrganizationForm = this.formBuilder.group({
 
   }
 
+  //Get all responsibles
 getResponsibles(){
   this.organizationService.getAllResponsibles().subscribe({
     next:(responsiblesData)=>{

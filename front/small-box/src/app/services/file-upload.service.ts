@@ -31,6 +31,6 @@ httpOptionsForm = {
   sendFileToBackEnd(file:File,organizationId:number):Observable<DispatchControlDto[]>{
     const formData: FormData = new FormData;
     formData.append('file', file);
-     return this.http.post<DispatchControlDto[]>(`${PDF_STRING_BASE_URL}/upload_file?organizationId=${organizationId}`,formData).pipe(catchError(this.handleError));
+     return this.http.post<DispatchControlDto[]>(`${PDF_STRING_BASE_URL}/upload-file?organizationId=${organizationId}`,formData).pipe(catchError(this.handleError));
    }
 }

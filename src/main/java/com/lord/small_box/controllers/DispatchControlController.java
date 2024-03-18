@@ -75,7 +75,7 @@ public class DispatchControlController {
 		List<DispatchControlDto> dispatchControlDtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(dispatchControls);
 		return ResponseEntity.ok(dispatchControlDtos);
 	}
-	@GetMapping("/find-all-dispatch-by-org-example_paging")
+	@GetMapping("/find-all-dispatch-by-org-example-paging")
 	ResponseEntity<List<DispatchControlDto>> findAllDispatchsByOrganizationIdByExamplePagingAndSorting(
 			@RequestParam("organizationId")Long organizationId,
 			@RequestParam("example")String example,

@@ -21,7 +21,7 @@ import com.lord.small_box.services.WorkTemplateService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/smallbox/template_destination")
+@RequestMapping("/api/v1/smallbox/template-destination")
 @RequiredArgsConstructor
 public class TemplateDestinationController {
 	

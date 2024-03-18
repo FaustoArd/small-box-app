@@ -12,7 +12,7 @@ button{
 p{
     color: rgb(199, 10, 10);
     font-size: 0.9rem;
-    font-family: 'Quattrocento', serif;
+    font-family: 'Domine', serif;
 }
 h1{
     font-weight: bold;
@@ -23,9 +23,9 @@ h1{
    
  
     font-weight: bold;
-    color: #1cc825;
+    color: #12b61a;
     font-size: 1.7rem;
-    font-family: 'Quattrocento', serif; 
+    font-family: 'Domine', serif; 
 }
 
 #totalLetterInvalid{

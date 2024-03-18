@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { DestinationDto } from '../models/destinationDto';
 
-const WORK_TEMPLATE_BASE_URL = 'http://localhost:8080/api/v1/small-box/template_destination';
+const WORK_TEMPLATE_BASE_URL = 'http://localhost:8080/api/v1/smallbox/template-destination';
 
 @Injectable({
   providedIn: 'root'

@@ -13,6 +13,8 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
   templateUrl: './organization.component.html',
   styleUrls: ['./organization.component.css']
 })
+
+/**This Component is For assign users to one or more organizations  */
 export class OrganizationComponent implements OnInit {
 
   usersDto: AppUserDto[] = [];
