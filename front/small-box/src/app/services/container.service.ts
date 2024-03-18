@@ -7,7 +7,7 @@ import { SmallBoxTypeDto } from '../models/smallBoxTypeDto';
 import { Router } from '@angular/router';
 import { SnackBarService } from './snack-bar.service';
 
-const CONTAINER_BASE_URL = 'http://localhost:8080/api/v1/small-box/containers'
+const CONTAINER_BASE_URL = 'http://localhost:8080/api/v1/smallbox/containers'
 
 @Injectable({
   providedIn: 'root'
@@ -55,6 +55,11 @@ export class ContainerService {
     return this.http.put<string>(`${CONTAINER_BASE_URL}/set-total-write?containerId=${containerId}&totalWrite=${totalWrite}`, this.httpOptions)
     .pipe(catchError(this.handleError));
   }
+
+  getMaxAmount(containerId:number):Observable<number>{
+    return this.http.get<number>(`${CONTAINER_BASE_URL}/get-max-amount?organizationId=${containerId}`,this.httpOptions).pipe(catchError(this.handleError));
+   }
+
 
 
 }

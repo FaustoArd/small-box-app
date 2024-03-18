@@ -23,9 +23,22 @@ h1{
    
  
     font-weight: bold;
-    color: #cf2f6c;
+    color: #1cc825;
     font-size: 1.7rem;
     font-family: 'Quattrocento', serif; 
+}
+
+#totalLetterInvalid{
+    font-weight: bold;
+    color: #cf2f6c;
+   
+   
+    font-size: 1.7rem;
+    font-family: 'Quattrocento', serif; 
+}
+
+small{
+    font-size: 0.9rem;
 }
 
 #totalCol{

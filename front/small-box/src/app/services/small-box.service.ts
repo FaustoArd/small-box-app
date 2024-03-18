@@ -4,7 +4,7 @@ import { Observable,catchError,throwError} from 'rxjs';
 import { SmallBoxDto } from '../models/smallBoxDto';
 import { SmallBoxUnifierDto } from '../models/smallBoxUnifierDto';
 
-const SMALL_BOX_BASE_URL = 'http://localhost:8080/api/v1/small-box/smallboxes';
+const SMALL_BOX_BASE_URL = 'http://localhost:8080/api/v1/smallbox/smallboxes';
 
 @Injectable({
   providedIn: 'root'

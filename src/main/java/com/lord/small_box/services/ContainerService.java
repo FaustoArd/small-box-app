@@ -1,5 +1,6 @@
 package com.lord.small_box.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.lord.small_box.dtos.ContainerDto;
@@ -23,4 +24,6 @@ public interface ContainerService {
 	public void setContainerTotalWrite(Long containerId,String totalWrite);
 	
 	public Container update(Container container);
+	
+	public BigDecimal getSmallBoxMaxAmount(Long containerId);
 }

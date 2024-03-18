@@ -14,6 +14,8 @@ import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-templa
 import { formatDate } from '@angular/common';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { OrganizationService } from 'src/app/services/organization.service';
+import { ContainerService } from 'src/app/services/container.service';
 
 @Component({
   selector: 'app-small-box',
@@ -33,7 +35,8 @@ export class SmallBoxComponent implements OnInit {
 
   constructor(private smallBoxService: SmallBoxService, private inputService: InputService
     , private formBuilder: FormBuilder, private snackBar: SnackBarService, private router: Router,
-    private cookieService: CookieStorageService, private dialogService: DialogService) { }
+    private cookieService: CookieStorageService, private dialogService: DialogService
+    ,private containerService:ContainerService) { }
 
 
 
@@ -42,6 +45,7 @@ export class SmallBoxComponent implements OnInit {
     this.getAllSmallBoxesByContainerId();
   }
 
+  //Ticket Form builder
   smallBoxForm = this.formBuilder.group({
     date: ['', Validators.required],
     ticketNumber: [0, Validators.required],
@@ -51,6 +55,8 @@ export class SmallBoxComponent implements OnInit {
     ticketTotal: [0, Validators.required],
    
   });
+
+  //Getters
   get date() {
 
     return this.smallBoxForm.controls.date
@@ -69,7 +75,7 @@ export class SmallBoxComponent implements OnInit {
     return this.smallBoxForm.controls.ticketTotal
   }
 
-
+//Save new Ticket
   onAddSmallBox(): void {
     if (this.smallBoxForm.valid) {
       this.smallbox = new SmallBoxDto();
@@ -92,6 +98,7 @@ export class SmallBoxComponent implements OnInit {
     }
   }
 
+  //Update ticket Form builder
   updateSmallBoxForm = this.formBuilder.group({
     id: [0],
     date: ['', Validators.required],
@@ -103,11 +110,13 @@ export class SmallBoxComponent implements OnInit {
     inputNumber: [''],
   });
 
+  //Reset mat Dialog box
   update(): void {
     this.updateSmallBoxForm.reset();
     this.matDialogRef.close();
   }
 
+  //Update form values
   onUpdateSmallBoxShow(): void {
     this.updateSmallBoxForm.patchValue({
       id: this.updatedSmallBox.id,
@@ -121,6 +130,7 @@ export class SmallBoxComponent implements OnInit {
     });
   }
 
+  //Update ticket Mat dialog template
   private matDialogRef!: MatDialogRef<DialogTemplateComponent>
 
   openDialogSmallBoxUpdate(id: number, template: TemplateRef<any>) {
@@ -134,6 +144,7 @@ export class SmallBoxComponent implements OnInit {
 
   }
 
+  //Update ticket method
   updateSmallBox(): void {
     if (this.updateSmallBoxForm.valid) {
       this.updatedSmallBox = Object.assign(this.updatedSmallBox, this.updateSmallBoxForm.value);
@@ -153,7 +164,7 @@ export class SmallBoxComponent implements OnInit {
   }
 
 
-  
+  //Get all Tickets by container Id
   getAllSmallBoxesByContainerId(): void {
     this.smallBoxService.findSmallBoxesByContainerId(Number(this.cookieService.getCurrentContainerId())).subscribe({
       next: (smallData) => {
@@ -174,8 +185,25 @@ export class SmallBoxComponent implements OnInit {
     const result = this.smallboxes.forEach(e => {
         this.ticketsTotal = this.ticketsTotal + e.ticketTotal;
     });
+    this.getMaxAmount(this.ticketsTotal);
 
   }
+
+ amountValid!:boolean;
+  getMaxAmount(currentAmount:number){
+    const containerId = Number(this.cookieService.getCurrentContainerId());
+    this.containerService.getMaxAmount(containerId).subscribe({
+      next:(maxAmount)=>{
+       if(currentAmount>maxAmount){
+        this.amountValid = false;
+       }else{
+        this.amountValid = true;
+       } 
+      },error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    });
+}
 
 
   getAllInputs(): void {
@@ -242,6 +270,7 @@ export class SmallBoxComponent implements OnInit {
     });
    
   }
+ 
 
  
 }

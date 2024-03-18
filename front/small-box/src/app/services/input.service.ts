@@ -3,7 +3,7 @@ import { HttpClient,HttpHeaders,HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { InputDto } from '../models/inputDto';
 
-const INPUT_BASE_URL = 'http://localhost:8080/api/v1/small-box/inputs'
+const INPUT_BASE_URL = 'http://localhost:8080/api/v1/smallbox/inputs'
 
 @Injectable({
   providedIn: 'root'

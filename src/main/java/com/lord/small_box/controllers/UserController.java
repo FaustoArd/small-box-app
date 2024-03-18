@@ -17,7 +17,7 @@ import com.lord.small_box.services.AppUserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/users")
+@RequestMapping("/api/v1/smallbox/users")
 @RequiredArgsConstructor
 public class UserController {
 	
@@ -31,7 +31,7 @@ public class UserController {
 		
 	}
 	
-	@GetMapping("/by_id/{id}")
+	@GetMapping("/by-id/{id}")
 	ResponseEntity<AppUserDto> findUserById(@PathVariable("id")Long id){
 		AppUser user = userService.findById(id);
 		AppUserDto userDto = AppUserMapper.INSTANCE.toUserDto(user);

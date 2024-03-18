@@ -26,18 +26,18 @@ handleError(error:HttpErrorResponse){
 }
 
 getAllWorkTemplateDestinations():Observable<DestinationDto[]>{
-  return this.http.get<DestinationDto[]>(`${WORK_TEMPLATE_BASE_URL}/all_template_destinations`,this.httpOptions)
+  return this.http.get<DestinationDto[]>(`${WORK_TEMPLATE_BASE_URL}/all-template-destinations`,this.httpOptions)
   .pipe(catchError(this.handleError));
 }
 
 createTemplateDestination(destination:DestinationDto):Observable<string>{
   const result = destination.destination;
-  return this.http.post<string>(`${WORK_TEMPLATE_BASE_URL}/create_template_destination?destination=${result}`,this.httpOptions)
+  return this.http.post<string>(`${WORK_TEMPLATE_BASE_URL}/create-template-destination?destination=${result}`,this.httpOptions)
   .pipe(catchError(this.handleError));
 }
 
 deleteTemplateDestinationById(id:number):Observable<string>{
-  return this.http.get<string>(`${WORK_TEMPLATE_BASE_URL}/delete_template_destination/${id}`,this.httpOptions)
+  return this.http.get<string>(`${WORK_TEMPLATE_BASE_URL}/delete-template-destination/${id}`,this.httpOptions)
   .pipe(catchError(this.handleError));
 }
 

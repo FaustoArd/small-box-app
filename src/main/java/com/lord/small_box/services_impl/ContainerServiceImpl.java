@@ -1,5 +1,6 @@
 package com.lord.small_box.services_impl;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
@@ -163,6 +164,15 @@ public class ContainerServiceImpl implements ContainerService {
 					containerDto.setTotalWrite(container.getTotalWrite());
 					return containerDto;
 				}).toList();
+	}
+
+	@Override
+	public BigDecimal getSmallBoxMaxAmount(Long containerId) {
+		long orgId = containerRepository.findById(containerId)
+				.map(m -> m.getOrganization()
+						.getId())
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el container"));
+		return organizationRepository.findById(orgId).map(m -> m.getMaxAmount()).get();
 	}
 
 	

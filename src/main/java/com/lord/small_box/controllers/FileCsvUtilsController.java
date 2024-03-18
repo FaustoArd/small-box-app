@@ -19,7 +19,7 @@ import com.lord.small_box.utils.FileReaderUtils;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/csv_utils/")
+@RequestMapping("/api/v1/smallbox/csv-utils/")
 @RequiredArgsConstructor
 public class FileCsvUtilsController {
 	

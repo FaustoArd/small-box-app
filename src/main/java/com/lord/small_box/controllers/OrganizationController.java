@@ -1,5 +1,6 @@
 package com.lord.small_box.controllers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import com.lord.small_box.services.OrganizationService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/organization")
+@RequestMapping("/api/v1/smallbox/organization")
 @RequiredArgsConstructor
 public class OrganizationController {
 	
@@ -107,6 +108,8 @@ public class OrganizationController {
 		List<OrganizationResponsibleDto> responsiblesDto = organizationResponsibleService.findAll();
 		return ResponseEntity.ok(responsiblesDto);
 	}
+	
+	
 
 
 }

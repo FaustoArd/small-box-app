@@ -5,7 +5,7 @@ import { WorkTemplateDto } from '../models/workTemplateDto';
 import { Destination } from '../models/destination';
 import { DestinationDto } from '../models/destinationDto';
 
-const WORK_TEMPLATE_BASE_URL = 'http://localhost:8080/api/v1/small-box/work-templates';
+const WORK_TEMPLATE_BASE_URL = 'http://localhost:8080/api/v1/smallbox/work-templates';
 
 @Injectable({
   providedIn: 'root'
@@ -35,17 +35,17 @@ httpOptions = {
   }
 
   findWorkTemplateById(id:number):Observable<WorkTemplateDto>{
-    return this.http.get<WorkTemplateDto>(`${WORK_TEMPLATE_BASE_URL}/by_id/${id}`,this.httpOptions)
+    return this.http.get<WorkTemplateDto>(`${WORK_TEMPLATE_BASE_URL}/by-id/${id}`,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   findAllWorkTemplatesByUserId(userId:number):Observable<WorkTemplateDto[]>{
-    return this.http.get<WorkTemplateDto[]>(`${WORK_TEMPLATE_BASE_URL}/by_user_id/${userId}`,this.httpOptions).pipe(catchError(this.handleError));
+    return this.http.get<WorkTemplateDto[]>(`${WORK_TEMPLATE_BASE_URL}/by-user-id/${userId}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
   
   deleteWorkTemplateById(id:number):Observable<string>{
-    return this.http.delete<string>(`${WORK_TEMPLATE_BASE_URL}/delete_work_template_by_id/${id}`)
+    return this.http.delete<string>(`${WORK_TEMPLATE_BASE_URL}/delete-work-template-by-id/${id}`)
     .pipe(catchError(this.handleError));
   }
 

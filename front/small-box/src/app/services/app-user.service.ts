@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { AppUserDto } from '../models/appUserDto';
 
-const USER_BASE_USER = 'http://localhost:8080/api/v1/small-box/users';
+const USER_BASE_USER = 'http://localhost:8080/api/v1/smallbox/users';
 
 @Injectable({
   providedIn: 'root'

@@ -28,7 +28,7 @@ import com.lord.small_box.utils.PdfToStringUtils;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/pdf_to_text")
+@RequestMapping("/api/v1/smallbox/pdf_to_text")
 @RequiredArgsConstructor
 public class PdfToStringUtilsController {
 
@@ -43,13 +43,13 @@ public class PdfToStringUtilsController {
 
 	private static final Gson gson = new Gson();
 
-	@GetMapping("/pdf_to_string")
+	@GetMapping("/pdf-to-string")
 	ResponseEntity<String> pdftoString(@RequestParam("file")String file) throws Exception{
 		String result = pdfToStringUtils.pdfToReceipt(file);
 		return ResponseEntity.ok(gson.toJson(result));
 	}
 	
-	@GetMapping("/pdf_to_list")
+	@GetMapping("/pdf-to-list")
 	ResponseEntity<List<String>> pdfToList(@RequestParam("file") String file) throws Exception {
 		List<String> result = pdfToStringUtils.pdfToDispatch(file);
 		// ReceiptDto receiptDto = textToReceipt.pdfReceiptToReceipt(result);
@@ -57,7 +57,7 @@ public class PdfToStringUtilsController {
 		return ResponseEntity.ok(result);
 	}
 
-	@GetMapping("/pdf_to_receipt")
+	@GetMapping("/pdf-to-receipt")
 	ResponseEntity<List<SmallBox>> pdfToReceipt(@RequestParam("file") String file) throws Exception {
 		String pdfText = pdfToStringUtils.pdfToReceipt(file);
 		List<SmallBox> smList = textToReceipt.getPdfToSmallBoxList(pdfText);
@@ -65,14 +65,14 @@ public class PdfToStringUtilsController {
 		
 	}
 
-	@GetMapping("/pdf_to_dispatch")
+	@GetMapping("/pdf-to-dispatch")
 	ResponseEntity<List<DispatchControl>> pdfToDispatch(@RequestParam("file") String file) throws Exception {
 		List<String> pdfList = pdfToStringUtils.pdfToDispatch(file);
 		List<DispatchControl> dispatchControl = textToDispatch.textToDispatch(pdfList);
 		return ResponseEntity.ok(dispatchControl);
 	}
 
-	@GetMapping("/test_pattern")
+	@GetMapping("/test-pattern")
 	ResponseEntity<Boolean> testPattern(@RequestParam("text") String text, @RequestBody String pattern) {
 		return ResponseEntity.ok(pdfToStringUtils.testPattern(text, pattern));
 	}

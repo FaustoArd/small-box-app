@@ -5,7 +5,7 @@ import { OrganizationDto } from '../models/organizationDto';
 import { OrganizationResponsibleDto} from '../models/organizationResponsibleDto'
 import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 
-const ORGANIZATION_BASE_URL = 'http://localhost:8080/api/v1/small-box/organization';
+const ORGANIZATION_BASE_URL = 'http://localhost:8080/api/v1/smallbox/organization';
 
 @Injectable({
   providedIn: 'root'
@@ -75,4 +75,5 @@ export class OrganizationService {
     .pipe(catchError(this.handleError));
    }
 
+  
 }

@@ -17,7 +17,7 @@ import com.lord.small_box.dtos.LoginResponseDto;
 import com.lord.small_box.services.AuthorizationService;
 
 @RestController
-@RequestMapping("/api/v1/small-box/authorization")
+@RequestMapping("/api/v1/smallbox/authorization")
 public class AuthorizationController {
 	
 	@Autowired

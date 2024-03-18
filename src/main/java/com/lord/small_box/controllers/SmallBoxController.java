@@ -31,7 +31,7 @@ import com.lord.small_box.services.SmallBoxUnifierService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/smallboxes")
+@RequestMapping("/api/v1/smallbox/smallboxes")
 @RequiredArgsConstructor
 public class SmallBoxController {
 	

@@ -1,5 +1,6 @@
 package com.lord.small_box.services_impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -118,6 +119,8 @@ public class OrganizationServiceImpl implements OrganizationService{
 		List<Organization> orgs = organizationRepository.findAllOrganizationsByUsers(findedUser);
 		return orgs;
 	}
+
+	
 
 	
 }

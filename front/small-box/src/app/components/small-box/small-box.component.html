@@ -17,7 +17,10 @@
         </div>
         <div id="totalCol" class="col-md-2 mt-5 ms-5 text-center ">
             <h1 class="d-inline">Total:</h1>
-            <div id="totalLetter" class="d-inline ms-2">{{ticketsTotal | number}}</div>
+            <div *ngIf="amountValid" id="totalLetter" class="d-inline ms-2">{{ticketsTotal | number}}</div>
+            <div *ngIf="amountValid" id="totalLetter" class=" ms-2"><small>Monto maximo Valido</small></div>
+            <div *ngIf="!amountValid" id="totalLetterInvalid" class="d-inline ms-2">{{ticketsTotal | number}}</div>
+            <div *ngIf="!amountValid" id="totalLetterInvalid" class=" ms-2"><small>Monto maximo Exedido</small></div>
         </div>
     </div>
     <div class="row">

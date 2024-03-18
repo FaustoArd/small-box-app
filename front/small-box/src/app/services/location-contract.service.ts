@@ -34,7 +34,7 @@ export class LocationContractService {
   
 
   findAllLocationContractsByUserId(userId:number):Observable<LocationContractDto[]>{
-    return this.http.get<LocationContractDto[]>(`${LOCATION_CONTRACT_BASE_URL}/find_all_by_org_by_user_id?userId=${userId}`,this.httpOptions)
+    return this.http.get<LocationContractDto[]>(`${LOCATION_CONTRACT_BASE_URL}/find-all-by-org-by-user-id?userId=${userId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
 }

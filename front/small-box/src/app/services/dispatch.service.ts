@@ -26,33 +26,33 @@ httpOptions = {
   }
 
   createDispatch(dispatch:DispatchControlDto):Observable<string>{
-    return this.http.post<string>(`${DISPATCH_CONTROL_BASE_URL}/create_dispatch`,dispatch,this.httpOptions)
+    return this.http.post<string>(`${DISPATCH_CONTROL_BASE_URL}/create-dispatch`,dispatch,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   findDispatchById(id:number):Observable<DispatchControlDto>{
-    return this.http.get<DispatchControlDto>(`${DISPATCH_CONTROL_BASE_URL}/find_dispatch/${id}`,this.httpOptions)
+    return this.http.get<DispatchControlDto>(`${DISPATCH_CONTROL_BASE_URL}/find-dispatch/${id}`,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
   findAllDispatchsByOrganizationId(organizationId:number):Observable<DispatchControlDto[]>{
-    return this.http.get<DispatchControlDto[]>(`${DISPATCH_CONTROL_BASE_URL}/find_all_dispatch_by_org?organizationId=${organizationId}`).pipe(catchError(this.handleError));
+    return this.http.get<DispatchControlDto[]>(`${DISPATCH_CONTROL_BASE_URL}/find-all-dispatch-by-org?organizationId=${organizationId}`).pipe(catchError(this.handleError));
   }
 
   findAllDispatchsByOrganizationIdExamplePaging(organizationId:number,example:string):Observable<DispatchControlDto[]>{
     return this.http.get<DispatchControlDto[]>
-    (`${DISPATCH_CONTROL_BASE_URL}/find_all_dispatch_by_org_example_paging?organizationId=${organizationId}&example=${example}`)
+    (`${DISPATCH_CONTROL_BASE_URL}/find-all-dispatch-by-org-example-paging?organizationId=${organizationId}&example=${example}`)
     .pipe(catchError(this.handleError));
   }
 
 
 
   deleteDispatchById(id:number):Observable<string>{
-    return this.http.delete<string>(`${DISPATCH_CONTROL_BASE_URL}/delete_dispatch/${id}`,this.httpOptions)
+    return this.http.delete<string>(`${DISPATCH_CONTROL_BASE_URL}/delete-dispatch/${id}`,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   dispatchWorkTemplate(workTemplateId:number):Observable<string>{
-    return this.http.post<string>(`${DISPATCH_CONTROL_BASE_URL}/dispatch_work_template?workTemplateId=${workTemplateId}`,this.httpOptions)
+    return this.http.post<string>(`${DISPATCH_CONTROL_BASE_URL}/dispatch-work-template?workTemplateId=${workTemplateId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
 

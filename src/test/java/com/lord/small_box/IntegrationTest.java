@@ -134,7 +134,7 @@ public class IntegrationTest {
 	void loginAsAdmin() throws Exception {
 
 		mvcResult = mockMvc
-				.perform(post("http://localhost:8080/api/v1/small-box/authorization/login")
+				.perform(post("http://localhost:8080/api/v1/smallbox/authorization/login")
 						.content("{\"username\":\"car\",\"password\":\"Dvf8650123\"}").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.userId", is(notNullValue()))).andExpect(jsonPath("$.token", is(notNullValue())))
@@ -152,7 +152,7 @@ public class IntegrationTest {
 	@Test
 	@Order(2)
 	void registerUser() throws Exception {
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/registration/register").content(
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/registration/register").content(
 				"{\"name\":\"Pedro\",\"lastname\":\"Mozart\",\"username\":\"pedro29\",\"email\":\"car_moz@gmail.com\",\"password\":\"Xta2929341\"}")
 				.header("Authorization", "Bearer " + jwtToken).param("authority", "USER")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
@@ -165,7 +165,7 @@ public class IntegrationTest {
 	@Order(3)
 	void createResponsible() throws Exception {
 		mvcResult = this.mockMvc
-				.perform(post("http://localhost:8080/api/v1/small-box/organization/new-responsible")
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-responsible")
 						.content("{\"name\":\"Analia\",\"lastname\":\"Lagunas\"}")
 						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
@@ -181,7 +181,7 @@ public class IntegrationTest {
 	@Order(4)
 	void createOrganization() throws Exception {
 		mvcResult = this.mockMvc
-				.perform(post("http://localhost:8080/api/v1/small-box/organization/new-organization").content(
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
 						"{\"organizationName\":\"Dir  de personas en situacion de calle\",\"organizationNumber\":5,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
 						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
@@ -195,7 +195,7 @@ public class IntegrationTest {
 	@Order(5)
 	void createNewResponsible() throws Exception {
 		mvcResult = this.mockMvc
-				.perform(post("http://localhost:8080/api/v1/small-box/organization/new-responsible")
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-responsible")
 						.content("{\"name\":\"Fabian\",\"lastname\":\"Yanez\"}")
 						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
@@ -210,7 +210,7 @@ public class IntegrationTest {
 	@Order(6)
 	void createNewOrganization() throws Exception {
 		mvcResult = this.mockMvc
-				.perform(post("http://localhost:8080/api/v1/small-box/organization/new-organization").content(
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
 						"{\"organizationName\":\"Dir  de Logistica\",\"organizationNumber\":5,\"responsibleId\":2,\"maxRotation\":12,\"maxAmount\":45000}")
 						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
@@ -225,7 +225,7 @@ public class IntegrationTest {
 	void addOrganizationToUserPedro() throws Exception {
 
 		mvcResult = this.mockMvc
-				.perform(put("http://localhost:8080/api/v1/small-box/organization/add-organization")
+				.perform(put("http://localhost:8080/api/v1/smallbox/organization/add-organization")
 						.param("userId", "2").param("organizationsId", "1,2")
 						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
@@ -240,7 +240,7 @@ public class IntegrationTest {
 	@Order(8)
 	void findAllOrganizationsByUser()throws Exception{
 		
-		mvcResult = this.mockMvc.perform(get("http://localhost:8080/api/v1/small-box/organization/all-orgs-by-user")
+		mvcResult = this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/organization/all-orgs-by-user")
 				.param("userId", "2")
 				.header("Authorization", "Bearer " + jwtToken)
 				.contentType(MediaType.APPLICATION_JSON))
@@ -272,7 +272,7 @@ public class IntegrationTest {
 	@Order(9)
 	void loginAsUserPedro()throws Exception{
 		mvcResult = mockMvc
-				.perform(post("http://localhost:8080/api/v1/small-box/authorization/login")
+				.perform(post("http://localhost:8080/api/v1/smallbox/authorization/login")
 						.content("{\"username\":\"pedro29\",\"password\":\"Xta2929341\"}").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.userId", is(notNullValue()))).andExpect(jsonPath("$.token", is(notNullValue())))
@@ -290,7 +290,7 @@ public class IntegrationTest {
 	@Order(10)
 	void whenTryToCreateResponsibleWithUserPedroMustReturn403Forbidden()throws Exception{
 		 this.mockMvc
-				.perform(post("http://localhost:8080/api/v1/small-box/organization/new-responsible")
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-responsible")
 						.content("{\"name\":\"Alfonso\",\"lastname\":\"Gomez\"}")
 						.header("Authorization", "Bearer " + userPedrojwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is(403))
@@ -302,7 +302,7 @@ public class IntegrationTest {
 	@Order(11)
 	void whenTryToCreateOrganizationWithUserPedroMustReturn403Forbidden()throws Exception{
 		 this.mockMvc
-				.perform(post("http://localhost:8080/api/v1/small-box/organization/new-organization").content(
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
 						"{\"organizationName\":\"Dir. de Presuspuesto\",\"organizationNumber\":14,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
 						.header("Authorization", "Bearer " + userPedrojwtToken)
 						.contentType(MediaType.APPLICATION_JSON))
@@ -313,7 +313,7 @@ public class IntegrationTest {
 	@Test
 	@Order(12)
 	void whenTryToRegisterUserWithUserPedroMustReturn403Forbidden()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/registration/register").content(
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/registration/register").content(
 				"{\"name\":\"Mariano\",\"lastname\":\"Pergamino\",\"username\":\"marper\",\"email\":\"mar@gmail.com\",\"password\":\"123\"}")
 				.header("Authorization", "Bearer " + userPedrojwtToken).param("authority", "ADMIN")
 				.contentType(MediaType.APPLICATION_JSON))
@@ -325,7 +325,7 @@ public class IntegrationTest {
 	@Order(13)
 	void createContainerWithUserPedro()throws Exception{
 		Calendar now = Calendar.getInstance();
-		mvcResult =  this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/containers/")
+		mvcResult =  this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/containers/")
 			 .content("{\"smallBoxType\":\"CHICA\",\"organizationId\":2}")
 			 .header("Authorization", "Bearer " + userPedrojwtToken)
 			 .contentType(MediaType.APPLICATION_JSON))
@@ -347,7 +347,7 @@ public class IntegrationTest {
 	@Test
 	@Order(14)
 	void createSmallBoxRow1WithUserPedro()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/smallboxes/new")
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
 				.content("{\"date\":\"2023-02-10\",\"ticketNumber\":\"0001-2423\",\"provider\":\"Disalar\",\"inputId\":2,\"ticketTotal\":4000}")
 				.param("containerId", container1Id)
 				.header("Authorization", "Bearer " + userPedrojwtToken)
@@ -366,7 +366,7 @@ public class IntegrationTest {
 	@Test
 	@Order(15)
 	void createSmallBoxRow2WithUserPedro()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/smallboxes/new")
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
 				.content("{\"date\":\"2023-04-15\",\"ticketNumber\":\"0002-2223\",\"provider\":\"La Roma\",\"inputId\":1,\"ticketTotal\":3000}")
 				.param("containerId", container1Id)
 				.header("Authorization", "Bearer " + userPedrojwtToken)
@@ -386,7 +386,7 @@ public class IntegrationTest {
 	@Test
 	@Order(16)
 	void createSmallBoxRow3WithUserPedro()throws Exception{
-		mvcResult =  this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/smallboxes/new")
+		mvcResult =  this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
 				.content("{\"date\":\"2024-05-11\",\"ticketNumber\":\"00001-23223\",\"provider\":\"Bengala\",\"inputId\":2,\"ticketTotal\":2500.50}")
 				.param("containerId", container1Id)
 				.header("Authorization", "Bearer " + userPedrojwtToken)
@@ -409,7 +409,7 @@ public class IntegrationTest {
 	@Test
 	@Order(17)
 	void createSmallBoxRow4WithUserPedro()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/smallboxes/new")
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
 				.content("{\"date\":\"2024-05-10\",\"ticketNumber\":\"00001-25223\",\"provider\":\"La Comarca S.R.L\",\"inputId\":6,\"ticketTotal\":3000.50}")
 				.param("containerId", container1Id)
 				.header("Authorization", "Bearer " + userPedrojwtToken)
@@ -428,7 +428,7 @@ public class IntegrationTest {
 	@Test
 	@Order(18)
 	void createSmallBoxRow5WithUserPedro()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/small-box/smallboxes/new")
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
 				.content("{\"date\":\"2022-05-10\",\"ticketNumber\":\"00001-25228\",\"provider\":\"Alimentos Carlos\",\"inputId\":1,\"ticketTotal\":6000}")
 				.param("containerId", container1Id)
 				.header("Authorization", "Bearer " + userPedrojwtToken)
@@ -447,7 +447,7 @@ public class IntegrationTest {
 	@Test
 	@Order(19)
 	void editSmallBoxRow3WithUserPedro()throws Exception{
-		mvcResult =  this.mockMvc.perform(put("http://localhost:8080/api/v1/small-box/smallboxes/smallBox-update")
+		mvcResult =  this.mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/smallboxes/smallBox-update")
 				.content("{\"id\":3,\"date\":\"2024-05-11\",\"ticketNumber\":\"00001-23226\",\"provider\":\"Bengala\",\"containerId\":1,\"description\":\"Alimento para animales\",\"ticketTotal\":2500.50}")
 				.header("Authorization", "Bearer " + userPedrojwtToken)
 				.contentType(MediaType.APPLICATION_JSON))
@@ -462,7 +462,7 @@ public class IntegrationTest {
 	@Test
 	@Order(20)
 	void completeSmallBoxWithUserPedro()throws Exception{
-		mvcResult = this.mockMvc.perform(put("http://localhost:8080/api/v1/small-box/smallboxes/complete")
+		mvcResult = this.mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/smallboxes/complete")
 				.param("containerId", container1Id)
 				.header("Authorization", "Bearer " + userPedrojwtToken)
 				.contentType(MediaType.APPLICATION_JSON))
@@ -519,7 +519,7 @@ public class IntegrationTest {
 	@Test
 	@Order(21)
 	void getSmallBoxTotalWithUserPedro()throws Exception{
-		this.mockMvc.perform(get("http://localhost:8080/api/v1/small-box/containers/{containerId}", container1Id)
+		this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/containers/{containerId}", container1Id)
 				.header("Authorization", "Bearer " + userPedrojwtToken)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is(200))

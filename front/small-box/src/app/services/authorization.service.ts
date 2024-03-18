@@ -5,9 +5,9 @@ import { AppUserRegistrationDto } from '../models/appUserRegistrationDto';
 import { LoginDto } from '../models/loginDto';
 import { LoginResponseDto } from '../models/loginResponseDto';
 
-const AUTHORIZATION_BASE_URL = 'http://localhost:8080/api/v1/small-box/authorization';
+const AUTHORIZATION_BASE_URL = 'http://localhost:8080/api/v1/smallbox/authorization';
 
-const REGISTRATION_BASE_URL =  'http://localhost:8080/api/v1/small-box/registration';
+const REGISTRATION_BASE_URL =  'http://localhost:8080/api/v1/smallbox/registration';
 
 
 @Injectable({

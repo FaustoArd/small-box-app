@@ -25,7 +25,7 @@ import com.lord.small_box.services.WorkTemplateService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/work-templates")
+@RequestMapping("/api/v1/smallbox/work-templates")
 @RequiredArgsConstructor
 public class WorkTemplateController {
 	
@@ -45,14 +45,14 @@ public class WorkTemplateController {
 		return new ResponseEntity<WorkTemplateDto>(savedWorkTemplateDto,HttpStatus.CREATED);
 	}
 
-	@GetMapping("/by_id/{id}")
+	@GetMapping("/by-id/{id}")
 	ResponseEntity<WorkTemplateDto> findWorkTemplateById(@PathVariable("id")Long id){
 		WorkTemplate template = workTemplateService.findWorkTemplateById(id);
 		WorkTemplateDto templateDto = WorkTemplateMapper.INSTANCE.toWorkTemplateDto(template);
 		return ResponseEntity.ok(templateDto);
 	}
 	
-	@GetMapping("/by_organization_id/{id}")
+	@GetMapping("/by-organization-id/{id}")
 	ResponseEntity<List<WorkTemplateDto>> findWorkTemplatesByOrganizationId(@PathVariable("id")Long id){
 		List<WorkTemplate> templates = workTemplateService.findAllWorkTemplatesByOrganization(id);
 		List<WorkTemplateDto> templatesDto = WorkTemplateMapper.INSTANCE.toWorkTemplateDtoList(templates);
@@ -60,30 +60,30 @@ public class WorkTemplateController {
 		
 	}
 	
-	@GetMapping("/by_user_id/{userId}")
+	@GetMapping("/by-user-id/{userId}")
 	ResponseEntity<List<WorkTemplateDto>> findWorkTemplatesByuserId(@PathVariable("userId")Long userId){
 		List<WorkTemplate> templates = workTemplateService.findAllWorkTemplatesByOrganizationByUserId(userId);
 		List<WorkTemplateDto> templatesDto = WorkTemplateMapper.INSTANCE.toWorkTemplateDtoList(templates);
 		return ResponseEntity.ok(templatesDto);
 	}
-	@GetMapping("/all_template_destinations")
+	@GetMapping("/all-template-destinations")
 	ResponseEntity<List<WorkTemplateDestinationDto>> findAllTemplateDestinations(){
 		List<WorkTemplateDestinationDto> destinationsDto = workTemplateDestinationService.findAllDestinations();
 		return ResponseEntity.ok(destinationsDto);
 	}
 	
-	@PostMapping("/create_template_destination")
+	@PostMapping("/create-template-destination")
 	ResponseEntity<String> createTemplateDestination(@RequestParam("destination")String destination){
 		String strDestination = workTemplateDestinationService.createDestination(new WorkTemplateDestinationDto(destination));
 		return new  ResponseEntity<String>(gson.toJson(strDestination),HttpStatus.CREATED);
 		
 	}
-	@DeleteMapping("/delete_template_destination/{id}")
+	@DeleteMapping("/delete-template-destination/{id}")
 	ResponseEntity<String> deleteTemplateDestinationById(@PathVariable("id")Long id){
 		String result = workTemplateDestinationService.deleteDestinationById(id);
 		return  ResponseEntity.ok(gson.toJson(result));
 	}
-	@DeleteMapping("/delete_work_template_by_id/{id}")
+	@DeleteMapping("/delete-work-template-by-id/{id}")
 	ResponseEntity<String> deleteWorkTemplatebyId(@PathVariable("id")Long id){
 		String result = workTemplateService.deleteWorkTemplateById(id);
 		return ResponseEntity.ok(gson.toJson(result));

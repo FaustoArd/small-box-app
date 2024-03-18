@@ -21,7 +21,7 @@ import com.lord.small_box.services.WorkTemplateService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/template_destination")
+@RequestMapping("/api/v1/smallbox/template_destination")
 @RequiredArgsConstructor
 public class TemplateDestinationController {
 	
@@ -30,19 +30,19 @@ public class TemplateDestinationController {
 	
 	private static final Gson gson = new Gson();
 	
-	@GetMapping("/all_template_destinations")
+	@GetMapping("/all-template-destinations")
 	ResponseEntity<List<WorkTemplateDestinationDto>> findAllTemplateDestinations(){
 		List<WorkTemplateDestinationDto> destinationsDto = workTemplateDestinationService.findAllDestinations();
 		return ResponseEntity.ok(destinationsDto);
 	}
 	
-	@PostMapping("/create_template_destination")
+	@PostMapping("/create-template-destination")
 	ResponseEntity<String> createTemplateDestination(@RequestParam("destination")String destination){
 		String strDestination = workTemplateDestinationService.createDestination(new WorkTemplateDestinationDto(destination));
 		return new  ResponseEntity<String>(gson.toJson(strDestination),HttpStatus.CREATED);
 		
 	}
-	@DeleteMapping("/delete_template_destination/{id}")
+	@DeleteMapping("/delete-template-destination/{id}")
 	ResponseEntity<String> deleteTemplateDestinationById(@PathVariable("id")Long id){
 		String result = workTemplateDestinationService.deleteDestinationById(id);
 		return  ResponseEntity.ok(gson.toJson(result));

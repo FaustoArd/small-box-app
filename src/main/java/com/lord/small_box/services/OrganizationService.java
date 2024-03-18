@@ -1,5 +1,6 @@
 package com.lord.small_box.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.lord.small_box.dtos.OrganizationDto;
@@ -24,4 +25,6 @@ public interface OrganizationService {
 	public List<OrganizationDto> findAllById(List<Long> organizationsId);
 	
 	public List<Organization> findAllOrganizationsByUsers(Long userId);
+	
+	
 }

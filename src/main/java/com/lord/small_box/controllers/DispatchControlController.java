@@ -46,26 +46,26 @@ public class DispatchControlController {
 	
 	private static final Logger log = LoggerFactory.getLogger(DispatchControlController.class);
 	
-	@PostMapping("/create_dispatch")
+	@PostMapping("/create-dispatch")
 	 ResponseEntity<String> createDispatch(@RequestBody DispatchControlDto dispatchControlDto){
 		 DispatchControl dispatchControl = DispatchControlMapper.INSTANCE.dtoToDispatch(dispatchControlDto);
 		 String result  = dispatchControlService.createDispatch(dispatchControl);
 		 return new ResponseEntity<String>(gson.toJson(result),HttpStatus.OK);
 	 }
 	
-	@DeleteMapping("/delete_dispatch/{id}")
+	@DeleteMapping("/delete-dispatch/{id}")
 	ResponseEntity<String> deleteDispatch(@PathVariable("id") Long id){
 		String result = dispatchControlService.deleteById(id);
 		return ResponseEntity.ok(gson.toJson(result));
 	}
 	
-	@GetMapping("/find_dispatch/{id}")
+	@GetMapping("/find-dispatch/{id}")
 	ResponseEntity<DispatchControlDto> findDistpachById(@PathVariable("id")Long id){
 		DispatchControl dispatchControl = dispatchControlService.findById(id);
 		DispatchControlDto dispatchControlDto = DispatchControlMapper.INSTANCE.dispatchToDto(dispatchControl);
 		return ResponseEntity.ok(dispatchControlDto);
 	}
-	@GetMapping("/find_all_dispatch_by_org_paging")
+	@GetMapping("/find-all-dispatch-by-org-paging")
 	ResponseEntity<List<DispatchControlDto>> findAllDispatchsByOrganizationIdPagingAndSorting(@RequestParam("organizationId")Long organizationId,
 			@RequestParam(defaultValue = "0")Integer pageNo,
 			@RequestParam(defaultValue = "10")Integer pageSize,
@@ -75,7 +75,7 @@ public class DispatchControlController {
 		List<DispatchControlDto> dispatchControlDtos = DispatchControlMapper.INSTANCE.dispatchsToDtos(dispatchControls);
 		return ResponseEntity.ok(dispatchControlDtos);
 	}
-	@GetMapping("/find_all_dispatch_by_org_example_paging")
+	@GetMapping("/find-all-dispatch-by-org-example_paging")
 	ResponseEntity<List<DispatchControlDto>> findAllDispatchsByOrganizationIdByExamplePagingAndSorting(
 			@RequestParam("organizationId")Long organizationId,
 			@RequestParam("example")String example,
@@ -91,7 +91,7 @@ public class DispatchControlController {
 		return ResponseEntity.ok(dispatchControlDtos);
 	}
 	
-	@GetMapping("/find_all_dispatch_by_org")
+	@GetMapping("/find-all-dispatch-by-org")
 	ResponseEntity<List<DispatchControlDto>> findAllDistpachControlsByOrganization(@RequestParam("organizationId")Long organizationId){
 		List<DispatchControl> dispatchControls = dispatchControlService
 				.findAllDistpachControlsByOrganization(organizationId);
@@ -99,13 +99,13 @@ public class DispatchControlController {
 		return ResponseEntity.ok(dispatchControlDtos);
 	}
 	
-	@PostMapping("/dispatch_work_template")
+	@PostMapping("/dispatch-work-template")
 	ResponseEntity<String> dispatchWorkTemplate(@RequestParam("workTemplateId")Long workTemplateId){
 		String dispatchResult = dispatchControlService.dispatchWorkTemplate(workTemplateId);
 		return new ResponseEntity<String>(gson.toJson(dispatchResult),HttpStatus.OK);
 	}
 	
-	@PostMapping(path = "/upload_file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(path = "/upload-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<List<DispatchControlDto>> getPdfToString(@RequestPart("file") MultipartFile file,@RequestParam("organizationId")Long organizationId) throws Exception {
 		List<String> pdfList = pdfToStringUtils.pdfToDispatch(file.getOriginalFilename());
 		List<DispatchControl> dispatchControl = textToDispatch.textToDispatch(pdfList);
@@ -115,7 +115,7 @@ public class DispatchControlController {
 
 	}
 	
-	/*@GetMapping("/pattern_test")
+	/*@GetMapping("/pattern-test")
 	ResponseEntity<String> testMatcher(@RequestParam("match")String match){
 		
 		String result = dispatchControlService.exampleMatchToDispatchObject(match);

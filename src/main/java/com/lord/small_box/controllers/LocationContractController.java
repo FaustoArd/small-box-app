@@ -21,7 +21,7 @@ import com.lord.small_box.services.LocationContractService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/location-contracts")
+@RequestMapping("/api/v1/smallbox/location-contracts")
 @RequiredArgsConstructor
 public class LocationContractController {
 	
@@ -37,14 +37,14 @@ public class LocationContractController {
 		return new ResponseEntity<LocationContractDto>(createdLocationContractDto,HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/by_id/{id}")
+	@GetMapping("/by-id/{id}")
 	ResponseEntity<LocationContractDto> findLocationContractById(@PathVariable("id")Long id){
 		LocationContract locationContract = locationContractService.findLocationContractById(id);
 		LocationContractDto locationContractDto = LocationContractMapper.INSTANCE.locationContractToDto(locationContract);
 		return ResponseEntity.ok(locationContractDto);
 	}
 	
-	@GetMapping("/find_all_by_org_by_user_id")
+	@GetMapping("/find-all-by-org-by-user-id")
 	ResponseEntity<List<LocationContractDto>> findAllLocationContractsByUserId(@RequestParam("userId")Long userId){
 		List<LocationContract> contracts = locationContractService.findAllLocationContractByOrganizationByUserId(userId);
 		List<LocationContractDto> contractsDto = LocationContractMapper.INSTANCE.locationContractsToDtos(contracts);

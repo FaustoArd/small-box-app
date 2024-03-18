@@ -20,7 +20,7 @@ import com.lord.small_box.services.OrganizationService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/small-box/registration")
+@RequestMapping("/api/v1/smallbox/registration")
 @RequiredArgsConstructor
 public class RegistrationController {
 	
