@@ -45,6 +45,7 @@ export class CompletedSmallBoxComponent implements OnInit {
       this.container = containerData;
       //this.cookieService.setCurrentContainerId(JSON.stringify(containerData.id));
       this.smallBoxCreated = containerData.smallBoxCreated;
+      //Delete current unified smallboxes by container id.
       this.deleteAllUnifiedSamllBoxByContainerId(Number(this.cookieService.getCurrentContainerId()));
         this.onCompleteSmallBox();
 
@@ -55,7 +56,7 @@ export class CompletedSmallBoxComponent implements OnInit {
   });
  }
 
-
+ //This method do the smallbox calculations and show the final results.
   onCompleteSmallBox(): void {
     this.smallBoxService.completeSmallBox(Number(this.cookieService.getCurrentContainerId())).subscribe({
       next: (compData) => {
