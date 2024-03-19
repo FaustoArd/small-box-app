@@ -24,6 +24,8 @@ import { DispatchService } from 'src/app/services/dispatch.service';
   templateUrl: './memo-single.component.html',
   styleUrls: ['./memo-single.component.css']
 })
+
+//This component is for create memos and items send and request.
 export class MemoSingleComponent implements OnInit {
 
   workTemplate!: WorkTemplateDto;
@@ -73,6 +75,8 @@ export class MemoSingleComponent implements OnInit {
       this.textTemplatesIndex.push(key);
     })
   }
+
+  
   getSelectedTextTemplate(text: string): void {
 
     this.memoFormBuilder.patchValue({

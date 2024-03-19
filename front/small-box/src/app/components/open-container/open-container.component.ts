@@ -62,17 +62,18 @@ private matDialogRef!: MatDialogRef<DialogTemplateComponent>
   }
 
   containerForm = this.formBuilder.group({
-    id:[0,Validators.required],
+    id:[0],
     smallBoxType:['', Validators.required],
-    organization:['',Validators.required]
+    organizationId:[0]
  
   });
 
   ondUpdateContainerShow(container:ContainerDto):void{
+   
     this.containerForm.patchValue({
       id: container?.id,
       smallBoxType: container?.smallBoxType,
-      organization: container?.organization
+      organizationId: container?.organizationId
     
     });
   }
@@ -84,8 +85,8 @@ private matDialogRef!: MatDialogRef<DialogTemplateComponent>
   get smallBoxType(){
     return this.containerForm.controls.smallBoxType;
   }
-  get organization(){
-  return this.containerForm.controls.organization;
+  get organizationId(){
+  return this.containerForm.controls.organizationId;
   }
 
   update(): void {
@@ -109,6 +110,7 @@ private matDialogRef!: MatDialogRef<DialogTemplateComponent>
     if(this.containerForm.valid){
       this.container = new ContainerDto();
       this.container = Object.assign(this.container,this.containerForm.value);
+      console.log(this.container)
       this.containerService.updateContainer(this.container).subscribe({
         next:(contData)=>{
           this.snackBarService.openSnackBar('Se actualizo la rendicion: ' + contData.smallBoxType + ' ,'+ contData.smallBoxDate,'Cerrar',3000);

@@ -69,15 +69,15 @@
                     </select>
                 </div>
                 <div class="form-group mt-3">
-                    <label for="organization" class="form-label fs-7">Dependencia</label>
-                    <select id="organization" formControlName="organization" class="form-select border-dark">
+                    <label for="organizationId" class="form-label fs-7">Dependencia</label>
+                    <select id="organizationId" formControlName="organizationId" class="form-select border-dark">
                         <option>Seleccione una Dependencia</option>
-                        <option class="form-control" *ngFor="let org of organizations" id="organization"
+                        <option class="form-control" *ngFor="let org of organizations" id="organizationId"
                             [value]="org.id">
                             {{org.organizationName}}</option>
-                        <div *ngIf="organization.invalid && (organization.dirty || organization.touched)"
+                        <div *ngIf="organizationId.invalid && (organizationId.dirty || organizationId.touched)"
                             class="text-danger">
-                            <div *ngIf="organization.errors?.['required']">
+                            <div *ngIf="organizationId.errors?.['required']">
                                 Debes seleccionar una Dependencia
                             </div>
 

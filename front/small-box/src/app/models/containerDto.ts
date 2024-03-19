@@ -4,7 +4,6 @@ export class ContainerDto{
 	
     total!:string;
     
-    
     smallBoxType!:string;
     
     organization!:string;

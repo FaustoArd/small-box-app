@@ -46,7 +46,7 @@ export class CompletedSmallBoxComponent implements OnInit {
       //this.cookieService.setCurrentContainerId(JSON.stringify(containerData.id));
       this.smallBoxCreated = containerData.smallBoxCreated;
       //Delete current unified smallboxes by container id.
-      this.deleteAllUnifiedSamllBoxByContainerId(Number(this.cookieService.getCurrentContainerId()));
+      this.deleteAllUnifiedSmallBoxByContainerId(Number(this.cookieService.getCurrentContainerId()));
         this.onCompleteSmallBox();
 
       
@@ -97,7 +97,7 @@ export class CompletedSmallBoxComponent implements OnInit {
     });
   }
 
-  deleteAllUnifiedSamllBoxByContainerId(containerId: number): void {
+  deleteAllUnifiedSmallBoxByContainerId(containerId: number): void {
     this.smallBoxService.deleteAllUnifiedSamllBoxByContainerId(containerId).subscribe();
   }
 
@@ -111,7 +111,7 @@ export class CompletedSmallBoxComponent implements OnInit {
 
  
   
-
+//Set the total letter write
   setTotalWrite(totalWrite:string):void{
     console.log(totalWrite);
     this.containerService.setContainerTotalWrite(Number(this.cookieService.getCurrentContainerId()), totalWrite).subscribe({
@@ -123,6 +123,7 @@ export class CompletedSmallBoxComponent implements OnInit {
     });
   };
 
+  //check if total amount is valid
   checkMaxAmount():void{
     const containerId = Number(this.cookieService.getCurrentContainerId());
    // const userId = Number(this.cookieService.getCurrentUserId());

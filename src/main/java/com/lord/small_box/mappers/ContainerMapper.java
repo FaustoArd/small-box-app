@@ -24,6 +24,7 @@ public abstract class ContainerMapper {
 	@Mapping(target ="smallBoxType", source="smallBoxType.smallBoxType")
 	@Mapping(target="responsible", source = ".", qualifiedByName = "toFullName")
 	@Mapping(target="organization", source="organization.organizationName")
+	@Mapping(target="organizationId", source = "organization.id")
 	public abstract ContainerDto toContainerDto(Container container);
 	
 	

@@ -77,10 +77,12 @@ get smallBoxType(){
    this.container = new ContainerDto();
       this.container = Object.assign(this.container,this.containerFormBuilder.value)
    this.containerService.createContainer(this.container).subscribe({
-        //Return container data, set container id to cookies.
+        //Return container data.
         next:(contData)=>{
           this.returnedData = contData;
           this.cookieService.deleteCurrentContainerId();
+          
+          //Save current container id to cookies
           this.cookieService.setCurrentContainerId(JSON.stringify(this.returnedData.id));
          },
         error:(errorData)=>{
