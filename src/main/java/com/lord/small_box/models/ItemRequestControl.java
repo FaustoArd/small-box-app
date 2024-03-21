@@ -2,7 +2,6 @@ package com.lord.small_box.models;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,32 +15,26 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
+@Builder
 @Entity
-@Table(name="supply_item")
-public class SupplyItem {
+@Table(name="item_request_control")
+public class ItemRequestControl {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String code;
+	private Calendar requestDate;
 	
-	private int quantity;
+	private SupplyItem item;
 	
-	private String measureInit;
+	private int itemQuantity;
 	
-	private String itemDetail;
+	private Calendar itemExpirationDate;
 	
-	private BigDecimal unitCost;
+	private BigDecimal itemUnitPrice;
 	
-	private BigDecimal  estimatedCost;
-	
-	private BigDecimal totalEstimatedCost;
-	
-	private Calendar expirationDate;
-	
-	
+	private BigDecimal itemTotalPrice;
 
 }
