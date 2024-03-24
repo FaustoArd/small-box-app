@@ -27,7 +27,7 @@ public class ItemRequestControl {
 	
 	private Calendar requestDate;
 	
-	private SupplyItem item;
+	private String itemName;
 	
 	private int itemQuantity;
 	

@@ -28,7 +28,9 @@ public class SupplyItem {
 	
 	private String code;
 	
-	private int quantity;
+	private String programaticCat;
+	
+	private String quantity;
 	
 	private String measureInit;
 	

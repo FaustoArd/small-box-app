@@ -1,5 +1,6 @@
 package com.lord.small_box.models;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 import jakarta.persistence.CascadeType;
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -32,11 +34,15 @@ public class Supply {
 	private Calendar date;
 
 	private String jurisdiction;
+	
+	private int supplyNumber;
 
 	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinTable(name = "supply_supply_item_junction", joinColumns = {
 			@JoinColumn(name = "supply_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "supply_item_id", referencedColumnName = "id") })
 	private List<SupplyItem> supplyItems;
+	
+	private BigDecimal estimatedTotalCost;
 
 }
