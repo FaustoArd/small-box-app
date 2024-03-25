@@ -25,84 +25,93 @@ import com.lord.small_box.utils.PdfToStringUtils;
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 public class PdfTextToSupplyTest {
-	
+
 	@Autowired
 	private PdfToStringUtils pdfToStringUtils;
-	
 	private String text;
-	
-	private List<String> supplyPdfList; 
-
+	private List<String> supplyPdfList;
 	private String[] arrTextSplitPageEnd;
 	private String[] arrTextSplitN;
-	
-	
+
 	private final String supplyNumberRegex = "^(?=.*[0-9]{1,4})";
-	
-	
 
 	@BeforeAll
 	void setup() throws Exception {
 		text = pdfToStringUtils.pdfToReceipt("sum-551");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
-		//supplyPdfList.forEach(e -> System.out.println(e));
-		for(String s:arrTextSplitN) {
+		// supplyPdfList.forEach(e -> System.out.println(e));
+		for (String s : arrTextSplitN) {
 			System.out.println(s);
 		}
 	}
-	
+
 	@Test
-	void mustReturnSupply()throws Exception{
-		
+	void mustReturnSupply() throws Exception {
+
 	}
-	
+
 	private final String supplyNumberTitleRegex = "(SOLICITUD DE PEDIDO Nº)";
+
 	@Test
-	void mustReturnSupplyNumber()throws Exception{
+	void mustReturnSupplyNumber() throws Exception {
 		Pattern p = Pattern.compile(supplyNumberTitleRegex);
-		String number = Stream.of(arrTextSplitN).filter(f ->p.matcher(f).find())
-				.map(m -> m.substring(24, 27)).map(m -> m.replaceAll("[a-zA-Z\\D]", "")).collect(Collectors.joining(""));
-		System.out.println("Sum number: " +number + "fin.");
+		String number = Stream.of(arrTextSplitN).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 27))
+				.map(m -> m.replaceAll("[a-zA-Z\\D]", "")).collect(Collectors.joining(""));
+		System.out.println("Sum number: " + number + "fin.");
 	}
-	
+
 	private final String strDateV2 = "^(?=.*([0-9]{2})*([/]{1})){2}([0-9]{2,4})";
-	
+
 	@Test
-	void mustReturnDate()throws Exception{
+	void mustReturnDate() throws Exception {
 		Pattern p = Pattern.compile(strDateV2);
-		String date = Stream.of(text.split(" ")).filter(f -> p.matcher(f).find()).findFirst().get().replaceAll("[a-zA-Z]", "").trim();
-				
-		System.out.println("Test fecha: " +date);
+		String date = Stream.of(text.split(" ")).filter(f -> p.matcher(f).find()).findFirst().get()
+				.replaceAll("[a-zA-Z]", "").trim();
+
+		System.out.println("Test fecha: " + date);
 	}
-	
-	private final String itemCodeRegex= "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
-	
+
+	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
+	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
+	private final String itemQuantityRegex = "^(?=.*([0-9])*(,)([0-9]){3}(.)([0-9]){2})";
+	private final String itemUnitPrice = "^(?=.*([0-9]){1}(.))";
+
 	@Test
-	void mustReturnSupplyItemList()throws Exception{
-		Pattern p = Pattern.compile(itemCodeRegex);
-		List<String> strItems = Stream.of(arrTextSplitN).filter(f -> p.matcher(f).find()).collect(Collectors.toList());
+	void mustReturnSupplyItemList() throws Exception {
+		Pattern pCode = Pattern.compile(itemCodeRegex);
+		Pattern pProgCat = Pattern.compile(itemProgCatRegex);
+		Pattern pQuantity = Pattern.compile(itemQuantityRegex);
+		List<String> strItems = Stream.of(arrTextSplitN).filter(f -> pCode.matcher(f).find())
+				.collect(Collectors.toList());
 		ArrayList<SupplyItem> itemsArray = new ArrayList<>();
 		List<SupplyItem> itemsList = strItems.stream().map(item -> {
 			SupplyItem supplyItem = new SupplyItem();
 			ListIterator<String> list = Stream.of(item.split(" ")).toList().listIterator();
-			list.forEachRemaining(item ->{
-				
-				
-			})
-			
+			list.forEachRemaining(i -> {
+				if (pCode.matcher(i).find()) {
+					supplyItem.setCode(i);
+				}
+				if (pProgCat.matcher(i).matches()) {
+					supplyItem.setProgramaticCat(i);
+				}
+				if (pQuantity.matcher(i).find()) {
+					supplyItem.setQuantity(i);
+				}
+
+			});
+
 			return supplyItem;
 		}).toList();
 		itemsList.forEach(e -> System.out.println(e));
 	}
-	
+
 	@Test
 	void patternTest() throws Exception {
-		Pattern p2 = Pattern.compile("^([0-9].){3}([0-9]){5}(.)([0-9]){4}", Pattern.CASE_INSENSITIVE);
-		//Matcher m = p2.matcher("P.V. Nro. 00007 -");
-		//System.out.println("test: "+arrTextSplitN[2]);
-		assertTrue(p2.matcher("5.1.4.03451.0000").matches());
+		Pattern p2 = Pattern.compile("^(?=.*([0-9])*(,)([0-9]){3}(.)([0-9]){2})", Pattern.CASE_INSENSITIVE);
+		// Matcher m = p2.matcher("P.V. Nro. 00007 -");
+		// System.out.println("test: "+arrTextSplitN[2]);
+		assertTrue(p2.matcher("4,663.00").find());
 	}
-	
 
 }
