@@ -2,6 +2,7 @@ package com.lord.small_box;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -75,18 +76,22 @@ public class PdfTextToSupplyTest {
 	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
 	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
 	private final String itemQuantityRegex = "^(?=.*([0-9])*(,)([0-9]){3}(.)([0-9]){2})";
-	private final String itemUnitPrice = "^(?=.*([0-9]){1}(.))";
+	private final String itemUnitPrice = "^(?=.*([0-9].)*(,)([0-9]){5})";
+	//private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";
 
 	@Test
 	void mustReturnSupplyItemList() throws Exception {
 		Pattern pCode = Pattern.compile(itemCodeRegex);
 		Pattern pProgCat = Pattern.compile(itemProgCatRegex);
 		Pattern pQuantity = Pattern.compile(itemQuantityRegex);
+		Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
+		//Pattern pMesaureUnit = Pattern.compile(itemMeasureUnitRegex,Pattern.CASE_INSENSITIVE);
 		List<String> strItems = Stream.of(arrTextSplitN).filter(f -> pCode.matcher(f).find())
 				.collect(Collectors.toList());
-		ArrayList<SupplyItem> itemsArray = new ArrayList<>();
 		List<SupplyItem> itemsList = strItems.stream().map(item -> {
 			SupplyItem supplyItem = new SupplyItem();
+			supplyItem.setItemDetail(item.replaceAll("([0-9]*\\W)", " ").trim());
+			supplyItem.setTotalEstimatedCost(new BigDecimal(item.substring(item.indexOf("$")+1).replace(".", "").replace(",", ".").strip()));
 			ListIterator<String> list = Stream.of(item.split(" ")).toList().listIterator();
 			list.forEachRemaining(i -> {
 				if (pCode.matcher(i).find()) {
@@ -98,6 +103,18 @@ public class PdfTextToSupplyTest {
 				if (pQuantity.matcher(i).find()) {
 					supplyItem.setQuantity(i);
 				}
+				if(pUnitPrice.matcher(i).find()) {
+					i= i.replace(".", "");
+					i = i.replace(",", ".");
+							
+					supplyItem.setUnitCost(new BigDecimal(i));
+				}
+				if(i.toLowerCase().contains("cada")) {
+					i = i + " UNO";
+					supplyItem.setMeasureUnit(i);
+				}if( i.toLowerCase().contains("kilogramo")) {
+					supplyItem.setMeasureUnit(i);
+				}
 
 			});
 
@@ -105,13 +122,23 @@ public class PdfTextToSupplyTest {
 		}).toList();
 		itemsList.forEach(e -> System.out.println(e));
 	}
+	
+	/*private int findPointsQuantity(String text) {
+		char[] arrText = text.toCharArray();
+		int count = 0;
+		for(int i = 0;i<arrText.length;i++) {
+			if(arrText[i]=='.') {
+				count ++;
+			}
+		}
+	}*/
 
 	@Test
 	void patternTest() throws Exception {
-		Pattern p2 = Pattern.compile("^(?=.*([0-9])*(,)([0-9]){3}(.)([0-9]){2})", Pattern.CASE_INSENSITIVE);
+		Pattern p2 = Pattern.compile("^(?=.*([0-9].)*(,)([0-9]){5})", Pattern.CASE_INSENSITIVE);
 		// Matcher m = p2.matcher("P.V. Nro. 00007 -");
 		// System.out.println("test: "+arrTextSplitN[2]);
-		assertTrue(p2.matcher("4,663.00").find());
+		assertTrue(p2.matcher("63,84000").find());
 	}
 
 }

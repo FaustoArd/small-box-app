@@ -32,7 +32,7 @@ public class SupplyItem {
 	
 	private String quantity;
 	
-	private String measureInit;
+	private String measureUnit;
 	
 	private String itemDetail;
 	
