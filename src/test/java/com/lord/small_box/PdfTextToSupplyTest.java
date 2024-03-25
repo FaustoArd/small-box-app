@@ -3,7 +3,9 @@ package com.lord.small_box;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.regex.Pattern;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.lord.small_box.models.Supply;
 import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.utils.PdfToStringUtils;
 
@@ -49,28 +52,39 @@ public class PdfTextToSupplyTest {
 
 	@Test
 	void mustReturnSupply() throws Exception {
-
+		Supply supply = new Supply();
+		supply.setSupplyNumber(mustReturnSupplyNumber(arrTextSplitN));
+		supply.setDate(mustReturnDate(text));
+		supply.setSupplyItems(mustReturnSupplyItemList(arrTextSplitN));
+		System.out.println("TEST: " + supply.getSupplyNumber());
+		System.out.println("TEST: " + supply.getDate().getTime());
+		System.out.println("TEST: " + supply.getSupplyItems());
 	}
 
 	private final String supplyNumberTitleRegex = "(SOLICITUD DE PEDIDO Nº)";
 
-	@Test
-	void mustReturnSupplyNumber() throws Exception {
+	
+	private int mustReturnSupplyNumber(String[] arrText) throws Exception {
 		Pattern p = Pattern.compile(supplyNumberTitleRegex);
-		String number = Stream.of(arrTextSplitN).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 27))
+		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 27))
 				.map(m -> m.replaceAll("[a-zA-Z\\D]", "")).collect(Collectors.joining(""));
 		System.out.println("Sum number: " + number + "fin.");
+		return Integer.parseInt(number);
 	}
 
 	private final String strDateV2 = "^(?=.*([0-9]{2})*([/]{1})){2}([0-9]{2,4})";
 
-	@Test
-	void mustReturnDate() throws Exception {
+	
+	private Calendar  mustReturnDate(String text) throws Exception {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Pattern p = Pattern.compile(strDateV2);
 		String date = Stream.of(text.split(" ")).filter(f -> p.matcher(f).find()).findFirst().get()
-				.replaceAll("[a-zA-Z]", "").trim();
+				.replaceAll("[a-zA-Z]", "").replace("/", "-").trim();
 
 		System.out.println("Test fecha: " + date);
+		cal.setTime(sdf.parse(date));
+		return cal;
 	}
 
 	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
@@ -79,16 +93,16 @@ public class PdfTextToSupplyTest {
 	private final String itemUnitPrice = "^(?=.*([0-9].)*(,)([0-9]){5})";
 	//private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";
 
-	@Test
-	void mustReturnSupplyItemList() throws Exception {
+	
+	private List<SupplyItem> mustReturnSupplyItemList(String[] arrText) throws Exception {
 		Pattern pCode = Pattern.compile(itemCodeRegex);
 		Pattern pProgCat = Pattern.compile(itemProgCatRegex);
 		Pattern pQuantity = Pattern.compile(itemQuantityRegex);
 		Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
 		//Pattern pMesaureUnit = Pattern.compile(itemMeasureUnitRegex,Pattern.CASE_INSENSITIVE);
-		List<String> strItems = Stream.of(arrTextSplitN).filter(f -> pCode.matcher(f).find())
+		List<String> strItems = Stream.of(arrText).filter(f -> pCode.matcher(f).find())
 				.collect(Collectors.toList());
-		List<SupplyItem> itemsList = strItems.stream().map(item -> {
+		return  strItems.stream().map(item -> {
 			SupplyItem supplyItem = new SupplyItem();
 			supplyItem.setItemDetail(item.replaceAll("([0-9]*\\W)", " ").trim());
 			supplyItem.setTotalEstimatedCost(new BigDecimal(item.substring(item.indexOf("$")+1).replace(".", "").replace(",", ".").strip()));
@@ -120,7 +134,7 @@ public class PdfTextToSupplyTest {
 
 			return supplyItem;
 		}).toList();
-		itemsList.forEach(e -> System.out.println(e));
+		
 	}
 	
 	/*private int findPointsQuantity(String text) {
