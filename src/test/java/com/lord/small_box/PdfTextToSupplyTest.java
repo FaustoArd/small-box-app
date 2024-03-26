@@ -45,9 +45,9 @@ public class PdfTextToSupplyTest {
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// supplyPdfList.forEach(e -> System.out.println(e));
-		for (String s : arrTextSplitN) {
+		/*for (String s : arrTextSplitN) {
 			System.out.println(s);
-		}
+		}*/
 	}
 
 	@Test
