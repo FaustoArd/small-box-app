@@ -2,6 +2,7 @@ package com.lord.small_box;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,8 +38,8 @@ public class PdfTextToPurchaseOrder {
 	private String[] arrTextSplitN;
 
 	private final String supplyNumberRegex = "^(?=.*[0-9]{1,4})";
-	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
-	private final String itemUnitPrice = "^(?=.*([0-9].)*(,)([0-9]){5})";
+	
+	
 
 	@BeforeAll
 	void setup() throws Exception {
@@ -55,20 +56,27 @@ public class PdfTextToPurchaseOrder {
 	@Test
 	void mustReturnPurchaseOrder() throws Exception {
 
-		PurchaseOrder purchaseOrder = PurchaseOrder.builder().date(getDate(text)).items(getItems(arrTextSplitN))
+		PurchaseOrder purchaseOrder = PurchaseOrder.builder()
+				.date(getDate(text))
+				.items(getItems(arrTextSplitN))
 				.build();
 		System.err.println("Purchase order: " + purchaseOrder.getItems());
 	}
+	
 
 	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
 	private final String itemQuantityRegex = "^(?=.*([0-9])*(,)([0-9]){3})";
-
-	private List<PurchaseOrderItem> getItems(String[] text) {
+	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
+	private final String itemUnitPrice = "^(?=.*([0-9].)*(,)([0-9]){5})";
+	
+	private List<PurchaseOrderItem> getItems(String[] arrText) {
 		Pattern pItemCode = Pattern.compile(itemCodeRegex);
 		Pattern pItemQuantity = Pattern.compile(itemQuantityRegex);
-		List<String> itemsText = Stream.of(text).filter(f -> pItemCode.matcher(f).find()).collect(Collectors.toList());
+		Pattern pProgCat = Pattern.compile(itemProgCatRegex);
+		Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
+		
+		List<String> itemsText = Stream.of(arrText).filter(f -> pItemCode.matcher(f).find()).collect(Collectors.toList());
 		itemsText.forEach(e -> System.out.println(e));
-
 		return itemsText.stream().map(item -> {
 			PurchaseOrderItem purchaseOrderItem = new PurchaseOrderItem();
 			String[] arrItems = item.split(" ");
@@ -85,8 +93,20 @@ public class PdfTextToPurchaseOrder {
 			}
 			purchaseOrderItem.setMeasureUnit(quantityResult);
 			
+			purchaseOrderItem.setProgramaticCat(Stream.of(arrItems)
+					.filter(f -> pProgCat.matcher(f).find())
+					.findFirst().get().strip());
 			
-
+			purchaseOrderItem.setItemDetail(Stream.of(arrItems)
+					.filter(f -> f.matches("([a-zA-Z]*)")).skip(1)
+					.map(m -> m.replaceAll("[0-9\\W]", ""))
+					.collect(Collectors.joining("-")));
+			
+			purchaseOrderItem.setUnitCost(new BigDecimal(Stream.of(arrItems).filter(f -> pUnitPrice.matcher(f).find())
+					.map(m -> m.replace(".", "").replace(",", ".")).findFirst().get()));
+			
+			purchaseOrderItem.setTotalEstimatedCost(new BigDecimal(item.substring(item.lastIndexOf("$")+1)
+					.replace(".", "").replace(",", ".").strip()));
 			return purchaseOrderItem;
 
 		}).toList();
