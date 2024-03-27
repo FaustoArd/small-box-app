@@ -32,6 +32,7 @@ public class PdfTextToSupplyTest {
 
 	@Autowired
 	private PdfToStringUtils pdfToStringUtils;
+	
 	private String text;
 	private List<String> supplyPdfList;
 	private String[] arrTextSplitPageEnd;
@@ -45,9 +46,9 @@ public class PdfTextToSupplyTest {
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// supplyPdfList.forEach(e -> System.out.println(e));
-		/*for (String s : arrTextSplitN) {
+		for (String s : arrTextSplitN) {
 			System.out.println(s);
-		}*/
+		}
 	}
 
 	@Test
@@ -56,9 +57,22 @@ public class PdfTextToSupplyTest {
 		supply.setSupplyNumber(mustReturnSupplyNumber(arrTextSplitN));
 		supply.setDate(mustReturnDate(text));
 		supply.setSupplyItems(mustReturnSupplyItemList(arrTextSplitN));
+		supply.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
+		System.out.println("Estimated: "+supply.getEstimatedTotalCost());
 		System.out.println("TEST: " + supply.getSupplyNumber());
 		System.out.println("TEST: " + supply.getDate().getTime());
 		System.out.println("TEST: " + supply.getSupplyItems());
+	}
+	
+	private BigDecimal getEstimatedTotal(String[] arrText) {
+		return new BigDecimal(Stream.of(arrText)
+				.filter(f -> f.toLowerCase().contains("total"))
+				.findFirst().get().replaceAll("[a-zA-Z]", "")
+				.replace(":", "")
+				.replace("$", "")
+				.replace(".", "")
+				.replace(",", ".")
+				.strip());
 	}
 
 	private final String supplyNumberTitleRegex = "(SOLICITUD DE PEDIDO Nº)";
