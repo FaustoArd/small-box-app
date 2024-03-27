@@ -28,7 +28,7 @@ public class PurchaseOrderItem {
 	
 	private String programaticCat;
 	
-	private String quantity;
+	private int quantity;
 	
 	private String measureUnit;
 	

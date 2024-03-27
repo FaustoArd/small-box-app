@@ -105,7 +105,8 @@ public class PdfTextToSupplyTest {
 		return  strItems.stream().map(item -> {
 			SupplyItem supplyItem = new SupplyItem();
 			supplyItem.setItemDetail(item.replaceAll("([0-9]*\\W)", " ").trim());
-			supplyItem.setTotalEstimatedCost(new BigDecimal(item.substring(item.indexOf("$")+1).replace(".", "").replace(",", ".").strip()));
+			supplyItem.setTotalEstimatedCost(new BigDecimal(item.substring(item.indexOf("$")+1)
+					.replace(".", "").replace(",", ".").strip()));
 			ListIterator<String> list = Stream.of(item.split(" ")).toList().listIterator();
 			list.forEachRemaining(i -> {
 				if (pCode.matcher(i).find()) {
