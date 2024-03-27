@@ -28,7 +28,7 @@ import com.lord.small_box.utils.PdfToStringUtils;
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class PdfTextToPurchaseOrder {
+public class PdfTextToPurchaseOrderTest {
 
 	@Autowired
 	private PdfToStringUtils pdfToStringUtils;
