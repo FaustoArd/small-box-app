@@ -1,5 +1,6 @@
 package com.lord.small_box.models;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
@@ -52,6 +53,8 @@ public class PurchaseOrder {
 	private Calendar date;
 
 	private String exp;
+	
+	private BigDecimal purchaseOrderTotal;
 
 	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinTable(name = "purchase_order_item_junction", joinColumns = {

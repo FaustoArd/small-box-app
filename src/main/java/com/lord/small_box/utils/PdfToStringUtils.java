@@ -31,7 +31,7 @@ public class PdfToStringUtils {
 	
 	
 	public String pdfToReceipt(String filename)throws Exception{
-		String filePath = "D:\\filetest\\" + filename + ".pdf" ;
+		String filePath = "\\\\canaima\\Usuarios\\Secretarias\\Desarrollo social\\SEC DSARROLLO SOCIAL\\ADMINISTRACION\\FAUSTO\\sum-test\\" + filename + ".pdf" ;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
 		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
@@ -51,7 +51,7 @@ public class PdfToStringUtils {
 	}
 	
 	public List<String> pdfToDispatch(String fileName) throws Exception {
-		String filePath = "D:\\filetest\\" + fileName  ;
+		String filePath = "\\\\canaima\\Usuarios\\Secretarias\\Desarrollo social\\SEC DSARROLLO SOCIAL\\ADMINISTRACION\\FAUSTO\\sum-test\\" + fileName  ;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
 		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));

@@ -43,7 +43,7 @@ public class PdfTextToPurchaseOrder {
 
 	@BeforeAll
 	void setup() throws Exception {
-		text = pdfToStringUtils.pdfToReceipt("oc-365");
+		text = pdfToStringUtils.pdfToReceipt("oc-367");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// Stream.of(arrTextSplitPageEnd).forEach(e -> System.out.println(e));
@@ -57,12 +57,33 @@ public class PdfTextToPurchaseOrder {
 	void mustReturnPurchaseOrder() throws Exception {
 
 		PurchaseOrder purchaseOrder = PurchaseOrder.builder()
+				.orderNumber(Integer.parseInt(getPurchaseOrderNumber(arrTextSplitN)))
 				.date(getDate(text))
 				.items(getItems(arrTextSplitN))
+				.purchaseOrderTotal(getPurchaseTotal(arrTextSplitN))
 				.build();
+		
+		System.err.println("Order Number:"+ purchaseOrder.getOrderNumber());
+		System.err.println("Order TOTAL: " + purchaseOrder.getPurchaseOrderTotal());
+		System.err.println("Order Date: " + purchaseOrder.getDate());
 		System.err.println("Purchase order: " + purchaseOrder.getItems());
 	}
 	
+	private String getPurchaseOrderNumber(String[] arrText) {
+		return Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get().replaceAll("[\\D]", "").strip();
+	}
+	
+	private BigDecimal getPurchaseTotal(String[] arrText) {
+		return new BigDecimal(Stream.of(arrText)
+				.filter(f -> f.toLowerCase().contains("total:"))
+				.findFirst().get()
+				.replaceAll("[a-zA-Z]", "")
+				.replace(":", "")
+				.replace("$", "")
+				.replace(".", "")
+				.replace(",", ".")
+				.strip());
+	}
 
 	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
 	private final String itemQuantityRegex = "^(?=.*([0-9])*(,)([0-9]){3})";
