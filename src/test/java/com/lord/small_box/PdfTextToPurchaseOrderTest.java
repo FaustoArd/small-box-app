@@ -43,7 +43,7 @@ public class PdfTextToPurchaseOrderTest {
 
 	@BeforeAll
 	void setup() throws Exception {
-		text = pdfToStringUtils.pdfToReceipt("oc-367");
+		text = pdfToStringUtils.pdfToReceipt("oc-365");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// Stream.of(arrTextSplitPageEnd).forEach(e -> System.out.println(e));
