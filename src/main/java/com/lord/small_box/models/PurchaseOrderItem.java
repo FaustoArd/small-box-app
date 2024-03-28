@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +48,4 @@ public class PurchaseOrderItem {
 	
 	private Calendar expirationDate;
 	
-	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinColumn(name="purchase_order_id", referencedColumnName = "id")
-	private PurchaseOrder purchaseOrder;
-}
+	}

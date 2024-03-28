@@ -165,7 +165,6 @@ public class SmallBoxApplication {
 		fabi.setName("Fabian");
 		fabi.setLastname("Yanes");
 		OrganizationResponsible saveFabi = organizationResponsibleRepository.save(fabi);
-		
 		OrganizationResponsible iasil = new OrganizationResponsible();
 		iasil.setName("Luciana");
 		iasil.setLastname("Iasil");

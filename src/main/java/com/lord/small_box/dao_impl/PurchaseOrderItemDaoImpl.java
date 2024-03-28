@@ -42,6 +42,16 @@ public class PurchaseOrderItemDaoImpl implements PurchaseOrderItemDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<PurchaseOrderItem> saveAll(List<PurchaseOrderItem> items) {
+		return purchaseOrderItemRepository.saveAll(items);
+	}
+
+	@Override
+	public List<PurchaseOrderItem> findAllbyId(List<Long> ids) {
+	return (List<PurchaseOrderItem>)purchaseOrderItemRepository.findAllByIdIn(ids);
+	}
 	
 	
 }

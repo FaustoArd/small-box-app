@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.lord.small_box.dao.PurchaseOrderDao;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.PurchaseOrder;
+import com.lord.small_box.models.PurchaseOrderItem;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,8 @@ public class PurchaseOrderDaoImpl implements PurchaseOrderDao {
 	public List<PurchaseOrder> findallPurchaseOrders() {
 	return (List<PurchaseOrder>)purchaseOrderRepository.findAll();
 	}
+
+	
 	
 	
 

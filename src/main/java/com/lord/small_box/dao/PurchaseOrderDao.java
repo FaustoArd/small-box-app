@@ -3,6 +3,7 @@ package com.lord.small_box.dao;
 import java.util.List;
 
 import com.lord.small_box.models.PurchaseOrder;
+import com.lord.small_box.models.PurchaseOrderItem;
 
 public interface PurchaseOrderDao {
 	
@@ -14,4 +15,5 @@ public interface PurchaseOrderDao {
 	
 	public List<PurchaseOrder> findallPurchaseOrders();
 
+	
 }

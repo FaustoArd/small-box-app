@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
+import com.lord.small_box.dtos.PurchaseOrderDto;
+import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
 
@@ -21,18 +23,25 @@ public class TextToPurchaseOrder {
 
 	
 	//This method collect all PurchaseOrder elements from a pdf text and return PurchaseOrder object.
-	public PurchaseOrder textToPurchaseOrder(String text) {
+	public PurchaseOrderDto textToPurchaseOrder(String text) {
 		String[] arrTextSplitN = text.split("\\n");
 
-		PurchaseOrder purchaseOrder = PurchaseOrder.builder()
+		PurchaseOrderDto purchaseOrderDto = new PurchaseOrderDto();
+		purchaseOrderDto.setDate(getDate(text));
+		purchaseOrderDto.setOrderNumber(Integer.parseInt(getPurchaseOrderNumber(arrTextSplitN)));
+		purchaseOrderDto.setItems(getItems(arrTextSplitN));
+		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
+		System.err.println("Order Number:" + purchaseOrderDto.getOrderNumber());
+		System.err.println("Order TOTAL: " + purchaseOrderDto.getPurchaseOrderTotal());
+		System.err.println("Order Date: " + purchaseOrderDto.getDate());
+		System.err.println("Purchase order: " + purchaseOrderDto.getItems());
+		return purchaseOrderDto;
+		/*PurchaseOrderDto purchaseOrder = PurchaseOrder.builder()
 				.orderNumber(Integer.parseInt(getPurchaseOrderNumber(arrTextSplitN))).date(getDate(text))
-				.items(getItems(arrTextSplitN)).purchaseOrderTotal(getPurchaseTotal(arrTextSplitN)).build();
+				.items(getItems(arrTextSplitN)).purchaseOrderTotal(getPurchaseTotal(arrTextSplitN)).build();*/
 
-		System.err.println("Order Number:" + purchaseOrder.getOrderNumber());
-		System.err.println("Order TOTAL: " + purchaseOrder.getPurchaseOrderTotal());
-		System.err.println("Order Date: " + purchaseOrder.getDate());
-		System.err.println("Purchase order: " + purchaseOrder.getItems());
-		return purchaseOrder;
+		
+		
 	}
 	
 
@@ -59,7 +68,7 @@ public class TextToPurchaseOrder {
 	private final Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
 
 	// This method find all the purchase order items.
-	private List<PurchaseOrderItem> getItems(String[] arrText) {
+	private List<PurchaseOrderItemDto> getItems(String[] arrText) {
 
 		// This list contains all lines that match the item code REGEX
 		List<String> itemsText = Stream.of(arrText).filter(f -> pItemCode.matcher(f).find())
@@ -68,7 +77,7 @@ public class TextToPurchaseOrder {
 		// Iterate the list and save each item element in a new PurchaseOrderItem object.
 		return itemsText.stream().map(item -> {
 
-			PurchaseOrderItem purchaseOrderItem = new PurchaseOrderItem();
+			PurchaseOrderItemDto purchaseOrderItem = new PurchaseOrderItemDto();
 			String[] arrItems = item.split(" ");
 			purchaseOrderItem
 					.setCode(Stream.of(arrItems).filter(f -> pItemCode.matcher(f).find()).findFirst().get().strip());

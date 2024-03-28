@@ -10,8 +10,10 @@ public interface PurchaseOrderItemDao {
 	
 	public PurchaseOrderItem saveItem(PurchaseOrderItem item);
 	
+	public List<PurchaseOrderItem> saveAll(List<PurchaseOrderItem> items);
+	
 	public void deleteItemById(Long id);
 	
 	public List<PurchaseOrderItem> findAllItems();
-
+	public List<PurchaseOrderItem> findAllbyId(List<Long>ids);
 }
