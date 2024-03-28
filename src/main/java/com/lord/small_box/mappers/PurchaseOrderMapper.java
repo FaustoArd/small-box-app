@@ -21,10 +21,13 @@ public interface   PurchaseOrderMapper {
 	@Mapping(target="items", ignore = true)
 	public  PurchaseOrder dtoToOrder(PurchaseOrderDto purchaseOrderDto);
 	
+	
+	//@Mapping(target="executerUnit",source = "executerUnit.organizationName")
+	//@Mapping(target="dependency", source="dependency.organizationName")
 	@Mapping(target="executerUnitOrganizationId",source = "executerUnit.id")
-	@Mapping(target="executerUnit",source = "executerUnit.organizationName")
-	@Mapping(target="dependency", source="dependency.organizationName")
-	@Mapping(target="dependencyOrganizacionId", source="dependency.id")
+	@Mapping(target="executerUnit", ignore = true)
+	@Mapping(target="dependency", ignore = true)
+	@Mapping(target="dependencyOrganizacionId",source = "dependency.id")
 	@Mapping(target="items", ignore = true)
 	public  PurchaseOrderDto orderToDto(PurchaseOrder purchaseOrder); 
 		

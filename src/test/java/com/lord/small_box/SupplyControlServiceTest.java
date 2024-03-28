@@ -10,6 +10,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,32 +115,27 @@ public class SupplyControlServiceTest {
 	
 	
 	@Test
+	@Order(1)
 	void pdfToPurchaseOrder()throws Exception {
 		String text = pdfToStringUtils.pdfToReceipt("oc-365");
-		PurchaseOrderDto purchaseOrderDto = textToPurchaseOrder.textToPurchaseOrder(text);
-		List<PurchaseOrderItem> items = purchaseOrderItemDao
-				.saveAll(PurchaseOrderItemMapper.INSTANCE.dtoToItems(purchaseOrderDto.getItems())) ;
-		PurchaseOrder purchaseOrder = PurchaseOrderMapper.INSTANCE.dtoToOrder(purchaseOrderDto);
-		Organization execUnit = organizationService.findById(2L);
-		Organization dependency = organizationService.findById(2L);
-		purchaseOrder.setItems(items);
-		purchaseOrder.setExecuterUnit(execUnit);
-		purchaseOrder.setDependency(dependency);
-		PurchaseOrder savedOrder = purchaseOrderDao.savePurchaseOrder(purchaseOrder);
-		PurchaseOrderDto orderDto = PurchaseOrderMapper.INSTANCE.orderToDto(savedOrder);
-		orderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
-		
-		assertEquals(items.get(0).getCode(),"2.1.1.00788.0013");
-		assertEquals(items.get(1).getCode(),"2.1.1.00705.0035");
-		assertEquals(items.get(7).getCode(),"2.1.1.02113.0002");
-		assertEquals(items.get(0).getId(), savedOrder.getItems().get(0).getId());
-		assertEquals(items.get(1).getId(), savedOrder.getItems().get(1).getId());
-		assertEquals(items.get(7).getId(), savedOrder.getItems().get(7).getId());
-		assertEquals(items.get(0).getCode(), savedOrder.getItems().get(0).getCode());
-		assertEquals(items.get(1).getCode(), savedOrder.getItems().get(1).getCode());
-		assertEquals(items.get(7).getCode(), savedOrder.getItems().get(7).getCode());
-		assertEquals(savedOrder.getOrderNumber(), 365);
-		assertEquals(savedOrder.getPurchaseOrderTotal().doubleValue(),295600.00);
+		PurchaseOrderDto purchaseOrderDto = supplyControlService.collectPurchaseOrderFromText(text);
+		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
+		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
+		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
+		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
+		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
 	}
+	
+	@Test
+	@Order(2)
+	void findPurchaseFullPurchaseOrder()throws Exception{
+		PurchaseOrderDto purchaseOrderDto = supplyControlService.findFullPurchaseOrder(1L);
+		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
+		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
+		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
+		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
+		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
+	}
+	
 
 }

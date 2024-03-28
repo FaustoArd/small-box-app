@@ -9,7 +9,7 @@ public interface SupplyControlService {
 	
 	public PurchaseOrderDto findFullPurchaseOrder(Long id);
 	
-	
+	public String loadPurchaseOrderToSupplyControl(Long purchaseOrderId);
 	
 
 }

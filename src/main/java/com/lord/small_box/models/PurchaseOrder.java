@@ -56,7 +56,7 @@ public class PurchaseOrder {
 	
 	private BigDecimal purchaseOrderTotal;
 
-	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinTable(name = "purchase_order_item_junction", joinColumns = {
 			@JoinColumn(name = "purchase_order_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "item_id", referencedColumnName = "id") })

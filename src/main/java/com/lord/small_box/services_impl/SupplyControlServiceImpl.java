@@ -76,4 +76,10 @@ public class SupplyControlServiceImpl implements SupplyControlService {
 		return purchaseOrderDto;
 	}
 
+	@Override
+	public String loadPurchaseOrderToSupplyControl(Long purchaseOrderId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
