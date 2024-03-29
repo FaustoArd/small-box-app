@@ -5,25 +5,31 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
+import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
+import com.lord.small_box.repositories.OrganizationRepository;
+import com.lord.small_box.services.OrganizationService;
 
 @Component
 public class TextToPurchaseOrder {
 
 	
-
+	
 	
 	//This method collect all PurchaseOrder elements from a pdf text and return PurchaseOrder object.
-	public PurchaseOrderDto textToPurchaseOrder(String text) {
+	public PurchaseOrderDto textToPurchaseOrder(String text, OrganizationService organizationService) {
 		String[] arrTextSplitN = text.split("\\n");
 
 		PurchaseOrderDto purchaseOrderDto = new PurchaseOrderDto();
@@ -31,6 +37,16 @@ public class TextToPurchaseOrder {
 		purchaseOrderDto.setOrderNumber(Integer.parseInt(getPurchaseOrderNumber(arrTextSplitN)));
 		purchaseOrderDto.setItems(getItems(arrTextSplitN));
 		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
+		Optional<OrganizationDto> optExecUnitOrgDto = Optional.of(getExecuterUnit(arrTextSplitN,organizationService));
+		if(optExecUnitOrgDto.isPresent()) {
+			purchaseOrderDto.setExecuterUnit(optExecUnitOrgDto.get().getOrganizationName());
+			purchaseOrderDto.setExecuterUnitOrganizationId(optExecUnitOrgDto.get().getId());
+		}
+		Optional<OrganizationDto> optDepedencyOrgDto = Optional.of(getDependency(arrTextSplitN,organizationService));
+		if(optDepedencyOrgDto.isPresent()) {
+			purchaseOrderDto.setDependency(optDepedencyOrgDto.get().getOrganizationName());
+			purchaseOrderDto.setDependencyOrganizacionId(optDepedencyOrgDto.get().getId());
+		}
 		System.err.println("Order Number:" + purchaseOrderDto.getOrderNumber());
 		System.err.println("Order TOTAL: " + purchaseOrderDto.getPurchaseOrderTotal());
 		System.err.println("Order Date: " + purchaseOrderDto.getDate());
@@ -43,6 +59,38 @@ public class TextToPurchaseOrder {
 		
 		
 	}
+	private final String executerUnitRegex = "^(?=.*(unidad ejecutora))";
+
+	private OrganizationDto getExecuterUnit(String[] arrText,OrganizationService organizationService) {
+		Pattern pExecUnit = Pattern.compile(executerUnitRegex, Pattern.CASE_INSENSITIVE);
+		String executerInut = Stream.of(arrText).filter(f -> pExecUnit.matcher(f).find())
+				.map(m -> m.substring(m.indexOf(":") + 1, m.lastIndexOf(":") - 5)).findFirst().get()
+				.replace("- Secretarķa", "").trim();
+		System.out.println("ExecUnit = " + executerInut);
+		return getOrganization(executerInut,organizationService);
+
+	}
+	
+	private final String dependencyRegex = "^(?=.*(dependencia))";
+	
+	private OrganizationDto getDependency(String[] arrText, OrganizationService organizationService) {
+		Pattern pDependency = Pattern.compile(dependencyRegex, Pattern.CASE_INSENSITIVE);
+		String dependency = Stream.of(arrText).filter(f -> pDependency.matcher(f).find())
+				.map(m -> m.substring(m.trim().indexOf(":")+1, m.length()-1)).findFirst().get().trim();
+		return getOrganization(dependency,organizationService);
+	}
+
+	private OrganizationDto getOrganization(String executerUnit, OrganizationService organizationService) {
+		String orgFinderRegex = "(?=.*(" + executerUnit + "))";
+		Pattern pOrgFinderRegex = Pattern.compile(orgFinderRegex, Pattern.CASE_INSENSITIVE);
+		
+		OrganizationDto findedOrg = organizationService.findAll().stream()
+				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
+		System.out.println("FInded org: " + findedOrg.getOrganizationName());
+		return findedOrg;
+	}
+
 	
 
 	private String getPurchaseOrderNumber(String[] arrText) {

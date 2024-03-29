@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.lord.small_box.dao.PurchaseOrderItemDao;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 
@@ -51,6 +52,11 @@ public class PurchaseOrderItemDaoImpl implements PurchaseOrderItemDao {
 	@Override
 	public List<PurchaseOrderItem> findAllbyId(List<Long> ids) {
 	return (List<PurchaseOrderItem>)purchaseOrderItemRepository.findAllByIdIn(ids);
+	}
+
+	@Override
+	public List<PurchaseOrderItem> findAllByPurchaseOrder(PurchaseOrder purchaseOrder) {
+		return (List<PurchaseOrderItem>)purchaseOrderItemRepository.findAllByPurchaseOrder(purchaseOrder);
 	}
 	
 	

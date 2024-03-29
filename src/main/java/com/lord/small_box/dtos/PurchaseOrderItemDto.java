@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PurchaseOrderItemDto {
-private Long id;
+	private Long id;
 	
 	private String code;
 	

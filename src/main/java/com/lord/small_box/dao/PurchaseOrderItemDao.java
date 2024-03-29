@@ -2,6 +2,7 @@ package com.lord.small_box.dao;
 
 import java.util.List;
 
+import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
 
 public interface PurchaseOrderItemDao {
@@ -16,4 +17,6 @@ public interface PurchaseOrderItemDao {
 	
 	public List<PurchaseOrderItem> findAllItems();
 	public List<PurchaseOrderItem> findAllbyId(List<Long>ids);
+	public List<PurchaseOrderItem> findAllByPurchaseOrder(PurchaseOrder purchaseOrder);
+	
 }

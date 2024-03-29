@@ -51,16 +51,20 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	@Override
 	public PurchaseOrderDto collectPurchaseOrderFromText(String text) {
-		PurchaseOrderDto purchaseOrderDto = textToPurchaseOrder.textToPurchaseOrder(text);
-		List<PurchaseOrderItem> items = purchaseOrderItemDao
-				.saveAll(PurchaseOrderItemMapper.INSTANCE.dtoToItems(purchaseOrderDto.getItems()));
+		PurchaseOrderDto purchaseOrderDto = textToPurchaseOrder.textToPurchaseOrder(text,organizationService);
 		PurchaseOrder purchaseOrder = PurchaseOrderMapper.INSTANCE.dtoToOrder(purchaseOrderDto);
-		Organization execUnit = organizationService.findById(2L);
-		Organization dependency = organizationService.findById(2L);
-		purchaseOrder.setItems(items);
+		List<PurchaseOrderItem> items = PurchaseOrderItemMapper.INSTANCE.dtoToItems(purchaseOrderDto.getItems());
+		
+		Organization execUnit = organizationService.findById(purchaseOrderDto.getExecuterUnitOrganizationId());
+		Organization dependency = organizationService.findById(purchaseOrderDto.getDependencyOrganizacionId());
 		purchaseOrder.setExecuterUnit(execUnit);
 		purchaseOrder.setDependency(dependency);
 		PurchaseOrder savedOrder = purchaseOrderDao.savePurchaseOrder(purchaseOrder);
+		List<PurchaseOrderItem> updatedItems =  items.stream().map(m ->{
+			m.setPurchaseOrder(savedOrder);
+			return m;
+		}).toList();
+		purchaseOrderItemDao.saveAll(updatedItems);
 		PurchaseOrderDto orderDto = PurchaseOrderMapper.INSTANCE.orderToDto(savedOrder);
 		orderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
 		return orderDto;
@@ -68,19 +72,16 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	@Override
 	public PurchaseOrderDto findFullPurchaseOrder(Long id) {
-		PurchaseOrder order = purchaseOrderDao.findPurchaseOrderById(id);
-		List<PurchaseOrderItem> items = purchaseOrderItemDao
-				.findAllbyId(order.getItems().stream().map(m -> m.getId()).toList());
-		List<PurchaseOrderItemDto> itemsDto = PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items);
-		PurchaseOrderDto purchaseOrderDto = PurchaseOrderMapper.INSTANCE.orderToDto(order);
-		purchaseOrderDto.setItems(itemsDto);
+		PurchaseOrder purchaseOrder = purchaseOrderDao.findPurchaseOrderById(id);
+		List<PurchaseOrderItem> items = purchaseOrderItemDao.findAllByPurchaseOrder(purchaseOrder);
+		PurchaseOrderDto purchaseOrderDto = PurchaseOrderMapper.INSTANCE.orderToDto(purchaseOrder);
+		purchaseOrderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
+		
 		return purchaseOrderDto;
 	}
 
 	@Override
 	public String loadPurchaseOrderToDepositControl(Long purchaseOrderId) {
-		PurchaseOrder purchaseOrder = purchaseOrderDao.findPurchaseOrderById(purchaseOrderId);
-		List<DepositControl> items = depositControlDao.findallDepositControls();
 		
 		return null;
 	}

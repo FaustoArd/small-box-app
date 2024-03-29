@@ -49,7 +49,7 @@ public class Organization {
 	private int organizationNumber;
 	
 	@JsonBackReference
-	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
 	@JoinColumn(name="responsible_id", referencedColumnName = "id")
 	private OrganizationResponsible responsible;
 	

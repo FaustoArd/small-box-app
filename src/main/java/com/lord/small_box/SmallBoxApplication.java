@@ -170,6 +170,10 @@ public class SmallBoxApplication {
 		iasil.setLastname("Iasil");
 		OrganizationResponsible saveIasil = organizationResponsibleRepository.save(iasil);
 		
+		OrganizationResponsible lagunas = new OrganizationResponsible();
+		lagunas.setName("Analia");
+		lagunas.setLastname("Lagunas");
+		OrganizationResponsible savedLagunas = organizationResponsibleRepository.save(lagunas);
 			
 					
 		
@@ -194,15 +198,15 @@ public class SmallBoxApplication {
 			org3.setMaxAmount(new BigDecimal(45000));
 			org3.setResponsible(saveFabi);
 		
-			/*Organization org4 = new Organization();
-			org4.setOrganizationName("Direccion de Niñez");
-			org4.setResponsible(saveFontova);
+			Organization org4 = new Organization();
+			org4.setOrganizationName("Dirección de Reinserción Social");
+			org4.setOrganizationNumber(5);
+			org4.setMaxAmount(new BigDecimal(100000));
 			org4.setMaxRotation(12);
-			org4.setMaxAmount(new BigDecimal(45000));
-			org4.setOrganizationNumber(4);*/
+			org4.setResponsible(savedLagunas);
 		
 			Organization org5 = new Organization();
-			org5.setOrganizationName("Subsecretria de Politicas Socio Comunitarias");
+			org5.setOrganizationName("Subsecretaria de Politicas Socio Comunitarias");
 			org5.setResponsible(saveIasil);
 			org5.setMaxRotation(12);
 			org5.setMaxAmount(new BigDecimal(100000));
@@ -211,6 +215,7 @@ public class SmallBoxApplication {
 			Organization secDesSocial = organizationRepository.save(org1);
 			Organization dirAdmDesp = organizationRepository.save(org2);
 			organizationRepository.save(org3);
+			organizationRepository.save(org4);
 			organizationRepository.save(org5);
 			
 			//fileReaderUtils.readFile();

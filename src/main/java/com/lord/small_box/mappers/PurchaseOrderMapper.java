@@ -18,7 +18,6 @@ public interface   PurchaseOrderMapper {
 	@Mapping(target="executerUnit.organizationName", source="executerUnit")
 	@Mapping(target="dependency.organizationName", source="dependency")
 	@Mapping(target="dependency.id", source="dependencyOrganizacionId")
-	@Mapping(target="items", ignore = true)
 	public  PurchaseOrder dtoToOrder(PurchaseOrderDto purchaseOrderDto);
 	
 	

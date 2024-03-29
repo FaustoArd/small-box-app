@@ -48,4 +48,8 @@ public class PurchaseOrderItem {
 	
 	private Calendar expirationDate;
 	
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinColumn(name="purchase_order_id", referencedColumnName = "id")
+	private PurchaseOrder purchaseOrder;
+	
 	}
