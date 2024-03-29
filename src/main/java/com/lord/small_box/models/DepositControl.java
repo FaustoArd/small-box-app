@@ -32,6 +32,8 @@ public class DepositControl {
 	
 	private String itemName;
 	
+	private String itemCode;
+	
 	private int quantity;
 	
 	private Calendar expirationDate;

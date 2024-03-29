@@ -14,18 +14,19 @@ import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.mappers.PurchaseOrderItemMapper;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
+import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
 import com.lord.small_box.services.OrganizationService;
-import com.lord.small_box.services.SupplyControlService;
+import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.text_analisys.TextToPurchaseOrder;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class SupplyControlServiceImpl implements SupplyControlService {
+public class DepositControlServiceImpl implements DepositControlService {
 	
 	@Autowired
 	private final DepositControlDao depositControlDao;
@@ -77,8 +78,10 @@ public class SupplyControlServiceImpl implements SupplyControlService {
 	}
 
 	@Override
-	public String loadPurchaseOrderToSupplyControl(Long purchaseOrderId) {
-		// TODO Auto-generated method stub
+	public String loadPurchaseOrderToDepositControl(Long purchaseOrderId) {
+		PurchaseOrder purchaseOrder = purchaseOrderDao.findPurchaseOrderById(purchaseOrderId);
+		List<DepositControl> items = depositControlDao.findallDepositControls();
+		
 		return null;
 	}
 

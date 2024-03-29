@@ -29,14 +29,14 @@ import com.lord.small_box.models.PurchaseOrderItem;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.services.OrganizationService;
-import com.lord.small_box.services.SupplyControlService;
+import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.text_analisys.TextToPurchaseOrder;
 import com.lord.small_box.utils.PdfToStringUtils;
 
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class SupplyControlServiceTest {
+public class DepositControlServiceTest {
 	
 	@Autowired
 	private PurchaseOrderDao purchaseOrderDao;
@@ -45,7 +45,7 @@ public class SupplyControlServiceTest {
 	private PurchaseOrderItemDao purchaseOrderItemDao;
 	
 	@Autowired
-	private SupplyControlService supplyControlService;
+	private DepositControlService supplyControlService;
 	
 	@Autowired
 	private PdfToStringUtils pdfToStringUtils;

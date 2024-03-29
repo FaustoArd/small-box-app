@@ -12,5 +12,6 @@ public interface DepositControlDao {
 	public void deleteDepositControlById(Long id);
 	
 	public List<DepositControl> findallDepositControls();
-
+	
+	public List<DepositControl> findAllByItemCode(List<String> itemCodes);
 }
