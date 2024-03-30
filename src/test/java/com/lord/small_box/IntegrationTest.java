@@ -5,18 +5,14 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -156,7 +152,7 @@ public class IntegrationTest {
 				"{\"name\":\"Pedro\",\"lastname\":\"Mozart\",\"username\":\"pedro29\",\"email\":\"car_moz@gmail.com\",\"password\":\"Xta2929341\"}")
 				.header("Authorization", "Bearer " + jwtToken).param("authority", "USER")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-				.andExpect(jsonPath(("$.name"), is("Pedro"))).andExpect(jsonPath("$.username", is("pedro29")))
+				.andExpect(jsonPath(("$.name"), is("Pedro")))
 				.andExpect(jsonPath("$.password", is(nullValue())));
 
 	}

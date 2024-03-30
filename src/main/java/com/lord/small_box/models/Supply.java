@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -37,12 +38,10 @@ public class Supply {
 	
 	private int supplyNumber;
 
-	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-	@JoinTable(name = "supply_supply_item_junction", joinColumns = {
-			@JoinColumn(name = "supply_id", referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "supply_item_id", referencedColumnName = "id") })
-	private List<SupplyItem> supplyItems;
-	
 	private BigDecimal estimatedTotalCost;
+	
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinColumn(name="dependency_applicant_id",referencedColumnName = "id")
+	private Organization dependencyApplicant;
 
 }

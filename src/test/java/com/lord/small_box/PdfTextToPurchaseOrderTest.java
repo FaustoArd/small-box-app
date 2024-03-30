@@ -23,6 +23,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 
+import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
@@ -138,15 +139,15 @@ public class PdfTextToPurchaseOrderTest {
 		purchaseOrderDto.setOrderNumber(getPurchaseOrderNumber(arrTextSplitN));
 		purchaseOrderDto.setItems(getItems(arrTextSplitN));
 		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
-		Optional<Organization> optExecUnitOrg = Optional.of(getExecuterUnit(arrTextSplitN));
-		if(optExecUnitOrg.isPresent()) {
-			purchaseOrderDto.setExecuterUnit(optExecUnitOrg.get().getOrganizationName());
-			purchaseOrderDto.setExecuterUnitOrganizationId(optExecUnitOrg.get().getId());
+		Optional<OrganizationDto> optExecUnitOrgDto = Optional.of(getExecuterUnit(arrTextSplitN));
+		if(optExecUnitOrgDto.isPresent()) {
+			purchaseOrderDto.setExecuterUnit(optExecUnitOrgDto.get().getOrganizationName());
+			purchaseOrderDto.setExecuterUnitOrganizationId(optExecUnitOrgDto.get().getId());
 		}
-		Optional<Organization> optDepedencyOrg = Optional.of(getDependency(arrTextSplitN));
-		if(optDepedencyOrg.isPresent()) {
-			purchaseOrderDto.setDependency(optDepedencyOrg.get().getOrganizationName());
-			purchaseOrderDto.setDependencyOrganizacionId(optDepedencyOrg.get().getId());
+		Optional<OrganizationDto> optDepedencyOrgDto = Optional.of(getDependency(arrTextSplitN));
+		if(optDepedencyOrgDto.isPresent()) {
+			purchaseOrderDto.setDependency(optDepedencyOrgDto.get().getOrganizationName());
+			purchaseOrderDto.setDependencyOrganizacionId(optDepedencyOrgDto.get().getId());
 		}
 		System.err.println("Order Number: " + purchaseOrderDto.getOrderNumber());
 		System.err.println("Order TOTAL: " + purchaseOrderDto.getPurchaseOrderTotal());
@@ -164,7 +165,7 @@ public class PdfTextToPurchaseOrderTest {
 
 	private final String executerUnitRegex = "^(?=.*(unidad ejecutora))";
 
-	private Organization getExecuterUnit(String[] arrText) {
+	private OrganizationDto getExecuterUnit(String[] arrText) {
 		Pattern pExecUnit = Pattern.compile(executerUnitRegex, Pattern.CASE_INSENSITIVE);
 		String executerInut = Stream.of(arrText).filter(f -> pExecUnit.matcher(f).find())
 				.map(m -> m.substring(m.indexOf(":") + 1, m.lastIndexOf(":") - 5)).findFirst().get()
@@ -176,22 +177,22 @@ public class PdfTextToPurchaseOrderTest {
 	
 	private final String dependencyRegex = "^(?=.*(dependencia))";
 	
-	private Organization getDependency(String[] arrText) {
+	private OrganizationDto getDependency(String[] arrText) {
 		Pattern pDependency = Pattern.compile(dependencyRegex, Pattern.CASE_INSENSITIVE);
 		String dependency = Stream.of(arrText).filter(f -> pDependency.matcher(f).find())
 				.map(m -> m.substring(m.trim().indexOf(":")+1, m.length()-1)).findFirst().get().trim();
 		return getOrganization(dependency);
 	}
 
-	private Organization getOrganization(String executerUnit) {
+	private OrganizationDto getOrganization(String executerUnit) {
 		String orgFinderRegex = "(?=.*(" + executerUnit + "))";
 		Pattern pOrgFinderRegex = Pattern.compile(orgFinderRegex, Pattern.CASE_INSENSITIVE);
 		
-		Organization findedOrg = organizationRepository.findAll().stream()
+		OrganizationDto findedOrgDto = organizationService.findAll().stream()
 				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
 				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
-		System.out.println("FInded org: " + findedOrg.getOrganizationName());
-		return findedOrg;
+		System.out.println("FInded org: " + findedOrgDto.getOrganizationName());
+		return findedOrgDto;
 	}
 
 	private int getPurchaseOrderNumber(String[] arrText) {

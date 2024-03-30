@@ -44,4 +44,9 @@ public class SupplyItemDaoImpl implements SupplyItemDao {
 		return (List<SupplyItem>)supplyItemRepository.findAll();
 	}
 
+	@Override
+	public List<SupplyItem> saveAll(List<SupplyItem> items) {
+		return (List<SupplyItem>)supplyItemRepository.saveAll(items);
+	}
+
 }

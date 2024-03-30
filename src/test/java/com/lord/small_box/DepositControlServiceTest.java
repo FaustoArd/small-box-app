@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.isNotNull;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.lord.small_box.dao.PurchaseOrderDao;
 import com.lord.small_box.dao.PurchaseOrderItemDao;
 import com.lord.small_box.dtos.PurchaseOrderDto;
+import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
@@ -147,6 +150,28 @@ public class DepositControlServiceTest {
 		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
 		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
 		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
+	}
+	
+	 @Test
+	 @Order(3)
+	void loadPurchaseOrderToDepositControl()throws Exception{
+		 String result = depositControlService.loadPurchaseOrderToDepositControl(1L);
+		 System.out.println(result);
+	 }
+	 
+	@Test
+	@Order(4)
+	void loadSupply()throws Exception{
+		String text = pdfToStringUtils.pdfToReceipt("sum-551");
+		System.err.println(text);
+		SupplyDto dto = depositControlService.loadSupply(text);
+		Calendar cal = Calendar.getInstance();
+		cal.set(2024, 0, 1);
+		assertThat(dto.getId()).isNotNull();
+		assertThat(dto.getDate()).isBetween(cal, Calendar.getInstance());
+		assertThat(dto.getEstimatedTotalCost()).isGreaterThan(new BigDecimal(40000000));
+		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
+				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
 	}
 	
 

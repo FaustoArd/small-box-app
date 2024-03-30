@@ -48,4 +48,9 @@ public class DepositControlDaoImpl implements DepositControlDao {
 	public List<DepositControl> findAllByItemCode(List<String> itemCodeIds) {
 	return (List<DepositControl>)depositControlRepository.findAllByItemCodeIn(itemCodeIds);
 	}
+
+	@Override
+	public List<DepositControl> saveAll(List<DepositControl> depositControls) {
+		return (List<DepositControl>)depositControlRepository.saveAll(depositControls);
+	}
 }

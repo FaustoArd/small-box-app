@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,17 +22,34 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.lord.small_box.dtos.OrganizationDto;
+import com.lord.small_box.dtos.SupplyDto;
+import com.lord.small_box.dtos.SupplyItemDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.models.Organization;
+import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.Supply;
 import com.lord.small_box.models.SupplyItem;
+import com.lord.small_box.repositories.OrganizationRepository;
+import com.lord.small_box.repositories.OrganizationResponsibleRepository;
+import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.utils.PdfToStringUtils;
 
 @SpringBootTest
-@TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 public class PdfTextToSupplyTest {
 
 	@Autowired
 	private PdfToStringUtils pdfToStringUtils;
+	
+	@Autowired
+	private OrganizationRepository organizationRepository;
+	
+	@Autowired
+	private OrganizationService organizationService;
+	
+	@Autowired
+	private OrganizationResponsibleRepository organizationResponsibleRepository;
 	
 	private String text;
 	private List<String> supplyPdfList;
@@ -42,6 +60,67 @@ public class PdfTextToSupplyTest {
 
 	@BeforeAll
 	void setup() throws Exception {
+		OrganizationResponsible reyes = new OrganizationResponsible();
+		reyes.setName("Blasa");
+		reyes.setLastname("Reyes");
+		OrganizationResponsible savedReyes = organizationResponsibleRepository.save(reyes);
+		OrganizationResponsible pierpa = new OrganizationResponsible();
+		pierpa.setName("Roxana");
+		pierpa.setLastname("Pierpaoli");
+		OrganizationResponsible savedPierpa = organizationResponsibleRepository.save(pierpa);
+		OrganizationResponsible fabi = new OrganizationResponsible();
+		fabi.setName("Fabian");
+		fabi.setLastname("Yanes");
+		OrganizationResponsible saveFabi = organizationResponsibleRepository.save(fabi);
+		OrganizationResponsible iasil = new OrganizationResponsible();
+		iasil.setName("Luciana");
+		iasil.setLastname("Iasil");
+		OrganizationResponsible saveIasil = organizationResponsibleRepository.save(iasil);
+
+		OrganizationResponsible lagunas = new OrganizationResponsible();
+		lagunas.setName("Analia");
+		lagunas.setLastname("Lagunas");
+		OrganizationResponsible savedLagunas = organizationResponsibleRepository.save(lagunas);
+		
+		Organization org1 = new Organization();
+		org1.setOrganizationName("Secretaria de Desarrollo Social");
+		org1.setOrganizationNumber(1);
+		org1.setMaxRotation(12);
+		org1.setMaxAmount(new BigDecimal(180000));
+		org1.setResponsible(savedPierpa);
+
+		Organization org2 = new Organization();
+		org2.setOrganizationName("Direccion de administracion y despacho");
+		org2.setOrganizationNumber(2);
+		org2.setMaxRotation(12);
+		org2.setMaxAmount(new BigDecimal(80000));
+		org2.setResponsible(savedReyes);
+
+		Organization org3 = new Organization();
+		org3.setOrganizationName("Direccion de logistica");
+		org3.setOrganizationNumber(3);
+		org3.setMaxRotation(12);
+		org3.setMaxAmount(new BigDecimal(45000));
+		org3.setResponsible(saveFabi);
+
+		Organization org4 = new Organization();
+		org4.setOrganizationName("Subsecretaria de Politicas Socio Comunitarias");
+		org4.setResponsible(saveIasil);
+		org4.setMaxRotation(12);
+		org4.setMaxAmount(new BigDecimal(100000));
+		org4.setOrganizationNumber(4);
+		
+		Organization org5 = new Organization();
+		org5.setOrganizationName("Dirección de Reinserción Social");
+		org5.setOrganizationNumber(5);
+		org5.setMaxAmount(new BigDecimal(100000));
+		org5.setMaxRotation(12);
+		org5.setResponsible(savedLagunas);
+		Organization secDesSocial = organizationService.save(org1);
+		Organization dirAdmDesp = organizationService.save(org2);
+		organizationService.save(org3);
+		organizationService.save(org4);
+		organizationService.save(org5);
 		text = pdfToStringUtils.pdfToReceipt("sum-551");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
@@ -52,16 +131,43 @@ public class PdfTextToSupplyTest {
 	}
 
 	@Test
-	void mustReturnSupply() throws Exception {
-		Supply supply = new Supply();
-		supply.setSupplyNumber(mustReturnSupplyNumber(arrTextSplitN));
-		supply.setDate(mustReturnDate(text));
-		supply.setSupplyItems(mustReturnSupplyItemList(arrTextSplitN));
-		supply.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
-		System.out.println("Estimated: "+supply.getEstimatedTotalCost());
-		System.out.println("TEST: " + supply.getSupplyNumber());
-		System.out.println("TEST: " + supply.getDate().getTime());
-		System.out.println("TEST: " + supply.getSupplyItems());
+	void mustReturnSupplyDto() throws Exception {
+		SupplyDto supplyDto = new SupplyDto();
+		supplyDto.setSupplyNumber(mustReturnSupplyNumber(arrTextSplitN));
+		supplyDto.setDate(mustReturnDate(text));
+		supplyDto.setSupplyItems(mustReturnSupplyItemList(arrTextSplitN));
+		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
+		Optional<OrganizationDto> optApplicantDto = Optional.of(getApplicant(arrTextSplitN));
+		if(optApplicantDto.isPresent()){
+			supplyDto.setDependencyApplicant(optApplicantDto.get().getOrganizationName());
+			supplyDto.setDependencyApplicantOrganizationId(optApplicantDto.get().getId());
+		}
+		System.out.println("Applicant: "+ supplyDto.getDependencyApplicant());
+		System.out.println("Applicant ID: "+ supplyDto.getDependencyApplicantOrganizationId());
+		System.out.println("Estimated: "+supplyDto.getEstimatedTotalCost());
+		System.out.println("TEST: " + supplyDto.getSupplyNumber());
+		System.out.println("TEST: " + supplyDto.getDate().getTime());
+		supplyDto.getSupplyItems().forEach(e -> System.out.println(e.getCode()));
+	}
+	
+	private OrganizationDto getApplicant(String[] arrText) {
+		String applicant =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst()
+				.map(m -> m.substring(m.indexOf("O")+1, m.lastIndexOf("M")-1)
+						.replace("Secretaría de", "").replace("Dirección de", "")
+						.replace("Subsecretaría de", "").trim()).get();
+		System.err.println("getApplicant: " + applicant);
+		return getOrganization(applicant);
+	}
+	
+	private OrganizationDto getOrganization(String applicant) {
+		String orgFinderRegex = "(?=.*(" + applicant + "))";
+		Pattern pOrgFinderRegex = Pattern.compile(orgFinderRegex, Pattern.CASE_INSENSITIVE);
+		organizationService.findAll().forEach(e -> System.out.println(e.getOrganizationName()));
+		OrganizationDto findedOrgDto = organizationService.findAll().stream()
+				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
+		System.out.println("FInded org: " + findedOrgDto.getOrganizationName());
+		return findedOrgDto;
 	}
 	
 	private BigDecimal getEstimatedTotal(String[] arrText) {
@@ -108,7 +214,7 @@ public class PdfTextToSupplyTest {
 	//private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";
 
 	
-	private List<SupplyItem> mustReturnSupplyItemList(String[] arrText) throws Exception {
+	private List<SupplyItemDto> mustReturnSupplyItemList(String[] arrText) throws Exception {
 		Pattern pCode = Pattern.compile(itemCodeRegex);
 		Pattern pProgCat = Pattern.compile(itemProgCatRegex);
 		Pattern pQuantity = Pattern.compile(itemQuantityRegex);
@@ -117,37 +223,37 @@ public class PdfTextToSupplyTest {
 		List<String> strItems = Stream.of(arrText).filter(f -> pCode.matcher(f).find())
 				.collect(Collectors.toList());
 		return  strItems.stream().map(item -> {
-			SupplyItem supplyItem = new SupplyItem();
-			supplyItem.setItemDetail(item.replaceAll("([0-9]*\\W)", " ").trim());
-			supplyItem.setTotalEstimatedCost(new BigDecimal(item.substring(item.indexOf("$")+1)
+			SupplyItemDto supplyItemDto = new SupplyItemDto();
+			supplyItemDto.setItemDetail(item.replaceAll("([0-9]*\\W)", " ").trim());
+			supplyItemDto.setTotalEstimatedCost(new BigDecimal(item.substring(item.indexOf("$")+1)
 					.replace(".", "").replace(",", ".").strip()));
 			ListIterator<String> list = Stream.of(item.split(" ")).toList().listIterator();
 			list.forEachRemaining(i -> {
 				if (pCode.matcher(i).find()) {
-					supplyItem.setCode(i);
+					supplyItemDto.setCode(i);
 				}
 				if (pProgCat.matcher(i).matches()) {
-					supplyItem.setProgramaticCat(i);
+					supplyItemDto.setProgramaticCat(i);
 				}
 				if (pQuantity.matcher(i).find()) {
-					supplyItem.setQuantity(i);
+					supplyItemDto.setQuantity(i);
 				}
 				if(pUnitPrice.matcher(i).find()) {
 					i= i.replace(".", "");
 					i = i.replace(",", ".");
 							
-					supplyItem.setUnitCost(new BigDecimal(i));
+					supplyItemDto.setUnitCost(new BigDecimal(i));
 				}
 				if(i.toLowerCase().contains("cada")) {
 					i = i + " UNO";
-					supplyItem.setMeasureUnit(i);
+					supplyItemDto.setMeasureUnit(i);
 				}if( i.toLowerCase().contains("kilogramo")) {
-					supplyItem.setMeasureUnit(i);
+					supplyItemDto.setMeasureUnit(i);
 				}
 
 			});
 
-			return supplyItem;
+			return supplyItemDto;
 		}).toList();
 		
 	}

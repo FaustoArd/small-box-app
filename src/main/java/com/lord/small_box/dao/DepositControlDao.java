@@ -14,4 +14,6 @@ public interface DepositControlDao {
 	public List<DepositControl> findallDepositControls();
 	
 	public List<DepositControl> findAllByItemCode(List<String> itemCodes);
+	
+	public List<DepositControl> saveAll(List<DepositControl> depositControls);
 }

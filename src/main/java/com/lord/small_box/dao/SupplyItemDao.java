@@ -10,4 +10,6 @@ public interface SupplyItemDao {
 	public SupplyItem saveSupplyItem(SupplyItem supplyItem);
 	public void deleteSupplyItemById(Long id);
 	public List<SupplyItem> findallSupplyItems();
+	public List<SupplyItem> saveAll(List<SupplyItem> items);
+	
 }
