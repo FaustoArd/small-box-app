@@ -40,6 +40,8 @@ public class DepositControl {
 	
 	private String provider;
 	
+	private String measureUnit;
+	
 	private BigDecimal itemUnitPrice;
 	
 	private BigDecimal itemTotalPrice;

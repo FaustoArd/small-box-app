@@ -47,7 +47,7 @@ public class TextToSupply {
 				.map(m -> m.substring(m.indexOf("O")+1, m.lastIndexOf("M")-1)
 						.replace("Secretaría de", "").replace("Dirección de", "")
 						.replace("Subsecretaría de", "").trim()).get();
-		System.err.println("getApplicant: " + applicant);
+		
 		return getOrganizationDto(applicant,organizationService);
 	}
 	
@@ -58,7 +58,7 @@ public class TextToSupply {
 		OrganizationDto findedOrgDto = organizationService.findAll().stream()
 				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
 				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
-		System.out.println("FInded org: " + findedOrgDto.getOrganizationName());
+		
 		return findedOrgDto;
 	}
 	
@@ -80,7 +80,7 @@ public class TextToSupply {
 		Pattern p = Pattern.compile(supplyNumberTitleRegex);
 		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 27))
 				.map(m -> m.replaceAll("[a-zA-Z\\D]", "")).collect(Collectors.joining(""));
-		System.out.println("Sum number: " + number + "fin.");
+		
 		return Integer.parseInt(number);
 	}
 
@@ -94,7 +94,7 @@ public class TextToSupply {
 		String date = Stream.of(text.split(" ")).filter(f -> p.matcher(f).find()).findFirst().get()
 				.replaceAll("[a-zA-Z]", "").replace("/", "-").trim();
 
-		System.out.println("Test fecha: " + date);
+		
 		try {
 		cal.setTime(sdf.parse(date));
 		return cal;
@@ -132,7 +132,7 @@ public class TextToSupply {
 					supplyItem.setProgramaticCat(i);
 				}
 				if (pQuantity.matcher(i).find()) {
-					supplyItem.setQuantity(i);
+					supplyItem.setQuantity(Integer.parseInt(i.strip()));
 				}
 				if(pUnitPrice.matcher(i).find()) {
 					i= i.replace(".", "");

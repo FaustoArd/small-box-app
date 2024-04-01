@@ -66,7 +66,6 @@ public class TextToPurchaseOrder {
 		String executerInut = Stream.of(arrText).filter(f -> pExecUnit.matcher(f).find())
 				.map(m -> m.substring(m.indexOf(":") + 1, m.lastIndexOf(":") - 5)).findFirst().get()
 				.replace("- Secretarķa", "").trim();
-		System.out.println("ExecUnit = " + executerInut);
 		return getOrganization(executerInut,organizationService);
 
 	}
@@ -87,7 +86,7 @@ public class TextToPurchaseOrder {
 		OrganizationDto findedOrg = organizationService.findAll().stream()
 				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
 				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
-		System.out.println("FInded org: " + findedOrg.getOrganizationName());
+		
 		return findedOrg;
 	}
 
@@ -121,7 +120,7 @@ public class TextToPurchaseOrder {
 		// This list contains all lines that match the item code REGEX
 		List<String> itemsText = Stream.of(arrText).filter(f -> pItemCode.matcher(f).find())
 				.collect(Collectors.toList());
-		itemsText.forEach(e -> System.out.println(e));
+		
 		// Iterate the list and save each item element in a new PurchaseOrderItem object.
 		return itemsText.stream().map(item -> {
 

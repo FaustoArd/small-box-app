@@ -121,7 +121,7 @@ public class PdfTextToSupplyTest {
 		organizationService.save(org3);
 		organizationService.save(org4);
 		organizationService.save(org5);
-		text = pdfToStringUtils.pdfToReceipt("sum-551");
+		text = pdfToStringUtils.pdfToString("sum-551");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// supplyPdfList.forEach(e -> System.out.println(e));
@@ -236,7 +236,7 @@ public class PdfTextToSupplyTest {
 					supplyItemDto.setProgramaticCat(i);
 				}
 				if (pQuantity.matcher(i).find()) {
-					supplyItemDto.setQuantity(i);
+					supplyItemDto.setQuantity(Integer.parseInt(i));
 				}
 				if(pUnitPrice.matcher(i).find()) {
 					i= i.replace(".", "");

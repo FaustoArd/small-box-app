@@ -45,7 +45,7 @@ public class PdfToStringUtilsController {
 
 	@GetMapping("/pdf-to-string")
 	ResponseEntity<String> pdftoString(@RequestParam("file")String file) throws Exception{
-		String result = pdfToStringUtils.pdfToReceipt(file);
+		String result = pdfToStringUtils.pdfToString(file);
 		return ResponseEntity.ok(gson.toJson(result));
 	}
 	
@@ -59,7 +59,7 @@ public class PdfToStringUtilsController {
 
 	@GetMapping("/pdf-to-receipt")
 	ResponseEntity<List<SmallBox>> pdfToReceipt(@RequestParam("file") String file) throws Exception {
-		String pdfText = pdfToStringUtils.pdfToReceipt(file);
+		String pdfText = pdfToStringUtils.pdfToString(file);
 		List<SmallBox> smList = textToReceipt.getPdfToSmallBoxList(pdfText);
 		return ResponseEntity.ok(smList);
 		

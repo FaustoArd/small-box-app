@@ -54,7 +54,7 @@ public class PdfTextToReceiptTest {
 
 	@BeforeAll
 	void setup() throws Exception {
-		text = pdfToStringUtils.pdfToReceipt("2FACTURA-4");
+		text = pdfToStringUtils.pdfToString("2FACTURA-4");
 		arrTextSplitLine = text.split("\\n");
 	}
 	

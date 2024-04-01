@@ -30,7 +30,7 @@ public class PdfToStringUtils {
 	
 	
 	
-	public String pdfToReceipt(String filename)throws Exception{
+	public String pdfToString(String filename)throws Exception{
 		String filePath = "D:\\filetest\\" + filename + ".pdf" ;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);

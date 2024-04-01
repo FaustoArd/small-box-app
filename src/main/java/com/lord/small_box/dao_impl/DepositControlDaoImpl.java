@@ -1,6 +1,7 @@
 package com.lord.small_box.dao_impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,5 +53,10 @@ public class DepositControlDaoImpl implements DepositControlDao {
 	@Override
 	public List<DepositControl> saveAll(List<DepositControl> depositControls) {
 		return (List<DepositControl>)depositControlRepository.saveAll(depositControls);
+	}
+
+	@Override
+	public Optional<DepositControl> findByItemCode(String itemCode) {
+		return depositControlRepository.findByItemCode(itemCode); 
 	}
 }

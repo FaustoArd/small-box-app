@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.isNotNull;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.List;
 
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -106,7 +107,7 @@ public class DepositControlServiceTest {
 			org3.setResponsible(saveFabi);
 		
 			Organization org4 = new Organization();
-			org4.setOrganizationName("Subsecretria de Politicas Socio Comunitarias");
+			org4.setOrganizationName("Subsecretaria de Politicas Socio Comunitarias");
 			org4.setResponsible(saveIasil);
 			org4.setMaxRotation(12);
 			org4.setMaxAmount(new BigDecimal(100000));
@@ -130,7 +131,7 @@ public class DepositControlServiceTest {
 	@Test
 	@Order(1)
 	void pdfToPurchaseOrder()throws Exception {
-		String text = pdfToStringUtils.pdfToReceipt("oc-365");
+		String text = pdfToStringUtils.pdfToString("oc-365");
 		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
@@ -143,7 +144,7 @@ public class DepositControlServiceTest {
 	
 	@Test
 	@Order(2)
-	void findPurchaseFullPurchaseOrder()throws Exception{
+	void findFullPurchaseOrder()throws Exception{
 		PurchaseOrderDto purchaseOrderDto = depositControlService.findFullPurchaseOrder(1L);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
@@ -155,16 +156,16 @@ public class DepositControlServiceTest {
 	 @Test
 	 @Order(3)
 	void loadPurchaseOrderToDepositControl()throws Exception{
-		 String result = depositControlService.loadPurchaseOrderToDepositControl(1L);
-		 System.out.println(result);
+		 List<String> result = depositControlService.loadPurchaseOrderToDepositControl(1L);
+		 result.forEach(e -> System.out.println("Report result: " +e));
 	 }
 	 
 	@Test
 	@Order(4)
 	void loadSupply()throws Exception{
-		String text = pdfToStringUtils.pdfToReceipt("sum-551");
+		String text = pdfToStringUtils.pdfToString("sum-551");
 		System.err.println(text);
-		SupplyDto dto = depositControlService.loadSupply(text);
+		SupplyDto dto = depositControlService.loadSupplyFromText(text);
 		Calendar cal = Calendar.getInstance();
 		cal.set(2024, 0, 1);
 		assertThat(dto.getId()).isNotNull();
@@ -173,6 +174,25 @@ public class DepositControlServiceTest {
 		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
 				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
 	}
+	@Test
+	@Order(6)
+	void PdfToPurchaseOrder2()throws Exception {
+		String text = pdfToStringUtils.pdfToString("oc 658 expte 177");
+		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text);
+		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
+		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
+		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
+		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
+		assertThat(purchaseOrderDto.getExecuterUnitOrganizationId()).isNotNull();
+		assertThat(purchaseOrderDto.getDependencyOrganizacionId()).isNotNull();
+		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
+	}
+	 @Test
+	 @Order(7)
+	void loadPurchaseOrderToDepositControl2()throws Exception{
+		 List<String> result = depositControlService.loadPurchaseOrderToDepositControl(2L);
+		 result.forEach(e -> System.out.println("Report result: " +e));
+	 }
 	
 
 }

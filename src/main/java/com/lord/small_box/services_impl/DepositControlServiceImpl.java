@@ -1,7 +1,11 @@
 package com.lord.small_box.services_impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.lord.small_box.dao.DepositControlDao;
@@ -10,6 +14,7 @@ import com.lord.small_box.dao.PurchaseOrderItemDao;
 import com.lord.small_box.dao.SupplyDao;
 import com.lord.small_box.dao.SupplyItemDao;
 import com.lord.small_box.dtos.PurchaseOrderDto;
+import com.lord.small_box.dtos.SupplyCorrectionNote;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyReportDto;
 import com.lord.small_box.mappers.PurchaseOrderItemMapper;
@@ -31,43 +36,43 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DepositControlServiceImpl implements DepositControlService {
-	
+
 	@Autowired
 	private final DepositControlDao depositControlDao;
-	
+
 	@Autowired
 	private final PurchaseOrderDao purchaseOrderDao;
-	
+
 	@Autowired
 	private final PurchaseOrderItemDao purchaseOrderItemDao;
-	
+
 	@Autowired
 	private final SupplyDao supplyDao;
-	
+
 	@Autowired
 	private final SupplyItemDao supplyItemDao;
-	
+
 	@Autowired
 	private final TextToPurchaseOrder textToPurchaseOrder;
-	
+
 	@Autowired
 	private final TextToSupply textToSupply;
-	
+
 	@Autowired
 	private final OrganizationService organizationService;
 
 	@Override
 	public PurchaseOrderDto collectPurchaseOrderFromText(String text) {
-		PurchaseOrderDto purchaseOrderDto = textToPurchaseOrder.textToPurchaseOrder(text,organizationService);
+		PurchaseOrderDto purchaseOrderDto = textToPurchaseOrder.textToPurchaseOrder(text, organizationService);
 		PurchaseOrder purchaseOrder = PurchaseOrderMapper.INSTANCE.dtoToOrder(purchaseOrderDto);
 		List<PurchaseOrderItem> items = PurchaseOrderItemMapper.INSTANCE.dtoToItems(purchaseOrderDto.getItems());
-		
+
 		Organization execUnit = organizationService.findById(purchaseOrderDto.getExecuterUnitOrganizationId());
 		Organization dependency = organizationService.findById(purchaseOrderDto.getDependencyOrganizacionId());
 		purchaseOrder.setExecuterUnit(execUnit);
 		purchaseOrder.setDependency(dependency);
 		PurchaseOrder savedOrder = purchaseOrderDao.savePurchaseOrder(purchaseOrder);
-		List<PurchaseOrderItem> updatedItems =  items.stream().map(m ->{
+		List<PurchaseOrderItem> updatedItems = items.stream().map(m -> {
 			m.setPurchaseOrder(savedOrder);
 			return m;
 		}).toList();
@@ -83,60 +88,103 @@ public class DepositControlServiceImpl implements DepositControlService {
 		List<PurchaseOrderItem> items = purchaseOrderItemDao.findAllByPurchaseOrder(purchaseOrder);
 		PurchaseOrderDto purchaseOrderDto = PurchaseOrderMapper.INSTANCE.orderToDto(purchaseOrder);
 		purchaseOrderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
-		
+
 		return purchaseOrderDto;
 	}
 
 	@Override
-	public String loadPurchaseOrderToDepositControl(Long purchaseOrderId) {
-		List<PurchaseOrderItem> items = purchaseOrderItemDao.
-				findAllByPurchaseOrder(purchaseOrderDao.findPurchaseOrderById(purchaseOrderId));
-		List<String> itemCodes = items.stream().map(m -> m.getCode()).toList();
-	
-		
-		
-		List<DepositControl> depositItems = depositControlDao.findAllByItemCode(itemCodes).stream()
-				.map(depositItem -> {
-					items.forEach(e -> {
-						if(e.getCode().equals(depositItem.getItemCode())) {
-							depositItem.setQuantity(depositItem.getQuantity()+e.getQuantity());
-							
-						}else {
-							DepositControl depositControl = new DepositControl();
-							depositControl.setItemCode(e.getCode());
-							depositControl.setItemName(e.getItemDetail());
-							depositControl.setItemUnitPrice(e.getUnitCost());
-							depositControl.setQuantity(e.getQuantity());
-							
-						}
-					});
-					return depositItem;
-				}).toList();
-		
-		List<DepositControl> savedItems=  depositControlDao.saveAll(depositItems);
-		
-		return "Se modificaron los siguientes items: " + savedItems.stream()
-		.map(m -> m.getItemName() + "\\n").collect(Collectors.joining(""));
+	public List<String> loadPurchaseOrderToDepositControl(Long purchaseOrderId) {
+		List<PurchaseOrderItem> items = purchaseOrderItemDao
+				.findAllByPurchaseOrder(purchaseOrderDao.findPurchaseOrderById(purchaseOrderId));
+		List<String> report = new ArrayList<>();
+		List<DepositControl> collectedItems = items.stream().map(orderItem -> {
+			Optional<DepositControl> opt = depositControlDao.findByItemCode(orderItem.getCode());
+			if (opt.isPresent()) {
+				DepositControl depositControl = opt.get();
+				depositControl.setQuantity(depositControl.getQuantity() + orderItem.getQuantity());
+				report.add("Se actualizo el item: " + depositControl.getItemName() + ", cantidad total: "
+						+ depositControl.getQuantity() + ", unidad de medida: " + depositControl.getMeasureUnit());
+				return depositControl;
+
+			} else {
+				DepositControl depositControl = new DepositControl();
+				depositControl.setItemCode(orderItem.getCode());
+				depositControl.setItemName(orderItem.getItemDetail());
+				depositControl.setItemTotalPrice(orderItem.getEstimatedCost());
+				depositControl.setItemUnitPrice(orderItem.getUnitCost());
+				depositControl.setQuantity(orderItem.getQuantity());
+				depositControl.setMeasureUnit(orderItem.getMeasureUnit());
+				report.add("Se creo un nuevo item: " + depositControl.getItemName() + ", cantidad total: "
+						+ depositControl.getQuantity() + ", unidad de medida: " + depositControl.getMeasureUnit());
+				return depositControl;
+			}
+
+		}).toList();
+		depositControlDao.saveAll(collectedItems);
+		return report;
 	}
 
 	@Override
-	public SupplyDto loadSupply(String text) {
-			SupplyDto supplyDto = textToSupply.textToSupply(text,organizationService);
-			Supply savedSupply = supplyDao.saveSupply(SupplyMapper.INSTANCE.dtoToSupply(supplyDto));
-			List<SupplyItem> items = SupplyItemMapper.INSTANCE.dtoToItems(supplyDto.getSupplyItems());
-			List<SupplyItem> savedItems = supplyItemDao.saveAll(items.stream().map(item -> {
-				item.setSupply(savedSupply);
-				return item;
-			}).toList());
-			SupplyDto supplyDtoResponse = SupplyMapper.INSTANCE.supplyToDto(savedSupply);
-			supplyDtoResponse.setSupplyItems(SupplyItemMapper.INSTANCE.itemToDtos(savedItems));
-			return supplyDtoResponse;
+	public SupplyDto loadSupplyFromText(String text) {
+		SupplyDto supplyDto = textToSupply.textToSupply(text, organizationService);
+		Supply savedSupply = supplyDao.saveSupply(SupplyMapper.INSTANCE.dtoToSupply(supplyDto));
+		List<SupplyItem> items = SupplyItemMapper.INSTANCE.dtoToItems(supplyDto.getSupplyItems());
+		List<SupplyItem> savedItems = supplyItemDao.saveAll(items.stream().map(item -> {
+			item.setSupply(savedSupply);
+			return item;
+		}).toList());
+		SupplyDto supplyDtoResponse = SupplyMapper.INSTANCE.supplyToDto(savedSupply);
+		supplyDtoResponse.setSupplyItems(SupplyItemMapper.INSTANCE.itemToDtos(savedItems));
+		return supplyDtoResponse;
 	}
 
 	@Override
-	public SupplyReportDto checkDeposit(SupplyDto supplyDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<SupplyReportDto> createSupplyReport(long supplyId) {
+		Supply supply = supplyDao.findSupplyById(supplyId);
+		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
+		return getSupplyReport(supplyItems);
+	}
+
+	@Override
+	public SupplyCorrectionNote createSupplyCorrectionNote(long supplyId) {
+		Supply supply = supplyDao.findSupplyById(supplyId);
+		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
+		List<SupplyReportDto> reportDtos = getSupplyReport(supplyItems);
+		Organization org = organizationService.findById(1L);
+		String to = organizationService.findById(supply.getDependencyApplicant().getId()).getOrganizationName();
+		SupplyCorrectionNote supplyCorrectionNote = new SupplyCorrectionNote();
+		supplyCorrectionNote.setFrom(org.getOrganizationName());
+		supplyCorrectionNote.setTo(to);
+		supplyCorrectionNote.setSupplyReport(reportDtos);
+		return supplyCorrectionNote;
+	}
+
+	private List<SupplyReportDto> getSupplyReport(List<SupplyItem> supplyItems) {
+		List<SupplyReportDto> report = supplyItems.stream().map(supplyItem -> {
+			SupplyReportDto supplyReportDto = new SupplyReportDto();
+			Optional<DepositControl> depositItem = depositControlDao.findByItemCode(supplyItem.getCode());
+			if (depositItem.isPresent()) {
+				supplyReportDto.setSupplyItemCode(supplyItem.getCode());
+				supplyReportDto.setSupplyItemDetail(supplyItem.getItemDetail());
+				supplyReportDto.setSupplyItemQuantity(supplyItem.getQuantity());
+				supplyReportDto.setDepositItemCode(depositItem.get().getItemCode());
+				supplyReportDto.setDepositItemDetail(depositItem.get().getItemName());
+				supplyReportDto.setDepositItemQuantity(depositItem.get().getQuantity());
+				supplyReportDto.setDepositQuantityLeft(depositItem.get().getQuantity() - supplyItem.getQuantity());
+				return supplyReportDto;
+			} else {
+
+				supplyReportDto.setSupplyItemCode(supplyItem.getCode());
+				supplyReportDto.setSupplyItemDetail(supplyItem.getItemDetail());
+				supplyReportDto.setSupplyItemQuantity(supplyItem.getQuantity());
+				supplyReportDto.setDepositItemCode("No encontrado");
+				supplyReportDto.setDepositItemDetail("No encontrado");
+				supplyReportDto.setDepositItemQuantity(0);
+
+				return supplyReportDto;
+			}
+		}).toList();
+		return report;
 	}
 
 }
