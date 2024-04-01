@@ -75,7 +75,7 @@ public class LoadSupplyToDepositTest {
 	void setup()throws Exception {
 		loadTestData.loadData();
 		String strPurchaseOrder365= pdfToStringUtils.pdfToString("oc-365");
-		purchaseOrderDto365 = depositControlService.collectPurchaseOrderFromText(strPurchaseOrder365);
+		purchaseOrderDto365 = depositControlService.collectPurchaseOrderFromText(strPurchaseOrder365,2L);
 		depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderDto365.getId());
 		assertThat(purchaseOrderDto365.getOrderNumber()).isEqualTo(365);
 		purchaseOrderDto365.getItems().forEach(e -> System.out.println("Items: " + e.getCode()));

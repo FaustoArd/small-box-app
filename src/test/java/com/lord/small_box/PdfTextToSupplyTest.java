@@ -41,16 +41,16 @@ public class PdfTextToSupplyTest {
 
 	@Autowired
 	private PdfToStringUtils pdfToStringUtils;
-	
+
 	@Autowired
 	private OrganizationRepository organizationRepository;
-	
+
 	@Autowired
 	private OrganizationService organizationService;
-	
+
 	@Autowired
 	private OrganizationResponsibleRepository organizationResponsibleRepository;
-	
+
 	private String text;
 	private List<String> supplyPdfList;
 	private String[] arrTextSplitPageEnd;
@@ -81,7 +81,7 @@ public class PdfTextToSupplyTest {
 		lagunas.setName("Analia");
 		lagunas.setLastname("Lagunas");
 		OrganizationResponsible savedLagunas = organizationResponsibleRepository.save(lagunas);
-		
+
 		Organization org1 = new Organization();
 		org1.setOrganizationName("Secretaria de Desarrollo Social");
 		org1.setOrganizationNumber(1);
@@ -109,7 +109,7 @@ public class PdfTextToSupplyTest {
 		org4.setMaxRotation(12);
 		org4.setMaxAmount(new BigDecimal(100000));
 		org4.setOrganizationNumber(4);
-		
+
 		Organization org5 = new Organization();
 		org5.setOrganizationName("Dirección de Reinserción Social");
 		org5.setOrganizationNumber(5);
@@ -138,52 +138,54 @@ public class PdfTextToSupplyTest {
 		supplyDto.setSupplyItems(mustReturnSupplyItemList(arrTextSplitN));
 		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
 		Optional<OrganizationDto> optApplicantDto = Optional.of(getApplicant(arrTextSplitN));
-		if(optApplicantDto.isPresent()){
+		if (optApplicantDto.isPresent()) {
 			supplyDto.setDependencyApplicant(optApplicantDto.get().getOrganizationName());
 			supplyDto.setDependencyApplicantOrganizationId(optApplicantDto.get().getId());
 		}
-		System.out.println("Applicant: "+ supplyDto.getDependencyApplicant());
-		System.out.println("Applicant ID: "+ supplyDto.getDependencyApplicantOrganizationId());
-		System.out.println("Estimated: "+supplyDto.getEstimatedTotalCost());
+		System.out.println("Applicant: " + supplyDto.getDependencyApplicant());
+		System.out.println("Applicant ID: " + supplyDto.getDependencyApplicantOrganizationId());
+		System.out.println("Estimated: " + supplyDto.getEstimatedTotalCost());
 		System.out.println("TEST: " + supplyDto.getSupplyNumber());
 		System.out.println("TEST: " + supplyDto.getDate().getTime());
 		supplyDto.getSupplyItems().forEach(e -> System.out.println(e.getCode()));
+		supplyDto.getSupplyItems().forEach(e -> System.out.println(e.getUnitCost()));
 	}
-	
+
 	private OrganizationDto getApplicant(String[] arrText) {
-		String applicant =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst()
-				.map(m -> m.substring(m.indexOf("O")+1, m.lastIndexOf("M")-1)
-						.replace("Secretaría de", "").replace("Dirección de", "")
-						.replace("Subsecretaría de", "").trim()).get();
+		String applicant = Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst()
+				.map(m -> m.substring(m.indexOf("O") + 1, m.lastIndexOf("M") - 1).replace("Secretaría de", "")
+						.replace("Dirección de", "").replace("Subsecretaría de", "").trim())
+				.get();
 		System.err.println("getApplicant: " + applicant);
 		return getOrganization(applicant);
 	}
-	
+
 	private OrganizationDto getOrganization(String applicant) {
 		String orgFinderRegex = "(?=.*(" + applicant + "))";
 		Pattern pOrgFinderRegex = Pattern.compile(orgFinderRegex, Pattern.CASE_INSENSITIVE);
 		organizationService.findAll().forEach(e -> System.out.println(e.getOrganizationName()));
 		OrganizationDto findedOrgDto = organizationService.findAll().stream()
 				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
 		System.out.println("FInded org: " + findedOrgDto.getOrganizationName());
 		return findedOrgDto;
 	}
-	
+
 	private BigDecimal getEstimatedTotal(String[] arrText) {
-		return new BigDecimal(Stream.of(arrText)
-				.filter(f -> f.toLowerCase().contains("total"))
-				.findFirst().get().replaceAll("[a-zA-Z]", "")
-				.replace(":", "")
-				.replace("$", "")
-				.replace(".", "")
-				.replace(",", ".")
+		System.out.println("EStimated Raw=" +Stream.of(arrText).filter(f -> f.toLowerCase().contains("total")).findFirst().get());
+		String result = Stream.of(arrText).filter(f -> f.toLowerCase().contains("total")).findFirst().get()
+				.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".")
+				.strip();
+		System.out.println("Estimated = " +result);
+		return  new BigDecimal(Stream.of(arrText).filter(f -> f.toLowerCase().contains("total")).findFirst().get()
+				.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".")
 				.strip());
+		
+	
 	}
 
 	private final String supplyNumberTitleRegex = "(SOLICITUD DE PEDIDO Nº)";
 
-	
 	private int mustReturnSupplyNumber(String[] arrText) throws Exception {
 		Pattern p = Pattern.compile(supplyNumberTitleRegex);
 		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 27))
@@ -194,8 +196,7 @@ public class PdfTextToSupplyTest {
 
 	private final String strDateV2 = "^(?=.*([0-9]{2})*([/]{1})){2}([0-9]{2,4})";
 
-	
-	private Calendar  mustReturnDate(String text) throws Exception {
+	private Calendar mustReturnDate(String text) throws Exception {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Pattern p = Pattern.compile(strDateV2);
@@ -210,23 +211,26 @@ public class PdfTextToSupplyTest {
 	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
 	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
 	private final String itemQuantityRegex = "^(?=.*([0-9])*(,)([0-9]){3}(.)([0-9]){2})";
-	private final String itemUnitPrice = "^(?=.*([0-9].)*(,)([0-9]){5})";
-	//private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";
+	private final String itemUnitPrice = "^(?=.*([0-9][,.])*([,.])([0-9]){5})";
+	//private final String itemUnitPrice = "^(?=.*([0-9])*([\\D])([0-9]){3}([\\D])([0-9]){5})";
+	// private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";
 
-	
 	private List<SupplyItemDto> mustReturnSupplyItemList(String[] arrText) throws Exception {
 		Pattern pCode = Pattern.compile(itemCodeRegex);
 		Pattern pProgCat = Pattern.compile(itemProgCatRegex);
 		Pattern pQuantity = Pattern.compile(itemQuantityRegex);
 		Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
-		//Pattern pMesaureUnit = Pattern.compile(itemMeasureUnitRegex,Pattern.CASE_INSENSITIVE);
-		List<String> strItems = Stream.of(arrText).filter(f -> pCode.matcher(f).find())
-				.collect(Collectors.toList());
-		return  strItems.stream().map(item -> {
+		// Pattern pMesaureUnit =
+		// Pattern.compile(itemMeasureUnitRegex,Pattern.CASE_INSENSITIVE);
+		List<String> strItems = Stream.of(arrText).filter(f -> pCode.matcher(f).find()).collect(Collectors.toList());
+		return strItems.stream().map(item -> {
 			SupplyItemDto supplyItemDto = new SupplyItemDto();
 			supplyItemDto.setItemDetail(item.replaceAll("([0-9]*\\W)", " ").trim());
-			supplyItemDto.setTotalEstimatedCost(new BigDecimal(item.substring(item.indexOf("$")+1)
-					.replace(".", "").replace(",", ".").strip()));
+			
+			  supplyItemDto.setTotalEstimatedCost(new
+			  BigDecimal(item.substring(item.indexOf("$")+1) .replace(".", "").replace(",",
+			  ".").strip()));
+			 
 			ListIterator<String> list = Stream.of(item.split(" ")).toList().listIterator();
 			list.forEachRemaining(i -> {
 				if (pCode.matcher(i).find()) {
@@ -236,18 +240,33 @@ public class PdfTextToSupplyTest {
 					supplyItemDto.setProgramaticCat(i);
 				}
 				if (pQuantity.matcher(i).find()) {
-					supplyItemDto.setQuantity(Integer.parseInt(i));
+					if (i.contains(".")) {
+						i = i.replace(",", "");
+						i = i.substring(0, i.indexOf(".") - 1);
+						supplyItemDto.setQuantity(Integer.parseInt(i));
+					} else {
+
+						char q = i.charAt(0);
+						supplyItemDto.setQuantity(Integer.parseInt(Character.toString(q)));
+					}
+
 				}
-				if(pUnitPrice.matcher(i).find()) {
-					i= i.replace(".", "");
-					i = i.replace(",", ".");
-							
+
+				if (pUnitPrice.matcher(i).find()) {
+					
+						i =  i.substring(0,i.length()-6);
+						i = i.replace(".", "").replace(",", "");
 					supplyItemDto.setUnitCost(new BigDecimal(i));
+					/*i = i.replace(".", "");
+					i = i.replace(",", ".");
+					supplyItemDto.setUnitCost(new BigDecimal(i));*/
 				}
-				if(i.toLowerCase().contains("cada")) {
+
+				if (i.toLowerCase().contains("cada")) {
 					i = i + " UNO";
 					supplyItemDto.setMeasureUnit(i);
-				}if( i.toLowerCase().contains("kilogramo")) {
+				}
+				if (i.toLowerCase().contains("kilogramo")) {
 					supplyItemDto.setMeasureUnit(i);
 				}
 
@@ -255,25 +274,25 @@ public class PdfTextToSupplyTest {
 
 			return supplyItemDto;
 		}).toList();
-		
+
 	}
 	
-	/*private int findPointsQuantity(String text) {
-		char[] arrText = text.toCharArray();
-		int count = 0;
-		for(int i = 0;i<arrText.length;i++) {
-			if(arrText[i]=='.') {
-				count ++;
-			}
-		}
-	}*/
+	private long countPointDot(String line) {
+		return Stream.of(line).filter(f -> f.contains(".")|| f.contains(",")).count();
+	}
+
+	/*
+	 * private int findPointsQuantity(String text) { char[] arrText =
+	 * text.toCharArray(); int count = 0; for(int i = 0;i<arrText.length;i++) {
+	 * if(arrText[i]=='.') { count ++; } } }
+	 */
 
 	@Test
 	void patternTest() throws Exception {
-		Pattern p2 = Pattern.compile("^(?=.*([0-9].)*(,)([0-9]){5})", Pattern.CASE_INSENSITIVE);
+		Pattern p2 = Pattern.compile(itemUnitPrice, Pattern.CASE_INSENSITIVE);
 		// Matcher m = p2.matcher("P.V. Nro. 00007 -");
 		// System.out.println("test: "+arrTextSplitN[2]);
-		assertTrue(p2.matcher("63,84000").find());
+		assertTrue(p2.matcher("9.500.00000").find());
 	}
 
 }

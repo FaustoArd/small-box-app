@@ -17,6 +17,7 @@ import { ManualReferComponent } from './components/work-template/manual-refer/ma
 import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
 import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
 import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
+import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -38,6 +39,7 @@ const routes: Routes = [
   { path:'refer-create',component:ManualReferComponent},
   { path:'dispatch',component:DispatchMainComponent},
   { path:'dispatch-page',component:DispatchMatComponent},
+  { path:'deposit-home', component:DepositHomeComponent}
 ];
 
 @NgModule({

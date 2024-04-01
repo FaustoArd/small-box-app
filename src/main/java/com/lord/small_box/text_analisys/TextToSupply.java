@@ -119,37 +119,45 @@ public class TextToSupply {
 		List<String> strItems = Stream.of(arrText).filter(f -> pCode.matcher(f).find())
 				.collect(Collectors.toList());
 		return  strItems.stream().map(item -> {
-			SupplyItemDto supplyItem = new SupplyItemDto();
-			supplyItem.setItemDetail(item.replaceAll("([0-9]*\\W)", " ").trim());
-			supplyItem.setTotalEstimatedCost(new BigDecimal(item.substring(item.indexOf("$")+1)
+			SupplyItemDto supplyItemDto = new SupplyItemDto();
+			supplyItemDto.setItemDetail(item.replaceAll("([0-9]*\\W)", " ").trim());
+			supplyItemDto.setTotalEstimatedCost(new BigDecimal(item.substring(item.indexOf("$")+1)
 					.replace(".", "").replace(",", ".").strip()));
 			ListIterator<String> list = Stream.of(item.split(" ")).toList().listIterator();
 			list.forEachRemaining(i -> {
 				if (pCode.matcher(i).find()) {
-					supplyItem.setCode(i);
+					supplyItemDto.setCode(i);
 				}
 				if (pProgCat.matcher(i).matches()) {
-					supplyItem.setProgramaticCat(i);
+					supplyItemDto.setProgramaticCat(i);
 				}
 				if (pQuantity.matcher(i).find()) {
-					supplyItem.setQuantity(Integer.parseInt(i.strip()));
+					if (i.contains(".")) {
+						i = i.replace(",", "");
+						i = i.substring(0, i.indexOf(".") - 1);
+						supplyItemDto.setQuantity(Integer.parseInt(i));
+					} else {
+
+						char q = i.charAt(0);
+						supplyItemDto.setQuantity(Integer.parseInt(Character.toString(q)));
+					}
 				}
 				if(pUnitPrice.matcher(i).find()) {
 					i= i.replace(".", "");
 					i = i.replace(",", ".");
 							
-					supplyItem.setUnitCost(new BigDecimal(i));
+					supplyItemDto.setUnitCost(new BigDecimal(i));
 				}
 				if(i.toLowerCase().contains("cada")) {
 					i = i + " UNO";
-					supplyItem.setMeasureUnit(i);
+					supplyItemDto.setMeasureUnit(i);
 				}if( i.toLowerCase().contains("kilogramo")) {
-					supplyItem.setMeasureUnit(i);
+					supplyItemDto.setMeasureUnit(i);
 				}
 
 			});
 
-			return supplyItem;
+			return supplyItemDto;
 		}).toList();
 		
 	}

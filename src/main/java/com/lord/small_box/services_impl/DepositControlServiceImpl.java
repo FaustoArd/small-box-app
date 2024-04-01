@@ -62,11 +62,12 @@ public class DepositControlServiceImpl implements DepositControlService {
 	private final OrganizationService organizationService;
 
 	@Override
-	public PurchaseOrderDto collectPurchaseOrderFromText(String text) {
+	public PurchaseOrderDto collectPurchaseOrderFromText(String text,long organizationId) {
 		PurchaseOrderDto purchaseOrderDto = textToPurchaseOrder.textToPurchaseOrder(text, organizationService);
 		PurchaseOrder purchaseOrder = PurchaseOrderMapper.INSTANCE.dtoToOrder(purchaseOrderDto);
+		Organization org = organizationService.findById(organizationId);
+		purchaseOrder.setOrganization(org);
 		List<PurchaseOrderItem> items = PurchaseOrderItemMapper.INSTANCE.dtoToItems(purchaseOrderDto.getItems());
-
 		Organization execUnit = organizationService.findById(purchaseOrderDto.getExecuterUnitOrganizationId());
 		Organization dependency = organizationService.findById(purchaseOrderDto.getDependencyOrganizacionId());
 		purchaseOrder.setExecuterUnit(execUnit);
@@ -125,12 +126,17 @@ public class DepositControlServiceImpl implements DepositControlService {
 	}
 
 	@Override
-	public SupplyDto loadSupplyFromText(String text) {
+	public SupplyDto collectSupplyFromText(String text,long organizationId) {
 		SupplyDto supplyDto = textToSupply.textToSupply(text, organizationService);
-		Supply savedSupply = supplyDao.saveSupply(SupplyMapper.INSTANCE.dtoToSupply(supplyDto));
+		Organization org = organizationService.findById(organizationId);
+		Supply supply = SupplyMapper.INSTANCE.dtoToSupply(supplyDto);
+		supply.setOrganization(org);
+		Supply savedSupply = supplyDao.saveSupply(supply);
+		
 		List<SupplyItem> items = SupplyItemMapper.INSTANCE.dtoToItems(supplyDto.getSupplyItems());
 		List<SupplyItem> savedItems = supplyItemDao.saveAll(items.stream().map(item -> {
 			item.setSupply(savedSupply);
+			
 			return item;
 		}).toList());
 		SupplyDto supplyDtoResponse = SupplyMapper.INSTANCE.supplyToDto(savedSupply);

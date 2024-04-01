@@ -121,7 +121,7 @@ public class PdfTextToPurchaseOrderTest {
 		organizationService.save(org3);
 		organizationService.save(org4);
 		organizationService.save(org5);
-		text = pdfToStringUtils.pdfToString("oc-365");
+		text = pdfToStringUtils.pdfToString("oc 658 expte 177");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// Stream.of(arrTextSplitPageEnd).forEach(e -> System.out.println(e));
@@ -250,9 +250,10 @@ public class PdfTextToPurchaseOrderTest {
 			purchaseOrderItemDto
 					.setUnitCost(new BigDecimal(Stream.of(arrItems).filter(f -> pUnitPrice.matcher(f).find())
 							.map(m -> m.replace(".", "").replace(",", ".")).findFirst().orElse("0")));
-
+			
 			purchaseOrderItemDto.setTotalEstimatedCost(new BigDecimal(
 					item.substring(item.lastIndexOf("$") + 1).replace(".", "").replace(",", ".").strip()));
+			
 
 			return purchaseOrderItemDto;
 

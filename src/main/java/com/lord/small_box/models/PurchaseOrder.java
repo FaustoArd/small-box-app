@@ -35,6 +35,10 @@ public class PurchaseOrder {
 	private int orderNumber;
 
 	private String jurisdiction;
+	
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinColumn(name="organization_id",referencedColumnName = "id")
+	private Organization organization;
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinColumn(name = "executer_org_id", referencedColumnName = "id")

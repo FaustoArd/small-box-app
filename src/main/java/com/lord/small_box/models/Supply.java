@@ -31,6 +31,10 @@ public class Supply {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	
+	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinColumn(name="organization_id",referencedColumnName = "id")
+	private Organization organization;
 
 	private Calendar date;
 

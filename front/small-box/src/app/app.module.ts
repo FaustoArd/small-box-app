@@ -36,7 +36,8 @@ import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispa
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog/confirm-dialog.component';
 import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
 import {NgxPaginationModule} from 'ngx-pagination';
-import { AdminPanelComponent } from './components/admin-panel/admin-panel/admin-panel.component'; 
+import { AdminPanelComponent } from './components/admin-panel/admin-panel/admin-panel.component';
+import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component'; 
 
 
 
@@ -65,7 +66,8 @@ import { AdminPanelComponent } from './components/admin-panel/admin-panel/admin-
     DispatchMainComponent,
     ConfirmDialogComponent,
     DispatchMatComponent,
-    AdminPanelComponent
+    AdminPanelComponent,
+    DepositHomeComponent
     
     
   ],

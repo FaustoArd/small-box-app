@@ -11,13 +11,13 @@ import com.lord.small_box.models.SupplyItem;
 
 public interface DepositControlService {
 	
-	public PurchaseOrderDto collectPurchaseOrderFromText(String text);
+	public PurchaseOrderDto collectPurchaseOrderFromText(String text, long organizationId);
 	
 	public PurchaseOrderDto findFullPurchaseOrder(Long id);
 	
 	public List<String> loadPurchaseOrderToDepositControl(Long purchaseOrderId);
 	
-	public SupplyDto loadSupplyFromText(String text);
+	public SupplyDto collectSupplyFromText(String text, long organizationId);
 	
 	public List<SupplyReportDto> createSupplyReport(long supplyId);
 	
