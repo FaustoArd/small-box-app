@@ -89,7 +89,7 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/smallbox/template-destination/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/users/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/csv-utils/**").hasRole("ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/deposit_control/**").permitAll();
+			auth.requestMatchers("/api/v1/smallbox/deposit-control/**").permitAll();
 			auth.requestMatchers("/api/v1/smallbox/supply/**").permitAll();
 			auth.requestMatchers("/api/v1/smallbox/pdf-to-text/**").permitAll();
 

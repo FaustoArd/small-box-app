@@ -13,8 +13,6 @@ public class SupplyReportDto {
 	
 	private int supplyItemQuantity;
 	
-	
-	
 	private String depositItemCode;
 	
 	private String depositItemDetail;

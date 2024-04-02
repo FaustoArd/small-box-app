@@ -26,7 +26,7 @@ import com.lord.small_box.utils.PdfToStringUtils;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/smallbox/deposit_control")
+@RequestMapping("/api/v1/smallbox/deposit-control")
 @RequiredArgsConstructor
 public class DepositControlController {
 
