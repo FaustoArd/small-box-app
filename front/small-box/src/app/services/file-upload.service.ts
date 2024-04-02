@@ -2,8 +2,9 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { DispatchControlDto } from '../models/dispatchControlDto';
+import { SupplyDto } from '../models/SupplyDto';
 const PDF_STRING_BASE_URL = 'http://localhost:8080/api/v1/smallbox/dispatchs';
-
+const DEPOSIT_CONTROL_BASE_URL = 'http://localhost:8080/api/v1/smallbox/deposit-control';
 
 
 
@@ -31,6 +32,14 @@ httpOptionsForm = {
   sendFileToBackEnd(file:File,organizationId:number):Observable<DispatchControlDto[]>{
     const formData: FormData = new FormData;
     formData.append('file', file);
-     return this.http.post<DispatchControlDto[]>(`${PDF_STRING_BASE_URL}/upload-file?organizationId=${organizationId}`,formData).pipe(catchError(this.handleError));
+     return this.http.post<DispatchControlDto[]>(`${PDF_STRING_BASE_URL}/upload-file?organizationId=${organizationId}`,formData)
+     .pipe(catchError(this.handleError));
+   }
+
+   sendSupplyPdfToBackEnd(file:File,organizationId:number):Observable<SupplyDto>{
+    const formData:FormData = new FormData;
+    formData.append('file',file);
+    return this.http.post<SupplyDto>(`${DEPOSIT_CONTROL_BASE_URL}/collect-supply-pdf?file=${file}&organizationId=${organizationId}`,formData)
+    .pipe(catchError(this.handleError));
    }
 }

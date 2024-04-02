@@ -45,7 +45,7 @@ public class SmallBoxApplication {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
 	
-	//@Bean
+	@Bean
 	CommandLineRunner run(InputRepository inputRepository,
 			ContainerService containerService,
 			SmallBoxService smallBoxService,
