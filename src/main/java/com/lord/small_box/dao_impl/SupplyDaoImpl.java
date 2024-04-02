@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.lord.small_box.dao.SupplyDao;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.Supply;
 import com.lord.small_box.repositories.SupplyRepository;
 
@@ -42,6 +43,11 @@ public class SupplyDaoImpl implements SupplyDao {
 	@Override
 	public List<Supply> findAllSupplies() {
 		return (List<Supply>)supplyRepository.findAll();
+	}
+
+	@Override
+	public List<Supply> findAllSuppliesByOrganization(Organization organization) {
+		return (List<Supply>)supplyRepository.findAllByOrganization(organization);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.lord.small_box.mappers;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -31,6 +33,6 @@ public interface   PurchaseOrderMapper {
 	public  PurchaseOrderDto orderToDto(PurchaseOrder purchaseOrder); 
 		
 	
-		
+	public List<PurchaseOrderDto> ordersToDtos(List<PurchaseOrder> orders);
 	
 }

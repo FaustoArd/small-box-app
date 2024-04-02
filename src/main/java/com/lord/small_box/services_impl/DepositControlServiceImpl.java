@@ -193,4 +193,18 @@ public class DepositControlServiceImpl implements DepositControlService {
 		return report;
 	}
 
+	@Override
+	public List<PurchaseOrderDto> findAllOrdersByOrganizationId(long organizationId) {
+		Organization organization = organizationService.findById(organizationId);
+		List<PurchaseOrder> orders = purchaseOrderDao.findAllByOrganization(organization);
+		return  PurchaseOrderMapper.INSTANCE.ordersToDtos(orders);
+		 }
+
+	@Override
+	public List<SupplyDto> findAllSuppliesByOrganizationId(long organizationId) {
+		Organization organization = organizationService.findById(organizationId);
+		List<Supply> supplies = supplyDao.findAllSuppliesByOrganization(organization);
+		return SupplyMapper.INSTANCE.suppliesToDtos(supplies);
+ 	}
+
 }

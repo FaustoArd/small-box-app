@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lord.small_box.dao.PurchaseOrderDao;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.SupplyCorrectionNote;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyReportDto;
+import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.utils.PdfToStringUtils;
 
@@ -32,9 +34,24 @@ public class DepositControlController {
 
 	@Autowired
 	private final DepositControlService depositControlService;
+	
+	@Autowired
+	private final PurchaseOrderDao purchaseOrderDao;
 
 	@Autowired
 	private final PdfToStringUtils pdfToStringUtils;
+	
+	@GetMapping("/find-all-orders-by-org")
+	ResponseEntity<List<PurchaseOrderDto>> findAllOrdersByOrganization(@RequestParam("organizationId")long organizationId){
+		List<PurchaseOrderDto> purchaseOrderDtos =depositControlService.findAllOrdersByOrganizationId(organizationId);
+		return ResponseEntity.ok(purchaseOrderDtos);
+	}
+	
+	@GetMapping("/find-all-supplies-by-org")
+	ResponseEntity<List<SupplyDto>> findAllSuppliesByOrganization(@RequestParam("organizationId")long organizationId){
+		List<SupplyDto> supplyDtos = depositControlService.findAllSuppliesByOrganizationId(organizationId);
+		return ResponseEntity.ok(supplyDtos);
+	}
 
 	@PostMapping(path = "/collect-supply-pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<SupplyDto> collectSupplyFromText(@RequestPart("file") MultipartFile file,

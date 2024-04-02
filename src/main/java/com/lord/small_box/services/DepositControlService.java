@@ -22,5 +22,9 @@ public interface DepositControlService {
 	public List<SupplyReportDto> createSupplyReport(long supplyId);
 	
 	public SupplyCorrectionNote createSupplyCorrectionNote(long supplyId);
+	
+	public List<PurchaseOrderDto> findAllOrdersByOrganizationId(long organizationId);
+	
+	public List<SupplyDto> findAllSuppliesByOrganizationId(long organizationId);
 
 }
