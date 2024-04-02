@@ -31,7 +31,7 @@ public class PdfToStringUtils {
 	
 	
 	public String pdfToString(String filename)throws Exception{
-		String filePath = "D:\\filetest\\" + filename + ".pdf" ;
+		String filePath = "D:\\filetest\\" + filename;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
 		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));

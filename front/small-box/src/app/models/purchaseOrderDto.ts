@@ -1,6 +1,7 @@
-import { PurchaseOrderItemDto } from "./PurchaseOrderItemDto";
+import { PurchaseOrderItemDto } from "./purchaseOrderItemDto";
 
-export class PurchaseOrder{
+
+export class PurchaseOrderDto{
     id!:number;
     orderNumber!:number;
     jurisdiction!:string;
@@ -14,5 +15,5 @@ export class PurchaseOrder{
     date!:Date;
     exp!:string;
     purchaseOrderTotal!:number;
-    items!:Array<PurchaseOrderItemDto>;
+    items:Array<PurchaseOrderItemDto> = [];
 }

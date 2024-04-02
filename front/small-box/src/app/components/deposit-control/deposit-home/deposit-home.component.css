@@ -1,0 +1,53 @@
+body{
+    background: linear-gradient(245.59deg, rgb(206, 210, 220)30%, rgb(220, 218, 233) 50%, #d3d0e8 79%);
+}
+
+h5{
+    color: rgb(56, 18, 195);
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: bold;
+    font-size: 2.1rem;
+}
+
+jumbotron{
+   
+    background-color: aliceblue;
+}
+
+.btn{
+    background: linear-gradient(245.59deg, rgb(153, 53, 53)20%, rgb(175, 80, 88) 30%, #eb2222 79%); 
+    color:red;
+}
+.btn:hover{
+    background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
+    color:rgb(215, 154, 41);
+}
+
+
+h1{
+    font-family: 'Noto Sans', sans-serif;
+}
+h3{
+    font-family: 'Noto Sans', sans-serif;
+}
+
+p{
+    color: #098a0b;
+    font-size: 1.2rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
+
+#orderItem{
+    margin-left: 1.1rem;
+}
+#uploadInput{
+    font-size: 0.7rem;
+ color: #1b4f4f;
+}
+th{
+    font-size: 0.6rem;
+}
+td{
+    font-size: 0.5rem;
+}
