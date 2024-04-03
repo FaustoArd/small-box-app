@@ -69,6 +69,9 @@ public class AppUser implements UserDetails {
 	inverseJoinColumns = { @JoinColumn(name="organization_id", referencedColumnName = "id") })
 	private List<Organization> organizations;
 	
+	@Column(name="main_organization_id")
+	private long mainOrganizationId;
+	
 	public AppUser() {
 		super();
 	}
@@ -160,6 +163,13 @@ public class AppUser implements UserDetails {
 	
 	public void setOrganizations(List<Organization> organizations) {
 		this.organizations = organizations;
+	}
+	
+	public long getMainOrganizationId() {
+		return mainOrganizationId;
+	}
+	public void setMainOrganizationId(long mainOrganizationId) {
+		this.mainOrganizationId = mainOrganizationId;
 	}
 
 	@Override

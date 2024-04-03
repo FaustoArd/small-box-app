@@ -22,5 +22,7 @@ public class AppUserDto {
 	private String email;
 	
 	private List<Organization> organizations;
+	
+	private long mainOrganizationId;
 
 }

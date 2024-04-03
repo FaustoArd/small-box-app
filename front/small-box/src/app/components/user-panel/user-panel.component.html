@@ -1,0 +1,29 @@
+<body>
+    <app-navbar></app-navbar>
+    <div class="container-flex">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <form [formGroup]="userMainOrganizationForm" class="row w-75 g-6 form-group justifty-center text-center fw-bold ms-1">
+                   <div class="form-group">
+                        <label for="organizationId" class="form-label fs-7 ">Seleccionar Organizacion Principal</label>
+                        <select id="organizationId" formControlName="organizationId" class="form-select  border-dark">
+                            <option type="number" class="form-control border-dark " *ngFor="let org of organizations"
+                                id="organizationId" [value]="org.id">
+                                {{org.organizationName}}</option>
+                           
+                        </select>
+                        <div *ngIf="organizationId.invalid && (organizationId.dirty || organizationId.touched)" class="text-danger">
+                            <div *ngIf="organizationId.errors?.['required']">
+                              Elegir organizacion
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                    <button (click)="setUserMainOrganizationId()" class="btn btn-sm border-dark mt-2">Guardar</button>
+                </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+</body>

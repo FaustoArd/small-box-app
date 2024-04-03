@@ -1,4 +1,4 @@
-<body>
+
     <app-navbar></app-navbar>
     <div class="container-flex">
         <div class="row">
@@ -7,7 +7,7 @@
 
             </div>
         </div>
-        <div class="row mt-5 ms-5">
+        <div class="row mt-5 ms-3">
             <div class="col-md-3">
                 <h5 >ORDEN DE COMPRA</h5>
                 <hr class="my-4">
@@ -23,7 +23,7 @@
                 <hr class="my-4">
             </div>
         </div>
-        <div class="row mt-3 ms-5">
+        <div class="row mt-3 ms-3">
           
             <div class="col-md-3 mt-1">
                 <!-- Purchase order jumbotron -->
@@ -35,7 +35,8 @@
                    </div>
                    <div id="orderItem" class="mt-1">
                     <p class="d-inline display-4">VER</p>
-                    <a routerLink="/container" class="btn btn-sm ms-3" href="#" role="button">-</a>
+                    <a (click)="openDialogPurchaseOrderList(purchaseOrderListTemplate)"
+                     class="btn btn-sm ms-3" role="button">-</a>
                    </div>
                     <p class="lead">
                         <hr class="my-4">
@@ -47,7 +48,7 @@
                 <div class="jumbotron  ms-1">
                     <div>
                         <p class="d-inline display-4">SUBIR</p>
-                       <a (click)="uploadSupplyFile()" class="btn btn-sm ms-3 " href="#" role="button">-</a> 
+                       <a (click)="uploadSupplyFile()" class="btn btn-sm ms-3 " role="button">-</a> 
                         <input id="uploadInput" class="w-50 ms-2" type="file" (change)="selectFile($event)"/>
                        </div>
                     <p class="lead">
@@ -59,16 +60,19 @@
                    <!-- Deposit jumbotron -->
                 <div class="jumbotron  ms-1">
                     <p class="d-inline display-4">VER STOCK</p>
-                    <a routerLink="/open-container" class="btn btn-sm ms-3 " href="#" role="button">-</a>
+                    <a routerLink="/open-container" class="btn btn-sm ms-3 " role="button">-</a>
                     <p class="lead">
                         <hr class="my-4">
                 </div>
             </div>
         </div>
-        <div class="row mt-1 ms-5">
-            <div *ngIf="purchaseOrderItemDtos.length>0" class="col-md-3">
+        <div class="row mt-1 ms-3">
+            <div  class="col-md-3">
+                <!-- Purchase order table -->
+                <div  *ngIf="purchaseOrderItemDtos.length>0">
                 <h4>NUMERO: {{purchaseOrderDto.orderNumber}}</h4>
-               <table class="table-sm table-bordered h-75">
+                <h4>TOTAL: {{purchaseOrderDto.purchaseOrderTotal | currency: '$': 'symbol'}}</h4>
+               <table class="table-sm table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">CODIGO</th>
@@ -88,15 +92,79 @@
                         <td>{{item.measureUnit}}</td>
                         <td>{{item.itemDetail}}</td>
                         <td>{{item.unitCost}}</td>
-                        <td>{{item.totalEstimatedCost}}</td>
+                        <td>{{item.totalEstimatedCost  | currency: '$': 'symbol'}}</td>
                     </tr>
                    
                 </tbody>
+           
+          
                </table>
+            </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div  class="col-md-3 ms-2">
+                <!-- Supply table -->
+                <div  *ngIf="supplyItemDtos.length>0">
+                <h4>NUMERO: {{supplyDto.supplyNumber}}</h4>
+                <h4>TOTAL: {{supplyDto.estimatedTotalCost | currency: '$': 'symbol'}}</h4>
+               <table class="table-sm table-bordered h-75">
+                <thead>
+                    <tr>
+                        <th scope="col">CODIGO</th>
+                        <th scope="col">CAT PROG</th>
+                        <th scope="col">CANTIDAD</th>
+                        <th scope="col">U.MEDIDA</th>
+                        <th scope="col">DESCRIPCION</th>
+                        <th scope="col">P.UNITARIO</th>
+                        <th scope="col">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of supplyItemDtos">
+                        <td>{{item.code}}</td>
+                        <td>{{item.programaticCat}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.measureUnit}}</td>
+                        <td>{{item.itemDetail}}</td>
+                        <td>{{item.unitCost}}</td>
+                        <td>{{item.totalEstimatedCost  | currency: '$': 'symbol'}}</td>
+                    </tr>
+                   
+                </tbody>
+           
+          
+               </table>
+            </div>
             </div>
         </div>
     </div>
+    <ng-template #purchaseOrderListTemplate>
+        <table class="table-sm table-bordered h-75">
+            <thead>
+                <tr>
+                    <th scope="col">CODIGO</th>
+                    <th scope="col">CAT PROG</th>
+                    <th scope="col">CANTIDAD</th>
+                    <th scope="col">U.MEDIDA</th>
+                    <th scope="col">DESCRIPCION</th>
+                    <th scope="col">P.UNITARIO</th>
+                    <th scope="col">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of purchaseOrderDtos">
+                    <td>{{order.orderNumber}}</td>
+                    <td>{{order.dependency}}</td>
+                    <td>{{order.purchaseOrderTotal}}</td>
+                   
+                </tr>
+               
+            </tbody>
+       
+      
+           </table>
+    </ng-template>
   
+    
        
    
-</body>

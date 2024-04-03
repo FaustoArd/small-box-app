@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -41,13 +42,13 @@ public class DepositControlController {
 	@Autowired
 	private final PdfToStringUtils pdfToStringUtils;
 	
-	@GetMapping("/find-all-orders-by-org")
+	@GetMapping(path = "/find-all-orders-by-org")
 	ResponseEntity<List<PurchaseOrderDto>> findAllOrdersByOrganization(@RequestParam("organizationId")long organizationId){
 		List<PurchaseOrderDto> purchaseOrderDtos =depositControlService.findAllOrdersByOrganizationId(organizationId);
 		return ResponseEntity.ok(purchaseOrderDtos);
 	}
 	
-	@GetMapping("/find-all-supplies-by-org")
+	@GetMapping(path ="/find-all-supplies-by-org")
 	ResponseEntity<List<SupplyDto>> findAllSuppliesByOrganization(@RequestParam("organizationId")long organizationId){
 		List<SupplyDto> supplyDtos = depositControlService.findAllSuppliesByOrganizationId(organizationId);
 		return ResponseEntity.ok(supplyDtos);
@@ -69,25 +70,25 @@ public class DepositControlController {
 		return new ResponseEntity<PurchaseOrderDto>(purchaseOrderDto,HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/find-purchase-order/{purchaseOrderId}")
+	@GetMapping(path ="/find-purchase-order/{purchaseOrderId}")
 	ResponseEntity<PurchaseOrderDto> findFullPurchaseOrder(@PathVariable("purchaseOrderId")long purchaseOrderId){
 		PurchaseOrderDto purchaseOrderDto = depositControlService.findFullPurchaseOrder(purchaseOrderId);
 		return ResponseEntity.ok(purchaseOrderDto);
 	}
 	
-	@PutMapping("/load-order-to-deposit")
-	ResponseEntity<List<String>> loadPurchaseOrdertoDeposit(@RequestParam("purchaseOrderId")long purchaseOrderId){
+	@PutMapping(path = "/load-order-to-deposit")
+	ResponseEntity<List<String>> loadPurchaseOrdertoDeposit(@RequestBody long purchaseOrderId){
 		List<String> loadReport = depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderId);
 		return new ResponseEntity<List<String>>(loadReport,HttpStatus.OK);
 	}
 	
-	@GetMapping("/create-supply-report")
+	@GetMapping(path = "/create-supply-report")
 	ResponseEntity<List<SupplyReportDto>> createSupplyResport(@RequestParam("supplyId")long supplyId){
 		List<SupplyReportDto> report = depositControlService.createSupplyReport(supplyId);
 		return ResponseEntity.ok(report);
 	}
 	
-	@GetMapping("create-supply-correction-note")
+	@GetMapping(path = "/create-supply-correction-note")
 	ResponseEntity<SupplyCorrectionNote> createSupplyCorrectionNote(@RequestParam("supplyId")long supplyId){
 		SupplyCorrectionNote supplyCorrectionNote = depositControlService.createSupplyCorrectionNote(supplyId);
 		return ResponseEntity.ok(supplyCorrectionNote);

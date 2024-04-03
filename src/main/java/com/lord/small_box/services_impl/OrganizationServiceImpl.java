@@ -33,8 +33,6 @@ public class OrganizationServiceImpl implements OrganizationService{
 	@Autowired
 	private final OrganizationResponsibleRepository organizationResponsibleRepository;
 	
-	
-	
 	@Autowired
 	private final AppUserService appUserService;
 
@@ -118,6 +116,24 @@ public class OrganizationServiceImpl implements OrganizationService{
 		AppUser findedUser =appUserService.findById(userId);
 		List<Organization> orgs = organizationRepository.findAllOrganizationsByUsers(findedUser);
 		return orgs;
+	}
+
+	@Override
+	public long setUserMainOrganization(long organizationId, long userId) {
+		AppUser user= appUserService.findById(userId);
+		user.setMainOrganizationId(organizationId);
+		AppUser savedUser =  appUserService.save(user);
+		return savedUser.getMainOrganizationId() ;
+	}
+
+	@Override
+	public long getUserMainOrganization(long userId) {
+		AppUser user= appUserService.findById(userId);
+		if(user.getMainOrganizationId()<1L) {
+			return 0;
+		}else {
+			return user.getMainOrganizationId();
+		}
 	}
 
 	

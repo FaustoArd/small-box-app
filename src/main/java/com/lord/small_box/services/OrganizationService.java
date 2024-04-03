@@ -26,5 +26,8 @@ public interface OrganizationService {
 	
 	public List<Organization> findAllOrganizationsByUsers(Long userId);
 	
+	public long setUserMainOrganization(long organizationId,long userId);
+	
+	public long getUserMainOrganization(long userId);
 	
 }

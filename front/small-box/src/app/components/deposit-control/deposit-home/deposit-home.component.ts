@@ -4,10 +4,13 @@ import { FileDetails } from 'src/app/models/fileDetails';
 import { PurchaseOrderDto } from 'src/app/models/purchaseOrderDto';
 import { PurchaseOrderItemDto } from 'src/app/models/purchaseOrderItemDto';
 import { SupplyItemDto } from 'src/app/models/supplyItemDto';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { DepositControlService } from 'src/app/services/deposit-control.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { DialogTemplateComponent } from '../../dialog/dialog-template/dialog-template.component';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-deposit-home',
@@ -23,7 +26,8 @@ export class DepositHomeComponent implements OnInit {
   supplyDto!:SupplyDto;
 
 constructor(private dialogService:DialogService,
-    private fileUploadService:FileUploadService,private snackBar:SnackBarService,private depositControlService:DepositControlService){}
+    private fileUploadService:FileUploadService,private snackBar:SnackBarService
+    ,private depositControlService:DepositControlService,private cookieService:CookieStorageService){}
 
   
 ngOnInit(): void {
@@ -40,7 +44,9 @@ ngOnInit(): void {
   }
 
   uploadPurchaseOrderFile(){
-    this.fileUploadService.sendPurchaseOrderPdfToBackEnd(this.file,2).subscribe({
+    const orgId = this.cookieService.getUserMainOrganizationId();
+    console.log(orgId);
+    this.fileUploadService.sendPurchaseOrderPdfToBackEnd(this.file,Number(orgId)).subscribe({
       next:(purchaseOrderData) =>{
        this.purchaseOrderDto = purchaseOrderData;
       },
@@ -55,7 +61,8 @@ ngOnInit(): void {
    
   }
   uploadSupplyFile(){
-    this.fileUploadService.sendSupplyPdfToBackEnd(this.file,2).subscribe({
+    const orgId = Number(this.cookieService.getUserMainOrganizationId());
+    this.fileUploadService.sendSupplyPdfToBackEnd(this.file,orgId).subscribe({
       next:(supplyData) =>{
        this.supplyDto = supplyData;
       },
@@ -68,5 +75,27 @@ ngOnInit(): void {
     });
    
   }
+
+  private matDialogRef!:MatDialogRef<DialogTemplateComponent>;  
   
+purchaseOrderDtos:PurchaseOrderDto[]=[];
+  openDialogPurchaseOrderList(template:any){
+    const orgId = Number(this.cookieService.getUserMainOrganizationId());
+    this.getAllPurchaseOrders(orgId);
+    this.matDialogRef = this.dialogService.openDialogCreation({
+      template
+    });
+    this.matDialogRef.afterClosed().subscribe();
+  }
+
+  getAllPurchaseOrders(organizationId:number){
+    this.depositControlService.findAllPurchaseOrdersByOrganization(organizationId).subscribe({
+      next:(orgsData)=>{
+        this.purchaseOrderDtos = orgsData;
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    })
+  }
 }

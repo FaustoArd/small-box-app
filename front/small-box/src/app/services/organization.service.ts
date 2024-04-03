@@ -75,5 +75,14 @@ export class OrganizationService {
     .pipe(catchError(this.handleError));
    }
 
+   setMainUserOrganizationId(organizationId:number,userId:number):Observable<number>{
+    return this.http.get<number>(`${ORGANIZATION_BASE_URL}/set-user-organization?organizationId=${organizationId}&userId=${userId}`)
+    .pipe(catchError(this.handleError));
+   }
+
+   getMainUserOrganizationId(userId:number):Observable<number>{
+    return this.http.get<number>(`${ORGANIZATION_BASE_URL}/get-user-organization?userId=${userId}`)
+    .pipe(catchError(this.handleError));
+   }
   
 }

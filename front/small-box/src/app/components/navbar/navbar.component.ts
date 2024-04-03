@@ -25,10 +25,7 @@ ngOnInit(): void {
     this.currentUsername = this.cookieService.getCurrentUsername();
     
 }
-
-
-
-  onLogout(){
+onLogout(){
     this.cookieService.deleteToken();
     this.router.navigateByUrl("/login")
   }

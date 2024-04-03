@@ -13,6 +13,7 @@ import { OrganizationDto } from 'src/app/models/organizationDto';
 import { FileDetails } from 'src/app/models/fileDetails';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { TemplateDestinationService } from 'src/app/services/template-destination.service';
+import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 
 @Component({
   selector: 'app-dispatch-mat',
@@ -23,7 +24,7 @@ export class DispatchMatComponent implements OnInit {
   constructor(private dispatchControlService: DispatchService, private formBuilder: FormBuilder
     ,private snackBarService:SnackBarService,private dialogService:DialogService,
    private fileUploadService:FileUploadService,private snackBar:SnackBarService,
-   private templateDestinationService: TemplateDestinationService) { }
+   private templateDestinationService: TemplateDestinationService,private cookieService:CookieStorageService) { }
 
   ngOnInit(): void {
     
@@ -227,7 +228,8 @@ export class DispatchMatComponent implements OnInit {
   dispatchList:Array<DispatchControlDto> = [];
 
   uploadFile(){
-    this.fileUploadService.sendFileToBackEnd(this.file,2).subscribe({
+    const orgId = Number(this.cookieService.getUserMainOrganizationId());
+    this.fileUploadService.sendFileToBackEnd(this.file,orgId).subscribe({
       next:(receiptData) =>{
         this.dispatchList = receiptData;
        console.log(this.dispatchList)

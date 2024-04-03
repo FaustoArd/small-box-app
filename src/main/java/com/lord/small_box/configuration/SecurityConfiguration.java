@@ -72,6 +72,10 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/smallbox/organization/all-responsibles").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/organization/all-orgs-by-user").hasAnyRole("USER", "SUPERUSER",
 					"ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/organization/set-user-organization").hasAnyRole("USER", "SUPERUSER",
+					"ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/organization/get-user-organization").hasAnyRole("USER", "SUPERUSER",
+					"ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/organization/get-max-amount").hasAnyRole("USER", "SUPERUSER",
 					"ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/work-templates/create").hasAnyRole("SUPERUSER", "ADMIN");

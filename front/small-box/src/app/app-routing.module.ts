@@ -18,6 +18,7 @@ import { MemoSingleEditComponent } from './components/work-template/memo-single-
 import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
 import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
 import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component';
+import { UserPanelComponent } from './components/user-panel/user-panel.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -39,7 +40,8 @@ const routes: Routes = [
   { path:'refer-create',component:ManualReferComponent},
   { path:'dispatch',component:DispatchMainComponent},
   { path:'dispatch-page',component:DispatchMatComponent},
-  { path:'deposit-home', component:DepositHomeComponent}
+  { path:'deposit-home', component:DepositHomeComponent},
+  { path:'user-panel',component:UserPanelComponent}
 ];
 
 @NgModule({

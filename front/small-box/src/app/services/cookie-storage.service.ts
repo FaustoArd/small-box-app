@@ -53,6 +53,16 @@ export class CookieStorageService {
     this.cookieService.delete('username');
   }
 
+  setUserMainOrganizationId(mainUserOrganizationId:string){
+    this.cookieService.set('mainUserOrganizationId',mainUserOrganizationId);
+  }
+  getUserMainOrganizationId(){
+    return this.cookieService.get('mainUserOrganizationId')
+  }
+  deleteMainUserOrganizationId(){
+    this.cookieService.delete('mainUserOrganizationId');
+  }
+
   setDestinationsList(destination:string){
     const destinationsListResult = JSON.stringify(destination);
 

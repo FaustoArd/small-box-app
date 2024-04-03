@@ -109,6 +109,18 @@ public class OrganizationController {
 		return ResponseEntity.ok(responsiblesDto);
 	}
 	
+	@GetMapping("/set-user-organization")
+	ResponseEntity<Long> setUserMainOrganization(@RequestParam("organizationId")long organizationId,
+			@RequestParam("userId")long userId){
+		long orgId = organizationService.setUserMainOrganization(organizationId, userId);
+		return ResponseEntity.ok(orgId);
+	}
+	@GetMapping("/get-user-organization")
+	ResponseEntity<Long> getUserMainOrganization(@RequestParam("userId")long userId){
+		long orgId = organizationService.getUserMainOrganization(userId);
+		return ResponseEntity.ok(orgId);
+	}
+	
 	
 
 
