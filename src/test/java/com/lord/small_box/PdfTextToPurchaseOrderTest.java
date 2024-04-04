@@ -80,7 +80,7 @@ public class PdfTextToPurchaseOrderTest {
 		lagunas.setName("Analia");
 		lagunas.setLastname("Lagunas");
 		OrganizationResponsible savedLagunas = organizationResponsibleRepository.save(lagunas);
-		
+
 		Organization org1 = new Organization();
 		org1.setOrganizationName("Secretaria de desarrollo social");
 		org1.setOrganizationNumber(1);
@@ -108,7 +108,7 @@ public class PdfTextToPurchaseOrderTest {
 		org4.setMaxRotation(12);
 		org4.setMaxAmount(new BigDecimal(100000));
 		org4.setOrganizationNumber(4);
-		
+
 		Organization org5 = new Organization();
 		org5.setOrganizationName("Dirección de Reinserción Social");
 		org5.setOrganizationNumber(5);
@@ -139,23 +139,28 @@ public class PdfTextToPurchaseOrderTest {
 		purchaseOrderDto.setOrderNumber(getPurchaseOrderNumber(arrTextSplitN));
 		purchaseOrderDto.setItems(getItems(arrTextSplitN));
 		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
-		Optional<OrganizationDto> optExecUnitOrgDto = Optional.of(getExecuterUnit(arrTextSplitN));
-		if(optExecUnitOrgDto.isPresent()) {
-			purchaseOrderDto.setExecuterUnit(optExecUnitOrgDto.get().getOrganizationName());
-			purchaseOrderDto.setExecuterUnitOrganizationId(optExecUnitOrgDto.get().getId());
-		}
-		Optional<OrganizationDto> optDepedencyOrgDto = Optional.of(getDependency(arrTextSplitN));
-		if(optDepedencyOrgDto.isPresent()) {
-			purchaseOrderDto.setDependency(optDepedencyOrgDto.get().getOrganizationName());
-			purchaseOrderDto.setDependencyOrganizacionId(optDepedencyOrgDto.get().getId());
-		}
+		purchaseOrderDto.setExecuterUnit(getExecuterUnit(arrTextSplitN));
+		purchaseOrderDto.setDependency(getDependency(arrTextSplitN));
+		/*
+		 * Optional<OrganizationDto> optExecUnitOrgDto =
+		 * Optional.of(getExecuterUnit(arrTextSplitN));
+		 * if(optExecUnitOrgDto.isPresent()) {
+		 * purchaseOrderDto.setExecuterUnit(optExecUnitOrgDto.get().getOrganizationName(
+		 * ));
+		 * purchaseOrderDto.setExecuterUnitOrganizationId(optExecUnitOrgDto.get().getId(
+		 * )); } Optional<OrganizationDto> optDepedencyOrgDto =
+		 * Optional.of(getDependency(arrTextSplitN)); if(optDepedencyOrgDto.isPresent())
+		 * {
+		 * purchaseOrderDto.setDependency(optDepedencyOrgDto.get().getOrganizationName()
+		 * );
+		 * purchaseOrderDto.setDependencyOrganizacionId(optDepedencyOrgDto.get().getId()
+		 * ); }
+		 */
 		System.err.println("Order Number: " + purchaseOrderDto.getOrderNumber());
 		System.err.println("Order TOTAL: " + purchaseOrderDto.getPurchaseOrderTotal());
 		System.err.println("Order Date: " + purchaseOrderDto.getDate());
 		System.err.println("Executer Unit: " + purchaseOrderDto.getExecuterUnit());
-		System.err.println("Executer Unit Id: " + purchaseOrderDto.getExecuterUnitOrganizationId());
 		System.err.println("Dependency: " + purchaseOrderDto.getDependency());
-		System.err.println("Dependency Id: " + purchaseOrderDto.getDependencyOrganizacionId());
 		purchaseOrderDto.getItems().forEach(e -> System.out.println(e.getCode()));
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal()).isGreaterThan(new BigDecimal(0));
 		assertThat(purchaseOrderDto.getItems().stream().mapToDouble(d -> d.getTotalEstimatedCost().doubleValue()).sum())
@@ -165,33 +170,33 @@ public class PdfTextToPurchaseOrderTest {
 
 	private final String executerUnitRegex = "^(?=.*(unidad ejecutora))";
 
-	private OrganizationDto getExecuterUnit(String[] arrText) {
+	private String getExecuterUnit(String[] arrText) {
 		Pattern pExecUnit = Pattern.compile(executerUnitRegex, Pattern.CASE_INSENSITIVE);
 		String executerInut = Stream.of(arrText).filter(f -> pExecUnit.matcher(f).find())
 				.map(m -> m.substring(m.indexOf(":") + 1, m.lastIndexOf(":") - 5)).findFirst().get()
 				.replace("- Secretarķa", "").trim();
 		System.out.println("ExecUnit = " + executerInut);
-		return getOrganization(executerInut);
+		return executerInut;
 
 	}
-	
+
 	private final String dependencyRegex = "^(?=.*(dependencia))";
-	
-	private OrganizationDto getDependency(String[] arrText) {
+
+	private String getDependency(String[] arrText) {
 		Pattern pDependency = Pattern.compile(dependencyRegex, Pattern.CASE_INSENSITIVE);
 		String dependency = Stream.of(arrText).filter(f -> pDependency.matcher(f).find())
-				.map(m -> m.substring(m.trim().indexOf(":")+1, m.length()-1)).findFirst().get()
+				.map(m -> m.substring(m.trim().indexOf(":") + 1, m.length() - 1)).findFirst().get()
 				.replace("- Secretarķa", "").replace("Secretaria", "").trim();
-		return getOrganization(dependency);
+		return dependency;
 	}
 
 	private OrganizationDto getOrganization(String target) {
 		String orgFinderRegex = "(?=.*(" + target + "))";
 		Pattern pOrgFinderRegex = Pattern.compile(orgFinderRegex, Pattern.CASE_INSENSITIVE);
-		
+
 		OrganizationDto findedOrgDto = organizationService.findAll().stream()
 				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
 		System.out.println("FInded org: " + findedOrgDto.getOrganizationName());
 		return findedOrgDto;
 	}
@@ -224,22 +229,24 @@ public class PdfTextToPurchaseOrderTest {
 		return itemsText.stream().map(item -> {
 			PurchaseOrderItemDto purchaseOrderItemDto = new PurchaseOrderItemDto();
 			String[] arrItems = item.split(" ");
-			String code = Stream.of(arrItems).filter(f -> pItemCode.matcher(f).find()).findFirst().orElse("No encontrado");
+			String code = Stream.of(arrItems).filter(f -> pItemCode.matcher(f).find()).findFirst()
+					.orElse("No encontrado");
 			code.strip();
-			purchaseOrderItemDto
-					.setCode(code);
+			purchaseOrderItemDto.setCode(code);
 
 			purchaseOrderItemDto
 					.setQuantity(Integer.parseInt(Stream.of(arrItems).filter(f -> pItemQuantity.matcher(f).find())
 							.map(m -> m.substring(0, m.indexOf(","))).findFirst().orElse("0")));
 
-			String measureUnit = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst().orElse("No encontrado");
+			String measureUnit = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst()
+					.orElse("No encontrado");
 			if (measureUnit.equalsIgnoreCase("cada")) {
 				measureUnit = measureUnit + "-UNO";
 			}
 			purchaseOrderItemDto.setMeasureUnit(measureUnit);
 
-			String progCat = Stream.of(arrItems).filter(f -> pProgCat.matcher(f).find()).findFirst().orElse("No encontrado");
+			String progCat = Stream.of(arrItems).filter(f -> pProgCat.matcher(f).find()).findFirst()
+					.orElse("No encontrado");
 			progCat.strip();
 			purchaseOrderItemDto.setProgramaticCat(progCat);
 
@@ -250,10 +257,9 @@ public class PdfTextToPurchaseOrderTest {
 			purchaseOrderItemDto
 					.setUnitCost(new BigDecimal(Stream.of(arrItems).filter(f -> pUnitPrice.matcher(f).find())
 							.map(m -> m.replace(".", "").replace(",", ".")).findFirst().orElse("0")));
-			
+
 			purchaseOrderItemDto.setTotalEstimatedCost(new BigDecimal(
 					item.substring(item.lastIndexOf("$") + 1).replace(".", "").replace(",", ".").strip()));
-			
 
 			return purchaseOrderItemDto;
 

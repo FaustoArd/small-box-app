@@ -137,27 +137,27 @@ public class PdfTextToSupplyTest {
 		supplyDto.setDate(mustReturnDate(text));
 		supplyDto.setSupplyItems(mustReturnSupplyItemList(arrTextSplitN));
 		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
-		Optional<OrganizationDto> optApplicantDto = Optional.of(getApplicant(arrTextSplitN));
+		supplyDto.setDependencyApplicant(getApplicant(arrTextSplitN));
+		/*Optional<OrganizationDto> optApplicantDto = Optional.of(getApplicant(arrTextSplitN));
 		if (optApplicantDto.isPresent()) {
 			supplyDto.setDependencyApplicant(optApplicantDto.get().getOrganizationName());
 			supplyDto.setDependencyApplicantOrganizationId(optApplicantDto.get().getId());
-		}
+		}*/
 		System.out.println("Applicant: " + supplyDto.getDependencyApplicant());
-		System.out.println("Applicant ID: " + supplyDto.getDependencyApplicantOrganizationId());
-		System.out.println("Estimated: " + supplyDto.getEstimatedTotalCost());
+	System.out.println("Estimated: " + supplyDto.getEstimatedTotalCost());
 		System.out.println("TEST: " + supplyDto.getSupplyNumber());
 		System.out.println("TEST: " + supplyDto.getDate().getTime());
 		supplyDto.getSupplyItems().forEach(e -> System.out.println(e.getCode()));
 		supplyDto.getSupplyItems().forEach(e -> System.out.println(e.getUnitCost()));
 	}
 
-	private OrganizationDto getApplicant(String[] arrText) {
+	private String getApplicant(String[] arrText) {
 		String applicant = Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst()
 				.map(m -> m.substring(m.indexOf("O") + 1, m.lastIndexOf("M") - 1).replace("Secretaría de", "")
 						.replace("Dirección de", "").replace("Subsecretaría de", "").trim())
 				.get();
 		System.err.println("getApplicant: " + applicant);
-		return getOrganization(applicant);
+		return applicant;
 	}
 
 	private OrganizationDto getOrganization(String applicant) {

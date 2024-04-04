@@ -37,16 +37,8 @@ public class TextToPurchaseOrder {
 		purchaseOrderDto.setOrderNumber(Integer.parseInt(getPurchaseOrderNumber(arrTextSplitN)));
 		purchaseOrderDto.setItems(getItems(arrTextSplitN));
 		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
-		Optional<OrganizationDto> optExecUnitOrgDto = Optional.of(getExecuterUnit(arrTextSplitN,organizationService));
-		if(optExecUnitOrgDto.isPresent()) {
-			purchaseOrderDto.setExecuterUnit(optExecUnitOrgDto.get().getOrganizationName());
-			purchaseOrderDto.setExecuterUnitOrganizationId(optExecUnitOrgDto.get().getId());
-		}
-		Optional<OrganizationDto> optDepedencyOrgDto = Optional.of(getDependency(arrTextSplitN,organizationService));
-		if(optDepedencyOrgDto.isPresent()) {
-			purchaseOrderDto.setDependency(optDepedencyOrgDto.get().getOrganizationName());
-			purchaseOrderDto.setDependencyOrganizacionId(optDepedencyOrgDto.get().getId());
-		}
+		purchaseOrderDto.setExecuterUnit(getExecuterUnit(arrTextSplitN));
+		purchaseOrderDto.setDependency(getDependency(arrTextSplitN));
 		System.err.println("Order Number:" + purchaseOrderDto.getOrderNumber());
 		System.err.println("Order TOTAL: " + purchaseOrderDto.getPurchaseOrderTotal());
 		System.err.println("Order Date: " + purchaseOrderDto.getDate());
@@ -61,22 +53,22 @@ public class TextToPurchaseOrder {
 	}
 	private final String executerUnitRegex = "^(?=.*(unidad ejecutora))";
 
-	private OrganizationDto getExecuterUnit(String[] arrText,OrganizationService organizationService) {
+	private String getExecuterUnit(String[] arrText) {
 		Pattern pExecUnit = Pattern.compile(executerUnitRegex, Pattern.CASE_INSENSITIVE);
 		String executerInut = Stream.of(arrText).filter(f -> pExecUnit.matcher(f).find())
 				.map(m -> m.substring(m.indexOf(":") + 1, m.lastIndexOf(":") - 5)).findFirst().get()
 				.replace("- Secretarķa", "").trim();
-		return getOrganization(executerInut,organizationService);
+		return executerInut;
 
 	}
 	
 	private final String dependencyRegex = "^(?=.*(dependencia))";
 	
-	private OrganizationDto getDependency(String[] arrText, OrganizationService organizationService) {
+	private String getDependency(String[] arrText) {
 		Pattern pDependency = Pattern.compile(dependencyRegex, Pattern.CASE_INSENSITIVE);
 		String dependency = Stream.of(arrText).filter(f -> pDependency.matcher(f).find())
 				.map(m -> m.substring(m.trim().indexOf(":")+1, m.length()-1)).findFirst().get().trim();
-		return getOrganization(dependency,organizationService);
+		return dependency;
 	}
 
 	private OrganizationDto getOrganization(String executerUnit, OrganizationService organizationService) {

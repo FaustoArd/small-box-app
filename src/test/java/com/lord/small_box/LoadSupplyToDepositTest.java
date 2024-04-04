@@ -79,10 +79,9 @@ public class LoadSupplyToDepositTest {
 		depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderDto365.getId());
 		assertThat(purchaseOrderDto365.getOrderNumber()).isEqualTo(365);
 		purchaseOrderDto365.getItems().forEach(e -> System.out.println("Items: " + e.getCode()));
-		Organization org = organizationService.findById(1L);
 		Supply supply = Supply.builder().supplyNumber(551)
 				.date(Calendar.getInstance())
-				.dependencyApplicant(org)
+				.dependencyApplicant("Direccion de Inclusion")
 				.estimatedTotalCost(new BigDecimal(70500))
 				.jurisdiction("Desa")
 				.build();
@@ -176,11 +175,10 @@ public class LoadSupplyToDepositTest {
 		Supply supply = supplyDao.findSupplyById(supplyId);
 		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
 		List<SupplyReportDto> reportDtos = createReport(supplyItems);
-		Organization org = organizationService.findById(1L);
-		String to = organizationService.findById(supply.getDependencyApplicant().getId()).getOrganizationName();
+		Organization org = organizationService.findById(supply.getOrganization().getId());
 		SupplyCorrectionNote supplyCorrectionNote = new SupplyCorrectionNote();
 		supplyCorrectionNote.setFrom(org.getOrganizationName());
-		supplyCorrectionNote.setTo(to);
+		supplyCorrectionNote.setTo(supply.getDependencyApplicant());
 		supplyCorrectionNote.setSupplyReport(reportDtos);
 		return supplyCorrectionNote;
 	}

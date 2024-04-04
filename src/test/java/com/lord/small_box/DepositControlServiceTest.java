@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.lord.small_box.dao.PurchaseOrderDao;
 import com.lord.small_box.dao.PurchaseOrderItemDao;
 import com.lord.small_box.dtos.PurchaseOrderDto;
+import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
 import com.lord.small_box.models.Organization;
@@ -137,9 +138,7 @@ public class DepositControlServiceTest {
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
 		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
 		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
-		assertThat(purchaseOrderDto.getExecuterUnitOrganizationId()).isNotNull();
-		assertThat(purchaseOrderDto.getDependencyOrganizacionId()).isNotNull();
-		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
+	assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
 	}
 	
 	@Test
@@ -156,7 +155,7 @@ public class DepositControlServiceTest {
 	 @Test
 	 @Order(3)
 	void loadPurchaseOrderToDepositControl()throws Exception{
-		 List<String> result = depositControlService.loadPurchaseOrderToDepositControl(1L);
+		 List<PurchaseOrderToDepositReportDto> result = depositControlService.loadPurchaseOrderToDepositControl(1L);
 		 result.forEach(e -> System.out.println("Report result: " +e));
 	 }
 	 
@@ -183,14 +182,12 @@ public class DepositControlServiceTest {
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
 		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
 		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
-		assertThat(purchaseOrderDto.getExecuterUnitOrganizationId()).isNotNull();
-		assertThat(purchaseOrderDto.getDependencyOrganizacionId()).isNotNull();
-		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
+	assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
 	}
 	 @Test
 	 @Order(7)
 	void loadPurchaseOrderToDepositControl2()throws Exception{
-		 List<String> result = depositControlService.loadPurchaseOrderToDepositControl(2L);
+		 List<PurchaseOrderToDepositReportDto> result = depositControlService.loadPurchaseOrderToDepositControl(2L);
 		 result.forEach(e -> System.out.println("Report result: " +e));
 	 }
 	

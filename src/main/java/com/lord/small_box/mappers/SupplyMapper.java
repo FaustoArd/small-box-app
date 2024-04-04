@@ -14,14 +14,11 @@ public interface SupplyMapper {
 
 	public static SupplyMapper INSTANCE = Mappers.getMapper(SupplyMapper.class);
 	
-	@Mapping(target = "dependencyApplicant.organizationName", source="dependencyApplicant")
-	@Mapping(target="dependencyApplicant.id", source="dependencyApplicantOrganizationId")
+	@Mapping(target = "organization", ignore = true)
 	public Supply dtoToSupply(SupplyDto supplyDto);
 	
 	
 	@Mapping(target = "supplyItems", ignore = true)
-	@Mapping(target = "dependencyApplicant", source="dependencyApplicant.organizationName")
-	@Mapping(target="dependencyApplicantOrganizationId", source="dependencyApplicant.id")
 	public SupplyDto supplyToDto(Supply supply);
 	
 	public List<Supply> dtosToSupplies(List<SupplyDto> suppliesDtos);

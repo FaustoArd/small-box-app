@@ -13,10 +13,15 @@ import com.lord.small_box.dao.PurchaseOrderDao;
 import com.lord.small_box.dao.PurchaseOrderItemDao;
 import com.lord.small_box.dao.SupplyDao;
 import com.lord.small_box.dao.SupplyItemDao;
+import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
+import com.lord.small_box.dtos.PurchaseOrderItemDto;
+import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyCorrectionNote;
 import com.lord.small_box.dtos.SupplyDto;
+import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
+import com.lord.small_box.mappers.DepositControlMapper;
 import com.lord.small_box.mappers.PurchaseOrderItemMapper;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
 import com.lord.small_box.mappers.SupplyItemMapper;
@@ -68,10 +73,6 @@ public class DepositControlServiceImpl implements DepositControlService {
 		Organization org = organizationService.findById(organizationId);
 		purchaseOrder.setOrganization(org);
 		List<PurchaseOrderItem> items = PurchaseOrderItemMapper.INSTANCE.dtoToItems(purchaseOrderDto.getItems());
-		Organization execUnit = organizationService.findById(purchaseOrderDto.getExecuterUnitOrganizationId());
-		Organization dependency = organizationService.findById(purchaseOrderDto.getDependencyOrganizacionId());
-		purchaseOrder.setExecuterUnit(execUnit);
-		purchaseOrder.setDependency(dependency);
 		PurchaseOrder savedOrder = purchaseOrderDao.savePurchaseOrder(purchaseOrder);
 		List<PurchaseOrderItem> updatedItems = items.stream().map(m -> {
 			m.setPurchaseOrder(savedOrder);
@@ -80,6 +81,8 @@ public class DepositControlServiceImpl implements DepositControlService {
 		purchaseOrderItemDao.saveAll(updatedItems);
 		PurchaseOrderDto orderDto = PurchaseOrderMapper.INSTANCE.orderToDto(savedOrder);
 		orderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
+	
+		
 		return orderDto;
 	}
 
@@ -89,22 +92,24 @@ public class DepositControlServiceImpl implements DepositControlService {
 		List<PurchaseOrderItem> items = purchaseOrderItemDao.findAllByPurchaseOrder(purchaseOrder);
 		PurchaseOrderDto purchaseOrderDto = PurchaseOrderMapper.INSTANCE.orderToDto(purchaseOrder);
 		purchaseOrderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
-
+		
 		return purchaseOrderDto;
 	}
 
 	@Override
-	public List<String> loadPurchaseOrderToDepositControl(Long purchaseOrderId) {
+	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositControl(Long purchaseOrderId) {
+		PurchaseOrder order = purchaseOrderDao.findPurchaseOrderById(purchaseOrderId);
+		Organization org = organizationService.findById(order.getOrganization().getId());
 		List<PurchaseOrderItem> items = purchaseOrderItemDao
 				.findAllByPurchaseOrder(purchaseOrderDao.findPurchaseOrderById(purchaseOrderId));
-		List<String> report = new ArrayList<>();
+		List<PurchaseOrderToDepositReportDto> report = new ArrayList<>();
 		List<DepositControl> collectedItems = items.stream().map(orderItem -> {
 			Optional<DepositControl> opt = depositControlDao.findByItemCode(orderItem.getCode());
 			if (opt.isPresent()) {
 				DepositControl depositControl = opt.get();
 				depositControl.setQuantity(depositControl.getQuantity() + orderItem.getQuantity());
-				report.add("Se actualizo el item: " + depositControl.getItemName() + ", cantidad total: "
-						+ depositControl.getQuantity() + ", unidad de medida: " + depositControl.getMeasureUnit());
+				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
+						,depositControl.getQuantity() , depositControl.getMeasureUnit(),"ACTUALIZADO"));
 				return depositControl;
 
 			} else {
@@ -115,8 +120,9 @@ public class DepositControlServiceImpl implements DepositControlService {
 				depositControl.setItemUnitPrice(orderItem.getUnitCost());
 				depositControl.setQuantity(orderItem.getQuantity());
 				depositControl.setMeasureUnit(orderItem.getMeasureUnit());
-				report.add("Se creo un nuevo item: " + depositControl.getItemName() + ", cantidad total: "
-						+ depositControl.getQuantity() + ", unidad de medida: " + depositControl.getMeasureUnit());
+				depositControl.setOrganization(org);
+				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
+						, depositControl.getQuantity(), depositControl.getMeasureUnit(),"NUEVO"));
 				return depositControl;
 			}
 
@@ -157,7 +163,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
 		List<SupplyReportDto> reportDtos = getSupplyReport(supplyItems);
 		Organization org = organizationService.findById(1L);
-		String to = organizationService.findById(supply.getDependencyApplicant().getId()).getOrganizationName();
+		String to = supply.getDependencyApplicant();
 		SupplyCorrectionNote supplyCorrectionNote = new SupplyCorrectionNote();
 		supplyCorrectionNote.setFrom(org.getOrganizationName());
 		supplyCorrectionNote.setTo(to);
@@ -206,5 +212,26 @@ public class DepositControlServiceImpl implements DepositControlService {
 		List<Supply> supplies = supplyDao.findAllSuppliesByOrganization(organization);
 		return SupplyMapper.INSTANCE.suppliesToDtos(supplies);
  	}
+
+	@Override
+	public List<SupplyItemDto> findSupplyItems(long supplyId) {
+		Supply supply = supplyDao.findSupplyById(supplyId);
+		List<SupplyItem> items = supplyItemDao.findAllBySupply(supply);
+		return SupplyItemMapper.INSTANCE.itemToDtos(items);
+	}
+
+	@Override
+	public List<PurchaseOrderItemDto> findPurchaseOrderItems(long purchaseOrderId) {
+		PurchaseOrder purchaseOrder = purchaseOrderDao.findPurchaseOrderById(purchaseOrderId);
+		List<PurchaseOrderItem> items = purchaseOrderItemDao.findAllByPurchaseOrder(purchaseOrder);
+		return PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items);
+	}
+
+	@Override
+	public List<DepositControlDto> findDepositControlsByOrganization(long organizationId) {
+		Organization org = organizationService.findById(organizationId);
+		List<DepositControl> controls = depositControlDao.findAllbyOrganization(org);
+		return DepositControlMapper.INSTANCE.depositControlsToDtos(controls);
+	}
 
 }

@@ -32,5 +32,7 @@ public class PurchaseOrderItemDto {
 	
 	private Calendar expirationDate;
 	
+	private long purchaseOrderId;
+	
 	
 }

@@ -5,8 +5,12 @@ import { SupplyDto } from '../models/SupplyDto';
 import { PurchaseOrderDto } from '../models/purchaseOrderDto';
 import { SupplyReportDto } from '../models/suppplyReportDto';
 import { SupplyCorrectionNote } from '../models/supplyCorrectionNoteDto';
+import { SupplyItemDto } from '../models/supplyItemDto';
+import { PurchaseOrderItemDto } from '../models/purchaseOrderItemDto';
+import { PurchaseOrderToDepositReportDto } from '../models/purchaseOrderToDepositReportDto';
+import { DepositControlDto } from '../models/depositControlDto';
 
-const DEPOSIT_CONTROL_BASE_URL = "http://localhost:8080/api/v1/smallbox/deposit_control";
+const DEPOSIT_CONTROL_BASE_URL = "http://localhost:8080/api/v1/smallbox/deposit-control";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +26,7 @@ export class DepositControlService {
   }
   
     handleError(error:HttpErrorResponse){
-      return throwError(()=> new Error(error.error));
+      return throwError(()=> new Error(error.message));
      
     }
 
@@ -41,8 +45,8 @@ export class DepositControlService {
       .pipe(catchError(this.handleError));
     }
 
-    loadPurchaseOrderToDeposit(purchaseOrderId:number):Observable<Array<string>>{
-      return this.http.put<Array<string>>(`${DEPOSIT_CONTROL_BASE_URL}/load-order-to-deposit`,purchaseOrderId)
+    loadPurchaseOrderToDeposit(purchaseOrderId:number):Observable<Array<PurchaseOrderToDepositReportDto>>{
+      return this.http.put<Array<PurchaseOrderToDepositReportDto>>(`${DEPOSIT_CONTROL_BASE_URL}/load-order-to-deposit`,purchaseOrderId)
       .pipe(catchError(this.handleError));
     }
 
@@ -52,6 +56,20 @@ export class DepositControlService {
     }
     createSupplyCorrectionNote(supplyId:number):Observable<SupplyCorrectionNote>{
       return this.http.get<SupplyCorrectionNote>(`${DEPOSIT_CONTROL_BASE_URL}/create-supply-correction-note?supplyId=${supplyId}`,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
+findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>{
+  return this.http.get<PurchaseOrderItemDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-order-items?purchaseOrderId=${purchaseOrderId}`,this.httpOptions)
+  .pipe(catchError(this.handleError))
+}
+
+    findSupplyItems(supplyId:number):Observable<SupplyItemDto[]>{
+      return this.http.get<SupplyItemDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-supply-items?supplyId=${supplyId}`,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
+
+    findDepositControlsByOrganization(organizationId:number):Observable<DepositControlDto[]>{
+      return this.http.get<DepositControlDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-deposit-controls-by-org?organizationId=${organizationId}`)
       .pipe(catchError(this.handleError));
     }
    

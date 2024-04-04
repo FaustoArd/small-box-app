@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.lord.small_box.dao.DepositControlDao;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.DepositControl;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.repositories.DepositControlRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -58,5 +59,10 @@ public class DepositControlDaoImpl implements DepositControlDao {
 	@Override
 	public Optional<DepositControl> findByItemCode(String itemCode) {
 		return depositControlRepository.findByItemCode(itemCode); 
+	}
+
+	@Override
+	public List<DepositControl> findAllbyOrganization(Organization organization) {
+		return (List<DepositControl>)depositControlRepository.findAllByOrganization(organization);
 	}
 }

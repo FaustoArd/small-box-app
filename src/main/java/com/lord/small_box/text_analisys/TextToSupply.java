@@ -29,11 +29,7 @@ public class TextToSupply {
 		supplyDto.setDate(mustReturnDate(text));
 		supplyDto.setSupplyItems(mustReturnSupplyItemList(arrTextSplitN));
 		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
-		Optional<OrganizationDto> optApplicantDto = Optional.of(getApplicant(arrTextSplitN,organizationService));
-		if(optApplicantDto.isPresent()){
-			supplyDto.setDependencyApplicant(optApplicantDto.get().getOrganizationName());
-			supplyDto.setDependencyApplicantOrganizationId(optApplicantDto.get().getId());
-		}
+		supplyDto.setDependencyApplicant(getApplicant(arrTextSplitN));
 		System.out.println("Applicant: "+ supplyDto.getDependencyApplicant());
 		System.out.println("Estimated: "+supplyDto.getEstimatedTotalCost());
 		System.out.println("TEST: " + supplyDto.getSupplyNumber());
@@ -42,13 +38,13 @@ public class TextToSupply {
 		return supplyDto;
 	}
 	
-	private OrganizationDto getApplicant(String[] arrText, OrganizationService organizationService) {
+	private String getApplicant(String[] arrText) {
 		String applicant =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst()
 				.map(m -> m.substring(m.indexOf("O")+1, m.lastIndexOf("M")-1)
 						.replace("Secretaría de", "").replace("Dirección de", "")
 						.replace("Subsecretaría de", "").trim()).get();
 		
-		return getOrganizationDto(applicant,organizationService);
+		return  applicant;
 	}
 	
 	private OrganizationDto getOrganizationDto(String applicant,OrganizationService organizationService) {

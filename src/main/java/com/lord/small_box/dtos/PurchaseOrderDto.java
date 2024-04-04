@@ -17,14 +17,10 @@ public class PurchaseOrderDto {
 
 	private String executerUnit;
 	
-	private Long executerUnitOrganizationId;
-
 	private String financingSource;
 
 	private String dependency;
 	
-	private Long dependencyOrganizacionId;
-
 	private String provider;
 
 	private String deliverTo;

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.lord.small_box.models.DepositControl;
+import com.lord.small_box.models.Organization;
 
 public interface DepositControlDao {
 	
@@ -20,4 +21,6 @@ public interface DepositControlDao {
 	public List<DepositControl> saveAll(List<DepositControl> depositControls);
 	
 	public Optional<DepositControl> findByItemCode(String itemCode);
+	
+	public List<DepositControl> findAllbyOrganization(Organization organization);
 }

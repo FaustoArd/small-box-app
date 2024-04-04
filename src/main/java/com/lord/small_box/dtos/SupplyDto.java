@@ -24,5 +24,5 @@ public class SupplyDto {
 	
 	private String dependencyApplicant;
 	
-	private long dependencyApplicantOrganizationId;
+	
 }

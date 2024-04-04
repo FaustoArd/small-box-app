@@ -21,4 +21,12 @@ export class DialogService {
       data
     })
   }
+
+  openSupplyCorrectionNoteCreation(data:DialogTemplateData){
+    return this.matDialog.open(DialogTemplateComponent,{
+      width:'100%',
+      height:'100%',
+      data
+    })
+  }
 }

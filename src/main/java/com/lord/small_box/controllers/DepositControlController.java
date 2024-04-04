@@ -17,11 +17,17 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lord.small_box.dao.DepositControlDao;
 import com.lord.small_box.dao.PurchaseOrderDao;
+import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
+import com.lord.small_box.dtos.PurchaseOrderItemDto;
+import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyCorrectionNote;
 import com.lord.small_box.dtos.SupplyDto;
+import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
+import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.utils.PdfToStringUtils;
@@ -38,20 +44,36 @@ public class DepositControlController {
 	
 	@Autowired
 	private final PurchaseOrderDao purchaseOrderDao;
-
+	
 	@Autowired
 	private final PdfToStringUtils pdfToStringUtils;
+	
+	@GetMapping(path="/find-deposit-controls-by-org")
+	ResponseEntity<List<DepositControlDto>> findDepositControlsByOrganization(@RequestParam("organizationId")long organizationId){
+	List<DepositControlDto> controlsDto = depositControlService.findDepositControlsByOrganization(organizationId);
+	return ResponseEntity.ok(controlsDto);
+	}
 	
 	@GetMapping(path = "/find-all-orders-by-org")
 	ResponseEntity<List<PurchaseOrderDto>> findAllOrdersByOrganization(@RequestParam("organizationId")long organizationId){
 		List<PurchaseOrderDto> purchaseOrderDtos =depositControlService.findAllOrdersByOrganizationId(organizationId);
 		return ResponseEntity.ok(purchaseOrderDtos);
 	}
+	@GetMapping(path="/find-order-items")
+	ResponseEntity<List<PurchaseOrderItemDto>> findPurchaseOrderItems(@RequestParam("purchaseOrderId")long purchaseOrderId){
+		List<PurchaseOrderItemDto> itemDtos = depositControlService.findPurchaseOrderItems(purchaseOrderId);
+		return ResponseEntity.ok(itemDtos);
+	}
 	
 	@GetMapping(path ="/find-all-supplies-by-org")
 	ResponseEntity<List<SupplyDto>> findAllSuppliesByOrganization(@RequestParam("organizationId")long organizationId){
 		List<SupplyDto> supplyDtos = depositControlService.findAllSuppliesByOrganizationId(organizationId);
 		return ResponseEntity.ok(supplyDtos);
+	}
+	@GetMapping(path = "/find-supply-items")
+	ResponseEntity<List<SupplyItemDto>> findSupplyItems(@RequestParam("supplyId")long supplyId){
+		List<SupplyItemDto> itemDtos = depositControlService.findSupplyItems(supplyId);
+		return ResponseEntity.ok(itemDtos);
 	}
 
 	@PostMapping(path = "/collect-supply-pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -77,9 +99,9 @@ public class DepositControlController {
 	}
 	
 	@PutMapping(path = "/load-order-to-deposit")
-	ResponseEntity<List<String>> loadPurchaseOrdertoDeposit(@RequestBody long purchaseOrderId){
-		List<String> loadReport = depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderId);
-		return new ResponseEntity<List<String>>(loadReport,HttpStatus.OK);
+	ResponseEntity<List<PurchaseOrderToDepositReportDto>> loadPurchaseOrdertoDeposit(@RequestBody long purchaseOrderId){
+		List<PurchaseOrderToDepositReportDto> loadReport = depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderId);
+		return new ResponseEntity<List<PurchaseOrderToDepositReportDto>>(loadReport,HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/create-supply-report")

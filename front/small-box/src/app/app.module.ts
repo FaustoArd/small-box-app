@@ -38,7 +38,9 @@ import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatc
 import {NgxPaginationModule} from 'ngx-pagination';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel/admin-panel.component';
 import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component';
-import { UserPanelComponent } from './components/user-panel/user-panel.component'; 
+import { UserPanelComponent } from './components/user-panel/user-panel.component';
+
+
 
 
 
@@ -69,7 +71,9 @@ import { UserPanelComponent } from './components/user-panel/user-panel.component
     DispatchMatComponent,
     AdminPanelComponent,
     DepositHomeComponent,
-    UserPanelComponent
+    UserPanelComponent,
+   
+   
     
     
   ],

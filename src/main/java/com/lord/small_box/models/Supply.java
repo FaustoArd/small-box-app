@@ -44,8 +44,7 @@ public class Supply {
 
 	private BigDecimal estimatedTotalCost;
 	
-	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinColumn(name="dependency_applicant_id",referencedColumnName = "id")
-	private Organization dependencyApplicant;
+	
+	private String dependencyApplicant;
 
 }
