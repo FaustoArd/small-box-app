@@ -1,5 +1,6 @@
 
-<div class="container-fluid">
+<!-- Admin Navbar -->
+<div *ngIf="adminAuth" class="container-fluid">
     <div class="row">
     <mat-toolbar class="bg-dark">
         <div class="col-md-1">
@@ -12,21 +13,16 @@
                 <button mat-menu-item routerLink="/open-container">Abrir</button>
          </mat-menu>
         </div>
-        <div *ngIf="adminAuth" class="col-md-1 ms-3">
+        <div class="col-md-1 ms-3">
             <button mat-button [matMenuTriggerFor]="userMenu" class="text-white">Usuarios</button>
             <mat-menu #userMenu yPosition="above">
                 <button mat-menu-item routerLink="/register">Nuevo</button>
                 <button mat-menu-item  routerLink="/org">Asignar dependencia</button>
+                <button mat-menu-item routerLink="/org-setup">Panel Dependencias</button>
          </mat-menu>
         </div>
-         <div *ngIf="adminAuth" class="col-md-1 ms-3">
-            <button mat-button [matMenuTriggerFor]="orgMenu" class="text-white">Organizacion</button>
-            <mat-menu #orgMenu yPosition="above">
-                <button mat-menu-item routerLink="/org-setup">Panel</button>
-               
-         </mat-menu>
-        </div>
-        <div *ngIf="adminAuth  || superUserAuth" class="col-md-5 ms-3">
+        <!-- <div class="col-md-1 ms-3" *ngIf="!adminAuth "></div> -->
+        <div class="col-md-5 ms-3">
             <button mat-button [matMenuTriggerFor]="templateMenu" class="text-white">Plantillas</button>
             <mat-menu #templateMenu yPosition="above">
                 <button mat-menu-item routerLink="/memo-create">Memo</button>
@@ -38,11 +34,76 @@
          <button mat-button routerLink="/user-panel"  class="text-white ms-4">Configuracion</button>
             
         </div>
+        <div class="col-md-1"></div> 
+         <div class="col-md-1 ms-5 mt-1">
+     
+            <h4 id="user-name" class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>
+       </div>
+       <div class="col-md-2 top-0 end-0 mt-1"> 
+     
+        <button id="btnSession" (click)="onLogout()" class="btn btn-sm ms-3">Cerrar sesion</button>
+       </div>
+       </mat-toolbar>
+    </div>
+</div>
+<!-- Super user Navbar -->
+<div *ngIf="superUserAuth" class="container-fluid">
+    <div class="row">
+    <mat-toolbar class="bg-dark">
+        <div class="col-md-1">
+            <button class=" btn btn-lg text-white"routerLink="/home" >Inicio</button>
+        </div>
+        <div class="col-md-1  ms-2">
+            <button mat-button [matMenuTriggerFor]="containerMenu" class="text-white">Rendicion</button>
+            <mat-menu #containerMenu yPosition="above">
+                <button mat-menu-item routerLink="/container">Crear</button>
+                <button mat-menu-item routerLink="/open-container">Abrir</button>
+         </mat-menu>
+        </div>
+        <!-- <div class="col-md-1 ms-3" *ngIf="!adminAuth "></div> -->
+        <div class="col-md-5 ms-3">
+            <button mat-button [matMenuTriggerFor]="templateMenu" class="text-white">Plantillas</button>
+            <mat-menu #templateMenu yPosition="above">
+                <button mat-menu-item routerLink="/memo-create">Memo</button>
+                <button mat-menu-item routerLink="/work-template-list">Ver</button>
+         </mat-menu>
+         <!-- <button mat-button routerLink="/dispatch"  class="text-white ms-5">Despacho</button> -->
+         <button mat-button routerLink="/dispatch-page"  class="text-white ms-5">Despacho</button>
+         <button mat-button routerLink="/deposit-home"  class="text-white ms-5">Suministros</button>
+         <button mat-button routerLink="/user-panel"  class="text-white ms-4">Configuracion</button>
+            
+        </div>
+        <!-- <div class="col-md-5 ms-3" *ngIf="!adminAuth  || !superUserAuth"></div> -->
        
        
       <!-- <div *ngIf="!adminAuth || superUserAuth " class="col-md-7 ms-5"></div> -->
-       
+       <div class="col-md-2"></div>
        <div class="col-md-1 ms-5 mt-1">
+      <h4 id="user-name" class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>
+     
+       </div>
+       <div class="col-md-2 top-0 end-0 mt-1"> 
+        <button id="btnSession" (click)="onLogout()" class="btn btn-sm ms-3">Cerrar sesion</button>
+       </div>
+       </mat-toolbar>
+    </div>
+</div>
+<!-- User navbar -->
+<div *ngIf="userAuth" class="container-fluid">
+    <div class="row">
+    <mat-toolbar class="bg-dark">
+        <div class="col-md-1">
+            <button class=" btn btn-lg text-white"routerLink="/home" >Inicio</button>
+        </div>
+        <div class="col-md-1  ms-2">
+            <button mat-button [matMenuTriggerFor]="containerMenu" class="text-white">Rendicion</button>
+            <mat-menu #containerMenu yPosition="above">
+                <button mat-menu-item routerLink="/container">Crear</button>
+                <button mat-menu-item routerLink="/open-container">Abrir</button>
+         </mat-menu>
+        </div>
+       <div class="col-md-7"></div>
+     <div class="col-md-1 ms-5 mt-1">
       <h4 id="user-name" class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>
      
        </div>
