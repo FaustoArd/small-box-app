@@ -23,7 +23,7 @@ import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
-import com.lord.small_box.dtos.SupplyCorrectionNote;
+import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
@@ -111,8 +111,8 @@ public class DepositControlController {
 	}
 	
 	@GetMapping(path = "/create-supply-correction-note")
-	ResponseEntity<SupplyCorrectionNote> createSupplyCorrectionNote(@RequestParam("supplyId")long supplyId){
-		SupplyCorrectionNote supplyCorrectionNote = depositControlService.createSupplyCorrectionNote(supplyId);
+	ResponseEntity<SupplyCorrectionNoteDto> createSupplyCorrectionNote(@RequestParam("supplyId")long supplyId){
+		SupplyCorrectionNoteDto supplyCorrectionNote = depositControlService.createSupplyCorrectionNote(supplyId);
 		return ResponseEntity.ok(supplyCorrectionNote);
 	}
 

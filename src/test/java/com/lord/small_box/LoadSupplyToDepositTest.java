@@ -24,7 +24,7 @@ import com.lord.small_box.dao.PurchaseOrderItemDao;
 import com.lord.small_box.dao.SupplyDao;
 import com.lord.small_box.dao.SupplyItemDao;
 import com.lord.small_box.dtos.PurchaseOrderDto;
-import com.lord.small_box.dtos.SupplyCorrectionNote;
+import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyReportDto;
 import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.Organization;
@@ -74,16 +74,19 @@ public class LoadSupplyToDepositTest {
 	@BeforeAll
 	void setup()throws Exception {
 		loadTestData.loadData();
-		String strPurchaseOrder365= pdfToStringUtils.pdfToString("oc-365");
+		String strPurchaseOrder365= pdfToStringUtils.pdfToString("oc-365.pdf");
 		purchaseOrderDto365 = depositControlService.collectPurchaseOrderFromText(strPurchaseOrder365,2L);
 		depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderDto365.getId());
 		assertThat(purchaseOrderDto365.getOrderNumber()).isEqualTo(365);
 		purchaseOrderDto365.getItems().forEach(e -> System.out.println("Items: " + e.getCode()));
+		purchaseOrderDto365.getItems().forEach(e -> System.out.println("Items: " + e.getQuantity()));
+		Organization org = organizationService.findById(2L);
 		Supply supply = Supply.builder().supplyNumber(551)
 				.date(Calendar.getInstance())
 				.dependencyApplicant("Direccion de Inclusion")
 				.estimatedTotalCost(new BigDecimal(70500))
 				.jurisdiction("Desa")
+				.organization(org)
 				.build();
 		Supply savedSupply = supplyDao.saveSupply(supply);
 		supplyId = savedSupply.getId();
@@ -132,7 +135,7 @@ public class LoadSupplyToDepositTest {
 	@Test
 	@Order(2)
 	void mustReturnSupplyCorrectionNote()throws Exception{
-		SupplyCorrectionNote supplyCorrectionNote = createSupplyCorrectionNote();
+		SupplyCorrectionNoteDto supplyCorrectionNote = createSupplyCorrectionNote();
 		Stream.of(supplyCorrectionNote)
 		.forEach(e -> System.out.println("to: " + e.getTo()+", from: "
 		+ e.getFrom()+ ", "));
@@ -171,12 +174,12 @@ public class LoadSupplyToDepositTest {
 		return report;
 	}
 	
-	private SupplyCorrectionNote createSupplyCorrectionNote(){
+	private SupplyCorrectionNoteDto createSupplyCorrectionNote(){
 		Supply supply = supplyDao.findSupplyById(supplyId);
 		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
 		List<SupplyReportDto> reportDtos = createReport(supplyItems);
 		Organization org = organizationService.findById(supply.getOrganization().getId());
-		SupplyCorrectionNote supplyCorrectionNote = new SupplyCorrectionNote();
+		SupplyCorrectionNoteDto supplyCorrectionNote = new SupplyCorrectionNoteDto();
 		supplyCorrectionNote.setFrom(org.getOrganizationName());
 		supplyCorrectionNote.setTo(supply.getDependencyApplicant());
 		supplyCorrectionNote.setSupplyReport(reportDtos);

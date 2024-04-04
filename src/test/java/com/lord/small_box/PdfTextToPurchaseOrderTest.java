@@ -121,7 +121,7 @@ public class PdfTextToPurchaseOrderTest {
 		organizationService.save(org3);
 		organizationService.save(org4);
 		organizationService.save(org5);
-		text = pdfToStringUtils.pdfToString("oc 658 expte 177");
+		text = pdfToStringUtils.pdfToString("oc-365.pdf");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// Stream.of(arrTextSplitPageEnd).forEach(e -> System.out.println(e));
@@ -161,7 +161,7 @@ public class PdfTextToPurchaseOrderTest {
 		System.err.println("Order Date: " + purchaseOrderDto.getDate());
 		System.err.println("Executer Unit: " + purchaseOrderDto.getExecuterUnit());
 		System.err.println("Dependency: " + purchaseOrderDto.getDependency());
-		purchaseOrderDto.getItems().forEach(e -> System.out.println(e.getCode()));
+		purchaseOrderDto.getItems().forEach(e -> System.out.println(e.getQuantity()));
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal()).isGreaterThan(new BigDecimal(0));
 		assertThat(purchaseOrderDto.getItems().stream().mapToDouble(d -> d.getTotalEstimatedCost().doubleValue()).sum())
 				.isEqualTo(purchaseOrderDto.getPurchaseOrderTotal().doubleValue());

@@ -17,7 +17,7 @@ import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
-import com.lord.small_box.dtos.SupplyCorrectionNote;
+import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
@@ -158,13 +158,14 @@ public class DepositControlServiceImpl implements DepositControlService {
 	}
 
 	@Override
-	public SupplyCorrectionNote createSupplyCorrectionNote(long supplyId) {
+	public SupplyCorrectionNoteDto createSupplyCorrectionNote(long supplyId) {
 		Supply supply = supplyDao.findSupplyById(supplyId);
 		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
 		List<SupplyReportDto> reportDtos = getSupplyReport(supplyItems);
 		Organization org = organizationService.findById(1L);
 		String to = supply.getDependencyApplicant();
-		SupplyCorrectionNote supplyCorrectionNote = new SupplyCorrectionNote();
+		SupplyCorrectionNoteDto supplyCorrectionNote = new SupplyCorrectionNoteDto();
+		supplyCorrectionNote.setSupplyNumber(supply.getSupplyNumber());
 		supplyCorrectionNote.setFrom(org.getOrganizationName());
 		supplyCorrectionNote.setTo(to);
 		supplyCorrectionNote.setSupplyReport(reportDtos);
@@ -177,9 +178,11 @@ public class DepositControlServiceImpl implements DepositControlService {
 			Optional<DepositControl> depositItem = depositControlDao.findByItemCode(supplyItem.getCode());
 			if (depositItem.isPresent()) {
 				supplyReportDto.setSupplyItemCode(supplyItem.getCode());
+				supplyReportDto.setSupplyItemMeasureUnit(supplyItem.getMeasureUnit());
 				supplyReportDto.setSupplyItemDetail(supplyItem.getItemDetail());
 				supplyReportDto.setSupplyItemQuantity(supplyItem.getQuantity());
 				supplyReportDto.setDepositItemCode(depositItem.get().getItemCode());
+				supplyReportDto.setDepositItemMeasureUnit(depositItem.get().getMeasureUnit());
 				supplyReportDto.setDepositItemDetail(depositItem.get().getItemName());
 				supplyReportDto.setDepositItemQuantity(depositItem.get().getQuantity());
 				supplyReportDto.setDepositQuantityLeft(depositItem.get().getQuantity() - supplyItem.getQuantity());
@@ -187,9 +190,11 @@ public class DepositControlServiceImpl implements DepositControlService {
 			} else {
 
 				supplyReportDto.setSupplyItemCode(supplyItem.getCode());
+				supplyReportDto.setSupplyItemMeasureUnit(supplyItem.getMeasureUnit());
 				supplyReportDto.setSupplyItemDetail(supplyItem.getItemDetail());
 				supplyReportDto.setSupplyItemQuantity(supplyItem.getQuantity());
 				supplyReportDto.setDepositItemCode("No encontrado");
+				supplyReportDto.setDepositItemMeasureUnit("No encontrado");
 				supplyReportDto.setDepositItemDetail("No encontrado");
 				supplyReportDto.setDepositItemQuantity(0);
 

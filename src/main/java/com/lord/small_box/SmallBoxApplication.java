@@ -10,6 +10,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import com.lord.small_box.dao.SupplyDao;
+import com.lord.small_box.dao.SupplyItemDao;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
@@ -19,6 +22,8 @@ import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxType;
+import com.lord.small_box.models.Supply;
+import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.models.WorkTemplateDestination;
 import com.lord.small_box.repositories.AuthorityRepository;
 import com.lord.small_box.repositories.DispatchControlRepository;
@@ -41,6 +46,8 @@ import com.lord.small_box.utils.PdfToStringUtils;
 @SpringBootApplication
 public class SmallBoxApplication {
 
+	private long supplyId;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
@@ -57,7 +64,8 @@ public class SmallBoxApplication {
 			OrganizationResponsibleRepository organizationResponsibleRepository,
 			FileReaderUtils fileReaderUtils,
 			WorkTemplateDestinationRepository workTemplateDestinationRepository,
-			PdfToStringUtils pdfToStringUtils) {
+			PdfToStringUtils pdfToStringUtils,
+			SupplyDao supplyDao, SupplyItemDao supplyItemDao) {
 
 		
 		return args ->{
@@ -217,6 +225,44 @@ public class SmallBoxApplication {
 			organizationRepository.save(org3);
 			organizationRepository.save(org4);
 			organizationRepository.save(org5);
+			
+			Supply supply = Supply.builder().supplyNumber(551)
+					.date(Calendar.getInstance())
+					.dependencyApplicant("Direccion de Inclusion")
+					.estimatedTotalCost(new BigDecimal(70500))
+					.jurisdiction("Desa")
+					.organization(dirAdmDesp)
+					.build();
+			Supply savedSupply = supplyDao.saveSupply(supply);
+			supplyId = savedSupply.getId();
+			SupplyItem supplyItem1 = SupplyItem.builder()
+					.code("2.1.1.00788.0013")
+					.quantity(60)
+					.measureUnit("PAQUETE")
+					.itemDetail("ho")
+					.unitCost(new BigDecimal(3100))
+					.estimatedCost(new BigDecimal(15500))
+					.supply(savedSupply)
+					.build();
+			SupplyItem supplyItem2 = SupplyItem.builder()
+					.code("2.1.1.00705.0035")
+					.quantity(3)
+					.measureUnit("PAQUETE")
+					.unitCost(new BigDecimal(5000))
+					.estimatedCost(new BigDecimal(15000))
+					.supply(savedSupply)
+					.build();
+			
+			SupplyItem supplyItem3 = SupplyItem.builder()
+					.code("2.3.5.00407.0030")
+					.quantity(80)
+					.measureUnit("PAQUETE")
+					.unitCost(new BigDecimal(8000))
+					.estimatedCost(new BigDecimal(40000))
+					.supply(savedSupply)
+					.build();
+			List<SupplyItem> supplyItems = List.of(supplyItem1,supplyItem2,supplyItem3);
+			supplyItemDao.saveAll(supplyItems);
 			
 			//fileReaderUtils.readFile();
 		

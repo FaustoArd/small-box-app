@@ -121,7 +121,7 @@ public class PdfTextToSupplyTest {
 		organizationService.save(org3);
 		organizationService.save(org4);
 		organizationService.save(org5);
-		text = pdfToStringUtils.pdfToString("sum-551");
+		text = pdfToStringUtils.pdfToString("sum-551.pdf");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// supplyPdfList.forEach(e -> System.out.println(e));
@@ -146,9 +146,9 @@ public class PdfTextToSupplyTest {
 		System.out.println("Applicant: " + supplyDto.getDependencyApplicant());
 	System.out.println("Estimated: " + supplyDto.getEstimatedTotalCost());
 		System.out.println("TEST: " + supplyDto.getSupplyNumber());
-		System.out.println("TEST: " + supplyDto.getDate().getTime());
+		System.out.println("Quantity: " + supplyDto.getDate().getTime());
 		supplyDto.getSupplyItems().forEach(e -> System.out.println(e.getCode()));
-		supplyDto.getSupplyItems().forEach(e -> System.out.println(e.getUnitCost()));
+		supplyDto.getSupplyItems().forEach(e -> System.out.println("quant: " + e.getQuantity()));
 	}
 
 	private String getApplicant(String[] arrText) {
@@ -242,7 +242,7 @@ public class PdfTextToSupplyTest {
 				if (pQuantity.matcher(i).find()) {
 					if (i.contains(".")) {
 						i = i.replace(",", "");
-						i = i.substring(0, i.indexOf(".") - 1);
+						i = i.substring(0, i.indexOf(".") );
 						supplyItemDto.setQuantity(Integer.parseInt(i));
 					} else {
 

@@ -45,7 +45,7 @@ h2{
 
 
 p{
-    color: #098a0b;
+    color: #361e96;
     font-size: 1.2rem;
     font-family: 'Quattrocento', serif;
     font-weight: bold;
@@ -67,8 +67,8 @@ td{
     font-weight: bold;
 }
 small{
-    color:red;
+    color:rgb(27, 118, 42);
     font-weight: bold;
     font-family: 'Quattrocento', serif;
-    font-size: 0.9rem;
+    font-size: 1rem;
 }

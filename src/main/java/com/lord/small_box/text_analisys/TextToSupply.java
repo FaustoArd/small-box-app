@@ -130,7 +130,7 @@ public class TextToSupply {
 				if (pQuantity.matcher(i).find()) {
 					if (i.contains(".")) {
 						i = i.replace(",", "");
-						i = i.substring(0, i.indexOf(".") - 1);
+						i = i.substring(0, i.indexOf("."));
 						supplyItemDto.setQuantity(Integer.parseInt(i));
 					} else {
 

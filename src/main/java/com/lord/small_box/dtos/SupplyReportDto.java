@@ -9,11 +9,15 @@ public class SupplyReportDto {
 	
 	private String supplyItemCode;
 	
+	private String supplyItemMeasureUnit;
+	
 	private String supplyItemDetail;
 	
 	private int supplyItemQuantity;
 	
 	private String depositItemCode;
+	
+	private String depositItemMeasureUnit;
 	
 	private String depositItemDetail;
 	

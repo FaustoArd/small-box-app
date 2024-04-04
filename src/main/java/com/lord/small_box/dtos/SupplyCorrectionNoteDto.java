@@ -7,8 +7,10 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class SupplyCorrectionNote {
+public class SupplyCorrectionNoteDto {
 
+	private int supplyNumber;
+	
 	private String from;
 	
 	private String to;

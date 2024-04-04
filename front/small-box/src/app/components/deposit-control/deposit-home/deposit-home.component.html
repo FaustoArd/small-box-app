@@ -327,22 +327,10 @@
             <div class="col-md-6">
                 <h2>DETALLE DE COMPARACION DE SUMINISTRO CON STOCK</h2>
             </div>
-             
+
             <div class="col-md-3">
                 <div>
-                   <h4> Fecha: {{now |date: 'dd-MM-yyyy'}}</h4>
-                </div>
-
-
-
-            </div>
-        </div>
-       
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-6">
-                <div>
-                   <h4 class="d-inline"> UNIDAD EJECUTORA:</h4><h1 class="d-inline"> {{supplyCorrectionNote.from.toUpperCase()}}</h1>
+                    <h4> Fecha: {{now |date: 'dd-MM-yyyy'}}</h4>
                 </div>
             </div>
         </div>
@@ -350,7 +338,26 @@
             <div class="col-md-1"></div>
             <div class="col-md-6">
                 <div>
-                    <h4 class="d-inline">DEPENDENCIA SOLICITANTE:</h4><h1 class="d-inline"> {{supplyCorrectionNote.to.toUpperCase()}}</h1> 
+                    <h4 class="d-inline"> SUMINISTRO NUMERO:</h4>
+                    <h1 class="d-inline"> {{supplyCorrectionNote.supplyNumber}}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-6">
+                <div>
+                    <h4 class="d-inline"> UNIDAD EJECUTORA:</h4>
+                    <h1 class="d-inline"> {{supplyCorrectionNote.from.toUpperCase()}}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-6">
+                <div>
+                    <h4 class="d-inline">DEPENDENCIA SOLICITANTE:</h4>
+                    <h1 class="d-inline"> {{supplyCorrectionNote.to.toUpperCase()}}</h1>
                 </div>
             </div>
             <p class="lead">
@@ -363,8 +370,12 @@
                     <p>ITEM SUMINISTRO:</p>
                     <h1 class="d-inline">CODIGO:</h1><small class="ms-2"> {{item.supplyItemCode}}</small>
                 </div>
+              
                 <div>
                     <h1 class="d-inline"> DETALLE:</h1><small class="ms-2"> {{item.supplyItemDetail}}</small>
+                </div>
+                <div>
+                    <h1 class="d-inline"> U.MEDIDA:</h1><small class="ms-2"> {{item.supplyItemMeasureUnit}}</small>
                 </div>
                 <div>
                     <h1 class="d-inline"> CANTIDAD:</h1> <small class="ms-2">{{item.supplyItemQuantity}}</small>
@@ -376,11 +387,24 @@
                     <p>ITEM DEPOSITO:</p>
                     <h1 class="d-inline">CODIGO:</h1><small class="ms-2"> {{item.depositItemCode}} </small>
                 </div>
+               
                 <div>
                     <h1 class="d-inline"> DETALLE:</h1><small class="ms-2"> {{item.depositItemDetail}}</small>
                 </div>
                 <div>
+                    <h1 class="d-inline"> U.MEDIDA:</h1><small class="ms-2"> {{item.depositItemMeasureUnit}}</small>
+                </div>
+                <div>
                     <h1 class="d-inline">CANTIDAD :</h1> <small class="ms-2">{{item.depositItemQuantity}}</small>
+                </div>
+                <div *ngIf="item.depositQuantityLeft>0">
+                    <h1 class="d-inline">SOBRANTE :</h1> <small
+                        class="ms-2 text-success">{{item.depositQuantityLeft}}</small>
+
+                </div>
+                <div *ngIf="item.depositQuantityLeft<0">
+                    <h1 class="d-inline">FALTANTE :</h1> <small
+                        class="ms-2 text-danger">{{item.depositQuantityLeft.toString().replace("-","")}}</small>
                 </div>
             </div>
             <p class="lead">
