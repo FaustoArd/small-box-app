@@ -63,51 +63,113 @@
             <!-- Deposit jumbotron -->
             <div class="jumbotron  ms-1">
                 <p class="d-inline display-4">VER STOCK</p>
-                <a routerLink="/open-container" class="btn btn-sm ms-3 " role="button">-</a>
+                <a (click)="getDepositControlsByOrganization()" class="btn btn-sm ms-3 " role="button">-</a>
                 <p class="lead">
                     <hr class="my-4">
             </div>
         </div>
     </div>
-    <div class="row mt-1 ms-3">
-        <div class="col-md-3">
-            <!-- Purchase order table -->
-            <div *ngIf="purchaseOrderItemDtos.length>0">
-                <h4>FECHA: {{purchaseOrderDto.date}}</h4>
-                <h4>NUMERO: {{purchaseOrderDto.orderNumber}}</h4>
-                <h4>UNIDAD EJECUTORA: {{purchaseOrderDto.executerUnit}}</h4>
-                <h4>DEPENDENCIA: {{purchaseOrderDto.dependency}}</h4>
-                <h4>TOTAL: {{purchaseOrderDto.purchaseOrderTotal | currency: '$': 'symbol'}}</h4>
-                <table class="table-sm table-bordered">
+    <div class="row">
+        <div class="col-md-8"></div>
+<div class="col-md-3 ms-2">
+            <!-- Deposit control table -->
+            <div *ngIf="depositControlDtos.length>0">
+
+                <table class="table-sm table-bordered h-75">
                     <thead>
                         <tr>
                             <th scope="col">CODIGO</th>
-                            <th scope="col">CAT PROG</th>
-                            <th scope="col">CANTIDAD</th>
                             <th scope="col">U.MEDIDA</th>
                             <th scope="col">DESCRIPCION</th>
                             <th scope="col">P.UNITARIO</th>
                             <th scope="col">TOTAL</th>
+                            <th scope="col">CANTIDAD</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let item of purchaseOrderItemDtos">
-                            <td>{{item.code}}</td>
-                            <td>{{item.programaticCat}}</td>
-                            <td>{{item.quantity}}</td>
+                        <tr *ngFor="let item of depositControlDtos">
+                            <td>{{item.itemCode}}</td>
                             <td>{{item.measureUnit}}</td>
-                            <td>{{item.itemDetail}}</td>
-                            <td>{{item.unitCost}}</td>
-                            <td class="text-danger">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
+                            <td>{{item.itemName}}</td>
+                            <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
+                            <td>{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
+                            <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
+                            <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
                         </tr>
 
                     </tbody>
-
-
                 </table>
             </div>
         </div>
+    </div>
+</div>
+<ng-template #purchaseOrderTableTemplate>
+    <div class="row mt-1">
+        <div class="col-md-5"></div>
+    <div class="col-md-5">
+        <h2 class="d-inline">ORDEN DE COMPRA NUMERO: </h2>  <h2 class="d-inline text-danger">{{purchaseOrderDto.orderNumber}}  </h2> 
+    </div>
+        <!-- Purchase order table -->
+        <div class="col-md-2">
+            <h3>FECHA: {{purchaseOrderDto.date}}</h3>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-1"></div>
+        <div class="col-md-10">
+          
+        </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+            <h3>UNIDAD EJECUTORA: {{purchaseOrderDto.executerUnit}}</h3>
+        </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+            <h3>DEPENDENCIA: {{purchaseOrderDto.dependency}}</h3>
+        </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+            <h3 class="d-inline">TOTAL:</h3><h3 class="d-inline text-danger">{{purchaseOrderDto.purchaseOrderTotal | currency: '$': 'symbol'}}</h3> 
+        </div>
+        </div>
+        <div class="row mt-1">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+            <table class="table table-flex table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">CODIGO</th>
+                        <th scope="col">CAT PROG</th>
+                        <th scope="col">CANTIDAD</th>
+                        <th scope="col">U.MEDIDA</th>
+                        <th scope="col">DESCRIPCION</th>
+                        <th scope="col">P.UNITARIO</th>
+                        <th scope="col">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of purchaseOrderItemDtos">
+                        <td>{{item.code}}</td>
+                        <td>{{item.programaticCat}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.measureUnit}}</td>
+                        <td>{{item.itemDetail}}</td>
+                        <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
+                        <td class="text-primary">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        </div>
+     </ng-template>
+     <ng-template #supplyTableTemplate>
         <div class="col-md-3 ms-2">
             <!-- Supply table -->
             <div *ngIf="supplyItemDtos.length>0">
@@ -144,37 +206,8 @@
                 </table>
             </div>
         </div>
-        <div class="col-md-3 ms-2">
-            <!-- Deposit control table -->
-            <div *ngIf="depositControlDtos.length>0">
+    </ng-template>
 
-                <table class="table-sm table-bordered h-75">
-                    <thead>
-                        <tr>
-                            <th scope="col">CODIGO</th>
-                            <th scope="col">U.MEDIDA</th>
-                            <th scope="col">DESCRIPCION</th>
-                            <th scope="col">P.UNITARIO</th>
-                            <th scope="col">TOTAL</th>
-                            <th scope="col">CANTIDAD</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of depositControlDtos">
-                            <td>{{item.itemCode}}</td>
-                            <td>{{item.measureUnit}}</td>
-                            <td>{{item.itemName}}</td>
-                            <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
-                            <td>{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
-                            <td>{{item.quantity}}</td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 <ng-template #purchaseOrderListTemplate>
     <table class="table-sm table-bordered h-75">
         <thead>
@@ -310,7 +343,7 @@
                 <td>{{report.depositItemStatus}}</td>
                 <td>{{report.depositItemName}}</td>
                 <td>{{report.depositItemMeasureUnit}}</td>
-                <td>{{report.depositItemQuantity| currency: '$': 'symbol'}}</td>
+                <td>{{report.depositItemQuantity}}</td>
 
             </tr>
 
@@ -370,7 +403,7 @@
                     <p>ITEM SUMINISTRO:</p>
                     <h1 class="d-inline">CODIGO:</h1><small class="ms-2"> {{item.supplyItemCode}}</small>
                 </div>
-              
+
                 <div>
                     <h1 class="d-inline"> DETALLE:</h1><small class="ms-2"> {{item.supplyItemDetail}}</small>
                 </div>
@@ -387,7 +420,7 @@
                     <p>ITEM DEPOSITO:</p>
                     <h1 class="d-inline">CODIGO:</h1><small class="ms-2"> {{item.depositItemCode}} </small>
                 </div>
-               
+
                 <div>
                     <h1 class="d-inline"> DETALLE:</h1><small class="ms-2"> {{item.depositItemDetail}}</small>
                 </div>

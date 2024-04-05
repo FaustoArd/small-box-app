@@ -1,5 +1,6 @@
 package com.lord.small_box.services_impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +109,8 @@ public class DepositControlServiceImpl implements DepositControlService {
 			if (opt.isPresent()) {
 				DepositControl depositControl = opt.get();
 				depositControl.setQuantity(depositControl.getQuantity() + orderItem.getQuantity());
+				depositControl.setItemTotalPrice(depositControl.getItemUnitPrice()
+						.multiply(new BigDecimal(depositControl.getQuantity())));
 				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
 						,depositControl.getQuantity() , depositControl.getMeasureUnit(),"ACTUALIZADO"));
 				return depositControl;
@@ -116,9 +119,10 @@ public class DepositControlServiceImpl implements DepositControlService {
 				DepositControl depositControl = new DepositControl();
 				depositControl.setItemCode(orderItem.getCode());
 				depositControl.setItemName(orderItem.getItemDetail());
-				depositControl.setItemTotalPrice(orderItem.getEstimatedCost());
-				depositControl.setItemUnitPrice(orderItem.getUnitCost());
 				depositControl.setQuantity(orderItem.getQuantity());
+				depositControl.setItemTotalPrice(orderItem.getUnitCost().multiply(new BigDecimal(depositControl.getQuantity())));
+				depositControl.setItemUnitPrice(orderItem.getUnitCost());
+				
 				depositControl.setMeasureUnit(orderItem.getMeasureUnit());
 				depositControl.setOrganization(org);
 				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
@@ -236,6 +240,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	public List<DepositControlDto> findDepositControlsByOrganization(long organizationId) {
 		Organization org = organizationService.findById(organizationId);
 		List<DepositControl> controls = depositControlDao.findAllbyOrganization(org);
+		
 		return DepositControlMapper.INSTANCE.depositControlsToDtos(controls);
 	}
 

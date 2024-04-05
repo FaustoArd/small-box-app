@@ -59,10 +59,20 @@ export class DepositHomeComponent implements OnInit {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
       complete: () => {
-        this.purchaseOrderItemDtos = this.purchaseOrderDto.items;
+        this.openPurchaseOrderTableTemplate(this.purchaseOrderDto.items);
       }
 
     });
+
+  }
+  @ViewChild('purchaseOrderTableTemplate') purchaseOrderTableTemplate !: TemplateRef<any>
+  openPurchaseOrderTableTemplate(purchaseOrderItems:PurchaseOrderItemDto[]):void{
+    this.purchaseOrderItemDtos = purchaseOrderItems;
+    const template = this.purchaseOrderTableTemplate;
+    this.matDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.matDialogRef.afterClosed().subscribe();
 
   }
   uploadSupplyFile() {
@@ -75,11 +85,13 @@ export class DepositHomeComponent implements OnInit {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
       complete: () => {
-        this.supplyItemDtos = this.supplyDto.supplyItems;
+      
       }
     });
 
   }
+
+  
 
   private matDialogRef!: MatDialogRef<DialogTemplateComponent>;
 
@@ -191,17 +203,19 @@ export class DepositHomeComponent implements OnInit {
   }
 
   depositControlDtos: DepositControlDto[] = [];
+  
   getDepositControlsByOrganization() {
     const organizationId = Number(this.cookieService.getUserMainOrganizationId());
     this.depositControlService.findDepositControlsByOrganization(organizationId).subscribe({
       next: (depositData) => {
-        this.depositControlDtos = depositData;
+       this.depositControlDtos = depositData;
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
     })
   }
+  
   now!:Date;
   openSupplyCorrectionNoteDialog(template:any,supplyId:number){
     this.now = new Date();
@@ -224,6 +238,8 @@ export class DepositHomeComponent implements OnInit {
       }
     });
   }
+
+ 
 
 }
 
