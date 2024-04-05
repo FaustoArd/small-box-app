@@ -46,13 +46,12 @@ export class LoginComponent implements OnInit {
     //Assign Form Values(username,password) to LoginDto class
     this.loginDto = new LoginDto();
     this.loginDto = Object.assign(this.loginDto, this.loginForm.value);
-    //if form control is valid
-    if (this.loginForm.valid) {
+   if (this.loginForm.valid) {
       //POST Method, recieve LoginDto class
       this.authorizationService.loginUser(this.loginDto).subscribe({
         next: (tokenData) => {
          
-          //Return jwtToken, userName and User id, both saved in cookies
+          //Return jwtToken, userName and User id, all saved in cookies
           this.cookieService.setToken(tokenData.token);
           this.cookieService.setCurrentUserId(JSON.stringify(tokenData.userId));
           this.cookieService.setCurrentUsername(tokenData.username);

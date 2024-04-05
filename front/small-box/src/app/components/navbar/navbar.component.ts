@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { OrganizationService } from 'src/app/services/organization.service';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 
 @Component({
@@ -11,13 +12,16 @@ import { OrganizationService } from 'src/app/services/organization.service';
 })
 export class NavbarComponent implements OnInit {
 
+userMainOrganizationName!:string; 
+userMainOrganizationSelected!:boolean; 
 userAuth!:boolean;
 adminAuth!:boolean;
 superUserAuth!:boolean;
 currentUsername!:string;
 destinationsList!:Array<string>
 
-constructor(private cookieService:CookieStorageService,private router:Router,private organizationService:OrganizationService){}
+constructor(private cookieService:CookieStorageService,private router:Router,private organizationService:OrganizationService
+  ,private snackBarService:SnackBarService){}
 
 
 ngOnInit(): void {
@@ -25,6 +29,7 @@ ngOnInit(): void {
     /*this.adminAuth = this.decodeAdminToken();
     this.superUserAuth = this.decodeSuperUserToken();
     this.userAuth = this.decodeUserToken();*/
+    this.getUserOrg();
     this.currentUsername = this.cookieService.getCurrentUsername();
     
 }
@@ -40,9 +45,41 @@ onLogout(){
       return this.adminAuth = true;
     }else if(decodedJWT.roles==='SUPERUSER'){
       return this.superUserAuth= true;
-    }else{
+    }else if(decodedJWT.roles==='USER'){
       return this.userAuth = true;
+    }else{
+      return false;
     }
+  }
+  getUserOrg(){
+    const userId = Number(this.cookieService.getCurrentUserId());
+    this.organizationService.getMainUserOrganizationId(userId).subscribe({
+      next:(orgIdData)=>{
+        if(orgIdData<1){
+          this.userMainOrganizationName = "SIN ASIGNAR";
+          this.userMainOrganizationSelected = false;
+        }else{
+          this.getOrganization(orgIdData);
+        }
+      },
+      error:(errorData)=>{
+        this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+      }
+    })
+  }
+
+  getOrganization(orgId:number){
+    this.organizationService.getOrganizationById(orgId).subscribe({
+        next:(orgData)=>{
+          this.userMainOrganizationName = orgData.organizationName;
+          this.userMainOrganizationSelected = true;
+          this.cookieService.setUserMainOrganizationId(JSON.stringify(orgData.id));
+        },
+        error:(errorData)=>{
+          this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+        }
+      });
+    
   }
   
  /* decodeAdminToken():boolean{
