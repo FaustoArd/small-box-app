@@ -16,4 +16,6 @@ export class PurchaseOrderDto{
     exp!:string;
     purchaseOrderTotal!:number;
     items:Array<PurchaseOrderItemDto> = [];
+
+    loadedToDeposit!:boolean;
 }

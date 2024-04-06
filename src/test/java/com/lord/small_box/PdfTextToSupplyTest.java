@@ -159,6 +159,8 @@ public class PdfTextToSupplyTest {
 		System.err.println("getApplicant: " + applicant);
 		return applicant;
 	}
+	
+	
 
 	private OrganizationDto getOrganization(String applicant) {
 		String orgFinderRegex = "(?=.*(" + applicant + "))";

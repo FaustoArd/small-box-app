@@ -32,4 +32,6 @@ public class PurchaseOrderDto {
 	private BigDecimal purchaseOrderTotal;
 
 	private List<PurchaseOrderItemDto> items;
+	
+	private boolean loadedToDeposit;
 }

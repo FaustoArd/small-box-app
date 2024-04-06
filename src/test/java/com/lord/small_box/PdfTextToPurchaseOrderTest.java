@@ -137,26 +137,14 @@ public class PdfTextToPurchaseOrderTest {
 		PurchaseOrderDto purchaseOrderDto = new PurchaseOrderDto();
 		purchaseOrderDto.setDate(getDate(text));
 		purchaseOrderDto.setOrderNumber(getPurchaseOrderNumber(arrTextSplitN));
+		purchaseOrderDto.setFinancingSource(getFinancingSource(arrTextSplitN));
 		purchaseOrderDto.setItems(getItems(arrTextSplitN));
 		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
 		purchaseOrderDto.setExecuterUnit(getExecuterUnit(arrTextSplitN));
 		purchaseOrderDto.setDependency(getDependency(arrTextSplitN));
-		/*
-		 * Optional<OrganizationDto> optExecUnitOrgDto =
-		 * Optional.of(getExecuterUnit(arrTextSplitN));
-		 * if(optExecUnitOrgDto.isPresent()) {
-		 * purchaseOrderDto.setExecuterUnit(optExecUnitOrgDto.get().getOrganizationName(
-		 * ));
-		 * purchaseOrderDto.setExecuterUnitOrganizationId(optExecUnitOrgDto.get().getId(
-		 * )); } Optional<OrganizationDto> optDepedencyOrgDto =
-		 * Optional.of(getDependency(arrTextSplitN)); if(optDepedencyOrgDto.isPresent())
-		 * {
-		 * purchaseOrderDto.setDependency(optDepedencyOrgDto.get().getOrganizationName()
-		 * );
-		 * purchaseOrderDto.setDependencyOrganizacionId(optDepedencyOrgDto.get().getId()
-		 * ); }
-		 */
+		
 		System.err.println("Order Number: " + purchaseOrderDto.getOrderNumber());
+		System.err.println("Financing source: " + purchaseOrderDto.getFinancingSource());
 		System.err.println("Order TOTAL: " + purchaseOrderDto.getPurchaseOrderTotal());
 		System.err.println("Order Date: " + purchaseOrderDto.getDate());
 		System.err.println("Executer Unit: " + purchaseOrderDto.getExecuterUnit());
@@ -204,6 +192,15 @@ public class PdfTextToPurchaseOrderTest {
 	private int getPurchaseOrderNumber(String[] arrText) {
 		return Integer.parseInt(Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get()
 				.replaceAll("[\\D]", "").strip());
+	}
+	
+	private final String financingSourceRegex = "(?=.*(fuente de financiamiento))";
+	private String getFinancingSource(String[] arrText) {
+		Pattern pFinancingSource = Pattern.compile(financingSourceRegex,Pattern.CASE_INSENSITIVE);
+		String financingSourceLine = Stream.of(arrText).filter(f -> pFinancingSource.matcher(f).find()).findFirst()
+				.orElse("No encontrado");
+		return financingSourceLine.substring(financingSourceLine.indexOf(":")+1,financingSourceLine.indexOf(":")+5);
+				
 	}
 
 	private BigDecimal getPurchaseTotal(String[] arrText) {

@@ -21,7 +21,7 @@
                 </mat-menu>
             </div>
             <!-- <div class="col-md-1 ms-3" *ngIf="!adminAuth "></div> -->
-            <div class="col-md-5 ms-3">
+            <div class="col-md-3">
                 <button mat-button [matMenuTriggerFor]="templateMenu" class="text-white">Plantillas</button>
                 <mat-menu #templateMenu yPosition="above">
                     <button mat-menu-item routerLink="/memo-create">Memo</button>
@@ -30,14 +30,18 @@
                 <!-- <button mat-button routerLink="/dispatch"  class="text-white ms-5">Despacho</button> -->
                 <button mat-button routerLink="/dispatch-page" class="text-white ms-5">Despacho</button>
                 <button mat-button routerLink="/deposit-home" class="text-white ms-5">Suministros</button>
-              <button routerLink="/user-panel" *ngIf="!userMainOrganizationSelected" class="btn btn-sm text-white border-primary">
-                    DEPENDENCIA: <small class="text-danger">{{userMainOrganizationName}}</small> </button>
-                <button routerLink="/user-panel" *ngIf="userMainOrganizationSelected" class="btn btn-sm text-white border-primary">
-                    DEPENDENCIA: <small class="text-success">{{userMainOrganizationName}}</small> </button>
             </div>
+            <div class="col-md-2 ms-3">
+              <button routerLink="/user-panel"  class="btn btn-sm text-white border-primary">
+                    DEPENDENCIA: <small *ngIf="!userMainOrganizationSelected" class="text-danger">{{userMainOrganizationName}}</small>
+                    <small *ngIf="userMainOrganizationSelected" class="text-white">{{userMainOrganizationName}}</small>
+                 </button>
+             
+         
+                </div>
             <div class="col-md-2"></div>
           
-            <div class="col-md-2 top-0 end-0 mt-1">
+            <div class="col-md-2  top-0 end-0 mt-1">
                 <h4 id="user-name" class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>
                 <button id="btnSession" (click)="onLogout()" class="btn btn-sm ms-3">Cerrar sesion</button>
             </div>

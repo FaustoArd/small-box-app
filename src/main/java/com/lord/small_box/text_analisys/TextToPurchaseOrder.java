@@ -35,6 +35,7 @@ public class TextToPurchaseOrder {
 		PurchaseOrderDto purchaseOrderDto = new PurchaseOrderDto();
 		purchaseOrderDto.setDate(getDate(text));
 		purchaseOrderDto.setOrderNumber(Integer.parseInt(getPurchaseOrderNumber(arrTextSplitN)));
+		purchaseOrderDto.setFinancingSource(getFinancingSource(arrTextSplitN));
 		purchaseOrderDto.setItems(getItems(arrTextSplitN));
 		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
 		purchaseOrderDto.setExecuterUnit(getExecuterUnit(arrTextSplitN));
@@ -60,6 +61,14 @@ public class TextToPurchaseOrder {
 				.replace("- Secretarķa", "").trim();
 		return executerInut;
 
+	}
+	private final String financingSourceRegex = "(?=.*(fuente de financiamiento))";
+	private String getFinancingSource(String[] arrText) {
+		Pattern pFinancingSource = Pattern.compile(financingSourceRegex,Pattern.CASE_INSENSITIVE);
+		String financingSourceLine = Stream.of(arrText).filter(f -> pFinancingSource.matcher(f).find()).findFirst()
+				.orElse("No encontrado");
+		return financingSourceLine.substring(financingSourceLine.indexOf(":")+1,financingSourceLine.indexOf(":")+5).trim();
+				
 	}
 	
 	private final String dependencyRegex = "^(?=.*(dependencia))";

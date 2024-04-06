@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.lord.small_box.dao.DepositControlDao;
 import com.lord.small_box.dao.PurchaseOrderDao;
 import com.lord.small_box.dao.PurchaseOrderItemDao;
@@ -97,6 +99,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		return purchaseOrderDto;
 	}
 
+	@Transactional
 	@Override
 	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositControl(Long purchaseOrderId) {
 		PurchaseOrder order = purchaseOrderDao.findPurchaseOrderById(purchaseOrderId);
@@ -113,6 +116,8 @@ public class DepositControlServiceImpl implements DepositControlService {
 						.multiply(new BigDecimal(depositControl.getQuantity())));
 				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
 						,depositControl.getQuantity() , depositControl.getMeasureUnit(),"ACTUALIZADO"));
+				order.setLoadedToDeposit(true);
+				purchaseOrderDao.savePurchaseOrder(order);
 				return depositControl;
 
 			} else {
@@ -127,6 +132,8 @@ public class DepositControlServiceImpl implements DepositControlService {
 				depositControl.setOrganization(org);
 				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
 						, depositControl.getQuantity(), depositControl.getMeasureUnit(),"NUEVO"));
+				order.setLoadedToDeposit(true);
+				purchaseOrderDao.savePurchaseOrder(order);
 				return depositControl;
 			}
 

@@ -55,6 +55,8 @@ public class PurchaseOrder {
 	private String exp;
 	
 	private BigDecimal purchaseOrderTotal;
+	
+	private boolean loadedToDeposit;
 
 	
 	

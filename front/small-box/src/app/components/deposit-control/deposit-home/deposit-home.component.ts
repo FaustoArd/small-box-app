@@ -85,12 +85,21 @@ export class DepositHomeComponent implements OnInit {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
       complete: () => {
-      
+        this.openSupplyTableTemplate(this.supplyDto.supplyItems);
       }
     });
 
   }
+  @ViewChild('supplyTableTemplate') supplyTableTemplate !: TemplateRef<any>
+  openSupplyTableTemplate(supplyItems:SupplyItemDto[]):void{
+    this.supplyItemDtos = supplyItems;
+    const template = this.supplyTableTemplate;
+    this.matDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.matDialogRef.afterClosed().subscribe();
 
+  }
   
 
   private matDialogRef!: MatDialogRef<DialogTemplateComponent>;
@@ -107,7 +116,10 @@ export class DepositHomeComponent implements OnInit {
 
 
   depositReport: PurchaseOrderToDepositReportDto[] = [];
-  loadPurchaseOrderToDepositControl(purchaseOrderId: number) {
+  loadPurchaseOrderToDepositControl(purchaseOrderId: number, loadedToDeposit:boolean) {
+    if(loadedToDeposit){
+      this.snackBar.openSnackBar("NOO",'Cerrar',3000);
+    }else{
     this.depositControlService.loadPurchaseOrderToDeposit(purchaseOrderId).subscribe({
       next: (depositReportData) => {
         this.depositReport = depositReportData;
@@ -120,6 +132,7 @@ export class DepositHomeComponent implements OnInit {
       }
     });
   }
+  }
 
   @ViewChild('purchaseOrderToDepositTemplate') purchaseOrderReportTemplateRef !: TemplateRef<any>
   openDialogOrderToDepositReport(): void {
@@ -128,6 +141,8 @@ export class DepositHomeComponent implements OnInit {
       template
     });
     this.matDialogRef.afterClosed().subscribe();
+    const orgId = Number(this.cookieService.getUserMainOrganizationId());
+    this.getAllPurchaseOrders(orgId);
 
   }
 
@@ -214,6 +229,13 @@ export class DepositHomeComponent implements OnInit {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
     })
+  }
+  openDepositControlListTemplate(template:any):void{
+    this.getDepositControlsByOrganization();
+    this.matDialogRef = this.dialogService.openDialogCreation({
+      template
+    });
+    this.matDialogRef.afterClosed().subscribe();
   }
   
   now!:Date;
