@@ -25,7 +25,15 @@ export class DialogService {
   openSupplyCorrectionNoteCreation(data:DialogTemplateData){
     return this.matDialog.open(DialogTemplateComponent,{
       width:'100%',
-      height:'100%',
+      height:'90%',
+      data
+    })
+  }
+
+  openSupplyListCreation(data:DialogTemplateData){
+    return this.matDialog.open(DialogTemplateComponent,{
+      width:'50%',
+      height:'60%',
       data
     })
   }

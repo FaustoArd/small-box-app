@@ -1,10 +1,12 @@
 body{
-    background: linear-gradient(245.59deg, rgb(206, 210, 220)30%, rgb(220, 218, 233) 50%, #d3d0e8 79%);
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
 
+
+
 h5{
-    color: rgb(56, 18, 195);
-    font-family: 'Noto Sans', sans-serif;
+    color:#2a31b6;
+    font-family: "Fira Code", monospace;
     font-weight: bold;
     font-size: 2.1rem;
 }
@@ -15,7 +17,7 @@ jumbotron{
 }
 
 .btn{
-    background: linear-gradient(245.59deg, rgb(153, 53, 53)20%, rgb(175, 80, 88) 30%, #eb2222 79%); 
+    background: linear-gradient(245.59deg, rgb(19, 39, 192)20%, rgb(101, 110, 207) 30%, #16569f 79%); 
     color:red;
 }
 .btn:hover{
@@ -63,7 +65,7 @@ th{
     font-size: 0.6rem;
 }
 td{
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     font-family: 'Quattrocento', serif;
     font-weight: bold;
 }
@@ -72,4 +74,8 @@ small{
     font-weight: bold;
     font-family: 'Quattrocento', serif;
     font-size: 1rem;
+}
+#closeButton{
+  position: absolute;
+  right: 0;
 }

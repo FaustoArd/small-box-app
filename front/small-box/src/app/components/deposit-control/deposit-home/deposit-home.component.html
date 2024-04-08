@@ -1,4 +1,8 @@
+<body>
 <app-navbar></app-navbar>
+
+    
+
 <div class="container-flex">
     <div class="row">
 
@@ -63,57 +67,61 @@
             <!-- Deposit jumbotron -->
             <div class="jumbotron  ms-1">
                 <p class="d-inline display-4">VER STOCK</p>
-                <a (click)="openDepositControlListTemplate(depositControlListTemplate)" class="btn btn-sm ms-3 " role="button">-</a>
+                <a (click)="openDepositControlListTemplate(depositControlListTemplate)" class="btn btn-sm ms-3 "
+                    role="button">-</a>
                 <p class="lead">
                     <hr class="my-4">
             </div>
         </div>
     </div>
-   
+
 </div>
+</body>
 <ng-template #depositControlListTemplate>
+    <button id="closeButton" (click)="onCloseDepositControlListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="row">
         <div class="col-md-1"></div>
-<div class="col-md-6 ms-2">
+        <div class="col-md-6 ms-2">
             <!-- Deposit control table -->
             <h2>DEPOSITO</h2>
             <p class="lead">
                 <hr class="my-4">
-         <table class="table table-flex table-bordered h-75">
-                    <thead>
-                        <tr>
-                            <th scope="col">CODIGO</th>
-                            <th scope="col">U.MEDIDA</th>
-                            <th scope="col">DESCRIPCION</th>
-                            <th scope="col">P.UNITARIO</th>
-                            <th scope="col">TOTAL</th>
-                            <th scope="col">CANTIDAD</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of depositControlDtos">
-                            <td>{{item.itemCode}}</td>
-                            <td>{{item.measureUnit}}</td>
-                            <td>{{item.itemName}}</td>
-                            <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
-                            <td>{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
-                            <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
-                            <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
-                        </tr>
+            <table class="table table-flex table-bordered h-75">
+                <thead>
+                    <tr>
+                        <th scope="col">CODIGO</th>
+                        <th scope="col">U.MEDIDA</th>
+                        <th scope="col">DESCRIPCION</th>
+                        <th scope="col">P.UNITARIO</th>
+                        <th scope="col">TOTAL</th>
+                        <th scope="col">CANTIDAD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of depositControlDtos">
+                        <td>{{item.itemCode}}</td>
+                        <td>{{item.measureUnit}}</td>
+                        <td>{{item.itemName}}</td>
+                        <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
+                        <td>{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
+                        <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
+                        <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
+                    </tr>
 
-                    </tbody>
-                </table>
-          
+                </tbody>
+            </table>
+
         </div>
     </div>
 </ng-template>
 <ng-template #purchaseOrderTableTemplate>
-   
+    <button id="closeButton" (click)="onClosePurchaseOrderTableTemplate()" class="btn btn-sm text-white">X</button>
     <div class="row mt-1">
         <div class="col-md-4"></div>
-    <div class="col-md-4">
-        <h2 class="d-inline">ORDEN DE COMPRA NUMERO: </h2>  <h2 class="d-inline text-danger">{{purchaseOrderDto.orderNumber}}  </h2> 
-    </div>
+        <div class="col-md-4">
+            <h2 class="d-inline">ORDEN DE COMPRA NUMERO: </h2>
+            <h2 class="d-inline text-danger">{{purchaseOrderDto.orderNumber}} </h2>
+        </div>
         <!-- Purchase order table -->
         <div class="col-md-1"></div>
         <div class="col-md-2">
@@ -123,36 +131,37 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-          
+
         </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
+    </div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
             <h3>UNIDAD EJECUTORA: {{purchaseOrderDto.executerUnit}}</h3>
         </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
+    </div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
             <h3>DEPENDENCIA: {{purchaseOrderDto.dependency}}</h3>
         </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
+    </div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
             <h3>FUENTE DE FINANCIAMIENTO: {{purchaseOrderDto.financingSource}}</h3>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <h3 class="d-inline">TOTAL: </h3>
+            <h3 class="d-inline text-danger">{{purchaseOrderDto.purchaseOrderTotal | currency: '$': 'symbol'}}</h3>
         </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-            <h3 class="d-inline">TOTAL: </h3><h3 class="d-inline text-danger">{{purchaseOrderDto.purchaseOrderTotal | currency: '$': 'symbol'}}</h3> 
-        </div>
-        </div>
-        <div class="row mt-1">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
+    </div>
+    <div class="row mt-1">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
             <table class="table table-flex table-bordered">
                 <thead>
                     <tr>
@@ -179,109 +188,131 @@
                 </tbody>
             </table>
         </div>
-        </div>
-     </ng-template>
-     <ng-template #supplyTableTemplate>
-      <div class="row mt-1">
-            <div class="col-md-5"></div>
+    </div>
+</ng-template>
+<ng-template #supplyTableTemplate>
+    <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button>
+    <div class="row mt-1">
+        <div class="col-md-5"></div>
         <div class="col-md-5">
-            <h2 class="d-inline">SUMINISTRO NUMERO: </h2>  <h2 class="d-inline text-danger">{{supplyDto.supplyNumber}}  </h2> 
-            
+            <h2 class="d-inline">SUMINISTRO NUMERO: </h2>
+            <h2 class="d-inline text-danger">{{supplyDto.supplyNumber}} </h2>
+
         </div>
-            <!-- Purchase order table -->
-            <div class="col-md-2">
-                <h3>FECHA: {{supplyDto.date |date: 'dd-MM-yyyy' }}</h3>
-            </div>
+        <!-- Purchase order table -->
+        <div class="col-md-2">
+            <h3>FECHA: {{supplyDto.date |date: 'dd-MM-yyyy' }}</h3>
         </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                <h3>UNIDAD EJECUTORA:</h3>
-            </div>
-            </div>
-          
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                <h3>DEPENDENCIA SOLICITANTE: {{supplyDto.dependencyApplicant}}</h3>
-            </div>
-            </div>
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                <h3 class="d-inline">TOTAL:</h3><h3 class="d-inline text-danger">{{supplyDto.estimatedTotalCost| currency: '$': 'symbol'}}</h3> 
-            </div>
-            </div>
-            <div class="row mt-1">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                <table class="table table-flex table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">CODIGO</th>
-                            <th scope="col">CAT PROG</th>
-                            <th scope="col">CANTIDAD</th>
-                            <th scope="col">U.MEDIDA</th>
-                            <th scope="col">DESCRIPCION</th>
-                            <th scope="col">P.UNITARIO</th>
-                            <th scope="col">TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of supplyItemDtos">
-                            <td>{{item.code}}</td>
-                            <td>{{item.programaticCat}}</td>
-                            <td>{{item.quantity}}</td>
-                            <td>{{item.measureUnit}}</td>
-                            <td>{{item.itemDetail}}</td>
-                            <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
-                            <td class="text-primary">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
-                        </tr>
-    
-                    </tbody>
-                </table>
-            </div>
-            </div>
-    </ng-template>
+    </div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <h3>UNIDAD EJECUTORA:</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <h3>DEPENDENCIA SOLICITANTE: {{supplyDto.dependencyApplicant}}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <h3 class="d-inline">TOTAL:</h3>
+            <h3 class="d-inline text-danger">{{supplyDto.estimatedTotalCost| currency: '$': 'symbol'}}</h3>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <table class="table table-flex table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">CODIGO</th>
+                        <th scope="col">CAT PROG</th>
+                        <th scope="col">CANTIDAD</th>
+                        <th scope="col">U.MEDIDA</th>
+                        <th scope="col">DESCRIPCION</th>
+                        <th scope="col">P.UNITARIO</th>
+                        <th scope="col">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of supplyItemDtos">
+                        <td>{{item.code}}</td>
+                        <td>{{item.programaticCat}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.measureUnit}}</td>
+                        <td>{{item.itemDetail}}</td>
+                        <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
+                        <td class="text-primary">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ng-template>
 
 <ng-template #purchaseOrderListTemplate>
-    <h2 class="text-center">ORDENES DE COMPRA</h2>
-    <p class="lead">
-        <hr class="my-4">
-    <table class="table-sm table-bordered h-75">
-        <thead>
-            <tr>
-                <th scope="col">FECHA</th>
-                <th scope="col">NUMERO</th>
-                <th scope="col">UNIDAD EJECUTORA</th>
-                <th scope="col">DEPENDENCIA</th>
-                <th scope="col">TOTAL</th>
-                <th>VER ITEMS</th>
-                <th>A DEPOSITO</th>
-                <th>CARGADO?</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let order of purchaseOrderDtos">
-                <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
-                <td>{{order.orderNumber}}</td>
-                <td>{{order.executerUnit}}</td>
-                <td>{{order.dependency}}</td>
-                <td class="text-danger">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
-                <td class="text-center"><button (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
-                        class="btn btn-sm  text-danger">-</button></td>
-                <td class="text-center"><button (click)="loadPurchaseOrderToDepositControl(order.id,order.loadedToDeposit)" class="btn btn-sm text-danger">-</button></td>
+    <div class="container-flex">
+    
+      
+                <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
+          
+       
+   
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <h2 class="text-center">ORDENES DE COMPRA</h2>
+            <p class="lead">
+                <hr class="my-4">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <table class="table table-flex table-bordered h-75">
+                <thead>
+                    <tr>
+                        <th scope="col">FECHA</th>
+                        <th scope="col">NUMERO</th>
+                        <th scope="col">UNIDAD EJECUTORA</th>
+                        <th scope="col">DEPENDENCIA</th>
+                        <th scope="col">TOTAL</th>
+                        <th>VER ITEMS</th>
+                        <th>A DEPOSITO</th>
+                        <th>CARGADO?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let order of purchaseOrderDtos">
+                        <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
+                        <td>{{order.orderNumber}}</td>
+                        <td>{{order.executerUnit}}</td>
+                        <td>{{order.dependency}}</td>
+                        <td class="text-danger">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
+                        <td class="text-center"><button
+                                (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
+                                class="btn btn-sm  text-danger">-</button></td>
+                        <td class="text-center"><button
+                                (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
+                                class="btn btn-sm text-danger">-</button></td>
                         <td *ngIf="order.loadedToDeposit" class="text-success text-center">SI</td>
                         <td *ngIf="!order.loadedToDeposit" class="text-danger  text-center">NO</td>
-            </tr>
+                    </tr>
 
-        </tbody>
-
-
-    </table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </ng-template>
 <ng-template #purchaseOrderItemsListTemplate>
-  
+    <button id="closeButton" (click)="onClosepurchaseOrderItemListTemplate()" class="btn btn-sm text-white">X</button>
     <h2>ITEMS</h2>
     <table class="table-sm table-bordered h-75">
         <thead>
@@ -315,6 +346,7 @@
 </ng-template>
 
 <ng-template #supplyListTemplate>
+    <button id="closeButton" (click)="onCloseSupplyListTemplate()" class="btn btn-sm text-white">X</button>
     <h2 class="text-center">SUMINISTROS</h2>
     <table class="table-sm table-bordered h-75">
         <thead>
@@ -335,7 +367,8 @@
                 <td>{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
                 <td class="text-center"><button (click)="openDialogSuppliesItemList(supplyItemsListTemplate,supply.id)"
                         class="btn btn-lg  text-danger"></button></td>
-                <td class="text-center"><button (click)="openSupplyCorrectionNoteDialog(supplyCorrectionNoteTemplate,supply.id)"
+                <td class="text-center"><button
+                        (click)="openSupplyCorrectionNoteDialog(supplyCorrectionNoteTemplate,supply.id)"
                         class="btn btn-lg text-danger"></button></td>
             </tr>
 
@@ -345,6 +378,7 @@
     </table>
 </ng-template>
 <ng-template #supplyItemsListTemplate>
+    <button id="closeButton" (click)="onCloseSupplyItemListTemplate()" class="btn btn-sm text-white">X</button>
     <h2>ITEMS</h2>
     <table class="table-sm table-bordered h-75">
         <thead>
@@ -376,6 +410,7 @@
     </table>
 </ng-template>
 <ng-template #purchaseOrderToDepositTemplate>
+    <button id="closeButton" (click)="onCloseOrderToDepositTemplate()" class="btn btn-sm text-white">X</button>
     <table class="table-sm table-bordered h-75">
         <thead>
             <tr>
@@ -388,10 +423,11 @@
         </thead>
         <tbody>
             <tr *ngFor="let report of depositReport">
-                <td>{{report.depositItemStatus}}</td>
+                <td class="text-primary">{{report.depositItemStatus}}</td>
                 <td>{{report.depositItemName}}</td>
                 <td>{{report.depositItemMeasureUnit}}</td>
-                <td>{{report.depositItemQuantity}}</td>
+                <td *ngIf="report.depositItemQuantity>=10" class="text-success">{{report.depositItemQuantity}}</td>
+                <td *ngIf="report.depositItemQuantity<10" class="text-danger">{{report.depositItemQuantity}}</td>
 
             </tr>
 
@@ -401,6 +437,7 @@
     </table>
 </ng-template>
 <ng-template #supplyCorrectionNoteTemplate>
+    <button id="closeButton" (click)="onCloseSupplyCorrectionNoteTemplate()" class="btn btn-sm text-white">X</button>
     <div id="correction" class="container-flex">
         <div class="row mt-2">
             <div class="col-md-3"></div>
