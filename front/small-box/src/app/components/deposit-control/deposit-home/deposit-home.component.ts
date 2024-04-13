@@ -16,6 +16,8 @@ import { PurchaseOrderToDepositReportDto } from 'src/app/models/purchaseOrderToD
 import { DepositControlDto } from 'src/app/models/depositControlDto';
 import { SupplyCorrectionNote } from 'src/app/models/supplyCorrectionNoteDto';
 import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { DepositDto } from 'src/app/models/depositDto';
 
 @Component({
   selector: 'app-deposit-home',
@@ -29,16 +31,18 @@ export class DepositHomeComponent implements OnInit {
   purchaseOrderItemDtos: Array<PurchaseOrderItemDto> = [];
   supplyItemDtos: Array<SupplyItemDto> = [];
   supplyDto!: SupplyDto;
-
+  selectedDepositBol:boolean=false;
+  selectedDepositStr:string="";
   constructor(private dialogService: DialogService,
     private fileUploadService: FileUploadService, private snackBar: SnackBarService
     , private depositControlService: DepositControlService, private cookieService: CookieStorageService,
-    private confirmDialogService: ConfirmDialogService
+    private confirmDialogService: ConfirmDialogService,private formBuilder:FormBuilder
   ) { }
 
 
   ngOnInit(): void {
-
+    this.getCurrentDeposit();
+    console.log(this.selectedDepositBol)
   }
 
   file!: File;
@@ -141,18 +145,19 @@ export class DepositHomeComponent implements OnInit {
         next: (confirmData) => {
           this.confirmData = confirmData;
           if (this.confirmData) {
-            this.loadPurchaseOrderToDepositControl(purchaseOrderId, orderNumber);
+            this.loadPurchaseOrderToDepositControl(purchaseOrderId);
           }
         }
       });
     } else {
-      this.loadPurchaseOrderToDepositControl(purchaseOrderId, orderNumber);
+      this.loadPurchaseOrderToDepositControl(purchaseOrderId);
     }
   }
 
   depositReport: PurchaseOrderToDepositReportDto[] = [];
-  loadPurchaseOrderToDepositControl(purchaseOrderId: number, orderNumber: number) {
-    this.depositControlService.loadPurchaseOrderToDeposit(purchaseOrderId).subscribe({
+  loadPurchaseOrderToDepositControl(purchaseOrderId: number) {
+    const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
+    this.depositControlService.loadPurchaseOrderToDeposit(purchaseOrderId,depoId).subscribe({
       next: (depositReportData) => {
         this.depositReport = depositReportData;
         console.log(this.depositReport);
@@ -270,8 +275,8 @@ export class DepositHomeComponent implements OnInit {
   depositControlDtos: DepositControlDto[] = [];
 
   getDepositControlsByOrganization() {
-    const organizationId = Number(this.cookieService.getUserMainOrganizationId());
-    this.depositControlService.findDepositControlsByOrganization(organizationId).subscribe({
+    const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
+    this.depositControlService.findDepositControlsByDeposit(depoId).subscribe({
       next: (depositData) => {
         this.depositControlDtos = depositData;
       },
@@ -310,7 +315,8 @@ export class DepositHomeComponent implements OnInit {
 
   supplyCorrectionNote!: SupplyCorrectionNote;
   getSupplyCorrectionNote(supplyId: number) {
-    this.depositControlService.createSupplyCorrectionNote(supplyId).subscribe({
+    const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
+    this.depositControlService.createSupplyCorrectionNote(supplyId,depoId).subscribe({
       next: (noteData) => {
         this.supplyCorrectionNote = noteData;
       },
@@ -320,6 +326,136 @@ export class DepositHomeComponent implements OnInit {
     });
   }
 
+depositFormbuilder = this.formBuilder.group({
+  name:['',Validators.required],
+  streetName:['',Validators.required],
+  houseNumber:['',Validators.required],
+});
+
+depositDto!:DepositDto;
+
+onCloseDepositCreationTemplate() {
+  this.depositCreateMatDialogRef.close();
+}
+
+private depositCreateMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
+openDialogDepositCreation(template: any) {
+  
+  this.depositCreateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    template
+  });
+  this.depositCreateMatDialogRef.afterClosed().subscribe();
+}
+
+  createDeposit(){
+    if(this.depositFormbuilder.valid){
+      this.depositDto = new DepositDto();
+      this.depositDto = Object.assign(this.depositDto,this.depositFormbuilder.value);
+      const organizationId = Number(this.cookieService.getUserMainOrganizationId());
+    
+      this.depositDto.organizationId = organizationId;
+      console.log(this.depositDto.organizationId);
+      this.depositControlService.createDeposit(this.depositDto).subscribe({
+        next:(depositNameData)=>{
+          this.snackBar.openSnackBar('Se creo el deposito: '+ depositNameData,'Cerrar',3000);
+        },
+        error:(errorData)=>{
+          this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+        
+        },complete:()=>{
+          this.getAllDepositsByOrganization();
+          this.onCloseDepositCreationTemplate();
+        }
+      });
+    }
+  }
+depositDtos:DepositDto[]=[];
+getAllDepositsByOrganization():DepositDto[]{
+  const organizationId = Number(this.cookieService.getUserMainOrganizationId());
+  this.depositControlService.findAllDepositsByOrganization(organizationId).subscribe({
+    next:(depositsData)=>{
+      this.depositDtos = depositsData;
+     
+    },
+    error:(errorData)=>{
+      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+    }
+  });
+  return this.depositDtos;
+}
+deleteCurrentDepositSelected(){
+  this.cookieService.deleteCurrentDepositSelectedId();
+}
+
+
+onCloseDepositSelectionTemplate() {
+  this.depositSelectionMatDialogRef.close();
+}
+
+private depositSelectionMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
+openDialogDepositSelection(template: any) {
+ this.getAllDepositsByOrganization();
+  this.depositSelectionMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    template
+  });
+  this.depositSelectionMatDialogRef.afterClosed().subscribe();
+}
+
+
+
+setCurrentDeposit(depositId:number){
+  const userId= Number(this.cookieService.getCurrentUserId());
+  this.depositControlService.setCurrentDeposit(userId,depositId).subscribe({
+    next:(depositIdData)=>{
+      this.cookieService.setCurrentDepositSelectedId(JSON.stringify(depositIdData.id));
+      this.snackBar.openSnackBar("Se asigno el deposito: " + depositIdData.name,"Cerrar",3000);
+    },
+    error:(errorData)=>{
+      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+    }
+  })
+}
+
+getCurrentDeposit(){
+  const userId = Number(this.cookieService.getCurrentUserId());
+  this.depositControlService.getCurrentDeposit(userId).subscribe({
+    next:(depositIdData)=>{
+      if(depositIdData.id==null||undefined||depositIdData.id===0){
+        this.selectedDepositBol=false;
+        this.snackBar.openSnackBar('No hay ningun deposito asignado','Cerrar',3000);
+      }else{
+        this.selectedDepositBol=true;
+        this.cookieService.setCurrentDepositSelectedId(JSON.stringify(depositIdData.id));
+       this.selectedDepositStr= depositIdData.name;
+       }
+    },
+    error:(errorData)=>{
+      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+    }
+  });
+}
+
+// getCurrentDepositSelected(){
+//   const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
+//   console.log("DEpositID: "+depositId);
+//   if(depositId==null||undefined||depositId===0){
+//     this.selectedDepositBol=false;
+//   }else{
+//     this.selectedDepositBol=true;
+//     this.getAllDepositsByOrganization();
+//    }
+// }
+
+  get name(){
+    return this.depositFormbuilder.controls.name;
+  }
+  get streetName(){
+    return this.depositFormbuilder.controls.streetName;
+  }
+  get houseNumber(){
+    return this.depositFormbuilder.controls.houseNumber;
+  }
+ 
 
 
 }

@@ -3,6 +3,8 @@ package com.lord.small_box.services;
 import java.util.List;
 
 import com.lord.small_box.dtos.DepositControlDto;
+import com.lord.small_box.dtos.DepositDto;
+import com.lord.small_box.dtos.DepositResponseDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
@@ -20,13 +22,13 @@ public interface DepositControlService {
 	
 	public PurchaseOrderDto findFullPurchaseOrder(Long id);
 	
-	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositControl(Long purchaseOrderId);
+	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositControl(Long purchaseOrderId,Long depositId);
 	
 	public SupplyDto collectSupplyFromText(String text, long organizationId);
 	
-	public List<SupplyReportDto> createSupplyReport(long supplyId);
+	public List<SupplyReportDto> createSupplyReport(long supplyId,long depositId);
 	
-	public SupplyCorrectionNoteDto createSupplyCorrectionNote(long supplyId);
+	public SupplyCorrectionNoteDto createSupplyCorrectionNote(long supplyId,Long  depositId);
 	
 	public List<PurchaseOrderDto> findAllOrdersByOrganizationId(long organizationId);
 	
@@ -36,6 +38,16 @@ public interface DepositControlService {
 	
 	public List<PurchaseOrderItemDto> findPurchaseOrderItems(long purchaseOrderId);
 	
-	public List<DepositControlDto> findDepositControlsByOrganization(long organizationId);
+	public List<DepositControlDto> findDepositControlsByDeposit(long depositId);
+	
+	public String createDeposit(DepositDto depositDto);
+	
+	public List<DepositDto> findAllDepositsbyOrganization(long organizationId);
+	
+	public DepositResponseDto setCurrentDeposit(long userId,long depositId);
+	
+	public DepositResponseDto getCurrentDepositId(long userId);
+	
+	public DepositResponseDto resetCurrentUserSelectedDeposit(long userId,long currentOrgId);
 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { OrganizationDto } from 'src/app/models/organizationDto';
 import {  UserMainOrganizationResponse } from 'src/app/models/userMainOrganizationResponse';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
@@ -18,7 +19,7 @@ organizations:Array<OrganizationDto>=[];
 
 orgResponse!:number;
   constructor(private organizationService:OrganizationService,private snackBar:SnackBarService,
-    private cookieService:CookieStorageService,private formBuilder:FormBuilder){}
+    private cookieService:CookieStorageService,private formBuilder:FormBuilder,private router:Router){}
 
 
     ngOnInit(): void {
@@ -60,12 +61,16 @@ orgResponse!:number;
       const orgId = Number(this.userMainOrganizationResponse.organizationId);
       console.log("orgid:" +orgId)
       const userId = Number(this.cookieService.getCurrentUserId());
+      //Set user main organization id
       this.organizationService.setMainUserOrganizationId(orgId,userId).subscribe({
         next:(messageData)=>{
           this.cookieService.setUserMainOrganizationId(JSON.stringify(messageData));
           this.snackBar.openSnackBar("Se guardo la organization con id: " + messageData,'Cerrar',3000);
         },error:(errorData)=>{
           this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+        },
+        complete:()=>{
+          this.router.navigateByUrl("/home");
         }
       });
     }else{

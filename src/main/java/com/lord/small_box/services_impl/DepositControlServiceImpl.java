@@ -4,19 +4,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.lord.small_box.dao.DepositControlDao;
-import com.lord.small_box.dao.PurchaseOrderDao;
-import com.lord.small_box.dao.PurchaseOrderItemDao;
-import com.lord.small_box.dao.SupplyDao;
-import com.lord.small_box.dao.SupplyItemDao;
 import com.lord.small_box.dtos.DepositControlDto;
+import com.lord.small_box.dtos.DepositDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
@@ -24,17 +20,28 @@ import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
+import com.lord.small_box.dtos.DepositResponseDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.DepositControlMapper;
+import com.lord.small_box.mappers.DepositMapper;
 import com.lord.small_box.mappers.PurchaseOrderItemMapper;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
 import com.lord.small_box.mappers.SupplyItemMapper;
 import com.lord.small_box.mappers.SupplyMapper;
+import com.lord.small_box.models.AppUser;
+import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
 import com.lord.small_box.models.Supply;
 import com.lord.small_box.models.SupplyItem;
+import com.lord.small_box.repositories.DepositControlRepository;
+import com.lord.small_box.repositories.DepositRepository;
+import com.lord.small_box.repositories.PurchaseOrderItemRepository;
+import com.lord.small_box.repositories.PurchaseOrderRepository;
+import com.lord.small_box.repositories.SupplyItemRepository;
+import com.lord.small_box.repositories.SupplyRepository;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.text_analisys.TextToPurchaseOrder;
@@ -46,19 +53,22 @@ import lombok.RequiredArgsConstructor;
 public class DepositControlServiceImpl implements DepositControlService {
 
 	@Autowired
-	private final DepositControlDao depositControlDao;
+	private final DepositControlRepository depositControlRepository;
+	
+	@Autowired
+	private final DepositRepository depositRepository;
 
 	@Autowired
-	private final PurchaseOrderDao purchaseOrderDao;
+	private final PurchaseOrderRepository purchaseOrderRepository;
 
 	@Autowired
-	private final PurchaseOrderItemDao purchaseOrderItemDao;
+	private final PurchaseOrderItemRepository purchaseOrderItemDao;
 
 	@Autowired
-	private final SupplyDao supplyDao;
+	private final SupplyRepository supplyRepository;
 
 	@Autowired
-	private final SupplyItemDao supplyItemDao;
+	private final SupplyItemRepository supplyItemRepository;
 
 	@Autowired
 	private final TextToPurchaseOrder textToPurchaseOrder;
@@ -68,6 +78,11 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	@Autowired
 	private final OrganizationService organizationService;
+	
+	@Autowired
+	private final AppUserServiceImpl userService;
+	
+	private static final Logger log = LoggerFactory.getLogger(DepositControlService.class);
 
 	@Override
 	public PurchaseOrderDto collectPurchaseOrderFromText(String text,long organizationId) {
@@ -76,7 +91,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		Organization org = organizationService.findById(organizationId);
 		purchaseOrder.setOrganization(org);
 		List<PurchaseOrderItem> items = PurchaseOrderItemMapper.INSTANCE.dtoToItems(purchaseOrderDto.getItems());
-		PurchaseOrder savedOrder = purchaseOrderDao.savePurchaseOrder(purchaseOrder);
+		PurchaseOrder savedOrder = purchaseOrderRepository.save(purchaseOrder);
 		List<PurchaseOrderItem> updatedItems = items.stream().map(m -> {
 			m.setPurchaseOrder(savedOrder);
 			return m;
@@ -91,7 +106,8 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	@Override
 	public PurchaseOrderDto findFullPurchaseOrder(Long id) {
-		PurchaseOrder purchaseOrder = purchaseOrderDao.findPurchaseOrderById(id);
+		PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
+				.orElseThrow(()->new ItemNotFoundException("No se encontro la orden"));
 		List<PurchaseOrderItem> items = purchaseOrderItemDao.findAllByPurchaseOrder(purchaseOrder);
 		PurchaseOrderDto purchaseOrderDto = PurchaseOrderMapper.INSTANCE.orderToDto(purchaseOrder);
 		purchaseOrderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
@@ -101,14 +117,21 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	@Transactional
 	@Override
-	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositControl(Long purchaseOrderId) {
-		PurchaseOrder order = purchaseOrderDao.findPurchaseOrderById(purchaseOrderId);
-		Organization org = organizationService.findById(order.getOrganization().getId());
+	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositControl(Long purchaseOrderId,Long depositId) {
+		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrderId)
+				.orElseThrow(()->new ItemNotFoundException("No se encontro la orden"));
+		
+	
+		
 		List<PurchaseOrderItem> items = purchaseOrderItemDao
-				.findAllByPurchaseOrder(purchaseOrderDao.findPurchaseOrderById(purchaseOrderId));
+				.findAllByPurchaseOrder(order);
+		
 		List<PurchaseOrderToDepositReportDto> report = new ArrayList<>();
+		Deposit deposit = depositRepository.findById(depositId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+		
 		List<DepositControl> collectedItems = items.stream().map(orderItem -> {
-			Optional<DepositControl> opt = depositControlDao.findByItemCode(orderItem.getCode());
+			Optional<DepositControl> opt = depositControlRepository.findByItemCodeAndDeposit(orderItem.getCode(),deposit);
 			if (opt.isPresent()) {
 				DepositControl depositControl = opt.get();
 				depositControl.setQuantity(depositControl.getQuantity() + orderItem.getQuantity());
@@ -117,7 +140,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
 						,depositControl.getQuantity() , depositControl.getMeasureUnit(),"ACTUALIZADO"));
 				order.setLoadedToDeposit(true);
-				purchaseOrderDao.savePurchaseOrder(order);
+				purchaseOrderRepository.save(order);
 				return depositControl;
 
 			} else {
@@ -129,16 +152,16 @@ public class DepositControlServiceImpl implements DepositControlService {
 				depositControl.setItemUnitPrice(orderItem.getUnitCost());
 				
 				depositControl.setMeasureUnit(orderItem.getMeasureUnit());
-				depositControl.setOrganization(org);
+				depositControl.setDeposit(deposit);
 				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
 						, depositControl.getQuantity(), depositControl.getMeasureUnit(),"NUEVO"));
 				order.setLoadedToDeposit(true);
-				purchaseOrderDao.savePurchaseOrder(order);
+				purchaseOrderRepository.save(order);
 				return depositControl;
 			}
 
 		}).toList();
-		depositControlDao.saveAll(collectedItems);
+		depositControlRepository.saveAll(collectedItems);
 		return report;
 	}
 
@@ -148,10 +171,10 @@ public class DepositControlServiceImpl implements DepositControlService {
 		Organization org = organizationService.findById(organizationId);
 		Supply supply = SupplyMapper.INSTANCE.dtoToSupply(supplyDto);
 		supply.setOrganization(org);
-		Supply savedSupply = supplyDao.saveSupply(supply);
+		Supply savedSupply = supplyRepository.save(supply);
 		
 		List<SupplyItem> items = SupplyItemMapper.INSTANCE.dtoToItems(supplyDto.getSupplyItems());
-		List<SupplyItem> savedItems = supplyItemDao.saveAll(items.stream().map(item -> {
+		List<SupplyItem> savedItems = supplyItemRepository.saveAll(items.stream().map(item -> {
 			item.setSupply(savedSupply);
 			
 			return item;
@@ -162,17 +185,19 @@ public class DepositControlServiceImpl implements DepositControlService {
 	}
 
 	@Override
-	public List<SupplyReportDto> createSupplyReport(long supplyId) {
-		Supply supply = supplyDao.findSupplyById(supplyId);
-		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
-		return getSupplyReport(supplyItems);
+	public List<SupplyReportDto> createSupplyReport(long supplyId,long depositId) {
+		Supply supply = supplyRepository.findById(supplyId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el suministro"));
+		List<SupplyItem> supplyItems = supplyItemRepository.findAllBySupply(supply);
+		return getSupplyReport(supplyItems,depositId);
 	}
 
 	@Override
-	public SupplyCorrectionNoteDto createSupplyCorrectionNote(long supplyId) {
-		Supply supply = supplyDao.findSupplyById(supplyId);
-		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
-		List<SupplyReportDto> reportDtos = getSupplyReport(supplyItems);
+	public SupplyCorrectionNoteDto createSupplyCorrectionNote(long supplyId,Long  depositId) {
+		Supply supply = supplyRepository.findById(supplyId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el suministro"));
+		List<SupplyItem> supplyItems = supplyItemRepository.findAllBySupply(supply);
+		List<SupplyReportDto> reportDtos = getSupplyReport(supplyItems,depositId);
 		Organization org = organizationService.findById(1L);
 		String to = supply.getDependencyApplicant();
 		SupplyCorrectionNoteDto supplyCorrectionNote = new SupplyCorrectionNoteDto();
@@ -183,10 +208,12 @@ public class DepositControlServiceImpl implements DepositControlService {
 		return supplyCorrectionNote;
 	}
 
-	private List<SupplyReportDto> getSupplyReport(List<SupplyItem> supplyItems) {
+	private List<SupplyReportDto> getSupplyReport(List<SupplyItem> supplyItems,Long  depositId) {
+		Deposit deposit = depositRepository.findById(depositId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
 		List<SupplyReportDto> report = supplyItems.stream().map(supplyItem -> {
 			SupplyReportDto supplyReportDto = new SupplyReportDto();
-			Optional<DepositControl> depositItem = depositControlDao.findByItemCode(supplyItem.getCode());
+			Optional<DepositControl> depositItem = depositControlRepository.findByItemCodeAndDeposit(supplyItem.getCode(),deposit);
 			if (depositItem.isPresent()) {
 				supplyReportDto.setSupplyItemCode(supplyItem.getCode());
 				supplyReportDto.setSupplyItemMeasureUnit(supplyItem.getMeasureUnit());
@@ -218,37 +245,95 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Override
 	public List<PurchaseOrderDto> findAllOrdersByOrganizationId(long organizationId) {
 		Organization organization = organizationService.findById(organizationId);
-		List<PurchaseOrder> orders = purchaseOrderDao.findAllByOrganization(organization);
+		List<PurchaseOrder> orders = purchaseOrderRepository.findAllByOrganization(organization);
 		return  PurchaseOrderMapper.INSTANCE.ordersToDtos(orders);
 		 }
 
 	@Override
 	public List<SupplyDto> findAllSuppliesByOrganizationId(long organizationId) {
 		Organization organization = organizationService.findById(organizationId);
-		List<Supply> supplies = supplyDao.findAllSuppliesByOrganization(organization);
+		List<Supply> supplies = supplyRepository.findAllByOrganization(organization);
 		return SupplyMapper.INSTANCE.suppliesToDtos(supplies);
  	}
 
 	@Override
 	public List<SupplyItemDto> findSupplyItems(long supplyId) {
-		Supply supply = supplyDao.findSupplyById(supplyId);
-		List<SupplyItem> items = supplyItemDao.findAllBySupply(supply);
+		Supply supply = supplyRepository.findById(supplyId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el suministro"));
+		List<SupplyItem> items = supplyItemRepository.findAllBySupply(supply);
 		return SupplyItemMapper.INSTANCE.itemToDtos(items);
 	}
 
 	@Override
 	public List<PurchaseOrderItemDto> findPurchaseOrderItems(long purchaseOrderId) {
-		PurchaseOrder purchaseOrder = purchaseOrderDao.findPurchaseOrderById(purchaseOrderId);
+		PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontrol la orden"));
 		List<PurchaseOrderItem> items = purchaseOrderItemDao.findAllByPurchaseOrder(purchaseOrder);
 		return PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items);
 	}
 
 	@Override
-	public List<DepositControlDto> findDepositControlsByOrganization(long organizationId) {
-		Organization org = organizationService.findById(organizationId);
-		List<DepositControl> controls = depositControlDao.findAllbyOrganization(org);
+	public List<DepositControlDto> findDepositControlsByDeposit(long depositId) {
+		Deposit deposit = depositRepository.findById(depositId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+		List<DepositControl> controls = depositControlRepository.findAllByDeposit(deposit);
 		
 		return DepositControlMapper.INSTANCE.depositControlsToDtos(controls);
+	}
+
+	@Override
+	public String createDeposit(DepositDto depositDto) {
+		log.info("Create new Deposit");
+		Deposit deposit = DepositMapper.INSTANCE.dtoToDeposit(depositDto);
+		Organization org = organizationService.findById(depositDto.getOrganizationId());
+		deposit.setOrganization(org);
+		Deposit savedDeposit =  depositRepository.save(deposit);
+		return savedDeposit.getName();
+	}
+
+	@Override
+	public List<DepositDto> findAllDepositsbyOrganization(long organizationId) {
+		log.info("Find all deposit by organization");
+		Organization org = organizationService.findById(organizationId);
+		List<Deposit> deposits = depositRepository.findAllByOrganization(org);
+		return DepositMapper.INSTANCE.depositToDtos(deposits);
+	}
+
+	@Override
+	public DepositResponseDto setCurrentDeposit(long userId, long depositId) {
+		log.info("Set current deposit id");
+		AppUser user = userService.findById(userId);
+		user.setCurrentDepositId(depositId);
+		AppUser updatedUser =  userService.save(user);
+		log.info("Set current deposit completed, deposit id: " +updatedUser.getCurrentDepositId());
+		return new DepositResponseDto(updatedUser.getCurrentDepositId(), depositRepository.findById(depositId).get().getName());
+	}
+
+	@Override
+	public DepositResponseDto getCurrentDepositId(long userId) {
+		log.info("Get current deposit id");
+		AppUser user = userService.findById(userId);
+		if(user.getMainOrganizationId()<1L) {
+			log.info("User current deposit not found , returning DepositResponse(null,\"Sin Asignar\"");
+			return new DepositResponseDto(null, "Sin Asignar");
+		}else {
+			Deposit depo = depositRepository.findById(user.getCurrentDepositId())
+					.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+			log.info("User current deposit found, deposit ID: ",depo.getId());
+			return new DepositResponseDto(depo.getId(), depo.getName());
+		}
+	}
+
+	@Override
+	public DepositResponseDto resetCurrentUserSelectedDeposit(long userId, long currentOrgId) {
+		AppUser user = userService.findById(userId);
+		Organization org = organizationService.findById(currentOrgId);
+		Optional<Deposit> deposit = depositRepository.findByOrganization(org);
+		if(deposit.isPresent())
+		if(user.getCurrentDepositId()==deposit.get().getId()) {
+			return new DepositResponseDto(deposit.get().getId(), deposit.get().getName());
+		}
+		return null;
 	}
 
 }

@@ -63,6 +63,16 @@ export class CookieStorageService {
     this.cookieService.delete('mainUserOrganizationId');
   }
 
+  setCurrentDepositSelectedId(currentDepositSelectedId:string){
+    this.cookieService.set('currentDepositSelectedId',currentDepositSelectedId);
+  }
+  getCurrentDepositSelectedId(){
+    return this.cookieService.get('currentDepositSelectedId');
+  }
+  deleteCurrentDepositSelectedId(){
+    this.cookieService.delete('currentDepositSelectedId');
+  }
+
   setDestinationsList(destination:string){
     const destinationsListResult = JSON.stringify(destination);
 

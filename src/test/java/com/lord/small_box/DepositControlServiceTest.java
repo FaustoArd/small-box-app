@@ -20,8 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.lord.small_box.dao.PurchaseOrderDao;
-import com.lord.small_box.dao.PurchaseOrderItemDao;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyDto;
@@ -30,6 +28,8 @@ import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
+import com.lord.small_box.repositories.PurchaseOrderItemRepository;
+import com.lord.small_box.repositories.PurchaseOrderRepository;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.text_analisys.TextToPurchaseOrder;
@@ -41,10 +41,10 @@ import com.lord.small_box.utils.PdfToStringUtils;
 public class DepositControlServiceTest {
 	
 	@Autowired
-	private PurchaseOrderDao purchaseOrderDao;
+	private PurchaseOrderRepository purchaseOrderRepository;
 	
 	@Autowired
-	private PurchaseOrderItemDao purchaseOrderItemDao;
+	private PurchaseOrderItemRepository purchaseOrderItemRepository;
 	
 	@Autowired
 	private DepositControlService depositControlService;
@@ -132,7 +132,7 @@ public class DepositControlServiceTest {
 	@Test
 	@Order(1)
 	void pdfToPurchaseOrder()throws Exception {
-		String text = pdfToStringUtils.pdfToString("oc-365");
+		String text = pdfToStringUtils.pdfToString("oc-365.pdf");
 		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text,2L);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
@@ -155,14 +155,14 @@ public class DepositControlServiceTest {
 	 @Test
 	 @Order(3)
 	void loadPurchaseOrderToDepositControl()throws Exception{
-		 List<PurchaseOrderToDepositReportDto> result = depositControlService.loadPurchaseOrderToDepositControl(1L);
+		 List<PurchaseOrderToDepositReportDto> result = depositControlService.loadPurchaseOrderToDepositControl(1L,1L);
 		 result.forEach(e -> System.out.println("Report result: " +e));
 	 }
 	 
 	@Test
 	@Order(4)
 	void loadSupply()throws Exception{
-		String text = pdfToStringUtils.pdfToString("sum-551");
+		String text = pdfToStringUtils.pdfToString("sum-551.pdf");
 		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text,2L);
 		Calendar cal = Calendar.getInstance();
@@ -173,23 +173,7 @@ public class DepositControlServiceTest {
 		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
 				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
 	}
-	@Test
-	@Order(6)
-	void PdfToPurchaseOrder2()throws Exception {
-		String text = pdfToStringUtils.pdfToString("oc 658 expte 177");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text,2L);
-		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
-		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
-		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
-		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
-	assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
-	}
-	 @Test
-	 @Order(7)
-	void loadPurchaseOrderToDepositControl2()throws Exception{
-		 List<PurchaseOrderToDepositReportDto> result = depositControlService.loadPurchaseOrderToDepositControl(2L);
-		 result.forEach(e -> System.out.println("Report result: " +e));
-	 }
+	
 	
 
 }

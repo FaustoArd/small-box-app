@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lord.small_box.dao.DepositControlDao;
-import com.lord.small_box.dao.PurchaseOrderDao;
+import com.google.gson.Gson;
 import com.lord.small_box.dtos.DepositControlDto;
+import com.lord.small_box.dtos.DepositDto;
+import com.lord.small_box.dtos.DepositResponseDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
@@ -27,8 +28,7 @@ import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
-import com.lord.small_box.models.DepositControl;
-import com.lord.small_box.models.PurchaseOrder;
+import com.lord.small_box.models.Deposit;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.utils.PdfToStringUtils;
 
@@ -42,15 +42,14 @@ public class DepositControlController {
 	@Autowired
 	private final DepositControlService depositControlService;
 	
-	@Autowired
-	private final PurchaseOrderDao purchaseOrderDao;
+	private static final Gson gson = new Gson();
 	
 	@Autowired
 	private final PdfToStringUtils pdfToStringUtils;
 	
 	@GetMapping(path="/find-deposit-controls-by-org")
-	ResponseEntity<List<DepositControlDto>> findDepositControlsByOrganization(@RequestParam("organizationId")long organizationId){
-	List<DepositControlDto> controlsDto = depositControlService.findDepositControlsByOrganization(organizationId);
+	ResponseEntity<List<DepositControlDto>> findDepositControlsByDeposit(@RequestParam("depositId")long depositId){
+	List<DepositControlDto> controlsDto = depositControlService.findDepositControlsByDeposit(depositId);
 	System.out.println("DEPOSIT CONTROLLER");
 	controlsDto.forEach(e -> System.out.println("deposit item:"+e.getItemCode()));
 	return ResponseEntity.ok(controlsDto);
@@ -101,21 +100,46 @@ public class DepositControlController {
 	}
 	
 	@PutMapping(path = "/load-order-to-deposit")
-	ResponseEntity<List<PurchaseOrderToDepositReportDto>> loadPurchaseOrdertoDeposit(@RequestBody long purchaseOrderId){
-		List<PurchaseOrderToDepositReportDto> loadReport = depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderId);
+	ResponseEntity<List<PurchaseOrderToDepositReportDto>> loadPurchaseOrdertoDeposit
+	(@RequestBody long purchaseOrderId,@RequestParam("depositId")long depositId){
+		List<PurchaseOrderToDepositReportDto> loadReport = depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderId,depositId);
 		return new ResponseEntity<List<PurchaseOrderToDepositReportDto>>(loadReport,HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/create-supply-report")
-	ResponseEntity<List<SupplyReportDto>> createSupplyResport(@RequestParam("supplyId")long supplyId){
-		List<SupplyReportDto> report = depositControlService.createSupplyReport(supplyId);
+	ResponseEntity<List<SupplyReportDto>> createSupplyResport
+	(@RequestParam("supplyId")long supplyId,@RequestParam("depositId")long depositId){
+		List<SupplyReportDto> report = depositControlService.createSupplyReport(supplyId,depositId);
 		return ResponseEntity.ok(report);
 	}
 	
 	@GetMapping(path = "/create-supply-correction-note")
-	ResponseEntity<SupplyCorrectionNoteDto> createSupplyCorrectionNote(@RequestParam("supplyId")long supplyId){
-		SupplyCorrectionNoteDto supplyCorrectionNote = depositControlService.createSupplyCorrectionNote(supplyId);
+	ResponseEntity<SupplyCorrectionNoteDto> createSupplyCorrectionNote
+	(@RequestParam("supplyId")long supplyId,@RequestParam("depositId")long depositId){
+		SupplyCorrectionNoteDto supplyCorrectionNote = depositControlService.createSupplyCorrectionNote(supplyId,depositId);
 		return ResponseEntity.ok(supplyCorrectionNote);
+	}
+	
+	@PostMapping(path="/create-deposit")
+	ResponseEntity<String> createDeposit(@RequestBody DepositDto depositDto){
+		String depositName = depositControlService.createDeposit(depositDto);
+		return new ResponseEntity<String>(gson.toJson(depositName),HttpStatus.CREATED);
+	}
+	@GetMapping(path="/find-deposits")
+	ResponseEntity<List<DepositDto>> findDeposits(@RequestParam("organizationId")long organizationId){
+		List<DepositDto> depositsDto = depositControlService.findAllDepositsbyOrganization(organizationId);
+		return ResponseEntity.ok(depositsDto);
+	}
+	@PutMapping(path="/set-current-deposit")
+	ResponseEntity<DepositResponseDto> setCurrentDepositId(
+			@RequestParam("userId")long userId,@RequestBody long depositId){
+		DepositResponseDto depositResponse = depositControlService.setCurrentDeposit(userId, depositId);
+		return new ResponseEntity<DepositResponseDto>(depositResponse,HttpStatus.OK);
+	}
+	@GetMapping(path="/get-current-deposit")
+	ResponseEntity<DepositResponseDto> getCurrentDepositId(@RequestParam("userId")long userId){
+		DepositResponseDto depositResponse = depositControlService.getCurrentDepositId(userId);
+		return ResponseEntity.ok(depositResponse);
 	}
 
 }

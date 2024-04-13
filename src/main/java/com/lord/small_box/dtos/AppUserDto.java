@@ -24,5 +24,7 @@ public class AppUserDto {
 	private List<Organization> organizations;
 	
 	private long mainOrganizationId;
+	
+	private long currentDepositId;
 
 }

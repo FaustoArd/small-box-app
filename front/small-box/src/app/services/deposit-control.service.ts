@@ -9,6 +9,8 @@ import { SupplyItemDto } from '../models/supplyItemDto';
 import { PurchaseOrderItemDto } from '../models/purchaseOrderItemDto';
 import { PurchaseOrderToDepositReportDto } from '../models/purchaseOrderToDepositReportDto';
 import { DepositControlDto } from '../models/depositControlDto';
+import { DepositDto } from '../models/depositDto';
+import { DepositReponseDto } from '../models/depositReponseDto';
 
 const DEPOSIT_CONTROL_BASE_URL = "http://localhost:8080/api/v1/smallbox/deposit-control";
 
@@ -45,17 +47,17 @@ export class DepositControlService {
       .pipe(catchError(this.handleError));
     }
 
-    loadPurchaseOrderToDeposit(purchaseOrderId:number):Observable<Array<PurchaseOrderToDepositReportDto>>{
-      return this.http.put<Array<PurchaseOrderToDepositReportDto>>(`${DEPOSIT_CONTROL_BASE_URL}/load-order-to-deposit`,purchaseOrderId)
+    loadPurchaseOrderToDeposit(purchaseOrderId:number,depositId:number):Observable<Array<PurchaseOrderToDepositReportDto>>{
+      return this.http.put<Array<PurchaseOrderToDepositReportDto>>(`${DEPOSIT_CONTROL_BASE_URL}/load-order-to-deposit?depositId=${depositId}`,purchaseOrderId)
       .pipe(catchError(this.handleError));
     }
 
-    createSupplyReport(supplyId:number):Observable<SupplyReportDto[]>{
-      return this.http.get<SupplyReportDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/create-supply-report?supplyId=${supplyId}`,this.httpOptions)
-      .pipe(catchError(this.handleError));
-    }
-    createSupplyCorrectionNote(supplyId:number):Observable<SupplyCorrectionNote>{
-      return this.http.get<SupplyCorrectionNote>(`${DEPOSIT_CONTROL_BASE_URL}/create-supply-correction-note?supplyId=${supplyId}`,this.httpOptions)
+    // createSupplyReport(supplyId:number):Observable<SupplyReportDto[]>{
+    //   return this.http.get<SupplyReportDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/create-supply-report?supplyId=${supplyId}`,this.httpOptions)
+    //   .pipe(catchError(this.handleError));
+    // }
+    createSupplyCorrectionNote(supplyId:number, depositId:number):Observable<SupplyCorrectionNote>{
+      return this.http.get<SupplyCorrectionNote>(`${DEPOSIT_CONTROL_BASE_URL}/create-supply-correction-note?supplyId=${supplyId}&depositId=${depositId}`,this.httpOptions)
       .pipe(catchError(this.handleError));
     }
 findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>{
@@ -68,10 +70,26 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
       .pipe(catchError(this.handleError));
     }
 
-    findDepositControlsByOrganization(organizationId:number):Observable<DepositControlDto[]>{
-      return this.http.get<DepositControlDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-deposit-controls-by-org?organizationId=${organizationId}`)
+    findDepositControlsByDeposit(depositId:number):Observable<DepositControlDto[]>{
+      return this.http.get<DepositControlDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-deposit-controls-by-org?depositId=${depositId}`)
       .pipe(catchError(this.handleError));
     }
-   
+   createDeposit(depositDto:DepositDto):Observable<string>{
+    return this.http.post<string>(`${DEPOSIT_CONTROL_BASE_URL}/create-deposit`,depositDto,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
 
+   findAllDepositsByOrganization(organizationId:number):Observable<DepositDto[]>{
+    return this.http.get<DepositDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-deposits?organizationId=${organizationId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+
+   setCurrentDeposit(userId:number,depositId:number):Observable<DepositReponseDto>{
+    return this.http.put<DepositReponseDto>(`${DEPOSIT_CONTROL_BASE_URL}/set-current-deposit?userId=${userId}`,depositId,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+   getCurrentDeposit(userId:number):Observable<DepositReponseDto>{
+    return this.http.get<DepositReponseDto>(`${DEPOSIT_CONTROL_BASE_URL}/get-current-deposit?userId=${userId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
 }

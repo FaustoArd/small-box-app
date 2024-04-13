@@ -5,8 +5,10 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
+import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 
@@ -21,6 +23,9 @@ public class LoadTestData {
 	
 	@Autowired
 	private final OrganizationResponsibleRepository organizationResponsibleRepository;
+	
+	@Autowired
+	private DepositRepository depositRepository;
 	
 	
 	public void loadData() {
@@ -86,6 +91,11 @@ public class LoadTestData {
 		organizationRepository.save(org3);
 		organizationRepository.save(org4);
 		organizationRepository.save(org5);
+		
+		Deposit deposit = Deposit.builder().name("AVELLANEDA")
+				.streetName("AVELLANEDA").houseNumber("2212")
+				.organization(dirAdmDesp).build();
+		depositRepository.save(deposit);
 	}
 
 }

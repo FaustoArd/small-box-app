@@ -71,6 +71,7 @@ export class MemoSingleComponent implements OnInit {
     this.textTemplatesMap.set('Envio de comprobantes', 'En el dia de la fecha se hace envio de los siguientes comprobantes detallados a continuacion: ');
     this.textTemplatesMap.set('Envio de expedientes', 'En el dia de la fecha se hace envio de los siguientes expedientes detallados a continuacion: ');
     this.textTemplatesMap.set('Envio de suministros', 'En el dia de la fecha se hace envio de los siguientes suministros detallados a continuacion: ');
+    this.textTemplatesMap.set('Envio de Viaticos', 'En el dia de la fecha se envia listado de viaticos correspondientes al mes de');
     this.textTemplatesMap.forEach((value, key) => {
       this.textTemplatesIndex.push(key);
     })
@@ -167,7 +168,7 @@ export class MemoSingleComponent implements OnInit {
   }
 
   getRefsList(): void {
-    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM", "REMITO INTERNO", "FACTURA", "REMITO"];
+    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM", "REMITO INTERNO", "FACTURA", "REMITO", "AGENTE"];
   }
 
 

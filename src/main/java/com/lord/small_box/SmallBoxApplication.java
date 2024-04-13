@@ -10,13 +10,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import com.lord.small_box.dao.SupplyDao;
-import com.lord.small_box.dao.SupplyItemDao;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
 import com.lord.small_box.models.Container;
+import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
@@ -26,11 +24,14 @@ import com.lord.small_box.models.Supply;
 import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.models.WorkTemplateDestination;
 import com.lord.small_box.repositories.AuthorityRepository;
+import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.DispatchControlRepository;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
+import com.lord.small_box.repositories.SupplyItemRepository;
+import com.lord.small_box.repositories.SupplyRepository;
 import com.lord.small_box.repositories.WorkTemplateDestinationRepository;
 import com.lord.small_box.services.AuthorizationService;
 import com.lord.small_box.services.ContainerService;
@@ -52,7 +53,7 @@ public class SmallBoxApplication {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
 	
-	@Bean
+	//@Bean
 	CommandLineRunner run(InputRepository inputRepository,
 			ContainerService containerService,
 			SmallBoxService smallBoxService,
@@ -65,7 +66,8 @@ public class SmallBoxApplication {
 			FileReaderUtils fileReaderUtils,
 			WorkTemplateDestinationRepository workTemplateDestinationRepository,
 			PdfToStringUtils pdfToStringUtils,
-			SupplyDao supplyDao, SupplyItemDao supplyItemDao) {
+			SupplyRepository supplyRepository, SupplyItemRepository supplyItemRepository,
+			DepositRepository depositRepository) {
 
 		
 		return args ->{
@@ -233,7 +235,7 @@ public class SmallBoxApplication {
 					.jurisdiction("Desa")
 					.organization(dirAdmDesp)
 					.build();
-			Supply savedSupply = supplyDao.saveSupply(supply);
+			Supply savedSupply = supplyRepository.save(supply);
 			supplyId = savedSupply.getId();
 			SupplyItem supplyItem1 = SupplyItem.builder()
 					.code("2.1.1.00788.0013")
@@ -262,7 +264,11 @@ public class SmallBoxApplication {
 					.supply(savedSupply)
 					.build();
 			List<SupplyItem> supplyItems = List.of(supplyItem1,supplyItem2,supplyItem3);
-			supplyItemDao.saveAll(supplyItems);
+			supplyItemRepository.saveAll(supplyItems);
+			Deposit deposit = Deposit.builder().name("AVELLANEDA")
+					.streetName("AVELLANEDA").houseNumber("2212")
+					.organization(dirAdmDesp).build();
+			depositRepository.save(deposit);
 			
 			//fileReaderUtils.readFile();
 		

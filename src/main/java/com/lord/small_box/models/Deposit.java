@@ -22,36 +22,19 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Entity
-@Table(name="deposit_control")
-public class DepositControl {
+@Table(name="deposit")
+public class Deposit {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	
-	private String supplyNumber;
-	
-	private String place;
-	
-	private String itemName;
-	
-	private String itemCode;
-	
-	private int quantity;
-	
-	private Calendar expirationDate;
-	
-	private String provider;
-	
-	private String measureUnit;
-	
-	private BigDecimal itemUnitPrice;
-	
-	private BigDecimal itemTotalPrice;
+	private String name;
+	private String streetName;
+	private String houseNumber;
 	
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="organization_id", referencedColumnName = "id")
-	private Deposit deposit;
+	private Organization organization;
 
 }

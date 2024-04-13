@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.Organization;
 
@@ -12,8 +13,9 @@ public interface DepositControlRepository extends JpaRepository<DepositControl, 
 	
 	public List<DepositControl> findAllByItemCodeIn(List<String> itemCodes);
 	
-	public Optional<DepositControl> findByItemCode(String itemCode);
+	public Optional<DepositControl> findByItemCodeAndDeposit(String itemCode,Deposit deposit);
 	
-	public List<DepositControl> findAllByOrganization(Organization organization);
+	public List<DepositControl> findAllByDeposit(Deposit deposit);
+	
 
 }

@@ -7,13 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.lord.small_box.dao.SupplyDao;
-import com.lord.small_box.dao.SupplyItemDao;
 import com.lord.small_box.dtos.SupplyDto;
-import com.lord.small_box.mappers.SupplyItemMapper;
 import com.lord.small_box.mappers.SupplyMapper;
 import com.lord.small_box.models.Supply;
+import com.lord.small_box.repositories.SupplyItemRepository;
+import com.lord.small_box.repositories.SupplyRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,14 +21,14 @@ import lombok.RequiredArgsConstructor;
 public class SupplyController {
 	
 	@Autowired
-	private final SupplyDao supplyDao;
+	private final SupplyRepository supplyDao;
 	
 	@Autowired
-	private final SupplyItemDao supplyItemDao;
+	private final SupplyItemRepository supplyItemDao;
 	
 	@GetMapping("/find-all-supplies")
 	ResponseEntity<List<SupplyDto>> findAllSupplies(){
-		List<Supply> supplies = supplyDao.findAllSupplies();
+		List<Supply> supplies = supplyDao.findAll();
 		
 		return ResponseEntity.ok(SupplyMapper.INSTANCE.suppliesToDtos(supplies));
 	}

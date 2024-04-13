@@ -1,81 +1,98 @@
 <body>
-<app-navbar></app-navbar>
+    <app-navbar></app-navbar>
 
-    
 
-<div class="container-flex">
-    <div class="row">
 
-        <div class="col text-center mt-2">
-
-        </div>
-    </div>
-    <div class="row mt-5 ms-3">
-        <div class="col-md-3">
-            <h5>ORDEN DE COMPRA</h5>
-            <hr class="my-4">
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-3">
-            <h5>SUMINISTRO</h5>
-            <hr class="my-4">
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-3">
-            <h5>DEPOSITO</h5>
-            <hr class="my-4">
-        </div>
-    </div>
-    <div class="row mt-3 ms-3">
-
-        <div class="col-md-3 mt-1">
-            <!-- Purchase order jumbotron -->
-            <div class="jumbotron ms-1">
-                <div>
-                    <p class="d-inline display-4">SUBIR</p>
-                    <a (click)="uploadPurchaseOrderFile()" class="btn btn-sm ms-3 " role="button">-</a>
-                    <input id="uploadInput" class="w-50 ms-2" type="file" (change)="selectFile($event)" />
-                </div>
-                <div id="orderItem" class="mt-1">
-                    <p class="d-inline display-4">VER</p>
-                    <a (click)="openDialogPurchaseOrderList(purchaseOrderListTemplate)" class="btn btn-sm ms-3"
-                        role="button">-</a>
-                </div>
-                <p class="lead">
-                    <hr class="my-4">
-            </div>
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-3 mt-1">
-            <!-- Supply jumbotron -->
-            <div class="jumbotron  ms-1">
-                <div>
-                    <p class="d-inline display-4">SUBIR</p>
-                    <a (click)="uploadSupplyFile()" class="btn btn-sm ms-3 " role="button">-</a>
-                    <input id="uploadInput" class="w-50 ms-2" type="file" (change)="selectFile($event)" />
-                </div>
-                <div id="orderItem" class="mt-1">
-                    <p class="d-inline display-4">VER</p>
-                    <a (click)="openDialogSupplyList(supplyListTemplate)" class="btn btn-sm ms-3" role="button">-</a>
-                </div>
-                <p class="lead">
-                    <hr class="my-4">
-            </div>
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-3 mt-1">
-            <!-- Deposit jumbotron -->
-            <div class="jumbotron  ms-1">
-                <p class="d-inline display-4">VER STOCK</p>
-                <a (click)="openDepositControlListTemplate(depositControlListTemplate)" class="btn btn-sm ms-3 "
-                    role="button">-</a>
-                <p class="lead">
-                    <hr class="my-4">
-            </div>
-        </div>
-    </div>
-
+    <div class="container-flex">
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <h1>Deposito seleccionado:
+                    <small class="text-danger" *ngIf="!selectedDepositBol">Ninguno</small>
+                    <small class="text-primary" *ngIf="selectedDepositBol">{{selectedDepositStr}}</small>
+                    <button (click)="openDialogDepositSelection(depositSelectionTemplate)"
+                    class="btn btn-sm mt-1 ms-3 text-white">Seleccionar</button>
+                    <button (click)="deleteCurrentDepositSelected()"
+                    class="btn btn-sm mt-1 ms-3 text-white">Delete</button>
+                </h1>
 </div>
+          </div>
+
+        <div class="row">
+
+            <div class="col text-center mt-2">
+
+            </div>
+        </div>
+        <div class="row mt-5 ms-3">
+            <div class="col-md-3">
+                <h5>ORDEN DE COMPRA</h5>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <h5>SUMINISTRO</h5>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <h5 class="d-inline">DEPOSITO</h5>
+                <button (click)="openDialogDepositCreation(createDepositTemplate)"
+                    class="btn btn-sm ms-5 mb-3 text-white">Crear deposito</button>
+                <hr class="my-4">
+            </div>
+        </div>
+        <div class="row mt-3 ms-3">
+
+            <div class="col-md-3 mt-1">
+                <!-- Purchase order jumbotron -->
+                <div class="jumbotron ms-1">
+                    <div>
+                        <p class="d-inline display-4">SUBIR</p>
+                        <a (click)="uploadPurchaseOrderFile()" class="btn btn-sm ms-3 " role="button">-</a>
+                        <input id="uploadInput" class="w-50 ms-2" type="file" (change)="selectFile($event)" />
+                    </div>
+                    <div id="orderItem" class="mt-1">
+                        <p class="d-inline display-4">VER</p>
+                        <a (click)="openDialogPurchaseOrderList(purchaseOrderListTemplate)" class="btn btn-sm ms-3"
+                            role="button">-</a>
+                    </div>
+                    <p class="lead">
+                        <hr class="my-4">
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3 mt-1">
+                <!-- Supply jumbotron -->
+                <div class="jumbotron  ms-1">
+                    <div>
+                        <p class="d-inline display-4">SUBIR</p>
+                        <a (click)="uploadSupplyFile()" class="btn btn-sm ms-3 " role="button">-</a>
+                        <input id="uploadInput" class="w-50 ms-2" type="file" (change)="selectFile($event)" />
+                    </div>
+                    <div id="orderItem" class="mt-1">
+                        <p class="d-inline display-4">VER</p>
+                        <a (click)="openDialogSupplyList(supplyListTemplate)" class="btn btn-sm ms-3"
+                            role="button">-</a>
+                    </div>
+                    <p class="lead">
+                        <hr class="my-4">
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3 mt-1">
+                <!-- Deposit jumbotron -->
+                <div class="jumbotron  ms-1">
+                    <p class="d-inline display-4">VER STOCK</p>
+                    <a (click)="openDepositControlListTemplate(depositControlListTemplate)" class="btn btn-sm ms-3 "
+                        role="button">-</a>
+                    <p class="lead">
+                        <hr class="my-4">
+                </div>
+            </div>
+        </div>
+
+    </div>
 </body>
 <ng-template #depositControlListTemplate>
     <button id="closeButton" (click)="onCloseDepositControlListTemplate()" class="btn btn-sm text-white">X</button>
@@ -258,58 +275,58 @@
 
 <ng-template #purchaseOrderListTemplate>
     <div class="container-flex">
-    
-      
-                <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
-          
-       
-   
-    <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
-            <h2 class="text-center">ORDENES DE COMPRA</h2>
-            <p class="lead">
-                <hr class="my-4">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <table class="table table-flex table-bordered h-75">
-                <thead>
-                    <tr>
-                        <th scope="col">FECHA</th>
-                        <th scope="col">NUMERO</th>
-                        <th scope="col">UNIDAD EJECUTORA</th>
-                        <th scope="col">DEPENDENCIA</th>
-                        <th scope="col">TOTAL</th>
-                        <th>VER ITEMS</th>
-                        <th>A DEPOSITO</th>
-                        <th>CARGADO?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let order of purchaseOrderDtos">
-                        <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
-                        <td>{{order.orderNumber}}</td>
-                        <td>{{order.executerUnit}}</td>
-                        <td>{{order.dependency}}</td>
-                        <td class="text-danger">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
-                        <td class="text-center"><button
-                                (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
-                                class="btn btn-sm  text-danger">-</button></td>
-                        <td class="text-center"><button
-                                (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
-                                class="btn btn-sm text-danger">-</button></td>
-                        <td *ngIf="order.loadedToDeposit" class="text-success text-center">SI</td>
-                        <td *ngIf="!order.loadedToDeposit" class="text-danger  text-center">NO</td>
-                    </tr>
 
-                </tbody>
-            </table>
+
+        <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
+
+
+
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <h2 class="text-center">ORDENES DE COMPRA</h2>
+                <p class="lead">
+                    <hr class="my-4">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <table class="table table-flex table-bordered h-75">
+                    <thead>
+                        <tr>
+                            <th scope="col">FECHA</th>
+                            <th scope="col">NUMERO</th>
+                            <th scope="col">UNIDAD EJECUTORA</th>
+                            <th scope="col">DEPENDENCIA</th>
+                            <th scope="col">TOTAL</th>
+                            <th>VER ITEMS</th>
+                            <th>A DEPOSITO</th>
+                            <th>CARGADO?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let order of purchaseOrderDtos">
+                            <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
+                            <td>{{order.orderNumber}}</td>
+                            <td>{{order.executerUnit}}</td>
+                            <td>{{order.dependency}}</td>
+                            <td class="text-danger">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
+                            <td class="text-center"><button
+                                    (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
+                                    class="btn btn-sm  text-danger">-</button></td>
+                            <td class="text-center"><button
+                                    (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
+                                    class="btn btn-sm text-danger">-</button></td>
+                            <td *ngIf="order.loadedToDeposit" class="text-success text-center">SI</td>
+                            <td *ngIf="!order.loadedToDeposit" class="text-danger  text-center">NO</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 </ng-template>
 <ng-template #purchaseOrderItemsListTemplate>
     <button id="closeButton" (click)="onClosepurchaseOrderItemListTemplate()" class="btn btn-sm text-white">X</button>
@@ -527,6 +544,77 @@
             </div>
             <p class="lead">
                 <hr class="my-4">
+        </div>
+    </div>
+</ng-template>
+<ng-template #createDepositTemplate>
+    <button id="closeButton" (click)="onCloseDepositCreationTemplate()" class="btn btn-sm text-white">X</button>
+    <div class="container-flex">
+        <div class="row mt-5">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <form [formGroup]="depositFormbuilder" class="d-inline form-group text-center fw-bold">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" formControlName="name" id="name">
+                        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
+                            <div *ngIf="name.errors?.['required']">
+                                Falta el nomber...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="streetName" class="form-label">Calle</label>
+                        <input type="streetName" class="form-control" formControlName="streetName" id="streetName">
+                        <div *ngIf="streetName.invalid && (streetName.dirty || streetName.touched)" class="text-danger">
+                            <div *ngIf="streetName.errors?.['required']">
+                                Falta la calle...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="houseNumber" class="form-label">Numero</label>
+                        <input type="houseNumber" class="form-control" formControlName="houseNumber" id="houseNumber">
+                        <div *ngIf="houseNumber.invalid && (houseNumber.dirty || houseNumber.touched)"
+                            class="text-danger">
+                            <div *ngIf="houseNumber.errors?.['required']">
+                                Falta el numero de calle...
+                            </div>
+                        </div>
+                        <button class="rounded-pill btn btn-sm text-center text-white mt-2"
+                            (click)="createDeposit()">Guardar</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #depositSelectionTemplate>
+    <div class="container-flex">
+        <div class="row mt-3">
+            <div class="col">
+                <h5 class="text-center">SELECCIONAR DEPOSTIO</h5>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-5"></div>
+            <div class="col-md-4">
+                <table class="table-sm table-bordered h-75">
+                    <thead>
+                        <tr>
+                            <th scope="col">DEPOSITO</th>
+                            <th scope="col">SELECCIONAR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" *ngFor="let deposit of depositDtos">
+                            <td class="text-primary">{{deposit.name}}</td>
+                            <td (click)="setCurrentDeposit(deposit.id)" class="btn btn-sm text-primary">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </ng-template>

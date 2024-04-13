@@ -72,6 +72,9 @@ public class AppUser implements UserDetails {
 	@Column(name="main_organization_id")
 	private long mainOrganizationId;
 	
+	@Column(name="current_deposit_id")
+	private long currentDepositId;
+	
 	public AppUser() {
 		super();
 	}
@@ -170,6 +173,13 @@ public class AppUser implements UserDetails {
 	}
 	public void setMainOrganizationId(long mainOrganizationId) {
 		this.mainOrganizationId = mainOrganizationId;
+	}
+	
+	public long getCurrentDepositId() {
+		return currentDepositId;
+	}
+	public void setCurrentDepositId(long currentDepositId) {
+		this.currentDepositId = currentDepositId;
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public interface DepositControlMapper {
 	
 	public DepositControlDto depositControlToDto(DepositControl depositControl);
 
-	@Mapping(target = "organization",ignore = true)
+	@Mapping(target = "deposit",ignore = true)
 	public DepositControl dtoToDepositControl(DepositControlDto depositControlDto);
 	
 	public List<DepositControlDto> depositControlsToDtos(List<DepositControl> depositControls);

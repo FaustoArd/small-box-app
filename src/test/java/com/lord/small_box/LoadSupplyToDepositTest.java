@@ -18,18 +18,22 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.lord.small_box.dao.DepositControlDao;
-import com.lord.small_box.dao.PurchaseOrderDao;
-import com.lord.small_box.dao.PurchaseOrderItemDao;
-import com.lord.small_box.dao.SupplyDao;
-import com.lord.small_box.dao.SupplyItemDao;
+
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyReportDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.Supply;
 import com.lord.small_box.models.SupplyItem;
+import com.lord.small_box.repositories.DepositControlRepository;
+import com.lord.small_box.repositories.DepositRepository;
+import com.lord.small_box.repositories.PurchaseOrderItemRepository;
+import com.lord.small_box.repositories.PurchaseOrderRepository;
+import com.lord.small_box.repositories.SupplyItemRepository;
+import com.lord.small_box.repositories.SupplyRepository;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.utils.PdfToStringUtils;
@@ -53,19 +57,22 @@ public class LoadSupplyToDepositTest {
 	private OrganizationService organizationService;
 	
 	@Autowired
-	private PurchaseOrderDao purchaseOrderDao;
+	private PurchaseOrderRepository purchaseOrderRepository;
 	
 	@Autowired
-	private PurchaseOrderItemDao purchaseOrderItemDao;
+	private PurchaseOrderItemRepository purchaseOrderItemRepository;
 	
 	@Autowired
-	private SupplyDao supplyDao;
+	private SupplyRepository supplyRepository;
 
 	@Autowired
-	private SupplyItemDao supplyItemDao;
+	private SupplyItemRepository supplyItemRepository;
 	
 	@Autowired
-	private DepositControlDao depositControlDao;
+	private DepositControlRepository depositControlRepository;
+	
+	@Autowired
+	private DepositRepository depositRepository;
 	
 	private PurchaseOrderDto purchaseOrderDto365;
 	
@@ -76,7 +83,7 @@ public class LoadSupplyToDepositTest {
 		loadTestData.loadData();
 		String strPurchaseOrder365= pdfToStringUtils.pdfToString("oc-365.pdf");
 		purchaseOrderDto365 = depositControlService.collectPurchaseOrderFromText(strPurchaseOrder365,2L);
-		depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderDto365.getId());
+		depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderDto365.getId(),1L);
 		assertThat(purchaseOrderDto365.getOrderNumber()).isEqualTo(365);
 		purchaseOrderDto365.getItems().forEach(e -> System.out.println("Items: " + e.getCode()));
 		purchaseOrderDto365.getItems().forEach(e -> System.out.println("Items: " + e.getQuantity()));
@@ -88,7 +95,7 @@ public class LoadSupplyToDepositTest {
 				.jurisdiction("Desa")
 				.organization(org)
 				.build();
-		Supply savedSupply = supplyDao.saveSupply(supply);
+		Supply savedSupply = supplyRepository.save(supply);
 		supplyId = savedSupply.getId();
 		SupplyItem supplyItem1 = SupplyItem.builder()
 				.code("2.1.1.00788.0013")
@@ -117,7 +124,7 @@ public class LoadSupplyToDepositTest {
 				.supply(savedSupply)
 				.build();
 		List<SupplyItem> supplyItems = List.of(supplyItem1,supplyItem2,supplyItem3);
-		supplyItemDao.saveAll(supplyItems);
+		supplyItemRepository.saveAll(supplyItems);
 			
 		
 	}
@@ -125,8 +132,9 @@ public class LoadSupplyToDepositTest {
 	@Test
 	@Order(1)
 	void loadSupplyToDeposit()throws Exception{
-		Supply supply  = supplyDao.findSupplyById(supplyId);
-		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
+		Supply supply  = supplyRepository.findById(supplyId)
+				.orElseThrow(()->new ItemNotFoundException("No se encontrol el suministro"));
+		List<SupplyItem> supplyItems = supplyItemRepository.findAllBySupply(supply);
 		List<SupplyReportDto> reportDto = createReport(supplyItems);
 		reportDto.forEach(e -> System.out.println(e.getSupplyItemCode() + ", "+ e.getSupplyItemDetail() + ", " + e.getSupplyItemQuantity() + 
 				", " + e.getDepositItemCode() + ", " + e.getDepositItemDetail()+ ", " + e.getDepositItemQuantity()));
@@ -146,10 +154,10 @@ public class LoadSupplyToDepositTest {
 	}
 	
 	private List<SupplyReportDto> createReport(List<SupplyItem> supplyItems) {
-		
+		Deposit deposit = depositRepository.findById(2L).orElseThrow(()-> new ItemNotFoundException(" No se encontro el deposito")); 
 		List<SupplyReportDto> report = supplyItems.stream().map(supplyItem -> {
 			SupplyReportDto supplyReportDto = new SupplyReportDto();
-			Optional<DepositControl> depositItem = depositControlDao.findByItemCode(supplyItem.getCode());
+			Optional<DepositControl> depositItem = depositControlRepository.findByItemCodeAndDeposit(supplyItem.getCode(),deposit);
 			if(depositItem.isPresent()) {
 				supplyReportDto.setSupplyItemCode(supplyItem.getCode());
 				supplyReportDto.setSupplyItemDetail(supplyItem.getItemDetail());
@@ -175,8 +183,9 @@ public class LoadSupplyToDepositTest {
 	}
 	
 	private SupplyCorrectionNoteDto createSupplyCorrectionNote(){
-		Supply supply = supplyDao.findSupplyById(supplyId);
-		List<SupplyItem> supplyItems = supplyItemDao.findAllBySupply(supply);
+		Supply supply = supplyRepository.findById(supplyId)
+				.orElseThrow(()->new ItemNotFoundException("No se encontrol el suministro"));;
+		List<SupplyItem> supplyItems = supplyItemRepository.findAllBySupply(supply);
 		List<SupplyReportDto> reportDtos = createReport(supplyItems);
 		Organization org = organizationService.findById(supply.getOrganization().getId());
 		SupplyCorrectionNoteDto supplyCorrectionNote = new SupplyCorrectionNoteDto();

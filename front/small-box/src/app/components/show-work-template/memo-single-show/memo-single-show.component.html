@@ -22,21 +22,30 @@
    
         <div id="containerCSS" class="container-flex">
             <div class="row">
-                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                    <div>
+                    <img class="w-75 ms-3 mt-1 " src="./assets/img/moron- malvinas-2024-v3.png" alt="">
+                </div>
+                </div>
                 <div class="col-md-6">
                 <div id="logo" class="col text-center">
-                    <img class="w-50" src="./assets/img/logomoron.png" alt="">
+                    
+                    <img class="w-100" src="./assets/img/moron-logo-2024-v2.png" alt="">
+                   
                 </div>
             </div>
             <div class="col-md-3">
-                <h5 id="footDep" class="mb-0">{{workTemplate.producedBy.toUpperCase()}}</h5>
+                <h5 id="footDep" class="mb-0 mt-1">{{workTemplate.producedBy.toUpperCase()}}</h5>
+               
             </div>
             </div>
+           
             <div class="row">
                 <div class="col mt-1 ms-1">
-                    <h1 id="title" class="text-center">{{workTemplate.correspond}}</h1>
+                <h5 id="title" class="text-center">{{workTemplate.correspond}}</h5>
                 </div>
             </div>
+           
             <div class="row mt-4 ms-4">
                 <div class="col-md-10">
                     <div>
@@ -83,8 +92,8 @@
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-11">
-                    <h4>{{workTemplate.text}}</h4>
-                    <div class="col-md-11" *ngFor="let item of workTemplate.items">
+                    <h4 class="mb-5">{{workTemplate.text}}</h4>
+                    <div *ngFor="let item of workTemplate.items">
                         <h4>{{item}}</h4>
                     </div>
                 </div>
