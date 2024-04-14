@@ -100,7 +100,7 @@
         <div class="col-md-1"></div>
         <div class="col-md-6 ms-2">
             <!-- Deposit control table -->
-            <h2>DEPOSITO</h2>
+            <h2 *ngIf="selectedDepositBol"> DEPOSITO: {{selectedDepositStr}}</h2>
             <p class="lead">
                 <hr class="my-4">
             <table class="table table-flex table-bordered h-75">

@@ -50,8 +50,6 @@ public class DepositControlController {
 	@GetMapping(path="/find-deposit-controls-by-org")
 	ResponseEntity<List<DepositControlDto>> findDepositControlsByDeposit(@RequestParam("depositId")long depositId){
 	List<DepositControlDto> controlsDto = depositControlService.findDepositControlsByDeposit(depositId);
-	System.out.println("DEPOSIT CONTROLLER");
-	controlsDto.forEach(e -> System.out.println("deposit item:"+e.getItemCode()));
 	return ResponseEntity.ok(controlsDto);
 	}
 	

@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.lord.small_box.dtos.OrganizationDto;
@@ -26,10 +28,11 @@ import com.lord.small_box.services.OrganizationService;
 public class TextToPurchaseOrder {
 
 	
-	
+	private static final Logger log = LoggerFactory.getLogger(TextToPurchaseOrder.class);
 	
 	//This method collect all PurchaseOrder elements from a pdf text and return PurchaseOrder object.
 	public PurchaseOrderDto textToPurchaseOrder(String text, OrganizationService organizationService) {
+		log.info("Text to purchase order main method");
 		String[] arrTextSplitN = text.split("\\n");
 
 		PurchaseOrderDto purchaseOrderDto = new PurchaseOrderDto();
@@ -40,10 +43,10 @@ public class TextToPurchaseOrder {
 		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
 		purchaseOrderDto.setExecuterUnit(getExecuterUnit(arrTextSplitN));
 		purchaseOrderDto.setDependency(getDependency(arrTextSplitN));
-		System.err.println("Order Number:" + purchaseOrderDto.getOrderNumber());
-		System.err.println("Order TOTAL: " + purchaseOrderDto.getPurchaseOrderTotal());
-		System.err.println("Order Date: " + purchaseOrderDto.getDate());
-		System.err.println("Purchase order: " + purchaseOrderDto.getItems());
+		//System.err.println("Order Number:" + purchaseOrderDto.getOrderNumber());
+		//System.err.println("Order TOTAL: " + purchaseOrderDto.getPurchaseOrderTotal());
+		//System.err.println("Order Date: " + purchaseOrderDto.getDate());
+		//System.err.println("Purchase order: " + purchaseOrderDto.getItems());
 		return purchaseOrderDto;
 		/*PurchaseOrderDto purchaseOrder = PurchaseOrder.builder()
 				.orderNumber(Integer.parseInt(getPurchaseOrderNumber(arrTextSplitN))).date(getDate(text))
@@ -55,6 +58,7 @@ public class TextToPurchaseOrder {
 	private final String executerUnitRegex = "^(?=.*(unidad ejecutora))";
 
 	private String getExecuterUnit(String[] arrText) {
+		log.info("Text to purchase order Get Executer unit");
 		Pattern pExecUnit = Pattern.compile(executerUnitRegex, Pattern.CASE_INSENSITIVE);
 		String executerInut = Stream.of(arrText).filter(f -> pExecUnit.matcher(f).find())
 				.map(m -> m.substring(m.indexOf(":") + 1, m.lastIndexOf(":") - 5)).findFirst().get()
@@ -64,6 +68,7 @@ public class TextToPurchaseOrder {
 	}
 	private final String financingSourceRegex = "(?=.*(fuente de financiamiento))";
 	private String getFinancingSource(String[] arrText) {
+		log.info("Text to purchase order Get Financing source");
 		Pattern pFinancingSource = Pattern.compile(financingSourceRegex,Pattern.CASE_INSENSITIVE);
 		String financingSourceLine = Stream.of(arrText).filter(f -> pFinancingSource.matcher(f).find()).findFirst()
 				.orElse("No encontrado");
@@ -74,6 +79,7 @@ public class TextToPurchaseOrder {
 	private final String dependencyRegex = "^(?=.*(dependencia))";
 	
 	private String getDependency(String[] arrText) {
+		log.info("Text to purchase order Get Dependency");
 		Pattern pDependency = Pattern.compile(dependencyRegex, Pattern.CASE_INSENSITIVE);
 		String dependency = Stream.of(arrText).filter(f -> pDependency.matcher(f).find())
 				.map(m -> m.substring(m.trim().indexOf(":")+1, m.length()-1)).findFirst().get().trim();
@@ -94,11 +100,13 @@ public class TextToPurchaseOrder {
 	
 
 	private String getPurchaseOrderNumber(String[] arrText) {
+		log.info("Text to purchase order Get purchase order number");
 		return Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get().replaceAll("[\\D]", "")
 				.strip();
 	}
 
 	private BigDecimal getPurchaseTotal(String[] arrText) {
+		log.info("Text to purchase order Get purchase total");
 		return new BigDecimal(Stream.of(arrText).filter(f -> f.toLowerCase().contains("total:")).findFirst().get()
 				.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".")
 				.strip());
@@ -117,7 +125,7 @@ public class TextToPurchaseOrder {
 
 	// This method find all the purchase order items.
 	private List<PurchaseOrderItemDto> getItems(String[] arrText) {
-
+		log.info("Text to purchase order Get Items");
 		// This list contains all lines that match the item code REGEX
 		List<String> itemsText = Stream.of(arrText).filter(f -> pItemCode.matcher(f).find())
 				.collect(Collectors.toList());
@@ -159,6 +167,7 @@ public class TextToPurchaseOrder {
 	private final String strDateV2 = "^(?=.*(?=.*[0-9]{2})*(?=.*[/]{1})){2}(?=.*[0-9]{2,4})";
 
 	private Calendar getDate(String text) {
+		log.info("Text to purchase order Get date");
 		Pattern pDate = Pattern.compile(strDateV2);
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");

@@ -55,7 +55,7 @@ export class CompletedSmallBoxComponent implements OnInit {
     }
   });
  }
-
+ totalWriteCheck!:string;
  //This method do the smallbox calculations and show the final results.
   onCompleteSmallBox(): void {
     this.smallBoxService.completeSmallBox(Number(this.cookieService.getCurrentContainerId())).subscribe({
@@ -69,6 +69,7 @@ export class CompletedSmallBoxComponent implements OnInit {
         this.getContainerById();
       }
     });
+  
   }
   getContainerById(): void {
     this.containerService.getContainerById(Number(this.cookieService.getCurrentContainerId())).subscribe({
@@ -127,6 +128,15 @@ export class CompletedSmallBoxComponent implements OnInit {
   checkMaxAmount():void{
     const containerId = Number(this.cookieService.getCurrentContainerId());
    // const userId = Number(this.cookieService.getCurrentUserId());
+   this.containerService.getContainerById(Number(this.cookieService.getCurrentContainerId())).subscribe({
+    next:(containerData)=>{
+      this.totalWriteCheck = containerData.totalWrite;
+    }
+  })
+  console.log('totalWrit: ' +this.totalWriteCheck)
+  if(this.totalWriteCheck===undefined||this.totalWriteCheck===null){
+    this.snackBarService.openSnackBar('Debe ingresar un importe en letras','Cerrar',3000);
+  }else{
     this.smallBoxService.checkMaxAmount(containerId).subscribe({
       next:(checkData)=>{
         this.snackBarService.openSnackBar(checkData,'Cerrar',4000);
@@ -138,6 +148,7 @@ export class CompletedSmallBoxComponent implements OnInit {
         this.navigateAssociates();
       }
     })
+  }
   }
 
 
