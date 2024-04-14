@@ -84,12 +84,14 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
     .pipe(catchError(this.handleError));
    }
 
-   setCurrentDeposit(userId:number,depositId:number):Observable<DepositReponseDto>{
-    return this.http.put<DepositReponseDto>(`${DEPOSIT_CONTROL_BASE_URL}/set-current-deposit?userId=${userId}`,depositId,this.httpOptions)
+   setCurrentDeposit(userId:number,organizationId:number,depositId:number):Observable<DepositReponseDto>{
+    return this.http.put<DepositReponseDto>
+    (`${DEPOSIT_CONTROL_BASE_URL}/set-current-deposit?userId=${userId}&organizationId=${organizationId}`,depositId,this.httpOptions)
     .pipe(catchError(this.handleError));
    }
-   getCurrentDeposit(userId:number):Observable<DepositReponseDto>{
-    return this.http.get<DepositReponseDto>(`${DEPOSIT_CONTROL_BASE_URL}/get-current-deposit?userId=${userId}`,this.httpOptions)
+   getCurrentDeposit(userId:number,organizationId:number):Observable<DepositReponseDto>{
+    return this.http.get<DepositReponseDto>
+    (`${DEPOSIT_CONTROL_BASE_URL}/get-current-deposit?userId=${userId}&organizationId=${organizationId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
    }
 }

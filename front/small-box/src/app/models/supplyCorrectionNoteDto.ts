@@ -5,4 +5,6 @@ export class SupplyCorrectionNote{
     from!:string;
     to!:string;
     supplyReport!:Array<SupplyReportDto>;
+    depositName!:string;
+
 }

@@ -1,7 +1,9 @@
 package com.lord.small_box.models;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -74,6 +76,9 @@ public class AppUser implements UserDetails {
 	
 	@Column(name="current_deposit_id")
 	private long currentDepositId;
+	
+	
+	
 	
 	public AppUser() {
 		super();
@@ -181,7 +186,7 @@ public class AppUser implements UserDetails {
 	public void setCurrentDepositId(long currentDepositId) {
 		this.currentDepositId = currentDepositId;
 	}
-
+	
 	@Override
 	public boolean isAccountNonExpired() {
 		return accountNonExpired;

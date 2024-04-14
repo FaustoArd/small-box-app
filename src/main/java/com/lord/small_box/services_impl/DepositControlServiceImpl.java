@@ -2,6 +2,8 @@ package com.lord.small_box.services_impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +11,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lord.small_box.dtos.DepositControlDto;
@@ -31,12 +34,14 @@ import com.lord.small_box.mappers.SupplyMapper;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
+import com.lord.small_box.models.DepositOrganizationSelect;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
 import com.lord.small_box.models.Supply;
 import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.repositories.DepositControlRepository;
+import com.lord.small_box.repositories.DepositOrganizationSelectRepository;
 import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
@@ -82,6 +87,9 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Autowired
 	private final AppUserServiceImpl userService;
 	
+	@Autowired
+	private DepositOrganizationSelectRepository depositOrganizationSelectRepository;
+	
 	private static final Logger log = LoggerFactory.getLogger(DepositControlService.class);
 
 	@Override
@@ -121,8 +129,6 @@ public class DepositControlServiceImpl implements DepositControlService {
 		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrderId)
 				.orElseThrow(()->new ItemNotFoundException("No se encontro la orden"));
 		
-	
-		
 		List<PurchaseOrderItem> items = purchaseOrderItemDao
 				.findAllByPurchaseOrder(order);
 		
@@ -140,6 +146,8 @@ public class DepositControlServiceImpl implements DepositControlService {
 				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
 						,depositControl.getQuantity() , depositControl.getMeasureUnit(),"ACTUALIZADO"));
 				order.setLoadedToDeposit(true);
+				order.setLoadedToDepositId(deposit.getId());
+				order.setLoadedToDepositName(deposit.getName());
 				purchaseOrderRepository.save(order);
 				return depositControl;
 
@@ -156,6 +164,8 @@ public class DepositControlServiceImpl implements DepositControlService {
 				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemName()
 						, depositControl.getQuantity(), depositControl.getMeasureUnit(),"NUEVO"));
 				order.setLoadedToDeposit(true);
+				order.setLoadedToDepositId(deposit.getId());
+				order.setLoadedToDepositName(deposit.getName());
 				purchaseOrderRepository.save(order);
 				return depositControl;
 			}
@@ -205,6 +215,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		supplyCorrectionNote.setFrom(org.getOrganizationName());
 		supplyCorrectionNote.setTo(to);
 		supplyCorrectionNote.setSupplyReport(reportDtos);
+		supplyCorrectionNote.setDepositName(depositRepository.findById(depositId).get().getName());
 		return supplyCorrectionNote;
 	}
 
@@ -300,31 +311,41 @@ public class DepositControlServiceImpl implements DepositControlService {
 	}
 
 	@Override
-	public DepositResponseDto setCurrentDeposit(long userId, long depositId) {
+	public DepositResponseDto setCurrentDeposit(long userId,long organizationId,long depositId) {
 		log.info("Set current deposit id");
 		AppUser user = userService.findById(userId);
 		user.setCurrentDepositId(depositId);
-		AppUser updatedUser =  userService.save(user);
-		log.info("Set current deposit completed, deposit id: " +updatedUser.getCurrentDepositId());
-		return new DepositResponseDto(updatedUser.getCurrentDepositId(), depositRepository.findById(depositId).get().getName());
+		DepositOrganizationSelect depositOrganizationSelect = new DepositOrganizationSelect();
+		depositOrganizationSelect.setDepositId(depositId);
+		depositOrganizationSelect.setOrganizationId(organizationId);
+		depositOrganizationSelect.setUser(user);
+		depositOrganizationSelect.setDate(Calendar.getInstance());
+		DepositOrganizationSelect savedDepositOrganizationSelect = depositOrganizationSelectRepository.save(depositOrganizationSelect);
+		//AppUser updatedUser =  userService.save(user);
+		log.info("Set current deposit completed, deposit id: "+savedDepositOrganizationSelect.getDepositId());
+		return new DepositResponseDto(savedDepositOrganizationSelect.getDepositId(), depositRepository.findById(depositId).get().getName());
 	}
 
 	@Override
-	public DepositResponseDto getCurrentDepositId(long userId) {
+	public DepositResponseDto getCurrentDepositId(long userId,long organizationId) {
+		Sort sort = Sort.by("date").descending();
 		log.info("Get current deposit id");
 		AppUser user = userService.findById(userId);
-		if(user.getMainOrganizationId()<1L) {
+		Optional<DepositOrganizationSelect> depositOrganizationSelect = depositOrganizationSelectRepository
+				.findByUserAndOrganizationId(user, organizationId,sort).stream().findFirst();
+				
+		if(depositOrganizationSelect.isEmpty()) {
 			log.info("User current deposit not found , returning DepositResponse(null,\"Sin Asignar\"");
 			return new DepositResponseDto(null, "Sin Asignar");
 		}else {
-			Deposit depo = depositRepository.findById(user.getCurrentDepositId())
+			Deposit depo = depositRepository.findById(depositOrganizationSelect.get().getDepositId())
 					.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
-			log.info("User current deposit found, deposit ID: ",depo.getId());
+			log.info("User current deposit found, deposit ID: "+depo.getId());
 			return new DepositResponseDto(depo.getId(), depo.getName());
 		}
 	}
 
-	@Override
+	/*@Override
 	public DepositResponseDto resetCurrentUserSelectedDeposit(long userId, long currentOrgId) {
 		AppUser user = userService.findById(userId);
 		Organization org = organizationService.findById(currentOrgId);
@@ -334,6 +355,6 @@ public class DepositControlServiceImpl implements DepositControlService {
 			return new DepositResponseDto(deposit.get().getId(), deposit.get().getName());
 		}
 		return null;
-	}
+	}*/
 
 }

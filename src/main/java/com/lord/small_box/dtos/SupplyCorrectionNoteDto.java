@@ -16,4 +16,6 @@ public class SupplyCorrectionNoteDto {
 	private String to;
 	
 	private List<SupplyReportDto> supplyReport;
+	
+	private String depositName;
 }

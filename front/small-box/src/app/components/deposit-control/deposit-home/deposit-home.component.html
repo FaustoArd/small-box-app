@@ -11,12 +11,12 @@
                     <small class="text-danger" *ngIf="!selectedDepositBol">Ninguno</small>
                     <small class="text-primary" *ngIf="selectedDepositBol">{{selectedDepositStr}}</small>
                     <button (click)="openDialogDepositSelection(depositSelectionTemplate)"
-                    class="btn btn-sm mt-1 ms-3 text-white">Seleccionar</button>
-                    <button (click)="deleteCurrentDepositSelected()"
-                    class="btn btn-sm mt-1 ms-3 text-white">Delete</button>
+                        class="btn btn-sm mt-1 ms-3 text-white">Seleccionar</button>
+                    <!-- <button (click)="deleteCurrentDepositSelected()"
+                    class="btn btn-sm mt-1 ms-3 text-white">Delete</button> -->
                 </h1>
-</div>
-          </div>
+            </div>
+        </div>
 
         <div class="row">
 
@@ -302,7 +302,7 @@
                             <th scope="col">TOTAL</th>
                             <th>VER ITEMS</th>
                             <th>A DEPOSITO</th>
-                            <th>CARGADO?</th>
+                            <th>CARGADO</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -315,10 +315,16 @@
                             <td class="text-center"><button
                                     (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
                                     class="btn btn-sm  text-danger">-</button></td>
-                            <td class="text-center"><button
+                            <td class="text-center">
+                                <button *ngIf="order.loadedToDeposit"
                                     (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
-                                    class="btn btn-sm text-danger">-</button></td>
-                            <td *ngIf="order.loadedToDeposit" class="text-success text-center">SI</td>
+                                    class="btn btn-sm text-danger" disabled>-</button>
+                                <button *ngIf="!order.loadedToDeposit"
+                                    (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
+                                    class="btn btn-sm text-danger">-</button>
+                            </td>
+                            <td *ngIf="order.loadedToDeposit" class="text-success text-center">
+                                {{order.loadedToDepositName}}</td>
                             <td *ngIf="!order.loadedToDeposit" class="text-danger  text-center">NO</td>
                         </tr>
 
@@ -457,15 +463,28 @@
     <button id="closeButton" (click)="onCloseSupplyCorrectionNoteTemplate()" class="btn btn-sm text-white">X</button>
     <div id="correction" class="container-flex">
         <div class="row mt-2">
-            <div class="col-md-3"></div>
+            <div class="col-md-3">
+
+            </div>
 
             <div class="col-md-6">
                 <h2>DETALLE DE COMPARACION DE SUMINISTRO CON STOCK</h2>
+
             </div>
 
             <div class="col-md-3">
                 <div>
                     <h4> Fecha: {{now |date: 'dd-MM-yyyy'}}</h4>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div clasS="col-md-6">
+                <div>
+                    <h4 class="d-inline">DEPOSITO: </h4>
+                    <h1 class="d-inline"> {{supplyCorrectionNote.depositName}}</h1>
                 </div>
             </div>
         </div>

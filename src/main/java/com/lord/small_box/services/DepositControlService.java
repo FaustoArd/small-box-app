@@ -44,10 +44,10 @@ public interface DepositControlService {
 	
 	public List<DepositDto> findAllDepositsbyOrganization(long organizationId);
 	
-	public DepositResponseDto setCurrentDeposit(long userId,long depositId);
+	public DepositResponseDto setCurrentDeposit(long userId,long organizationId,long depositId);
 	
-	public DepositResponseDto getCurrentDepositId(long userId);
+	public DepositResponseDto getCurrentDepositId(long userId,long organizationId);
 	
-	public DepositResponseDto resetCurrentUserSelectedDeposit(long userId,long currentOrgId);
+	//public DepositResponseDto resetCurrentUserSelectedDeposit(long userId,long currentOrgId);
 
 }

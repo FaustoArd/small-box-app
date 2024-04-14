@@ -57,8 +57,10 @@ public class PurchaseOrder {
 	private BigDecimal purchaseOrderTotal;
 	
 	private boolean loadedToDeposit;
-
 	
+	private long loadedToDepositId;
+
+	private String loadedToDepositName;
 	
 
 }

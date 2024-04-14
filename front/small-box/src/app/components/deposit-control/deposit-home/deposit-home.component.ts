@@ -18,6 +18,7 @@ import { SupplyCorrectionNote } from 'src/app/models/supplyCorrectionNoteDto';
 import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DepositDto } from 'src/app/models/depositDto';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-deposit-home',
@@ -31,12 +32,13 @@ export class DepositHomeComponent implements OnInit {
   purchaseOrderItemDtos: Array<PurchaseOrderItemDto> = [];
   supplyItemDtos: Array<SupplyItemDto> = [];
   supplyDto!: SupplyDto;
-  selectedDepositBol:boolean=false;
-  selectedDepositStr:string="";
+  selectedDepositBol: boolean = false;
+  selectedDepositStr: string = "";
   constructor(private dialogService: DialogService,
     private fileUploadService: FileUploadService, private snackBar: SnackBarService
     , private depositControlService: DepositControlService, private cookieService: CookieStorageService,
-    private confirmDialogService: ConfirmDialogService,private formBuilder:FormBuilder
+    private confirmDialogService: ConfirmDialogService, private formBuilder: FormBuilder
+    , private router: Router
   ) { }
 
 
@@ -44,6 +46,7 @@ export class DepositHomeComponent implements OnInit {
     this.getCurrentDeposit();
     console.log(this.selectedDepositBol)
   }
+  currentRouter = this.router.url;
 
   file!: File;
   fileDetails!: FileDetails;
@@ -71,12 +74,8 @@ export class DepositHomeComponent implements OnInit {
     });
 
   }
-
-
-
   onClosePurchaseOrderTableTemplate(): void {
     this.purchaseOrderTableMatDialogRef.close();
-
   }
 
   private purchaseOrderTableMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
@@ -107,6 +106,7 @@ export class DepositHomeComponent implements OnInit {
   }
   onCloseSupplyTableTemplate() {
     this.supplyTableTemplateRef.close();
+    this.router.navigateByUrl('deposit-home');
   }
 
   private supplyTableTemplateRef!: MatDialogRef<DialogTemplateComponent>;
@@ -140,7 +140,7 @@ export class DepositHomeComponent implements OnInit {
   private confirmData!: boolean;
   confirmDepositLoad(purchaseOrderId: number, loadedToDeposit: boolean, orderNumber: number): void {
     if (loadedToDeposit) {
-      var confirmText = "El suministro n°: " + orderNumber + " ya fue cargado al deposito, desea cargarlo nuevamente?";
+      var confirmText = "El suministro n°: " + orderNumber + " ya fue cargado a un deposito, desea cargarlo nuevamente?";
       this.confirmDialogService.confirmDialog(confirmText).subscribe({
         next: (confirmData) => {
           this.confirmData = confirmData;
@@ -157,7 +157,7 @@ export class DepositHomeComponent implements OnInit {
   depositReport: PurchaseOrderToDepositReportDto[] = [];
   loadPurchaseOrderToDepositControl(purchaseOrderId: number) {
     const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
-    this.depositControlService.loadPurchaseOrderToDeposit(purchaseOrderId,depoId).subscribe({
+    this.depositControlService.loadPurchaseOrderToDeposit(purchaseOrderId, depoId).subscribe({
       next: (depositReportData) => {
         this.depositReport = depositReportData;
         console.log(this.depositReport);
@@ -316,7 +316,7 @@ export class DepositHomeComponent implements OnInit {
   supplyCorrectionNote!: SupplyCorrectionNote;
   getSupplyCorrectionNote(supplyId: number) {
     const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
-    this.depositControlService.createSupplyCorrectionNote(supplyId,depoId).subscribe({
+    this.depositControlService.createSupplyCorrectionNote(supplyId, depoId).subscribe({
       next: (noteData) => {
         this.supplyCorrectionNote = noteData;
       },
@@ -326,136 +326,148 @@ export class DepositHomeComponent implements OnInit {
     });
   }
 
-depositFormbuilder = this.formBuilder.group({
-  name:['',Validators.required],
-  streetName:['',Validators.required],
-  houseNumber:['',Validators.required],
-});
-
-depositDto!:DepositDto;
-
-onCloseDepositCreationTemplate() {
-  this.depositCreateMatDialogRef.close();
-}
-
-private depositCreateMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
-openDialogDepositCreation(template: any) {
-  
-  this.depositCreateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
-    template
+  depositFormbuilder = this.formBuilder.group({
+    name: ['', Validators.required],
+    streetName: ['', Validators.required],
+    houseNumber: ['', Validators.required],
   });
-  this.depositCreateMatDialogRef.afterClosed().subscribe();
-}
 
-  createDeposit(){
-    if(this.depositFormbuilder.valid){
+  depositDto!: DepositDto;
+
+  onCloseDepositCreationTemplate() {
+    this.depositCreateMatDialogRef.close();
+
+  }
+
+  private depositCreateMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
+  openDialogDepositCreation(template: any) {
+
+    this.depositCreateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.depositCreateMatDialogRef.afterClosed().subscribe();
+
+  }
+
+  createDeposit() {
+    if (this.depositFormbuilder.valid) {
       this.depositDto = new DepositDto();
-      this.depositDto = Object.assign(this.depositDto,this.depositFormbuilder.value);
+      this.depositDto = Object.assign(this.depositDto, this.depositFormbuilder.value);
       const organizationId = Number(this.cookieService.getUserMainOrganizationId());
-    
+
       this.depositDto.organizationId = organizationId;
       console.log(this.depositDto.organizationId);
       this.depositControlService.createDeposit(this.depositDto).subscribe({
-        next:(depositNameData)=>{
-          this.snackBar.openSnackBar('Se creo el deposito: '+ depositNameData,'Cerrar',3000);
+        next: (depositNameData) => {
+          this.snackBar.openSnackBar('Se creo el deposito: ' + depositNameData, 'Cerrar', 3000);
         },
-        error:(errorData)=>{
-          this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-        
-        },complete:()=>{
+        error: (errorData) => {
+          this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+
+        }, complete: () => {
           this.getAllDepositsByOrganization();
           this.onCloseDepositCreationTemplate();
         }
       });
     }
   }
-depositDtos:DepositDto[]=[];
-getAllDepositsByOrganization():DepositDto[]{
-  const organizationId = Number(this.cookieService.getUserMainOrganizationId());
-  this.depositControlService.findAllDepositsByOrganization(organizationId).subscribe({
-    next:(depositsData)=>{
-      this.depositDtos = depositsData;
-     
-    },
-    error:(errorData)=>{
-      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-    }
-  });
-  return this.depositDtos;
-}
-deleteCurrentDepositSelected(){
-  this.cookieService.deleteCurrentDepositSelectedId();
-}
+  depositDtos: DepositDto[] = [];
+  getAllDepositsByOrganization(): DepositDto[] {
+    const organizationId = Number(this.cookieService.getUserMainOrganizationId());
+    this.depositControlService.findAllDepositsByOrganization(organizationId).subscribe({
+      next: (depositsData) => {
+        this.depositDtos = depositsData;
+
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+    return this.depositDtos;
+  }
+  deleteCurrentDepositSelected() {
+    this.cookieService.deleteCurrentDepositSelectedId();
+  }
 
 
-onCloseDepositSelectionTemplate() {
-  this.depositSelectionMatDialogRef.close();
-}
+  onCloseDepositSelectionTemplate() {
+    this.depositSelectionMatDialogRef.close();
 
-private depositSelectionMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
-openDialogDepositSelection(template: any) {
- this.getAllDepositsByOrganization();
-  this.depositSelectionMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
-    template
-  });
-  this.depositSelectionMatDialogRef.afterClosed().subscribe();
-}
+  }
+
+  private depositSelectionMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
+  openDialogDepositSelection(template: any) {
+    this.getAllDepositsByOrganization();
+    this.depositSelectionMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.depositSelectionMatDialogRef.afterClosed().subscribe({
+      complete: () => {
+        this.getCurrentDeposit();
+      }
+    });
+  }
 
 
 
-setCurrentDeposit(depositId:number){
-  const userId= Number(this.cookieService.getCurrentUserId());
-  this.depositControlService.setCurrentDeposit(userId,depositId).subscribe({
-    next:(depositIdData)=>{
-      this.cookieService.setCurrentDepositSelectedId(JSON.stringify(depositIdData.id));
-      this.snackBar.openSnackBar("Se asigno el deposito: " + depositIdData.name,"Cerrar",3000);
-    },
-    error:(errorData)=>{
-      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-    }
-  })
-}
-
-getCurrentDeposit(){
-  const userId = Number(this.cookieService.getCurrentUserId());
-  this.depositControlService.getCurrentDeposit(userId).subscribe({
-    next:(depositIdData)=>{
-      if(depositIdData.id==null||undefined||depositIdData.id===0){
-        this.selectedDepositBol=false;
-        this.snackBar.openSnackBar('No hay ningun deposito asignado','Cerrar',3000);
-      }else{
-        this.selectedDepositBol=true;
+  setCurrentDeposit(depositId: number) {
+    const userId = Number(this.cookieService.getCurrentUserId());
+    const organizationId = Number(this.cookieService.getUserMainOrganizationId())
+    this.depositControlService.setCurrentDeposit(userId, organizationId, depositId).subscribe({
+      next: (depositIdData) => {
         this.cookieService.setCurrentDepositSelectedId(JSON.stringify(depositIdData.id));
-       this.selectedDepositStr= depositIdData.name;
-       }
-    },
-    error:(errorData)=>{
-      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-    }
-  });
-}
+        this.snackBar.openSnackBar("Se asigno el deposito: " + depositIdData.name, "Cerrar", 3000);
 
-// getCurrentDepositSelected(){
-//   const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
-//   console.log("DEpositID: "+depositId);
-//   if(depositId==null||undefined||depositId===0){
-//     this.selectedDepositBol=false;
-//   }else{
-//     this.selectedDepositBol=true;
-//     this.getAllDepositsByOrganization();
-//    }
-// }
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      },complete:()=>{
+        this.onCloseDepositSelectionTemplate();
+      }
+    });
+  }
 
-  get name(){
+  getCurrentDeposit() {
+    const userId = Number(this.cookieService.getCurrentUserId());
+    const organizationId = Number(this.cookieService.getUserMainOrganizationId());
+    this.depositControlService.getCurrentDeposit(userId, organizationId).subscribe({
+      next: (depositIdData) => {
+        if (depositIdData.id === null || undefined || depositIdData.id === 0) {
+          this.selectedDepositBol = false;
+          this.snackBar.openSnackBar('No hay ningun deposito asignado', 'Cerrar', 3000);
+        } else {
+          this.selectedDepositBol = true;
+          this.cookieService.setCurrentDepositSelectedId(JSON.stringify(depositIdData.id));
+          this.selectedDepositStr = depositIdData.name;
+        }
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+  }
+
+  // getCurrentDepositSelected(){
+  //   const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
+  //   console.log("DEpositID: "+depositId);
+  //   if(depositId==null||undefined||depositId===0){
+  //     this.selectedDepositBol=false;
+  //   }else{
+  //     this.selectedDepositBol=true;
+  //     this.getAllDepositsByOrganization();
+  //    }
+  // }
+
+  get name() {
     return this.depositFormbuilder.controls.name;
   }
-  get streetName(){
+  get streetName() {
     return this.depositFormbuilder.controls.streetName;
   }
-  get houseNumber(){
+  get houseNumber() {
     return this.depositFormbuilder.controls.houseNumber;
   }
- 
+
 
 
 }

@@ -39,6 +39,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel/admin-panel.component';
 import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component';
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -91,16 +92,20 @@ import { UserPanelComponent } from './components/user-panel/user-panel.component
      HttpClientModule,
      MatDialogModule,
      NgxCaptureModule,
-     NgxPaginationModule
+     NgxPaginationModule,
+   
     
     
   ],
  
+ 
   providers: [CookieService,
+    
   {
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
-    multi:true
+    multi:true,
+    
   }],
   bootstrap: [AppComponent]
 })

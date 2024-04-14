@@ -132,13 +132,14 @@ public class DepositControlController {
 	}
 	@PutMapping(path="/set-current-deposit")
 	ResponseEntity<DepositResponseDto> setCurrentDepositId(
-			@RequestParam("userId")long userId,@RequestBody long depositId){
-		DepositResponseDto depositResponse = depositControlService.setCurrentDeposit(userId, depositId);
+			@RequestParam("userId")long userId,@RequestParam("organizationId")long organizationId,@RequestBody long depositId){
+		DepositResponseDto depositResponse = depositControlService.setCurrentDeposit(userId,organizationId, depositId);
 		return new ResponseEntity<DepositResponseDto>(depositResponse,HttpStatus.OK);
 	}
 	@GetMapping(path="/get-current-deposit")
-	ResponseEntity<DepositResponseDto> getCurrentDepositId(@RequestParam("userId")long userId){
-		DepositResponseDto depositResponse = depositControlService.getCurrentDepositId(userId);
+	ResponseEntity<DepositResponseDto> getCurrentDepositId
+	(@RequestParam("userId")long userId,@RequestParam("organizationId")long organizationId){
+		DepositResponseDto depositResponse = depositControlService.getCurrentDepositId(userId,organizationId);
 		return ResponseEntity.ok(depositResponse);
 	}
 

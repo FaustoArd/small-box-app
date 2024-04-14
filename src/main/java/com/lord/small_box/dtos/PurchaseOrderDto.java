@@ -34,4 +34,7 @@ public class PurchaseOrderDto {
 	private List<PurchaseOrderItemDto> items;
 	
 	private boolean loadedToDeposit;
+	
+	private long loadedToDepositId;
+	private String loadedToDepositName;
 }
