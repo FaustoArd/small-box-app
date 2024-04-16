@@ -103,6 +103,7 @@ public class TextToReceipt {
 		String splittedText = Stream.of(text).collect(Collectors.joining(" "));
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		
 		String[] result = Stream.of(splittedText.split(" ")).filter(f -> patternDate.matcher(f).find())
 				.sorted((s2, s1) -> s1.compareTo(s2)).collect(Collectors.joining(" ")).split(" ");
 		if (result.length == 0) {
