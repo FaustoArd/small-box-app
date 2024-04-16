@@ -4,16 +4,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.isNotNull;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,10 +26,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyDto;
+import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.PurchaseOrder;
+import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
@@ -130,6 +135,7 @@ public class DepositControlServiceTest {
 	
 	
 	@Test
+	@DisplayName("CARGAR ORDEN DE COMPRA N 365")
 	@Order(1)
 	void pdfToPurchaseOrder()throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-365.pdf");
@@ -142,6 +148,7 @@ public class DepositControlServiceTest {
 	}
 	
 	@Test
+	@DisplayName("ENCONTRAR ORDEN DE COMPRA N 365 CON ITEMS")
 	@Order(2)
 	void findFullPurchaseOrder()throws Exception{
 		PurchaseOrderDto purchaseOrderDto = depositControlService.findFullPurchaseOrder(1L);
@@ -153,6 +160,7 @@ public class DepositControlServiceTest {
 	}
 	
 	 @Test
+	 @DisplayName("CARGAR ORDEN DE COMPRA N 365 A DEPOSITO")
 	 @Order(3)
 	void loadPurchaseOrderToDepositControl()throws Exception{
 		 List<PurchaseOrderToDepositReportDto> result = depositControlService.loadPurchaseOrderToDepositControl(1L,1L);
@@ -160,20 +168,182 @@ public class DepositControlServiceTest {
 	 }
 	 
 	@Test
+	 @DisplayName("CARGAR SUMINISTRO N 551")
 	@Order(4)
-	void loadSupply()throws Exception{
+	void loadSupply551()throws Exception{
 		String text = pdfToStringUtils.pdfToString("sum-551.pdf");
 		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text,2L);
 		Calendar cal = Calendar.getInstance();
-		cal.set(2024, 0, 1);
+		Calendar cal2 = Calendar.getInstance();
+		cal.set(2024, 1, 5);
+		cal2.set(2024, 1, 7);
 		assertThat(dto.getId()).isNotNull();
-		assertThat(dto.getDate()).isBetween(cal, Calendar.getInstance());
-		assertThat(dto.getEstimatedTotalCost()).isGreaterThan(new BigDecimal(40000000));
+		assertThat(dto.getDate()).isBetween(cal,cal2);
+		assertEquals(dto.getEstimatedTotalCost().doubleValue(),new BigDecimal(43697001.00).doubleValue());
+		
+		//Assert Purchase order total cost equals sum of all items total cost
 		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
 				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
+		
+		assertThat(dto.getSupplyItems().get(0).getCode()).isEqualTo("5.1.4.03451.0001");
+		assertThat(dto.getSupplyItems().get(0).getQuantity()).isEqualTo(5500);
+		assertEquals(dto.getSupplyItems().get(0).getMeasureUnit(), "KILOGRAMO");
+		assertThat(dto.getSupplyItems().get(1).getCode()).isEqualTo("5.1.4.03503.0003");
+		assertThat(dto.getSupplyItems().get(1).getQuantity()).isEqualTo(5000);
+		assertEquals(dto.getSupplyItems().get(1).getMeasureUnit(), "CADA UNO");
+		assertThat(dto.getSupplyItems().get(2).getCode()).isEqualTo("5.1.4.03411.0002");
+		assertThat(dto.getSupplyItems().get(2).getQuantity()).isEqualTo(2000);
+		assertEquals(dto.getSupplyItems().get(2).getMeasureUnit(), "CADA UNO");
+		assertThat(dto.getSupplyItems().get(3).getCode()).isEqualTo("5.1.4.03411.0001");
+		assertThat(dto.getSupplyItems().get(3).getQuantity()).isEqualTo(1000);
+		assertEquals(dto.getSupplyItems().get(3).getMeasureUnit(), "CADA UNO");
+		assertThat(dto.getSupplyItems().get(4).getCode()).isEqualTo("5.1.4.03410.0001");
+		assertThat(dto.getSupplyItems().get(4).getQuantity()).isEqualTo(4300);
+		assertEquals(dto.getSupplyItems().get(4).getMeasureUnit(), "CADA UNO");
+		assertThat(dto.getSupplyItems().get(5).getCode()).isEqualTo("5.1.4.03413.0001");
+		assertThat(dto.getSupplyItems().get(5).getQuantity()).isEqualTo(4663);
+		assertEquals(dto.getSupplyItems().get(5).getMeasureUnit(), "CADA UNO");
+		assertThat(dto.getSupplyItems().get(6).getCode()).isEqualTo("5.1.4.03412.0002");
+		assertThat(dto.getSupplyItems().get(6).getQuantity()).isEqualTo(2000);
+		assertEquals(dto.getSupplyItems().get(6).getMeasureUnit(), "CADA UNO");
+		assertThat(dto.getSupplyItems().get(7).getCode()).isEqualTo("5.1.4.03501.0001");
+		assertThat(dto.getSupplyItems().get(7).getQuantity()).isEqualTo(5000);
+		assertEquals(dto.getSupplyItems().get(7).getMeasureUnit(), "CADA UNO");
+		assertThat(dto.getSupplyItems().get(8).getCode()).isEqualTo("5.1.4.03453.0001");
+		assertThat(dto.getSupplyItems().get(8).getQuantity()).isEqualTo(7000);
+		assertEquals(dto.getSupplyItems().get(8).getMeasureUnit(), "CADA UNO");
+		assertThat(dto.getSupplyItems().get(9).getCode()).isEqualTo("5.1.4.03560.0002");
+		assertThat(dto.getSupplyItems().get(9).getQuantity()).isEqualTo(1000);
+		assertEquals(dto.getSupplyItems().get(9).getMeasureUnit(), "CADA UNO");
+		
+		//Assert item unit cost * item unit quantity equals item total cost 
+		ListIterator<SupplyItemDto> it = dto.getSupplyItems().listIterator();
+		it.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+		});
+		
 	}
 	
+	
+	@Test
+	@DisplayName("CARGAR SUMINISTRO N 223")
+	@Order(5)
+	void loadSupply223()throws Exception{
+		String text = pdfToStringUtils.pdfToString("sum-223.pdf");
+		System.err.println(text);
+		SupplyDto dto = depositControlService.collectSupplyFromText(text,2L);
+		Calendar cal = Calendar.getInstance();
+		Calendar cal2 = Calendar.getInstance();
+		cal.set(2023, 0, 9);
+		cal2.set(2023, 0,11);
+		assertThat(dto.getId()).isNotNull();
+		assertThat(dto.getDate()).isBetween(cal, cal2);
+		assertEquals(dto.getEstimatedTotalCost().doubleValue(),new BigDecimal(1305266.71).doubleValue());
+		
+		//Assert Purchase order total cost equals sum of all items total cost
+		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
+				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
+		
+		assertThat(dto.getSupplyItems().get(0).getCode()).isEqualTo("3.3.1.07030.0001");
+		assertThat(dto.getSupplyItems().get(0).getProgramaticCat()).isEqualTo("39.00.00");
+		System.err.println("sum 223 quantity:" +dto.getSupplyItems().get(0).getQuantity());
+		assertThat(dto.getSupplyItems().get(0).getQuantity()).isEqualTo(1);
+		assertThat(dto.getSupplyItems().get(0).getMeasureUnit()).isEqualTo("UNIDAD");
+		
+		assertThat(dto.getSupplyItems().get(0).getUnitCost().doubleValue())
+		.isEqualTo(new BigDecimal( 1305266.71000).doubleValue());
+		
+		assertThat(dto.getSupplyItems().get(0).getTotalEstimatedCost().doubleValue())
+		.isEqualTo(new BigDecimal(  1305266.71).doubleValue());
+		
+		ListIterator<SupplyItemDto> it = dto.getSupplyItems().listIterator();
+		
+		//Assert item unit cost * item unit quantity equals item total cost 
+		it.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+		});
+		
+	}
+	@Test
+	@DisplayName("CARGAR SUMINISTRO N 177")
+	@Order(6)
+	void loadSupply177()throws Exception{
+		String text = pdfToStringUtils.pdfToString("sum-177.pdf");
+		System.err.println(text);
+		SupplyDto dto = depositControlService.collectSupplyFromText(text,2L);
+		Calendar cal = Calendar.getInstance();
+		Calendar cal2 = Calendar.getInstance();
+		cal.set(2024, 0, 10);
+		cal2.set(2024, 0,12);
+		assertThat(dto.getId()).isNotNull();
+		assertEquals(dto.getSupplyNumber(), 177);
+		assertThat(dto.getDate()).isBetween(cal, cal2);
+		assertEquals(dto.getEstimatedTotalCost().doubleValue(),new BigDecimal(27104000.00).doubleValue());
+		
+		//Assert Purchase order total cost equals sum of all items total cost
+		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
+				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
+		assertThat(dto.getSupplyItems().get(0).getCode()).isEqualTo("5.1.4.07522.0001");
+		assertThat(dto.getSupplyItems().get(0).getQuantity()).isEqualTo(50);
+		assertThat(dto.getSupplyItems().get(1).getCode()).isEqualTo("5.1.4.07522.0002");
+		assertThat(dto.getSupplyItems().get(1).getQuantity()).isEqualTo(100);
+		assertThat(dto.getSupplyItems().get(2).getCode()).isEqualTo("5.1.4.07522.0003");
+		assertThat(dto.getSupplyItems().get(2).getQuantity()).isEqualTo(150);
+		assertThat(dto.getSupplyItems().get(3).getCode()).isEqualTo("5.1.4.07522.0004");
+		assertThat(dto.getSupplyItems().get(3).getQuantity()).isEqualTo(150);
+		assertThat(dto.getSupplyItems().get(4).getCode()).isEqualTo("5.1.4.07522.0005");
+		assertThat(dto.getSupplyItems().get(4).getQuantity()).isEqualTo(150);
+		assertThat(dto.getSupplyItems().get(5).getCode()).isEqualTo("5.1.4.07522.0006");
+		assertThat(dto.getSupplyItems().get(5).getQuantity()).isEqualTo(200);
+		assertThat(dto.getSupplyItems().get(6).getCode()).isEqualTo("5.1.4.07522.0007");
+		assertThat(dto.getSupplyItems().get(6).getQuantity()).isEqualTo(150);
+		assertThat(dto.getSupplyItems().get(7).getCode()).isEqualTo("5.1.4.07522.0008");
+		assertThat(dto.getSupplyItems().get(7).getQuantity()).isEqualTo(200);
+		assertThat(dto.getSupplyItems().get(8).getCode()).isEqualTo("5.1.4.07522.0009");
+		assertThat(dto.getSupplyItems().get(8).getQuantity()).isEqualTo(150);
+		ListIterator<SupplyItemDto> it = dto.getSupplyItems().listIterator();
+		
+		//Assert item unit cost * item unit quantity equals item total cost 
+		it.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+			
+		});
+	
+	}
+	@Test
+	@DisplayName("CARGAR SUMINISTRO N 1043")
+	@Order(7)
+	void loadSupply1043()throws Exception{
+		String text = pdfToStringUtils.pdfToString("sum-1043.pdf");
+		System.err.println(text);
+		SupplyDto dto = depositControlService.collectSupplyFromText(text,2L);
+		Calendar cal = Calendar.getInstance();
+		Calendar cal2 = Calendar.getInstance();
+		cal.set(2023, 2, 7);
+		cal2.set(2023, 2,9);
+		assertThat(dto.getId()).isNotNull();
+		assertEquals(dto.getSupplyNumber(), 1043);
+		assertThat(dto.getDate()).isBetween(cal, cal2);
+		assertEquals(dto.getEstimatedTotalCost().doubleValue(),new BigDecimal(5500000.00).doubleValue());
+		
+		//Assert Purchase order total cost equals sum of all items total cost
+		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
+				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
+		
+		assertThat(dto.getSupplyItems().get(0).getCode()).isEqualTo("5.1.4.07776.0001");
+		assertEquals(dto.getSupplyItems().get(0).getQuantity(), 5000);
+		
+		//Assert item unit cost * item unit quantity equals item total cost 
+		ListIterator<SupplyItemDto> it = dto.getSupplyItems().listIterator();
+		it.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+		});
+	}
 	
 
 }

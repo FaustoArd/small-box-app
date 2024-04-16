@@ -2,8 +2,8 @@ package com.lord.small_box.models;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.List;
-
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,8 +48,10 @@ public class SupplyItem {
 	
 	private Calendar expirationDate;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="supply_id",referencedColumnName = "id")
 	private Supply supply;
 
+	
 }

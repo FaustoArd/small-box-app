@@ -10,6 +10,9 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.lord.small_box.dtos.OrganizationDto;
@@ -22,12 +25,17 @@ import com.lord.small_box.services.OrganizationService;
 @Component
 public class TextToSupply {
 	
+	private static final Logger log = LoggerFactory.getLogger(TextToSupply.class);
+	
+	private final List<String> measureUnits = List.of("cada", "kilogramo", "unidad");
+	
 	public SupplyDto textToSupply(String text,OrganizationService organizationService) {
+		log.info("Text to Supply main method");
 		SupplyDto supplyDto = new SupplyDto();
 		String[] arrTextSplitN = text.split("\\n");
-		supplyDto.setSupplyNumber(mustReturnSupplyNumber(arrTextSplitN));
-		supplyDto.setDate(mustReturnDate(text));
-		supplyDto.setSupplyItems(mustReturnSupplyItemList(arrTextSplitN));
+		supplyDto.setSupplyNumber(getSupplyNumber(arrTextSplitN));
+		supplyDto.setDate(getDate(text));
+		supplyDto.setSupplyItems(getSupplyItemList(arrTextSplitN));
 		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
 		supplyDto.setDependencyApplicant(getApplicant(arrTextSplitN));
 		System.out.println("Applicant: "+ supplyDto.getDependencyApplicant());
@@ -39,6 +47,7 @@ public class TextToSupply {
 	}
 	
 	private String getApplicant(String[] arrText) {
+		log.info("Text to Supply Get applicant");
 		String applicant =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst()
 				.map(m -> m.substring(m.indexOf("O")+1, m.lastIndexOf("M")-1)
 						.replace("Secretaría de", "").replace("Dirección de", "")
@@ -47,18 +56,8 @@ public class TextToSupply {
 		return  applicant;
 	}
 	
-	private OrganizationDto getOrganizationDto(String applicant,OrganizationService organizationService) {
-		String orgFinderRegex = "(?=.*(" + applicant + "))";
-		Pattern pOrgFinderRegex = Pattern.compile(orgFinderRegex, Pattern.CASE_INSENSITIVE);
-		organizationService.findAll().forEach(e -> System.out.println(e.getOrganizationName()));
-		OrganizationDto findedOrgDto = organizationService.findAll().stream()
-				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
-		
-		return findedOrgDto;
-	}
-	
 	private BigDecimal getEstimatedTotal(String[] arrText) {
+		log.info("Text to Supply Get Estimated total");
 		return new BigDecimal(Stream.of(arrText)
 				.filter(f -> f.toLowerCase().contains("total"))
 				.findFirst().get().replaceAll("[a-zA-Z]", "")
@@ -72,9 +71,11 @@ public class TextToSupply {
 	private final String supplyNumberTitleRegex = "(SOLICITUD DE PEDIDO Nº)";
 
 	
-	private int mustReturnSupplyNumber(String[] arrText)  {
+	private int getSupplyNumber(String[] arrText)  {
+		log.info("Text to Supply Get supply number");
+
 		Pattern p = Pattern.compile(supplyNumberTitleRegex);
-		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 27))
+		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 28))
 				.map(m -> m.replaceAll("[a-zA-Z\\D]", "")).collect(Collectors.joining(""));
 		
 		return Integer.parseInt(number);
@@ -83,7 +84,9 @@ public class TextToSupply {
 	private final String strDateV2 = "^(?=.*([0-9]{2})*([/]{1})){2}([0-9]{2,4})";
 
 	
-	private Calendar  mustReturnDate(String text){
+	private Calendar  getDate(String text){
+		log.info("Text to Supply Get date");
+
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Pattern p = Pattern.compile(strDateV2);
@@ -101,17 +104,17 @@ public class TextToSupply {
 
 	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
 	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
-	private final String itemQuantityRegex = "^(?=.*([0-9])*(,)([0-9]){3}(.)([0-9]){2})";
+	private final String itemQuantityRegex = "([0-9]*[,]{1})?([0-9]{1,3}[.]{1}[0-9]{2}){1}";
 	private final String itemUnitPrice = "^(?=.*([0-9].)*(,)([0-9]){5})";
 	//private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";
 
+	Pattern pCode = Pattern.compile(itemCodeRegex);
+	Pattern pProgCat = Pattern.compile(itemProgCatRegex);
+	Pattern pQuantity = Pattern.compile(itemQuantityRegex);
+	Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
 	
-	private List<SupplyItemDto> mustReturnSupplyItemList(String[] arrText)  {
-		Pattern pCode = Pattern.compile(itemCodeRegex);
-		Pattern pProgCat = Pattern.compile(itemProgCatRegex);
-		Pattern pQuantity = Pattern.compile(itemQuantityRegex);
-		Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
-		//Pattern pMesaureUnit = Pattern.compile(itemMeasureUnitRegex,Pattern.CASE_INSENSITIVE);
+	private List<SupplyItemDto> getSupplyItemList(String[] arrText)  {
+		log.info("Text to Supply Get supply items");
 		List<String> strItems = Stream.of(arrText).filter(f -> pCode.matcher(f).find())
 				.collect(Collectors.toList());
 		return  strItems.stream().map(item -> {
@@ -127,16 +130,18 @@ public class TextToSupply {
 				if (pProgCat.matcher(i).matches()) {
 					supplyItemDto.setProgramaticCat(i);
 				}
-				if (pQuantity.matcher(i).find()) {
-					if (i.contains(".")) {
+				if (pQuantity.matcher(i).matches()) {
+					System.err.println("Quantity: " + i);
+					if (i.contains(",")) {
 						i = i.replace(",", "");
-						i = i.substring(0, i.indexOf("."));
-						supplyItemDto.setQuantity(Integer.parseInt(i));
+						
+						supplyItemDto.setQuantity(new BigDecimal(i).intValue());
 					} else {
 
-						char q = i.charAt(0);
-						supplyItemDto.setQuantity(Integer.parseInt(Character.toString(q)));
+						
+						supplyItemDto.setQuantity(new BigDecimal(i).intValue());
 					}
+
 				}
 				if(pUnitPrice.matcher(i).find()) {
 					i= i.replace(".", "");
@@ -144,10 +149,10 @@ public class TextToSupply {
 							
 					supplyItemDto.setUnitCost(new BigDecimal(i));
 				}
-				if(i.toLowerCase().contains("cada")) {
-					i = i + " UNO";
-					supplyItemDto.setMeasureUnit(i);
-				}if( i.toLowerCase().contains("kilogramo")) {
+				if(isMeasureUnit(i)) {
+					if(i.toLowerCase().contains("cada")) {
+						i = i + " UNO";
+					}
 					supplyItemDto.setMeasureUnit(i);
 				}
 
@@ -157,5 +162,8 @@ public class TextToSupply {
 		}).toList();
 		
 	}
+	private boolean isMeasureUnit(String i){
+		return 	measureUnits.stream().filter(f -> i.toLowerCase().contains(f.toLowerCase())).findFirst().isPresent();
+		}
 
 }

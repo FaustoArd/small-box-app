@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -140,5 +141,14 @@ public class DepositControlController {
 		DepositResponseDto depositResponse = depositControlService.getCurrentDepositId(userId,organizationId);
 		return ResponseEntity.ok(depositResponse);
 	}
-
+	@DeleteMapping(path="/delete-purchase-order/{orderId}")
+	ResponseEntity<Integer> deletePurchaseOrder(@PathVariable("orderId")long orderId){
+		int orderNumberDeleted = depositControlService.deletePurchaseOrder(orderId);
+		return ResponseEntity.ok(orderNumberDeleted);
+	}
+	@DeleteMapping(path="/delete-supply/{supplyId}")
+	ResponseEntity<Integer> deleteSupply(@PathVariable("supplyId")long supplyId){
+		int supplyNumberDeleted = depositControlService.deleteSupply(supplyId);
+		return ResponseEntity.ok(supplyNumberDeleted);
+	}
 }

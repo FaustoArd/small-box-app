@@ -94,4 +94,13 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
     (`${DEPOSIT_CONTROL_BASE_URL}/get-current-deposit?userId=${userId}&organizationId=${organizationId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
    }
+
+   deletePurchaseOrderById(orderId:number):Observable<number>{
+    return this.http.delete<number>(`${DEPOSIT_CONTROL_BASE_URL}/delete-purchase-order/${orderId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+   deleteSupplyById(supplyId:number):Observable<number>{
+    return this.http.delete<number>(`${DEPOSIT_CONTROL_BASE_URL}/delete-supply/${supplyId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
 }

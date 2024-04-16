@@ -303,6 +303,7 @@
                             <th>VER ITEMS</th>
                             <th>A DEPOSITO</th>
                             <th>CARGADO</th>
+                            <th>Eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -325,7 +326,9 @@
                             </td>
                             <td *ngIf="order.loadedToDeposit" class="text-success text-center">
                                 {{order.loadedToDepositName}}</td>
-                            <td *ngIf="!order.loadedToDeposit" class="text-danger  text-center">NO</td>
+                            <td *ngIf="!order.loadedToDeposit" class="text-danger  text-center">No</td>
+                            <td> <button (click)="confirmDeletePurchaseOrder(order.id)"
+                                    class="btn btn-sm text-danger">-</button></td>
                         </tr>
 
                     </tbody>
@@ -380,6 +383,7 @@
                 <th scope="col">COSTO TOTAL ESTIMADO</th>
                 <th scope="col">VER ITEMS</th>
                 <th scope="col">COMPARAR</th>
+                <th scope="col">ELIMINAR</th>
             </tr>
         </thead>
         <tbody>
@@ -393,6 +397,10 @@
                 <td class="text-center"><button
                         (click)="openSupplyCorrectionNoteDialog(supplyCorrectionNoteTemplate,supply.id)"
                         class="btn btn-lg text-danger"></button></td>
+                <td class="text-center"><button
+                        (click)="confirmDeleteSupply(supply.id)"
+                        class="btn btn-lg text-danger"></button></td>
+
             </tr>
 
         </tbody>

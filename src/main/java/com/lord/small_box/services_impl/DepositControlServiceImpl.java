@@ -357,14 +357,30 @@ public class DepositControlServiceImpl implements DepositControlService {
 		}
 	}
 
-	/*
-	 * @Override public DepositResponseDto resetCurrentUserSelectedDeposit(long
-	 * userId, long currentOrgId) { AppUser user = userService.findById(userId);
-	 * Organization org = organizationService.findById(currentOrgId);
-	 * Optional<Deposit> deposit = depositRepository.findByOrganization(org);
-	 * if(deposit.isPresent()) if(user.getCurrentDepositId()==deposit.get().getId())
-	 * { return new DepositResponseDto(deposit.get().getId(),
-	 * deposit.get().getName()); } return null; }
-	 */
+	@Override
+	public int deletePurchaseOrder(long orderId) {
+		if(purchaseOrderRepository.existsById(orderId)){
+			int orderNumberDeleted = purchaseOrderRepository.findById(orderId).get().getOrderNumber();
+			purchaseOrderRepository.deleteById(orderId);
+			return orderNumberDeleted;
+		
+		}else {
+			throw new ItemNotFoundException("No se encontro la orden de compra");
+		}
+	}
+
+	@Override
+	public int deleteSupply(long supplyId) {
+		if(supplyRepository.existsById(supplyId)){
+			int supplyNumberDeleted = supplyRepository.findById(supplyId).get().getSupplyNumber();
+			supplyRepository.deleteById(supplyId);
+			return supplyNumberDeleted;
+		
+		}else {
+			throw new ItemNotFoundException("No se encontro el suministro");
+		}
+	}
+
+
 
 }

@@ -48,6 +48,8 @@ public interface DepositControlService {
 	
 	public DepositResponseDto getCurrentDepositId(long userId,long organizationId);
 	
-	//public DepositResponseDto resetCurrentUserSelectedDeposit(long userId,long currentOrgId);
+	public int deletePurchaseOrder(long orderId);
+	
+	public int deleteSupply(long supplyId);
 
 }

@@ -86,19 +86,6 @@ public class TextToPurchaseOrder {
 		return dependency;
 	}
 
-	private OrganizationDto getOrganization(String executerUnit, OrganizationService organizationService) {
-		String orgFinderRegex = "(?=.*(" + executerUnit + "))";
-		Pattern pOrgFinderRegex = Pattern.compile(orgFinderRegex, Pattern.CASE_INSENSITIVE);
-		
-		OrganizationDto findedOrg = organizationService.findAll().stream()
-				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
-		
-		return findedOrg;
-	}
-
-	
-
 	private String getPurchaseOrderNumber(String[] arrText) {
 		log.info("Text to purchase order Get purchase order number");
 		return Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get().replaceAll("[\\D]", "")

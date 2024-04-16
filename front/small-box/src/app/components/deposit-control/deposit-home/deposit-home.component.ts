@@ -226,6 +226,7 @@ export class DepositHomeComponent implements OnInit {
   onCloseSupplyListTemplate() {
     this.supplyListMatDialogRef.close();
   }
+
   private supplyListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogSupplyList(template: any) {
     const orgId = Number(this.cookieService.getUserMainOrganizationId());
@@ -447,17 +448,59 @@ export class DepositHomeComponent implements OnInit {
     });
   }
 
-  // getCurrentDepositSelected(){
-  //   const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
-  //   console.log("DEpositID: "+depositId);
-  //   if(depositId==null||undefined||depositId===0){
-  //     this.selectedDepositBol=false;
-  //   }else{
-  //     this.selectedDepositBol=true;
-  //     this.getAllDepositsByOrganization();
-  //    }
-  // }
+  purchaseOrderConfirmData!:boolean;
+  confirmDeletePurchaseOrder(orderId:number){
+    var confirmText = "Desea eliminar la orden?";
+    this.confirmDialogService.confirmDialog(confirmText).subscribe({
+      next:(confirmData)=>{
+        this.purchaseOrderConfirmData = confirmData;
+        if(this.purchaseOrderConfirmData){
+          this.deletePurchaseOrderById(orderId);
+          }else{
+          this.snackBar.openSnackBar('Se cancelo la operacion.','Cerrar',3000);
+        }
+      }
+    });
+  }
 
+  deletePurchaseOrderById(orderId:number){
+    this.depositControlService.deletePurchaseOrderById(orderId).subscribe({
+      next:(orderNumberDeletedData)=>{
+        this.snackBar.openSnackBar('Se elimino la order de compra: ' +orderNumberDeletedData,'Cerrar',3000);
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    });
+  }
+
+  supplyConfirmData!:boolean;
+  confirmDeleteSupply(supplyId:number){
+    var confirmText = "Desea eliminar el suministro?";
+    this.confirmDialogService.confirmDialog(confirmText).subscribe({
+      next:(confirmData)=>{
+        this.supplyConfirmData = confirmData;
+        if(this.supplyConfirmData){
+          this.deleteSupplyById(supplyId);
+        }else{
+          this.snackBar.openSnackBar('Se cancelo la operacion.','Cerrar',3000);
+        }
+      }
+    
+    });
+  }
+  deleteSupplyById(supplyId:number){
+    this.depositControlService.deleteSupplyById(supplyId).subscribe({
+      next:(supplyNumberDetetedData)=>{
+        this.snackBar.openSnackBar('Se elimino el suministro numero: ' +supplyNumberDetetedData,'Cerrar',3000);
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    })
+  }
+
+ 
   get name() {
     return this.depositFormbuilder.controls.name;
   }

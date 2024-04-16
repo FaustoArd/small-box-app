@@ -3,6 +3,9 @@ package com.lord.small_box.models;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,6 +51,7 @@ public class PurchaseOrderItem {
 	
 	private Calendar expirationDate;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="purchase_order_id", referencedColumnName = "id")
 	private PurchaseOrder purchaseOrder;

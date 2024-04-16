@@ -1,5 +1,6 @@
 package com.lord.small_box;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -50,6 +51,8 @@ public class PdfTextToSupplyTest {
 
 	@Autowired
 	private OrganizationResponsibleRepository organizationResponsibleRepository;
+	
+	private List<String> measureUnits = List.of("cada", "kilogramo", "unidad");
 
 	private String text;
 	private List<String> supplyPdfList;
@@ -146,9 +149,20 @@ public class PdfTextToSupplyTest {
 		System.out.println("Applicant: " + supplyDto.getDependencyApplicant());
 	System.out.println("Estimated: " + supplyDto.getEstimatedTotalCost());
 		System.out.println("TEST: " + supplyDto.getSupplyNumber());
-		System.out.println("Quantity: " + supplyDto.getDate().getTime());
+		System.out.println("Date: " + supplyDto.getDate().getTime());
 		supplyDto.getSupplyItems().forEach(e -> System.out.println(e.getCode()));
 		supplyDto.getSupplyItems().forEach(e -> System.out.println("quant: " + e.getQuantity()));
+		supplyDto.getSupplyItems().forEach(e -> System.out.println("measure unit: " + e.getMeasureUnit()));
+		assertEquals(supplyDto.getSupplyItems().get(0).getMeasureUnit(), "KILOGRAMO");
+		assertEquals(supplyDto.getSupplyItems().get(1).getMeasureUnit(), "CADA UNO");
+		assertEquals(supplyDto.getSupplyItems().get(2).getMeasureUnit(), "CADA UNO");
+		assertEquals(supplyDto.getSupplyItems().get(3).getMeasureUnit(), "CADA UNO");
+		assertEquals(supplyDto.getSupplyItems().get(4).getMeasureUnit(), "CADA UNO");
+		assertEquals(supplyDto.getSupplyItems().get(5).getMeasureUnit(), "CADA UNO");
+		assertEquals(supplyDto.getSupplyItems().get(6).getMeasureUnit(), "CADA UNO");
+		assertEquals(supplyDto.getSupplyItems().get(7).getMeasureUnit(), "CADA UNO");
+		assertEquals(supplyDto.getSupplyItems().get(8).getMeasureUnit(), "CADA UNO");
+		assertEquals(supplyDto.getSupplyItems().get(9).getMeasureUnit(), "CADA UNO");
 	}
 
 	private String getApplicant(String[] arrText) {
@@ -210,13 +224,14 @@ public class PdfTextToSupplyTest {
 		return cal;
 	}
 
-	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
-	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
-	private final String itemQuantityRegex = "^(?=.*([0-9])*(,)([0-9]){3}(.)([0-9]){2})";
-	private final String itemUnitPrice = "^(?=.*([0-9][,.])*([,.])([0-9]){5})";
+	
 	//private final String itemUnitPrice = "^(?=.*([0-9])*([\\D])([0-9]){3}([\\D])([0-9]){5})";
 	// private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";
-
+	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
+	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
+	private final String itemQuantityRegex = "([0-9]*[,]{1})?([0-9]{1,3}[.]{1}[0-9]{2}){1}";
+	private final String itemUnitPrice = "^(?=.*([0-9][,.])*([,.])([0-9]){5})";
+	
 	private List<SupplyItemDto> mustReturnSupplyItemList(String[] arrText) throws Exception {
 		Pattern pCode = Pattern.compile(itemCodeRegex);
 		Pattern pProgCat = Pattern.compile(itemProgCatRegex);
@@ -241,15 +256,16 @@ public class PdfTextToSupplyTest {
 				if (pProgCat.matcher(i).matches()) {
 					supplyItemDto.setProgramaticCat(i);
 				}
-				if (pQuantity.matcher(i).find()) {
-					if (i.contains(".")) {
+				if (pQuantity.matcher(i).matches()) {
+					System.err.println("Quantity: " + i);
+					if (i.contains(",")) {
 						i = i.replace(",", "");
-						i = i.substring(0, i.indexOf(".") );
-						supplyItemDto.setQuantity(Integer.parseInt(i));
+						
+						supplyItemDto.setQuantity(new BigDecimal(i).intValue());
 					} else {
 
-						char q = i.charAt(0);
-						supplyItemDto.setQuantity(Integer.parseInt(Character.toString(q)));
+						
+						supplyItemDto.setQuantity(new BigDecimal(i).intValue());
 					}
 
 				}
@@ -263,14 +279,26 @@ public class PdfTextToSupplyTest {
 					i = i.replace(",", ".");
 					supplyItemDto.setUnitCost(new BigDecimal(i));*/
 				}
+				
+				if(isMeasureUnit(i)) {
+					if(i.toLowerCase().contains("cada")) {
+						i = i + " UNO";
+					}
+					supplyItemDto.setMeasureUnit(i);
+				}
+				
+				
 
-				if (i.toLowerCase().contains("cada")) {
+				/*if (i.toLowerCase().contains("cada")) {
 					i = i + " UNO";
 					supplyItemDto.setMeasureUnit(i);
 				}
 				if (i.toLowerCase().contains("kilogramo")) {
 					supplyItemDto.setMeasureUnit(i);
 				}
+				if (i.toLowerCase().contains("unidad")) {
+					supplyItemDto.setMeasureUnit(i);
+				}*/
 
 			});
 
@@ -279,9 +307,11 @@ public class PdfTextToSupplyTest {
 
 	}
 	
-	private long countPointDot(String line) {
-		return Stream.of(line).filter(f -> f.contains(".")|| f.contains(",")).count();
+	private boolean isMeasureUnit(String i){
+	return 	measureUnits.stream().filter(f -> i.toLowerCase().contains(f.toLowerCase())).findFirst().isPresent();
 	}
+	
+	
 
 	/*
 	 * private int findPointsQuantity(String text) { char[] arrText =
@@ -291,10 +321,10 @@ public class PdfTextToSupplyTest {
 
 	@Test
 	void patternTest() throws Exception {
-		Pattern p2 = Pattern.compile(itemUnitPrice, Pattern.CASE_INSENSITIVE);
+		Pattern p2 = Pattern.compile("^(([0-9][,])*([0-9]){1,3}([.]){1}([0-9]){2})", Pattern.CASE_INSENSITIVE);
 		// Matcher m = p2.matcher("P.V. Nro. 00007 -");
 		// System.out.println("test: "+arrTextSplitN[2]);
-		assertTrue(p2.matcher("9.500.00000").find());
+		assertTrue(p2.matcher("5,500.00").find());
 	}
 
 }
