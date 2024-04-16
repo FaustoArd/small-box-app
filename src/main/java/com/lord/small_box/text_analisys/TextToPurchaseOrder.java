@@ -129,11 +129,11 @@ public class TextToPurchaseOrder {
 					.setQuantity(Integer.parseInt(Stream.of(arrItems).filter(f -> pItemQuantity.matcher(f).find())
 							.map(m -> m.substring(0, m.indexOf(","))).findFirst().get()));
 
-			String quantityResult = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst().get();
-			if (quantityResult.equalsIgnoreCase("cada")) {
-				quantityResult = quantityResult + "-UNO";
+			String measureUnitResult = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst().get();
+			if (measureUnitResult.equalsIgnoreCase("cada")) {
+				measureUnitResult = measureUnitResult + "-UNO";
 			}
-			purchaseOrderItem.setMeasureUnit(quantityResult);
+			purchaseOrderItem.setMeasureUnit(measureUnitResult);
 
 			purchaseOrderItem.setProgramaticCat(
 					Stream.of(arrItems).filter(f -> pProgCat.matcher(f).find()).findFirst().get().strip());

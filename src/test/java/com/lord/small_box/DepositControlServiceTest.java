@@ -24,6 +24,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.lord.small_box.dtos.PurchaseOrderDto;
+import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
@@ -46,19 +47,10 @@ import com.lord.small_box.utils.PdfToStringUtils;
 public class DepositControlServiceTest {
 	
 	@Autowired
-	private PurchaseOrderRepository purchaseOrderRepository;
-	
-	@Autowired
-	private PurchaseOrderItemRepository purchaseOrderItemRepository;
-	
-	@Autowired
 	private DepositControlService depositControlService;
 	
 	@Autowired
 	private PdfToStringUtils pdfToStringUtils;
-	
-	@Autowired
-	private TextToPurchaseOrder textToPurchaseOrder;
 	
 	@Autowired
 	private OrganizationService organizationService;
@@ -135,21 +127,259 @@ public class DepositControlServiceTest {
 	
 	
 	@Test
-	@DisplayName("CARGAR ORDEN DE COMPRA N 365")
+	@DisplayName("CARGAR ORDEN DE COMPRA N 365_24")
 	@Order(1)
-	void pdfToPurchaseOrder()throws Exception {
+	void pdfToPurchaseOrder365_24()throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-365.pdf");
 		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text,2L);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
+		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 15);
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
+		assertEquals(purchaseOrderDto.getItems().get(1).getQuantity(), 8);
+		assertEquals(purchaseOrderDto.getItems().get(2).getCode(), "2.1.1.00592.0001");
+		assertEquals(purchaseOrderDto.getItems().get(2).getQuantity(), 15);
+		assertEquals(purchaseOrderDto.getItems().get(3).getCode(), "2.1.1.00591.0002");
+		assertEquals(purchaseOrderDto.getItems().get(3).getQuantity(), 20);
+		assertEquals(purchaseOrderDto.getItems().get(4).getCode(), "2.1.1.00705.0036");
+		assertEquals(purchaseOrderDto.getItems().get(4).getQuantity(), 10);
+		assertEquals(purchaseOrderDto.getItems().get(5).getCode(), "2.1.1.00511.0008");
+		assertEquals(purchaseOrderDto.getItems().get(5).getQuantity(), 10);
+		assertEquals(purchaseOrderDto.getItems().get(6).getCode(), "2.1.1.00705.0012");
+		assertEquals(purchaseOrderDto.getItems().get(6).getQuantity(), 8);
 		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
+		assertEquals(purchaseOrderDto.getItems().get(7).getQuantity(), 1);
 		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
+		
+		//Assert item unit cost * item quantity equals item total cost
+		ListIterator<PurchaseOrderItemDto> items = purchaseOrderDto.getItems().listIterator();
+		items.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+		});
+		
+	assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
+	}
+	@Test
+	@DisplayName("CARGAR ORDEN DE COMPRA N 340_24")
+	@Order(2)
+	void pdfToPurchaseOrder340_24()throws Exception {
+		String text = pdfToStringUtils.pdfToString("oc-340.pdf");
+		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text,2L);
+		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0091");
+		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 350);
+		assertEquals(purchaseOrderDto.getItems().get(0).getUnitCost().doubleValue(), 1580.00000);
+		assertEquals(purchaseOrderDto.getItems().get(0).getMeasureUnit(),"UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00439.0001");
+		assertEquals(purchaseOrderDto.getItems().get(1).getQuantity(), 50);
+		assertEquals(purchaseOrderDto.getItems().get(1).getUnitCost().doubleValue(), 4500.00000);
+		assertEquals(purchaseOrderDto.getItems().get(1).getMeasureUnit(),"UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().get(2).getCode(), "2.1.1.00520.0003");
+		assertEquals(purchaseOrderDto.getItems().get(2).getQuantity(), 90);
+		assertEquals(purchaseOrderDto.getItems().get(2).getUnitCost().doubleValue(), 600.00000);
+		assertEquals(purchaseOrderDto.getItems().get(2).getMeasureUnit(),"CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().get(3).getCode(), "2.1.1.00455.0007");
+		assertEquals(purchaseOrderDto.getItems().get(3).getQuantity(), 6);
+		assertEquals(purchaseOrderDto.getItems().get(3).getUnitCost().doubleValue(), 3100.00000);
+		assertEquals(purchaseOrderDto.getItems().get(3).getMeasureUnit(),"KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().get(4).getCode(), "2.1.1.00489.0066");
+		assertEquals(purchaseOrderDto.getItems().get(4).getQuantity(), 3);
+		assertEquals(purchaseOrderDto.getItems().get(4).getUnitCost().doubleValue(), 3100.00000);
+		assertEquals(purchaseOrderDto.getItems().get(4).getMeasureUnit(),"BOLSA");
+		assertEquals(purchaseOrderDto.getItems().get(5).getCode(), "2.1.1.00489.0096");
+		assertEquals(purchaseOrderDto.getItems().get(5).getQuantity(), 3);
+		assertEquals(purchaseOrderDto.getItems().get(5).getUnitCost().doubleValue(), 6900.00000);
+		assertEquals(purchaseOrderDto.getItems().get(5).getMeasureUnit(),"BOLSA");
+		assertEquals(purchaseOrderDto.getItems().get(6).getCode(), "2.1.1.00489.0067");
+		assertEquals(purchaseOrderDto.getItems().get(6).getQuantity(), 3);
+		assertEquals(purchaseOrderDto.getItems().get(6).getUnitCost().doubleValue(), 5100.00000);
+		assertEquals(purchaseOrderDto.getItems().get(6).getMeasureUnit(),"BOLSA");
+		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02444.0003");
+		assertEquals(purchaseOrderDto.getItems().get(7).getQuantity(), 7);
+		assertEquals(purchaseOrderDto.getItems().get(7).getUnitCost().doubleValue(), 1400.00000);
+		assertEquals(purchaseOrderDto.getItems().get(7).getMeasureUnit(),"UNIDAD");
+		assertEquals(purchaseOrderDto.getOrderNumber(), 340);
+		
+		//Assert item unit cost * item quantity equals item total cost
+		ListIterator<PurchaseOrderItemDto> items = purchaseOrderDto.getItems().listIterator();
+		items.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+		});
+		
+	assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(), 905700.00);
+	}
+	@Test
+	@DisplayName("CARGAR ORDEN DE COMPRA N 429_24")
+	@Order(3)
+	void pdfToPurchaseOrder429_24()throws Exception {
+		String text = pdfToStringUtils.pdfToString("oc-429.pdf");
+		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text,2L);
+		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.02610.0001");
+		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 32);
+		assertEquals(purchaseOrderDto.getItems().get(0).getUnitCost().doubleValue(), 1550.00000);
+		assertEquals(purchaseOrderDto.getItems().get(0).getMeasureUnit(),"CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.02429.0001");
+		assertEquals(purchaseOrderDto.getItems().get(1).getQuantity(), 20);
+		assertEquals(purchaseOrderDto.getItems().get(1).getUnitCost().doubleValue(), 1490.00000);
+		assertEquals(purchaseOrderDto.getItems().get(1).getMeasureUnit(),"UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().get(2).getCode(), "2.1.1.02430.0003");
+		assertEquals(purchaseOrderDto.getItems().get(2).getQuantity(), 20);
+		assertEquals(purchaseOrderDto.getItems().get(2).getUnitCost().doubleValue(), 1410.00000);
+		assertEquals(purchaseOrderDto.getItems().get(2).getMeasureUnit(),"CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().get(3).getCode(), "2.1.1.00542.0023");
+		assertEquals(purchaseOrderDto.getItems().get(3).getQuantity(), 24);
+		assertEquals(purchaseOrderDto.getItems().get(3).getUnitCost().doubleValue(), 7550.00000);
+		assertEquals(purchaseOrderDto.getItems().get(3).getMeasureUnit(),"KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().get(4).getCode(), "2.1.1.00542.0030");
+		assertEquals(purchaseOrderDto.getItems().get(4).getQuantity(), 24);
+		assertEquals(purchaseOrderDto.getItems().get(4).getUnitCost().doubleValue(), 1810.00000);
+		assertEquals(purchaseOrderDto.getItems().get(4).getMeasureUnit(),"CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().get(5).getCode(), "2.1.1.00542.0019");
+		assertEquals(purchaseOrderDto.getItems().get(5).getQuantity(), 40);
+		assertEquals(purchaseOrderDto.getItems().get(5).getUnitCost().doubleValue(), 10210.00000);
+		assertEquals(purchaseOrderDto.getItems().get(5).getMeasureUnit(),"KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().get(6).getCode(), "2.1.1.00542.0028");
+		assertEquals(purchaseOrderDto.getItems().get(6).getQuantity(), 24);
+		assertEquals(purchaseOrderDto.getItems().get(6).getUnitCost().doubleValue(), 8100.00000);
+		assertEquals(purchaseOrderDto.getItems().get(6).getMeasureUnit(),"KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.00542.0029");
+		assertEquals(purchaseOrderDto.getItems().get(7).getQuantity(), 24);
+		assertEquals(purchaseOrderDto.getItems().get(7).getUnitCost().doubleValue(), 7850.00000);
+		assertEquals(purchaseOrderDto.getItems().get(7).getMeasureUnit(),"KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().get(8).getCode(), "2.1.1.00611.0002");
+		assertEquals(purchaseOrderDto.getItems().get(8).getQuantity(), 12);
+		assertEquals(purchaseOrderDto.getItems().get(8).getUnitCost().doubleValue(), 2870.00000);
+		assertEquals(purchaseOrderDto.getItems().get(8).getMeasureUnit(),"CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().get(9).getCode(), "2.1.1.00515.0009");
+		assertEquals(purchaseOrderDto.getItems().get(9).getQuantity(), 16);
+		assertEquals(purchaseOrderDto.getItems().get(9).getUnitCost().doubleValue(), 2545.00000);
+		assertEquals(purchaseOrderDto.getItems().get(9).getMeasureUnit(),"CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().get(10).getCode(), "2.1.1.00456.0032");
+		assertEquals(purchaseOrderDto.getItems().get(10).getQuantity(), 40);
+		assertEquals(purchaseOrderDto.getItems().get(10).getUnitCost().doubleValue(), 1300.00000);
+		assertEquals(purchaseOrderDto.getItems().get(10).getMeasureUnit(),"LITROS");
+		assertEquals(purchaseOrderDto.getItems().get(11).getCode(), "2.1.1.00707.0008");
+		assertEquals(purchaseOrderDto.getItems().get(11).getQuantity(), 24);
+		assertEquals(purchaseOrderDto.getItems().get(11).getUnitCost().doubleValue(), 2255.00000);
+		assertEquals(purchaseOrderDto.getItems().get(11).getMeasureUnit(),"CAJA");
+		assertEquals(purchaseOrderDto.getItems().get(12).getCode(), "2.1.1.00969.0001");
+		assertEquals(purchaseOrderDto.getItems().get(12).getQuantity(), 20);
+		assertEquals(purchaseOrderDto.getItems().get(12).getUnitCost().doubleValue(), 9370.00000);
+		assertEquals(purchaseOrderDto.getItems().get(12).getMeasureUnit(),"KILOGRAMO");
+		assertEquals(purchaseOrderDto.getOrderNumber(), 429);
+		
+		//Assert item unit cost * item quantity equals item total cost
+		ListIterator<PurchaseOrderItemDto> items = purchaseOrderDto.getItems().listIterator();
+		items.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+		});
+		
+	assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(), 1492120.00);
+	}
+	//@Test
+	@DisplayName("CARGAR ORDEN DE COMPRA N 454_24")
+	@Order(4)
+	void pdfToPurchaseOrder454_24()throws Exception {
+		String text = pdfToStringUtils.pdfToString("oc-365.pdf");
+		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text,2L);
+		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
+		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 15);
+		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
+		assertEquals(purchaseOrderDto.getItems().get(1).getQuantity(), 8);
+		assertEquals(purchaseOrderDto.getItems().get(2).getCode(), "2.1.1.00592.0001");
+		assertEquals(purchaseOrderDto.getItems().get(2).getQuantity(), 15);
+		assertEquals(purchaseOrderDto.getItems().get(3).getCode(), "2.1.1.00591.0002");
+		assertEquals(purchaseOrderDto.getItems().get(3).getQuantity(), 20);
+		assertEquals(purchaseOrderDto.getItems().get(4).getCode(), "2.1.1.00705.0036");
+		assertEquals(purchaseOrderDto.getItems().get(4).getQuantity(), 10);
+		assertEquals(purchaseOrderDto.getItems().get(5).getCode(), "2.1.1.00511.0008");
+		assertEquals(purchaseOrderDto.getItems().get(5).getQuantity(), 10);
+		assertEquals(purchaseOrderDto.getItems().get(6).getCode(), "2.1.1.00705.0012");
+		assertEquals(purchaseOrderDto.getItems().get(6).getQuantity(), 8);
+		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
+		assertEquals(purchaseOrderDto.getItems().get(7).getQuantity(), 1);
+		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
+		
+		//Assert item unit cost * item quantity equals item total cost
+		ListIterator<PurchaseOrderItemDto> items = purchaseOrderDto.getItems().listIterator();
+		items.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+		});
+		
+	assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
+	}
+	//@Test
+	@DisplayName("CARGAR ORDEN DE COMPRA N 493_24")
+	@Order(5)
+	void pdfToPurchaseOrder493_24()throws Exception {
+		String text = pdfToStringUtils.pdfToString("oc-365.pdf");
+		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text,2L);
+		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
+		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 15);
+		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
+		assertEquals(purchaseOrderDto.getItems().get(1).getQuantity(), 8);
+		assertEquals(purchaseOrderDto.getItems().get(2).getCode(), "2.1.1.00592.0001");
+		assertEquals(purchaseOrderDto.getItems().get(2).getQuantity(), 15);
+		assertEquals(purchaseOrderDto.getItems().get(3).getCode(), "2.1.1.00591.0002");
+		assertEquals(purchaseOrderDto.getItems().get(3).getQuantity(), 20);
+		assertEquals(purchaseOrderDto.getItems().get(4).getCode(), "2.1.1.00705.0036");
+		assertEquals(purchaseOrderDto.getItems().get(4).getQuantity(), 10);
+		assertEquals(purchaseOrderDto.getItems().get(5).getCode(), "2.1.1.00511.0008");
+		assertEquals(purchaseOrderDto.getItems().get(5).getQuantity(), 10);
+		assertEquals(purchaseOrderDto.getItems().get(6).getCode(), "2.1.1.00705.0012");
+		assertEquals(purchaseOrderDto.getItems().get(6).getQuantity(), 8);
+		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
+		assertEquals(purchaseOrderDto.getItems().get(7).getQuantity(), 1);
+		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
+		
+		//Assert item unit cost * item quantity equals item total cost
+		ListIterator<PurchaseOrderItemDto> items = purchaseOrderDto.getItems().listIterator();
+		items.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+		});
+		
+	assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
+	}
+	//@Test
+	@DisplayName("CARGAR ORDEN DE COMPRA N 619_24")
+	@Order(6)
+	void pdfToPurchaseOrder619_24()throws Exception {
+		String text = pdfToStringUtils.pdfToString("oc-365.pdf");
+		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text,2L);
+		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
+		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 15);
+		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
+		assertEquals(purchaseOrderDto.getItems().get(1).getQuantity(), 8);
+		assertEquals(purchaseOrderDto.getItems().get(2).getCode(), "2.1.1.00592.0001");
+		assertEquals(purchaseOrderDto.getItems().get(2).getQuantity(), 15);
+		assertEquals(purchaseOrderDto.getItems().get(3).getCode(), "2.1.1.00591.0002");
+		assertEquals(purchaseOrderDto.getItems().get(3).getQuantity(), 20);
+		assertEquals(purchaseOrderDto.getItems().get(4).getCode(), "2.1.1.00705.0036");
+		assertEquals(purchaseOrderDto.getItems().get(4).getQuantity(), 10);
+		assertEquals(purchaseOrderDto.getItems().get(5).getCode(), "2.1.1.00511.0008");
+		assertEquals(purchaseOrderDto.getItems().get(5).getQuantity(), 10);
+		assertEquals(purchaseOrderDto.getItems().get(6).getCode(), "2.1.1.00705.0012");
+		assertEquals(purchaseOrderDto.getItems().get(6).getQuantity(), 8);
+		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
+		assertEquals(purchaseOrderDto.getItems().get(7).getQuantity(), 1);
+		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
+		
+		//Assert item unit cost * item quantity equals item total cost
+		ListIterator<PurchaseOrderItemDto> items = purchaseOrderDto.getItems().listIterator();
+		items.forEachRemaining(item ->{
+			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
+					item.getTotalEstimatedCost().doubleValue());
+		});
+		
 	assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),295600.00);
 	}
 	
 	@Test
 	@DisplayName("ENCONTRAR ORDEN DE COMPRA N 365 CON ITEMS")
-	@Order(2)
+	@Order(7)
 	void findFullPurchaseOrder()throws Exception{
 		PurchaseOrderDto purchaseOrderDto = depositControlService.findFullPurchaseOrder(1L);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
@@ -161,7 +391,7 @@ public class DepositControlServiceTest {
 	
 	 @Test
 	 @DisplayName("CARGAR ORDEN DE COMPRA N 365 A DEPOSITO")
-	 @Order(3)
+	 @Order(8)
 	void loadPurchaseOrderToDepositControl()throws Exception{
 		 List<PurchaseOrderToDepositReportDto> result = depositControlService.loadPurchaseOrderToDepositControl(1L,1L);
 		 result.forEach(e -> System.out.println("Report result: " +e));
@@ -169,7 +399,7 @@ public class DepositControlServiceTest {
 	 
 	@Test
 	 @DisplayName("CARGAR SUMINISTRO N 551")
-	@Order(4)
+	@Order(9)
 	void loadSupply551()throws Exception{
 		String text = pdfToStringUtils.pdfToString("sum-551.pdf");
 		System.err.println(text);
@@ -191,31 +421,31 @@ public class DepositControlServiceTest {
 		assertEquals(dto.getSupplyItems().get(0).getMeasureUnit(), "KILOGRAMO");
 		assertThat(dto.getSupplyItems().get(1).getCode()).isEqualTo("5.1.4.03503.0003");
 		assertThat(dto.getSupplyItems().get(1).getQuantity()).isEqualTo(5000);
-		assertEquals(dto.getSupplyItems().get(1).getMeasureUnit(), "CADA UNO");
+		assertEquals(dto.getSupplyItems().get(1).getMeasureUnit(), "CADA-UNO");
 		assertThat(dto.getSupplyItems().get(2).getCode()).isEqualTo("5.1.4.03411.0002");
 		assertThat(dto.getSupplyItems().get(2).getQuantity()).isEqualTo(2000);
-		assertEquals(dto.getSupplyItems().get(2).getMeasureUnit(), "CADA UNO");
+		assertEquals(dto.getSupplyItems().get(2).getMeasureUnit(), "CADA-UNO");
 		assertThat(dto.getSupplyItems().get(3).getCode()).isEqualTo("5.1.4.03411.0001");
 		assertThat(dto.getSupplyItems().get(3).getQuantity()).isEqualTo(1000);
-		assertEquals(dto.getSupplyItems().get(3).getMeasureUnit(), "CADA UNO");
+		assertEquals(dto.getSupplyItems().get(3).getMeasureUnit(), "CADA-UNO");
 		assertThat(dto.getSupplyItems().get(4).getCode()).isEqualTo("5.1.4.03410.0001");
 		assertThat(dto.getSupplyItems().get(4).getQuantity()).isEqualTo(4300);
-		assertEquals(dto.getSupplyItems().get(4).getMeasureUnit(), "CADA UNO");
+		assertEquals(dto.getSupplyItems().get(4).getMeasureUnit(), "CADA-UNO");
 		assertThat(dto.getSupplyItems().get(5).getCode()).isEqualTo("5.1.4.03413.0001");
 		assertThat(dto.getSupplyItems().get(5).getQuantity()).isEqualTo(4663);
-		assertEquals(dto.getSupplyItems().get(5).getMeasureUnit(), "CADA UNO");
+		assertEquals(dto.getSupplyItems().get(5).getMeasureUnit(), "CADA-UNO");
 		assertThat(dto.getSupplyItems().get(6).getCode()).isEqualTo("5.1.4.03412.0002");
 		assertThat(dto.getSupplyItems().get(6).getQuantity()).isEqualTo(2000);
-		assertEquals(dto.getSupplyItems().get(6).getMeasureUnit(), "CADA UNO");
+		assertEquals(dto.getSupplyItems().get(6).getMeasureUnit(), "CADA-UNO");
 		assertThat(dto.getSupplyItems().get(7).getCode()).isEqualTo("5.1.4.03501.0001");
 		assertThat(dto.getSupplyItems().get(7).getQuantity()).isEqualTo(5000);
-		assertEquals(dto.getSupplyItems().get(7).getMeasureUnit(), "CADA UNO");
+		assertEquals(dto.getSupplyItems().get(7).getMeasureUnit(), "CADA-UNO");
 		assertThat(dto.getSupplyItems().get(8).getCode()).isEqualTo("5.1.4.03453.0001");
 		assertThat(dto.getSupplyItems().get(8).getQuantity()).isEqualTo(7000);
-		assertEquals(dto.getSupplyItems().get(8).getMeasureUnit(), "CADA UNO");
+		assertEquals(dto.getSupplyItems().get(8).getMeasureUnit(), "CADA-UNO");
 		assertThat(dto.getSupplyItems().get(9).getCode()).isEqualTo("5.1.4.03560.0002");
 		assertThat(dto.getSupplyItems().get(9).getQuantity()).isEqualTo(1000);
-		assertEquals(dto.getSupplyItems().get(9).getMeasureUnit(), "CADA UNO");
+		assertEquals(dto.getSupplyItems().get(9).getMeasureUnit(), "CADA-UNO");
 		
 		//Assert item unit cost * item unit quantity equals item total cost 
 		ListIterator<SupplyItemDto> it = dto.getSupplyItems().listIterator();
@@ -229,7 +459,7 @@ public class DepositControlServiceTest {
 	
 	@Test
 	@DisplayName("CARGAR SUMINISTRO N 223")
-	@Order(5)
+	@Order(10)
 	void loadSupply223()throws Exception{
 		String text = pdfToStringUtils.pdfToString("sum-223.pdf");
 		System.err.println(text);
@@ -269,7 +499,7 @@ public class DepositControlServiceTest {
 	}
 	@Test
 	@DisplayName("CARGAR SUMINISTRO N 177")
-	@Order(6)
+	@Order(11)
 	void loadSupply177()throws Exception{
 		String text = pdfToStringUtils.pdfToString("sum-177.pdf");
 		System.err.println(text);
@@ -316,7 +546,7 @@ public class DepositControlServiceTest {
 	}
 	@Test
 	@DisplayName("CARGAR SUMINISTRO N 1043")
-	@Order(7)
+	@Order(12)
 	void loadSupply1043()throws Exception{
 		String text = pdfToStringUtils.pdfToString("sum-1043.pdf");
 		System.err.println(text);

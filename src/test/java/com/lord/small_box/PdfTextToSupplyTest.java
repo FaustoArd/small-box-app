@@ -282,7 +282,7 @@ public class PdfTextToSupplyTest {
 				
 				if(isMeasureUnit(i)) {
 					if(i.toLowerCase().contains("cada")) {
-						i = i + " UNO";
+						i = i + "-UNO";
 					}
 					supplyItemDto.setMeasureUnit(i);
 				}
