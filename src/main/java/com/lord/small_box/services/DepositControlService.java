@@ -51,5 +51,9 @@ public interface DepositControlService {
 	public int deletePurchaseOrder(long orderId);
 	
 	public int deleteSupply(long supplyId);
+	
+	public PurchaseOrderDto findPurchaseOrder(long purchaseOrderId);
+	
+	public SupplyDto findsupply(long supplyId);
 
 }

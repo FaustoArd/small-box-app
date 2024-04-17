@@ -339,7 +339,10 @@
 </ng-template>
 <ng-template #purchaseOrderItemsListTemplate>
     <button id="closeButton" (click)="onClosepurchaseOrderItemListTemplate()" class="btn btn-sm text-white">X</button>
-    <h2>ITEMS</h2>
+    <div class="mt-1 ms-1" >
+        <h1 class="d-inline">O.C NUMERO:</h1>
+        <h2 class="d-inline"> {{findedPurchaseOrder.orderNumber}}</h2>
+    </div>
     <table class="table-sm table-bordered h-75">
         <thead>
             <tr>
@@ -410,7 +413,10 @@
 </ng-template>
 <ng-template #supplyItemsListTemplate>
     <button id="closeButton" (click)="onCloseSupplyItemListTemplate()" class="btn btn-sm text-white">X</button>
-    <h2>ITEMS</h2>
+    <div class="mt-1" >
+    <h1 class="d-inline">SUMINISTRO NUMERO:</h1>
+    <h2 class="d-inline"> {{findedSupply.supplyNumber}}</h2>
+</div>
     <table class="table-sm table-bordered h-75">
         <thead>
             <tr>

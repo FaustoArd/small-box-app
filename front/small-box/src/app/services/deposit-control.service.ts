@@ -43,7 +43,7 @@ export class DepositControlService {
     }
 
     findFullPurchaseOrder(purchaseOrderId:number):Observable<PurchaseOrderDto>{
-      return this.http.get<PurchaseOrderDto>(`${DEPOSIT_CONTROL_BASE_URL}/find-purchase-order/${purchaseOrderId}`,this.httpOptions)
+      return this.http.get<PurchaseOrderDto>(`${DEPOSIT_CONTROL_BASE_URL}/find-full-purchase-order/${purchaseOrderId}`,this.httpOptions)
       .pipe(catchError(this.handleError));
     }
 
@@ -102,5 +102,15 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
    deleteSupplyById(supplyId:number):Observable<number>{
     return this.http.delete<number>(`${DEPOSIT_CONTROL_BASE_URL}/delete-supply/${supplyId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
+   }
+
+   findPurchaseOrderById(orderId:number):Observable<PurchaseOrderDto>{
+    return this.http.get<PurchaseOrderDto>(`${DEPOSIT_CONTROL_BASE_URL}/find-purchase-order/${orderId}`)
+    .pipe(catchError(this.handleError))
+   }
+
+   findSupplyById(supplyId:number):Observable<SupplyDto>{
+    return this.http.get<SupplyDto>(`${DEPOSIT_CONTROL_BASE_URL}/find-supply/${supplyId}`,this.httpOptions)
+    .pipe(catchError(this.handleError))
    }
 }

@@ -11,7 +11,18 @@ export class DialogService {
   constructor(private matDialog:MatDialog) { }
 
   openDialogCreation(data:DialogTemplateData){
-    return this.matDialog.open(DialogTemplateComponent,{ data });
+    return this.matDialog.open(DialogTemplateComponent,{ 
+      autoFocus: false,
+      data
+     });
+  }
+
+  openDialogDepositListCreation(data:DialogTemplateData){
+    return this.matDialog.open(DialogTemplateComponent,{ 
+      height:'100%',
+      autoFocus: false,
+      data
+     });
   }
 
   openDialogItemCreation(data:DialogTemplateData){
@@ -19,7 +30,7 @@ export class DialogService {
       width:'40%',
       height:'70%',
       data
-    })
+    });
   }
 
   openSupplyCorrectionNoteCreation(data:DialogTemplateData){
@@ -27,7 +38,7 @@ export class DialogService {
       width:'100%',
       height:'90%',
       data
-    })
+    });
   }
 
   openSupplyListCreation(data:DialogTemplateData){
@@ -35,6 +46,6 @@ export class DialogService {
       width:'50%',
       height:'60%',
       data
-    })
+    });
   }
 }

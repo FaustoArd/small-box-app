@@ -100,7 +100,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 				.findByOrderNumber(purchaseOrderDto.getOrderNumber());
 		if (checkDuplicate.isPresent()) {
 			throw new DuplicateItemException("La orden de compra con el numero: " + purchaseOrderDto.getOrderNumber()
-					+ " ya fue cargada." + " Numero de orden encontrado: " + checkDuplicate.get().getOrderNumber());
+					+ " ya fue cargada.");
 		}
 		PurchaseOrder purchaseOrder = PurchaseOrderMapper.INSTANCE.dtoToOrder(purchaseOrderDto);
 		Organization org = organizationService.findById(organizationId);
@@ -379,6 +379,19 @@ public class DepositControlServiceImpl implements DepositControlService {
 		}else {
 			throw new ItemNotFoundException("No se encontro el suministro");
 		}
+	}
+
+	@Override
+	public PurchaseOrderDto findPurchaseOrder(long purchaseOrderId) {
+		PurchaseOrder order =  purchaseOrderRepository.findById(purchaseOrderId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro la orden de compra"));
+		return PurchaseOrderMapper.INSTANCE.orderToDto(order);
+	}
+
+	@Override
+	public SupplyDto findsupply(long supplyId) {
+	Supply supply = supplyRepository.findById(supplyId).orElseThrow(()-> new ItemNotFoundException("No se encontro el suministro"));
+	return SupplyMapper.INSTANCE.supplyToDto(supply);
 	}
 
 

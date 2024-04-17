@@ -29,10 +29,12 @@ import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
+import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.SupplyItem;
+import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
@@ -57,6 +59,9 @@ public class DepositControlServiceTest {
 
 	@Autowired
 	private OrganizationResponsibleRepository organizationResponsibleRepository;
+	
+	@Autowired
+	private DepositRepository depositRepository;
 
 	@BeforeAll
 	void setup() {
@@ -122,6 +127,11 @@ public class DepositControlServiceTest {
 		organizationService.save(org3);
 		organizationService.save(org4);
 		organizationService.save(org5);
+		
+		Deposit deposit = Deposit.builder().name("AVELLANEDA")
+				.streetName("AVELLANEDA").houseNumber("2212")
+				.organization(dirAdmDesp).build();
+		depositRepository.save(deposit);
 	}
 
 	@Test

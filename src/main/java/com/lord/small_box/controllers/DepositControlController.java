@@ -92,7 +92,8 @@ public class DepositControlController {
 		return new ResponseEntity<PurchaseOrderDto>(purchaseOrderDto,HttpStatus.CREATED);
 	}
 	
-	@GetMapping(path ="/find-purchase-order/{purchaseOrderId}")
+	//Find purchase order, with items.
+	@GetMapping(path ="/find-full-purchase-order/{purchaseOrderId}")
 	ResponseEntity<PurchaseOrderDto> findFullPurchaseOrder(@PathVariable("purchaseOrderId")long purchaseOrderId){
 		PurchaseOrderDto purchaseOrderDto = depositControlService.findFullPurchaseOrder(purchaseOrderId);
 		return ResponseEntity.ok(purchaseOrderDto);
@@ -150,5 +151,17 @@ public class DepositControlController {
 	ResponseEntity<Integer> deleteSupply(@PathVariable("supplyId")long supplyId){
 		int supplyNumberDeleted = depositControlService.deleteSupply(supplyId);
 		return ResponseEntity.ok(supplyNumberDeleted);
+	}
+	
+	//Find purchase order, without items.
+	@GetMapping(path="/find-purchase-order/{orderId}")
+	ResponseEntity<PurchaseOrderDto> findPurchaseOrderById(@PathVariable("orderId")long orderId){
+		PurchaseOrderDto dto = depositControlService.findPurchaseOrder(orderId);
+		return ResponseEntity.ok(dto);
+	}
+	@GetMapping(path="/find-supply/{supplyId}")
+	ResponseEntity<SupplyDto> findSupplyById(@PathVariable("supplyId")long supplyId){
+		SupplyDto dto = depositControlService.findsupply(supplyId);
+		return ResponseEntity.ok(dto);
 	}
 }

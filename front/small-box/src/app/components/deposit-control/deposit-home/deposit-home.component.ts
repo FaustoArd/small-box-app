@@ -137,6 +137,8 @@ export class DepositHomeComponent implements OnInit {
     this.purchaseOrderTemplateRef.afterClosed().subscribe();
   }
 
+ 
+
   private confirmData!: boolean;
   confirmDepositLoad(purchaseOrderId: number, loadedToDeposit: boolean, orderNumber: number): void {
     if (loadedToDeposit) {
@@ -194,10 +196,23 @@ export class DepositHomeComponent implements OnInit {
   private purchaseOrderItemListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogPurchaseOrderItemsList(template: any, purchaseOrderId: number) {
     this.getPurchaseOrderItems(purchaseOrderId);
+    this.getPurchaseOrder(purchaseOrderId);
     this.purchaseOrderItemListMatDialogRef = this.dialogService.openDialogCreation({
       template
     });
     this.purchaseOrderItemListMatDialogRef.afterClosed().subscribe();
+  }
+
+  findedPurchaseOrder!:PurchaseOrderDto;
+  getPurchaseOrder(orderId:number){
+    this.depositControlService.findPurchaseOrderById(orderId).subscribe({
+      next:(orderData)=>{
+        this.findedPurchaseOrder = orderData;
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    });
   }
 
   getAllPurchaseOrders(organizationId: number) {
@@ -237,6 +252,19 @@ export class DepositHomeComponent implements OnInit {
     this.supplyListMatDialogRef.afterClosed().subscribe();
 
   }
+  
+  findedSupply!:SupplyDto;
+getSupplybyId(supplyId:number){
+  this.depositControlService.findSupplyById(supplyId).subscribe({
+    next:(supplyData)=>{
+      this.findedSupply = supplyData;
+    },
+    error:(errorData)=>{
+      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+    }
+  })
+}
+
   suppliesDto: SupplyDto[] = [];
   getAllSupplies(organizationId: number) {
     this.depositControlService.findAllSuppliesByOrganization(organizationId).subscribe({
@@ -255,11 +283,14 @@ export class DepositHomeComponent implements OnInit {
   private supplyItemListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogSuppliesItemList(template: any, supplyId: number) {
     this.getSupplyItems(supplyId);
+    this.getSupplybyId(supplyId);
     this.supplyItemListMatDialogRef = this.dialogService.openDialogCreation({
       template
     });
     this.supplyItemListMatDialogRef.afterClosed().subscribe();
   }
+
+ 
 
   supplyItemsDtoListShow: SupplyItemDto[] = [];
   getSupplyItems(supplyId: number) {
@@ -293,7 +324,7 @@ export class DepositHomeComponent implements OnInit {
   private depositControlListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDepositControlListTemplate(template: any): void {
     this.getDepositControlsByOrganization();
-    this.depositControlListMatDialogRef = this.dialogService.openDialogCreation({
+    this.depositControlListMatDialogRef = this.dialogService.openDialogDepositListCreation({
       template
     });
     this.depositControlListMatDialogRef.afterClosed().subscribe();
