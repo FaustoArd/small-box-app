@@ -2,6 +2,7 @@ package com.lord.small_box.services;
 
 import java.util.List;
 
+import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.DepositDto;
 import com.lord.small_box.dtos.DepositResponseDto;
@@ -12,6 +13,7 @@ import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
+import com.lord.small_box.models.BigBag;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
 import com.lord.small_box.models.SupplyItem;
@@ -55,5 +57,9 @@ public interface DepositControlService {
 	public PurchaseOrderDto findPurchaseOrder(long purchaseOrderId);
 	
 	public SupplyDto findsupply(long supplyId);
+	
+	public BigBag createBigBag(BigBagDto bigBagDto,List<Long> depositControlIds);
+	
+	public int getTotalBigBagQuantityAvailable(long bigBagId, long depositId);
 
 }

@@ -74,8 +74,8 @@ public class AppUser implements UserDetails {
 	@Column(name="main_organization_id")
 	private long mainOrganizationId;
 	
-	@Column(name="current_deposit_id")
-	private long currentDepositId;
+	//@Column(name="current_deposit_id")
+	//private long currentDepositId;
 	
 	
 	
@@ -173,19 +173,14 @@ public class AppUser implements UserDetails {
 		this.organizations = organizations;
 	}
 	
-	public long getMainOrganizationId() {
+	public Long getMainOrganizationId() {
 		return mainOrganizationId;
 	}
-	public void setMainOrganizationId(long mainOrganizationId) {
+	
+	public void setMainOrganizationId(Long mainOrganizationId) {
 		this.mainOrganizationId = mainOrganizationId;
 	}
 	
-	public long getCurrentDepositId() {
-		return currentDepositId;
-	}
-	public void setCurrentDepositId(long currentDepositId) {
-		this.currentDepositId = currentDepositId;
-	}
 	
 	@Override
 	public boolean isAccountNonExpired() {

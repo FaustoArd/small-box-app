@@ -22,4 +22,6 @@ public interface DepositControlMapper {
 	public DepositControl dtoToDepositControl(DepositControlDto depositControlDto);
 	
 	public List<DepositControlDto> depositControlsToDtos(List<DepositControl> depositControls);
+	
+	public List<DepositControl> dtosToDepositControls(List<DepositControlDto> depositControlDtos);
 }

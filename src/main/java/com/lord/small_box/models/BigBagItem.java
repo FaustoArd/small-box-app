@@ -3,6 +3,9 @@ package com.lord.small_box.models;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,33 +25,28 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Entity
-@Table(name="deposit_control")
-public class DepositControl {
+@Table(name="big_bag_item")
+public class BigBagItem {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String place;
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@JoinColumn(name="big_bag_id",referencedColumnName = "id")
+	private BigBag bigBag;
 	
-	private String itemName;
-	
-	private String itemCode;
-	
-	private int quantity;
-	
-	private Calendar expirationDate;
-	
-	private String provider;
+	private String code;
 	
 	private String measureUnit;
 	
-	private BigDecimal itemUnitPrice;
+	private int quantity;
 	
-	private BigDecimal itemTotalPrice;
+	private BigDecimal unitCost;
 	
-	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinColumn(name="organization_id", referencedColumnName = "id")
-	private Deposit deposit;
+	private BigDecimal totalCost;
+	
+	private Calendar expirationDate;
 
 }

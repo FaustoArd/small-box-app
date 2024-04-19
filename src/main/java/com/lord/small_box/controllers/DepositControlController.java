@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
+import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.DepositDto;
 import com.lord.small_box.dtos.DepositResponseDto;
@@ -163,5 +164,9 @@ public class DepositControlController {
 	ResponseEntity<SupplyDto> findSupplyById(@PathVariable("supplyId")long supplyId){
 		SupplyDto dto = depositControlService.findsupply(supplyId);
 		return ResponseEntity.ok(dto);
+	}
+	@PostMapping(path="/create-big-bag")
+	ResponseEntity<BigBagDto> createBigBag(@RequestBody BigBagDto bigBagDto){
+		return null;
 	}
 }

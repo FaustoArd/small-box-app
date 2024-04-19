@@ -11,8 +11,6 @@ import lombok.Setter;
 public class DepositControlDto {
     private Long id;
     
-	private String supplyNumber;
-	
 	private String place;
 	
 	private String itemName;

@@ -11,7 +11,7 @@ import com.lord.small_box.models.Organization;
 
 public interface DepositControlRepository extends JpaRepository<DepositControl, Long> {
 	
-	public List<DepositControl> findAllByItemCodeIn(List<String> itemCodes);
+	public List<DepositControl> findAllByItemCodeInAndDeposit(List<String> itemCodes,Deposit deposit);
 	
 	public Optional<DepositControl> findByItemCodeAndDeposit(String itemCode,Deposit deposit);
 	

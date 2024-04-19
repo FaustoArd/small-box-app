@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -23,17 +24,26 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.lord.small_box.dtos.BigBagDto;
+import com.lord.small_box.dtos.BigBagItemDto;
+import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
+import com.lord.small_box.mappers.DepositControlMapper;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
+import com.lord.small_box.models.BigBag;
 import com.lord.small_box.models.Deposit;
+import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.SupplyItem;
+import com.lord.small_box.repositories.BigBagItemRepository;
+import com.lord.small_box.repositories.DepositControlRepository;
 import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
@@ -61,7 +71,15 @@ public class DepositControlServiceTest {
 	private OrganizationResponsibleRepository organizationResponsibleRepository;
 	
 	@Autowired
+	private BigBagItemRepository bigBagItemRepository;
+
+	@Autowired
 	private DepositRepository depositRepository;
+	
+	@Autowired
+	private DepositControlRepository depositControlRepository;
+
+	private long depositAvellanedaId;
 
 	@BeforeAll
 	void setup() {
@@ -127,12 +145,14 @@ public class DepositControlServiceTest {
 		organizationService.save(org3);
 		organizationService.save(org4);
 		organizationService.save(org5);
-		
-		Deposit deposit = Deposit.builder().name("AVELLANEDA")
-				.streetName("AVELLANEDA").houseNumber("2212")
+
+		Deposit deposit = Deposit.builder().name("AVELLANEDA").streetName("AVELLANEDA").houseNumber("2212")
 				.organization(dirAdmDesp).build();
-		depositRepository.save(deposit);
+		Deposit savedDeposit = depositRepository.save(deposit);
+		depositAvellanedaId = savedDeposit.getId();
 	}
+
+	private long purchaseOrder365Id;
 
 	@Test
 	@DisplayName("CARGAR ORDEN DE COMPRA N 365_24")
@@ -140,6 +160,7 @@ public class DepositControlServiceTest {
 	void pdfToPurchaseOrder365_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-365.pdf");
 		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
+		purchaseOrder365Id = purchaseOrderDto.getId();
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
 		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 15);
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
@@ -306,159 +327,152 @@ public class DepositControlServiceTest {
 	void pdfToPurchaseOrder454_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-454.pdf");
 		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
-		
+
 		assertEquals(purchaseOrderDto.getOrderNumber(), 454);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.03311.0003")).findFirst().get().getQuantity(), 60);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.03311.0003")).findFirst().get().getMeasureUnit(), "CAJA");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.03311.0003")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.03311.0003")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.03311.0003")).findFirst().get().getUnitCost().doubleValue(),  6909.31000);
-		
-		
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00704.0008")).findFirst().get().getQuantity(), 60);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00704.0008")).findFirst().get().getMeasureUnit(), "CAJA");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00704.0008")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00704.0008")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00704.0008")).findFirst().get().getUnitCost().doubleValue(),  7898.88000);
-		
-		
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00521.0031")).findFirst().get().getQuantity(), 60);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00521.0031")).findFirst().get().getMeasureUnit(), "UNIDAD");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00521.0031")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00521.0031")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00521.0031")).findFirst().get().getUnitCost().doubleValue(),   799.84000);
-	
-		
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0004")).findFirst().get().getQuantity(), 60);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0004")).findFirst().get().getMeasureUnit(), "CADA-UNO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0004")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0004")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0004")).findFirst().get().getUnitCost().doubleValue(),955.45000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0014")).findFirst().get().getQuantity(), 60);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0014")).findFirst().get().getMeasureUnit(), "PAQUETE");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0014")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0014")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00482.0014")).findFirst().get().getUnitCost().doubleValue(),1108.77000);
-		
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.04441.0002")).findFirst().get().getQuantity(), 30);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.04441.0002")).findFirst().get().getMeasureUnit(), "CADA-UNO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.04441.0002")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.04441.0002")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.04441.0002")).findFirst().get().getUnitCost().doubleValue(),949,61000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00705.0023")).findFirst().get().getQuantity(), 90);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00705.0023")).findFirst().get().getMeasureUnit(), "UNIDAD");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00705.0023")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00705.0023")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00705.0023")).findFirst().get().getUnitCost().doubleValue(),1007.77000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0001")).findFirst().get().getQuantity(), 3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0001")).findFirst().get().getMeasureUnit(), "CAJON");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0001")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0001")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0001")).findFirst().get().getUnitCost().doubleValue(),10911.99000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0002")).findFirst().get().getQuantity(), 3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0002")).findFirst().get().getMeasureUnit(), "CAJON");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0002")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0002")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02113.0002")).findFirst().get().getUnitCost().doubleValue(),15503.99000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02125.0003")).findFirst().get().getQuantity(), 15);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02125.0003")).findFirst().get().getMeasureUnit(), "CADA-UNO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02125.0003")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02125.0003")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02125.0003")).findFirst().get().getUnitCost().doubleValue(),1593.60000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02116.0003")).findFirst().get().getQuantity(), 1);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02116.0003")).findFirst().get().getMeasureUnit(), "PACK");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02116.0003")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02116.0003")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.02116.0003")).findFirst().get().getUnitCost().doubleValue(),10919.29000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00435.0001")).findFirst().get().getQuantity(), 12);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00435.0001")).findFirst().get().getMeasureUnit(), "CADA-UNO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00435.0001")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00435.0001")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00435.0001")).findFirst().get().getUnitCost().doubleValue(),2420.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00454.0003")).findFirst().get().getQuantity(), 12);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00454.0003")).findFirst().get().getMeasureUnit(), "CADA-UNO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00454.0003")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00454.0003")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00454.0003")).findFirst().get().getUnitCost().doubleValue(),2.440,41000);
-		
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.03311.0003"))
+				.findFirst().get().getQuantity(), 60);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.03311.0003"))
+				.findFirst().get().getMeasureUnit(), "CAJA");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.03311.0003"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.03311.0003")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.03311.0003"))
+				.findFirst().get().getUnitCost().doubleValue(), 6909.31000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00704.0008"))
+				.findFirst().get().getQuantity(), 60);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00704.0008"))
+				.findFirst().get().getMeasureUnit(), "CAJA");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00704.0008"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00704.0008")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00704.0008"))
+				.findFirst().get().getUnitCost().doubleValue(), 7898.88000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00521.0031"))
+				.findFirst().get().getQuantity(), 60);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00521.0031"))
+				.findFirst().get().getMeasureUnit(), "UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00521.0031"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00521.0031")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00521.0031"))
+				.findFirst().get().getUnitCost().doubleValue(), 799.84000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0004"))
+				.findFirst().get().getQuantity(), 60);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0004"))
+				.findFirst().get().getMeasureUnit(), "CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0004"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0004")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0004"))
+				.findFirst().get().getUnitCost().doubleValue(), 955.45000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0014"))
+				.findFirst().get().getQuantity(), 60);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0014"))
+				.findFirst().get().getMeasureUnit(), "PAQUETE");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0014"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0014")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00482.0014"))
+				.findFirst().get().getUnitCost().doubleValue(), 1108.77000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.04441.0002"))
+				.findFirst().get().getQuantity(), 30);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.04441.0002"))
+				.findFirst().get().getMeasureUnit(), "CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.04441.0002"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.04441.0002")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.04441.0002"))
+				.findFirst().get().getUnitCost().doubleValue(), 949, 61000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00705.0023"))
+				.findFirst().get().getQuantity(), 90);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00705.0023"))
+				.findFirst().get().getMeasureUnit(), "UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00705.0023"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00705.0023")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00705.0023"))
+				.findFirst().get().getUnitCost().doubleValue(), 1007.77000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0001"))
+				.findFirst().get().getQuantity(), 3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0001"))
+				.findFirst().get().getMeasureUnit(), "CAJON");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0001"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0001")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0001"))
+				.findFirst().get().getUnitCost().doubleValue(), 10911.99000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0002"))
+				.findFirst().get().getQuantity(), 3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0002"))
+				.findFirst().get().getMeasureUnit(), "CAJON");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0002"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0002")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02113.0002"))
+				.findFirst().get().getUnitCost().doubleValue(), 15503.99000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02125.0003"))
+				.findFirst().get().getQuantity(), 15);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02125.0003"))
+				.findFirst().get().getMeasureUnit(), "CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02125.0003"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02125.0003")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02125.0003"))
+				.findFirst().get().getUnitCost().doubleValue(), 1593.60000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02116.0003"))
+				.findFirst().get().getQuantity(), 1);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02116.0003"))
+				.findFirst().get().getMeasureUnit(), "PACK");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02116.0003"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02116.0003")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.02116.0003"))
+				.findFirst().get().getUnitCost().doubleValue(), 10919.29000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00435.0001"))
+				.findFirst().get().getQuantity(), 12);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00435.0001"))
+				.findFirst().get().getMeasureUnit(), "CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00435.0001"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00435.0001")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00435.0001"))
+				.findFirst().get().getUnitCost().doubleValue(), 2420.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00454.0003"))
+				.findFirst().get().getQuantity(), 12);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00454.0003"))
+				.findFirst().get().getMeasureUnit(), "CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00454.0003"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00454.0003")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00454.0003"))
+				.findFirst().get().getUnitCost().doubleValue(), 2.440, 41000);
+
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
 				.stream().mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -470,7 +484,7 @@ public class DepositControlServiceTest {
 					item.getTotalEstimatedCost().doubleValue());
 		});
 
-		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(), 1351918,75);
+		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(), 1351918, 75);
 	}
 
 	@Test
@@ -479,140 +493,140 @@ public class DepositControlServiceTest {
 	void pdfToPurchaseOrder493_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-493.pdf");
 		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
-		
+
 		assertEquals(purchaseOrderDto.getOrderNumber(), 493);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0002")).findFirst().get().getQuantity(), 25);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0002")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0002")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0002")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0002")).findFirst().get().getUnitCost().doubleValue(),   1830.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00594.0008")).findFirst().get().getQuantity(), 130);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00594.0008")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00594.0008")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00594.0008")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00594.0008")).findFirst().get().getUnitCost().doubleValue(),    870.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00603.0003")).findFirst().get().getQuantity(), 100);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00603.0003")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00603.0003")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00603.0003")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00603.0003")).findFirst().get().getUnitCost().doubleValue(),    690.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00599.0001")).findFirst().get().getQuantity(), 50);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00599.0001")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00599.0001")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00599.0001")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00599.0001")).findFirst().get().getUnitCost().doubleValue(),790.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00617.0004")).findFirst().get().getQuantity(), 270);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00617.0004")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00617.0004")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00617.0004")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00617.0004")).findFirst().get().getUnitCost().doubleValue(),    890.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00607.0001")).findFirst().get().getQuantity(), 70);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00607.0001")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00607.0001")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00607.0001")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00607.0001")).findFirst().get().getUnitCost().doubleValue(),1270.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00600.0001")).findFirst().get().getQuantity(), 185);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00600.0001")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00600.0001")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00600.0001")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00600.0001")).findFirst().get().getUnitCost().doubleValue(),1590.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00620.0002")).findFirst().get().getQuantity(), 185);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00620.0002")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00620.0002")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00620.0002")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00620.0002")).findFirst().get().getUnitCost().doubleValue(),2390.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00601.0004")).findFirst().get().getQuantity(), 160);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00601.0004")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00601.0004")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00601.0004")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00601.0004")).findFirst().get().getUnitCost().doubleValue(),1850.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00483.0002")).findFirst().get().getQuantity(), 32);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00483.0002")).findFirst().get().getMeasureUnit(), "MAPLE");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00483.0002")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00483.0002")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00483.0002")).findFirst().get().getUnitCost().doubleValue(),4230.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0001")).findFirst().get().getQuantity(), 25);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0001")).findFirst().get().getMeasureUnit(), "KILOGRAMO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0001")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0001")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00598.0001")).findFirst().get().getUnitCost().doubleValue(), 1830.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00610.0001")).findFirst().get().getQuantity(), 15);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00610.0001")).findFirst().get().getMeasureUnit(), "CADA-UNO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00610.0001")).findFirst().get().getProgramaticCat(), "38.01.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00610.0001")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.1.1.00610.0001")).findFirst().get().getUnitCost().doubleValue(), 2050.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0002"))
+				.findFirst().get().getQuantity(), 25);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0002"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0002"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0002")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0002"))
+				.findFirst().get().getUnitCost().doubleValue(), 1830.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00594.0008"))
+				.findFirst().get().getQuantity(), 130);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00594.0008"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00594.0008"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00594.0008")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00594.0008"))
+				.findFirst().get().getUnitCost().doubleValue(), 870.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00603.0003"))
+				.findFirst().get().getQuantity(), 100);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00603.0003"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00603.0003"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00603.0003")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00603.0003"))
+				.findFirst().get().getUnitCost().doubleValue(), 690.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00599.0001"))
+				.findFirst().get().getQuantity(), 50);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00599.0001"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00599.0001"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00599.0001")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00599.0001"))
+				.findFirst().get().getUnitCost().doubleValue(), 790.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00617.0004"))
+				.findFirst().get().getQuantity(), 270);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00617.0004"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00617.0004"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00617.0004")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00617.0004"))
+				.findFirst().get().getUnitCost().doubleValue(), 890.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00607.0001"))
+				.findFirst().get().getQuantity(), 70);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00607.0001"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00607.0001"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00607.0001")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00607.0001"))
+				.findFirst().get().getUnitCost().doubleValue(), 1270.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00600.0001"))
+				.findFirst().get().getQuantity(), 185);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00600.0001"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00600.0001"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00600.0001")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00600.0001"))
+				.findFirst().get().getUnitCost().doubleValue(), 1590.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00620.0002"))
+				.findFirst().get().getQuantity(), 185);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00620.0002"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00620.0002"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00620.0002")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00620.0002"))
+				.findFirst().get().getUnitCost().doubleValue(), 2390.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00601.0004"))
+				.findFirst().get().getQuantity(), 160);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00601.0004"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00601.0004"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00601.0004")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00601.0004"))
+				.findFirst().get().getUnitCost().doubleValue(), 1850.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00483.0002"))
+				.findFirst().get().getQuantity(), 32);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00483.0002"))
+				.findFirst().get().getMeasureUnit(), "MAPLE");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00483.0002"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00483.0002")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00483.0002"))
+				.findFirst().get().getUnitCost().doubleValue(), 4230.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0001"))
+				.findFirst().get().getQuantity(), 25);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0001"))
+				.findFirst().get().getMeasureUnit(), "KILOGRAMO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0001"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0001")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00598.0001"))
+				.findFirst().get().getUnitCost().doubleValue(), 1830.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00610.0001"))
+				.findFirst().get().getQuantity(), 15);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00610.0001"))
+				.findFirst().get().getMeasureUnit(), "CADA-UNO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00610.0001"))
+				.findFirst().get().getProgramaticCat(), "38.01.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00610.0001")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00610.0001"))
+				.findFirst().get().getUnitCost().doubleValue(), 2050.00000);
 
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
@@ -634,97 +648,96 @@ public class DepositControlServiceTest {
 	void pdfToPurchaseOrder619_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-619.pdf");
 		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
-assertEquals(purchaseOrderDto.getOrderNumber(), 619);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01033.0031")).findFirst().get().getQuantity(), 30);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01033.0031")).findFirst().get().getMeasureUnit(), "ROLLO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01033.0031")).findFirst().get().getProgramaticCat(), "38.06.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01033.0031")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01033.0031")).findFirst().get().getUnitCost().doubleValue(),905.50000);
+		assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01454.0011")).findFirst().get().getQuantity(), 30);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01454.0011")).findFirst().get().getMeasureUnit(), "UNIDAD");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01454.0011")).findFirst().get().getProgramaticCat(), "38.06.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01454.0011")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.01454.0011")).findFirst().get().getUnitCost().doubleValue(),265.80000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03825.0012")).findFirst().get().getQuantity(), 4);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03825.0012")).findFirst().get().getMeasureUnit(), "ROLLO");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03825.0012")).findFirst().get().getProgramaticCat(), "38.06.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03825.0012")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03825.0012")).findFirst().get().getUnitCost().doubleValue(),46190.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.00657.0012")).findFirst().get().getQuantity(), 30);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.00657.0012")).findFirst().get().getMeasureUnit(), "UNIDAD");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.00657.0012")).findFirst().get().getProgramaticCat(), "38.06.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.00657.0012")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.00657.0012")).findFirst().get().getUnitCost().doubleValue(),630.00000);
-		
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.06927.0004")).findFirst().get().getQuantity(), 30);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.06927.0004")).findFirst().get().getMeasureUnit(), "UNIDAD");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.06927.0004")).findFirst().get().getProgramaticCat(), "38.06.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.06927.0004")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.06927.0004")).findFirst().get().getUnitCost().doubleValue(),1200.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03791.0004")).findFirst().get().getQuantity(), 30);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03791.0004")).findFirst().get().getMeasureUnit(), "UNIDAD");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03791.0004")).findFirst().get().getProgramaticCat(), "38.06.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03791.0004")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03791.0004")).findFirst().get().getUnitCost().doubleValue(),510.90000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03792.0002")).findFirst().get().getQuantity(), 30);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03792.0002")).findFirst().get().getMeasureUnit(), "UNIDAD");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03792.0002")).findFirst().get().getProgramaticCat(), "38.06.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03792.0002")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.03792.0002")).findFirst().get().getUnitCost().doubleValue(),630.00000);
-		
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.05921.0004")).findFirst().get().getQuantity(), 30);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.05921.0004")).findFirst().get().getMeasureUnit(), "UNIDAD");
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.05921.0004")).findFirst().get().getProgramaticCat(), "38.06.00");
-		assertThat(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.05921.0004")).findFirst().get().getItemDetail().length()).isGreaterThan(3);
-		assertEquals(purchaseOrderDto.getItems().stream()
-				.filter(f -> f.getCode().equals( "2.9.3.05921.0004")).findFirst().get().getUnitCost().doubleValue(),870.75000);
-		
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01033.0031"))
+				.findFirst().get().getQuantity(), 30);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01033.0031"))
+				.findFirst().get().getMeasureUnit(), "ROLLO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01033.0031"))
+				.findFirst().get().getProgramaticCat(), "38.06.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01033.0031")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01033.0031"))
+				.findFirst().get().getUnitCost().doubleValue(), 905.50000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01454.0011"))
+				.findFirst().get().getQuantity(), 30);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01454.0011"))
+				.findFirst().get().getMeasureUnit(), "UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01454.0011"))
+				.findFirst().get().getProgramaticCat(), "38.06.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01454.0011")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01454.0011"))
+				.findFirst().get().getUnitCost().doubleValue(), 265.80000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03825.0012"))
+				.findFirst().get().getQuantity(), 4);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03825.0012"))
+				.findFirst().get().getMeasureUnit(), "ROLLO");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03825.0012"))
+				.findFirst().get().getProgramaticCat(), "38.06.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03825.0012")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03825.0012"))
+				.findFirst().get().getUnitCost().doubleValue(), 46190.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.00657.0012"))
+				.findFirst().get().getQuantity(), 30);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.00657.0012"))
+				.findFirst().get().getMeasureUnit(), "UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.00657.0012"))
+				.findFirst().get().getProgramaticCat(), "38.06.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.00657.0012")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.00657.0012"))
+				.findFirst().get().getUnitCost().doubleValue(), 630.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.06927.0004"))
+				.findFirst().get().getQuantity(), 30);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.06927.0004"))
+				.findFirst().get().getMeasureUnit(), "UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.06927.0004"))
+				.findFirst().get().getProgramaticCat(), "38.06.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.06927.0004")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.06927.0004"))
+				.findFirst().get().getUnitCost().doubleValue(), 1200.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03791.0004"))
+				.findFirst().get().getQuantity(), 30);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03791.0004"))
+				.findFirst().get().getMeasureUnit(), "UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03791.0004"))
+				.findFirst().get().getProgramaticCat(), "38.06.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03791.0004")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03791.0004"))
+				.findFirst().get().getUnitCost().doubleValue(), 510.90000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03792.0002"))
+				.findFirst().get().getQuantity(), 30);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03792.0002"))
+				.findFirst().get().getMeasureUnit(), "UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03792.0002"))
+				.findFirst().get().getProgramaticCat(), "38.06.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03792.0002")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.03792.0002"))
+				.findFirst().get().getUnitCost().doubleValue(), 630.00000);
+
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.05921.0004"))
+				.findFirst().get().getQuantity(), 30);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.05921.0004"))
+				.findFirst().get().getMeasureUnit(), "UNIDAD");
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.05921.0004"))
+				.findFirst().get().getProgramaticCat(), "38.06.00");
+		assertThat(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.05921.0004")).findFirst()
+				.get().getItemDetail().length()).isGreaterThan(3);
+		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.05921.0004"))
+				.findFirst().get().getUnitCost().doubleValue(), 870.75000);
+
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
 				.stream().mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -736,7 +749,7 @@ assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 					item.getTotalEstimatedCost().doubleValue());
 		});
 
-		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),335148.50);
+		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(), 335148.50);
 	}
 
 	@Test
@@ -755,8 +768,27 @@ assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 	@DisplayName("CARGAR ORDEN DE COMPRA N 365_24 A DEPOSITO")
 	@Order(8)
 	void loadPurchaseOrder365_24ToDepositControl() throws Exception {
-		List<PurchaseOrderToDepositReportDto> result = depositControlService.loadPurchaseOrderToDepositControl(1L, 1L);
-		result.forEach(e -> System.out.println("Report result: " + e));
+		List<PurchaseOrderToDepositReportDto> report = depositControlService
+				.loadPurchaseOrderToDepositControl(purchaseOrder365Id, depositAvellanedaId);
+		List<DepositControlDto> depositItems = depositControlService.findDepositControlsByDeposit(depositAvellanedaId);
+
+		report.stream().forEach(e -> {
+			assertEquals(e.getDepositItemStatus(), "NUEVO");
+		});
+
+		assertThat(depositItems.stream().filter(f -> f.getItemCode().equals("2.1.1.00788.0013")).findFirst().get()
+				.getQuantity()).isEqualTo(15);
+		assertThat(depositItems.stream().filter(f -> f.getItemCode().equals("2.1.1.00705.0035")).findFirst().get()
+				.getQuantity()).isEqualTo(8);
+		assertThat(depositItems.stream().filter(f -> f.getItemCode().equals("2.1.1.00591.0002")).findFirst().get()
+				.getQuantity()).isEqualTo(20);
+		assertThat(depositItems.stream().filter(f -> f.getItemCode().equals("2.1.1.00705.0036")).findFirst().get()
+				.getQuantity()).isEqualTo(10);
+		assertThat(depositItems.stream().filter(f -> f.getItemCode().equals("2.1.1.00511.0008")).findFirst().get()
+				.getQuantity()).isEqualTo(10);
+		assertThat(depositItems.stream().filter(f -> f.getItemCode().equals("2.1.1.00705.0012")).findFirst().get()
+				.getQuantity()).isEqualTo(8);
+
 	}
 
 	@Test
@@ -963,7 +995,7 @@ assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 		assertEquals(dto.getSupplyItems().get(0).getProgramaticCat(), "32.06.00");
 		assertEquals(dto.getSupplyItems().get(0).getMeasureUnit(), "UNIDAD");
 		assertEquals(dto.getSupplyItems().get(0).getUnitCost().doubleValue(), 1100.00000);
-		
+
 		// Assert Supply total cost equals sum of all items total cost
 		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
 				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -975,11 +1007,11 @@ assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 					item.getTotalEstimatedCost().doubleValue());
 		});
 	}
-	
+
 	@Test
 	@DisplayName("CARGAR SUMINISTRO N 100_24")
 	@Order(13)
-	void loadSupply100_24()throws Exception{
+	void loadSupply100_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-100.pdf");
 		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
@@ -991,15 +1023,15 @@ assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 		assertEquals(dto.getSupplyNumber(), 100);
 		assertThat(dto.getDate()).isBetween(cal, cal2);
 		assertEquals(dto.getEstimatedTotalCost().doubleValue(), new BigDecimal(231000.00).doubleValue());
-		
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get().getProgramaticCat(), "35.04.00");
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get().getQuantity(), 30);
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get().getMeasureUnit(), "CAJA");
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get().getUnitCost().doubleValue(),  7700.00000);
+
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get()
+				.getProgramaticCat(), "35.04.00");
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get()
+				.getQuantity(), 30);
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get()
+				.getMeasureUnit(), "CAJA");
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get()
+				.getUnitCost().doubleValue(), 7700.00000);
 		// Assert Supply total cost equals sum of all items total cost
 		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
 				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -1011,11 +1043,11 @@ assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 					item.getTotalEstimatedCost().doubleValue());
 		});
 	}
-	
+
 	@Test
 	@DisplayName("CARGAR SUMINISTRO N 525_24")
 	@Order(14)
-	void loadSupply525_24()throws Exception{
+	void loadSupply525_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-525.pdf");
 		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
@@ -1027,33 +1059,33 @@ assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 		assertEquals(dto.getSupplyNumber(), 525);
 		assertThat(dto.getDate()).isBetween(cal, cal2);
 		assertEquals(dto.getEstimatedTotalCost().doubleValue(), new BigDecimal(38423400.00).doubleValue());
-		
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get().getProgramaticCat(), "01.01.00");
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get().getQuantity(), 340);
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get().getMeasureUnit(), "CADA-UNO");
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get().getUnitCost().doubleValue(),   12500.00000);
-		
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.00826.0013")).findFirst().get().getProgramaticCat(), "01.01.00");
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.00826.0013")).findFirst().get().getQuantity(), 340);
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.00826.0013")).findFirst().get().getMeasureUnit(), "CADA-UNO");
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.00826.0013")).findFirst().get().getUnitCost().doubleValue(),   34800.00000);
-		
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.00830.0017")).findFirst().get().getProgramaticCat(), "01.01.00");
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.00830.0017")).findFirst().get().getQuantity(), 340);
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.00830.0017")).findFirst().get().getMeasureUnit(), "PAR");
-		assertEquals(dto.getSupplyItems().stream()
-				.filter(f -> f.getCode().equals("2.2.2.00830.0017")).findFirst().get().getUnitCost().doubleValue(),    65710.00000);
+
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get()
+				.getProgramaticCat(), "01.01.00");
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get()
+				.getQuantity(), 340);
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get()
+				.getMeasureUnit(), "CADA-UNO");
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get()
+				.getUnitCost().doubleValue(), 12500.00000);
+
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.00826.0013")).findFirst().get()
+				.getProgramaticCat(), "01.01.00");
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.00826.0013")).findFirst().get()
+				.getQuantity(), 340);
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.00826.0013")).findFirst().get()
+				.getMeasureUnit(), "CADA-UNO");
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.00826.0013")).findFirst().get()
+				.getUnitCost().doubleValue(), 34800.00000);
+
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.00830.0017")).findFirst().get()
+				.getProgramaticCat(), "01.01.00");
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.00830.0017")).findFirst().get()
+				.getQuantity(), 340);
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.00830.0017")).findFirst().get()
+				.getMeasureUnit(), "PAR");
+		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.00830.0017")).findFirst().get()
+				.getUnitCost().doubleValue(), 65710.00000);
 		// Assert Supply total cost equals sum of all items total cost
 		assertThat(dto.getEstimatedTotalCost().doubleValue()).isEqualTo(dto.getSupplyItems().stream()
 				.mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -1064,5 +1096,38 @@ assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
 					item.getTotalEstimatedCost().doubleValue());
 		});
+	}
+
+	@Test
+	@DisplayName("Crear Bolson Navidad")
+	@Order(15)
+	void createBigbagNavidad() throws Exception {
+		Deposit deposit = depositRepository.findById(depositAvellanedaId).get();
+		List<DepositControl> depositItems = depositControlRepository.findAllByDeposit(deposit).stream().map(m -> {
+			if(m.getItemCode().equals("2.1.1.00705.0035")) {
+				return m;
+			}
+			m.setQuantity(20);
+			return m;
+		}).toList();
+		depositControlRepository.saveAll(depositItems);
+	//List<DepositControl> updatedControls =  depositControlRepository.saveAll(DepositControlMapper.INSTANCE.dtosToDepositControls(udpatedItems));
+		List<Long> depositItemIds = depositItems.stream().map(m-> m.getId()).collect(Collectors.toList());
+		List<BigBagItemDto> bigBagItemDtos =  depositItems.stream().map(depoItem -> {
+			BigBagItemDto dto = new BigBagItemDto();
+			dto.setCode(depoItem.getItemCode());
+			dto.setQuantity(1);
+			return dto;
+		}).toList();
+		BigBagDto bigBagDto = new BigBagDto();
+		bigBagDto.setName("Navidad");
+		bigBagDto.setItems(bigBagItemDtos);
+		BigBag bigBag = depositControlService.createBigBag(bigBagDto, depositItemIds);
+		bigBagItemRepository.findByBigBag(bigBag).forEach(e -> System.out.println("big bag item code: " +e.getCode()));
+		
+		bigBagItemRepository.findByBigBag(bigBag).stream().forEach(e ->{
+			assertEquals(e.getQuantity(), 1);
+		});
+		assertEquals(depositControlService.getTotalBigBagQuantityAvailable(bigBag.getId(), depositAvellanedaId), 8);
 	}
 }
