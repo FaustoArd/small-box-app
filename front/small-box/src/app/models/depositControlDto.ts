@@ -11,7 +11,7 @@ export class DepositControlDto {
     expirationDate!:Date;
     provider!: string;
 
-    measureUnit!: number;
+    measureUnit!: string;
     itemUnitPrice!:number;
     itemTotalPrice!:number;
 }

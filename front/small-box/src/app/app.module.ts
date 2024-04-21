@@ -40,6 +40,7 @@ import { AdminPanelComponent } from './components/admin-panel/admin-panel/admin-
 import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component';
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
 import { RouterModule } from '@angular/router';
+import { BigBagComponent } from './components/big-bag/big-bag.component';
 
 
 
@@ -73,6 +74,7 @@ import { RouterModule } from '@angular/router';
     AdminPanelComponent,
     DepositHomeComponent,
     UserPanelComponent,
+    BigBagComponent,
    
    
     

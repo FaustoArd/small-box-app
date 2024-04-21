@@ -15,6 +15,8 @@ public class BigBagItemDto {
 	
 	private String measureUnit;
 	
+	private String description;
+	
 	private int quantity;
 	
 	private BigDecimal unitCost;
@@ -22,5 +24,9 @@ public class BigBagItemDto {
 	private BigDecimal totalCost;
 	
 	private Calendar expirationDate;
+	
+	private long depositControlId;
+	
+	private long bigBagId;
 
 }

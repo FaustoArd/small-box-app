@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.BigBagDto;
+import com.lord.small_box.dtos.BigBagItemDto;
 import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.DepositDto;
 import com.lord.small_box.dtos.DepositResponseDto;
@@ -49,7 +50,7 @@ public class DepositControlController {
 	@Autowired
 	private final PdfToStringUtils pdfToStringUtils;
 	
-	@GetMapping(path="/find-deposit-controls-by-org")
+	@GetMapping(path="/find-deposit-controls-by-deposit")
 	ResponseEntity<List<DepositControlDto>> findDepositControlsByDeposit(@RequestParam("depositId")long depositId){
 	List<DepositControlDto> controlsDto = depositControlService.findDepositControlsByDeposit(depositId);
 	return ResponseEntity.ok(controlsDto);
@@ -166,7 +167,30 @@ public class DepositControlController {
 		return ResponseEntity.ok(dto);
 	}
 	@PostMapping(path="/create-big-bag")
-	ResponseEntity<BigBagDto> createBigBag(@RequestBody BigBagDto bigBagDto){
-		return null;
+	ResponseEntity<BigBagDto> createBigBag(@RequestBody BigBagDto bigBagDto,@RequestParam("organizationId")long organizationId){
+		BigBagDto savedBigBagDto = depositControlService.createBigBag(bigBagDto,organizationId);
+		return new ResponseEntity<BigBagDto>(savedBigBagDto,HttpStatus.CREATED);
+	}
+	@GetMapping(path="/find-big-bags")
+	ResponseEntity<List<BigBagDto>> findAllBigBagsByOrganization(@RequestParam("organizationId")long organizationId){
+		List<BigBagDto> bigBagDtos = depositControlService.findAllBigBagsByOrg(organizationId);
+		return ResponseEntity.ok(bigBagDtos);
+	}
+	
+	@GetMapping(path="/find-big-bag-items")
+	ResponseEntity<List<BigBagItemDto>> findAllBigBagItems(@RequestParam("bigBagId")long bigBagId){
+		List<BigBagItemDto> dtos = depositControlService.findAllBigBagItems(bigBagId);
+		return ResponseEntity.ok(dtos);
+	}
+	
+	@GetMapping(path="/update-big-bag-item-quantity")
+	ResponseEntity<BigBagItemDto> updateBigBagItemQuantity(@RequestParam("bigBagItemId")long bigBagItemId,@RequestParam("quantity")int quantity){
+		BigBagItemDto dto = depositControlService.updateBigBagItemQuantity(bigBagItemId,quantity);
+		return  ResponseEntity.ok(dto);
+	}
+	@GetMapping(path="/calculate-big-bag-total-quantity")
+	ResponseEntity<Integer> calculatebigBagTotalQuantity(@RequestParam("bigBagId")long bigBagId,@RequestParam("depositId")long depositId){
+		int result = depositControlService.getTotalBigBagQuantityAvailable(bigBagId, depositId);
+		return ResponseEntity.ok(result);
 	}
 }

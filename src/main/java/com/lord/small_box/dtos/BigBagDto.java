@@ -1,5 +1,6 @@
 package com.lord.small_box.dtos;
 
+import java.util.Calendar;
 import java.util.List;
 
 import lombok.Getter;
@@ -16,4 +17,8 @@ public class BigBagDto {
 	private int totalBigBagQuantityAvailable;
 	
 	private List<BigBagItemDto> items;
+	
+	private long organizationId;
+	
+	private Calendar creationDate;
 }

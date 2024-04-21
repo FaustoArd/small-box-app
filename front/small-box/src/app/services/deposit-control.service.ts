@@ -11,6 +11,8 @@ import { PurchaseOrderToDepositReportDto } from '../models/purchaseOrderToDeposi
 import { DepositControlDto } from '../models/depositControlDto';
 import { DepositDto } from '../models/depositDto';
 import { DepositReponseDto } from '../models/depositReponseDto';
+import { BigBagDto } from '../models/bigBagDto';
+import { BigBagItemDto } from '../models/bigBagItemDto';
 
 const DEPOSIT_CONTROL_BASE_URL = "http://localhost:8080/api/v1/smallbox/deposit-control";
 
@@ -70,8 +72,8 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
       .pipe(catchError(this.handleError));
     }
 
-    findDepositControlsByDeposit(depositId:number):Observable<DepositControlDto[]>{
-      return this.http.get<DepositControlDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-deposit-controls-by-org?depositId=${depositId}`)
+    findAllDepositControlsByDeposit(depositId:number):Observable<DepositControlDto[]>{
+      return this.http.get<DepositControlDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-deposit-controls-by-deposit?depositId=${depositId}`)
       .pipe(catchError(this.handleError));
     }
    createDeposit(depositDto:DepositDto):Observable<string>{
@@ -113,4 +115,29 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
     return this.http.get<SupplyDto>(`${DEPOSIT_CONTROL_BASE_URL}/find-supply/${supplyId}`,this.httpOptions)
     .pipe(catchError(this.handleError))
    }
+
+   createBigBag(bigBagDto:BigBagDto,organizationId:number):Observable<BigBagDto>{
+    return this.http.post<BigBagDto>(`${DEPOSIT_CONTROL_BASE_URL}/create-big-bag?organizationId=${organizationId}`,bigBagDto,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+   findAllBigBagsByOrg(organizationId:number):Observable<BigBagDto[]>{
+    return this.http.get<BigBagDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-big-bags?organizationId=${organizationId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+
+   updateBigBagItemQuantity(bigBagItemId:number,quantity:number):Observable<BigBagItemDto>{
+    return this.http.get<BigBagItemDto>(`${DEPOSIT_CONTROL_BASE_URL}/update-big-bag-item-quantity?bigBagItemId=${bigBagItemId}&quantity=${quantity}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+
+   findAllBigBagItems(bigBagId:number):Observable<BigBagItemDto[]>{
+    return this.http.get<BigBagItemDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-big-bag-items?bigBagId=${bigBagId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+
+   calculateBigBagTotalquantity(bigBagId:number,depositId:number):Observable<number>{
+    return this.http.get<number>(`${DEPOSIT_CONTROL_BASE_URL}/calculate-big-bag-total-quantity?bigBagId=${bigBagId}&depositId=${depositId}`)
+    .pipe(catchError(this.handleError));
+   }
+
 }

@@ -19,6 +19,7 @@ import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispa
 import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
 import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component';
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
+import { BigBagComponent } from './components/big-bag/big-bag.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -41,7 +42,8 @@ const routes: Routes = [
   { path:'dispatch',component:DispatchMainComponent},
   { path:'dispatch-page',component:DispatchMatComponent},
   { path:'deposit-home', component:DepositHomeComponent},
-  { path:'user-panel',component:UserPanelComponent}
+  { path:'user-panel',component:UserPanelComponent},
+  {path:'big-bag', component:BigBagComponent}
 ];
 
 @NgModule({

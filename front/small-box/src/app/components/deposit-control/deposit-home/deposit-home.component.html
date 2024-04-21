@@ -5,7 +5,12 @@
 
     <div class="container-flex">
         <div class="row">
-            <div class="col-md-8"></div>
+            <div class="col-md-3">
+                <button routerLink="/big-bag" id="bigBag" class="btn btn-md  ms-5 mt-1">Bolsones</button>
+            </div> 
+            <div class="col-md-5">
+
+            </div>
             <div class="col-md-4">
                 <h1>Deposito seleccionado:
                     <small class="text-danger" *ngIf="!selectedDepositBol">Ninguno</small>
@@ -309,7 +314,7 @@
                     <tbody>
                         <tr *ngFor="let order of purchaseOrderDtos">
                             <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
-                            <td>{{order.orderNumber}}</td>
+                            <td class="text-primary">{{order.orderNumber}}</td>
                             <td>{{order.executerUnit}}</td>
                             <td>{{order.dependency}}</td>
                             <td class="text-danger">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
@@ -452,6 +457,7 @@
         <thead>
             <tr>
                 <th scope="col">ESTADO</th>
+                <th scope="col">CODIGO</th>
                 <th scope="col">DESCRIPCION</th>
                 <th scope="col">U.MEDIDA</th>
                 <th scope="col">CANTIDAD</th>
@@ -461,6 +467,7 @@
         <tbody>
             <tr *ngFor="let report of depositReport">
                 <td class="text-primary">{{report.depositItemStatus}}</td>
+                <td>{{report.depositItemCode}}</td>
                 <td>{{report.depositItemName}}</td>
                 <td>{{report.depositItemMeasureUnit}}</td>
                 <td *ngIf="report.depositItemQuantity>=10" class="text-success">{{report.depositItemQuantity}}</td>

@@ -33,6 +33,7 @@ import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
+import com.lord.small_box.mappers.BigBagMapper;
 import com.lord.small_box.mappers.DepositControlMapper;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
 import com.lord.small_box.models.BigBag;
@@ -43,6 +44,7 @@ import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.repositories.BigBagItemRepository;
+import com.lord.small_box.repositories.BigBagRepository;
 import com.lord.small_box.repositories.DepositControlRepository;
 import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
@@ -71,6 +73,9 @@ public class DepositControlServiceTest {
 	private OrganizationResponsibleRepository organizationResponsibleRepository;
 	
 	@Autowired
+	private BigBagRepository bigBagRepository;
+	
+	@Autowired
 	private BigBagItemRepository bigBagItemRepository;
 
 	@Autowired
@@ -80,6 +85,12 @@ public class DepositControlServiceTest {
 	private DepositControlRepository depositControlRepository;
 
 	private long depositAvellanedaId;
+	
+	private long admYDespachoId;
+	
+	private long purchaseOrder365Id;
+	
+	
 
 	@BeforeAll
 	void setup() {
@@ -142,6 +153,7 @@ public class DepositControlServiceTest {
 
 		Organization secDesSocial = organizationService.save(org1);
 		Organization dirAdmDesp = organizationService.save(org2);
+		admYDespachoId = dirAdmDesp.getId();
 		organizationService.save(org3);
 		organizationService.save(org4);
 		organizationService.save(org5);
@@ -152,7 +164,7 @@ public class DepositControlServiceTest {
 		depositAvellanedaId = savedDeposit.getId();
 	}
 
-	private long purchaseOrder365Id;
+
 
 	@Test
 	@DisplayName("CARGAR ORDEN DE COMPRA N 365_24")
@@ -326,7 +338,7 @@ public class DepositControlServiceTest {
 	@Order(4)
 	void pdfToPurchaseOrder454_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-454.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
+		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 454);
 
@@ -492,7 +504,7 @@ public class DepositControlServiceTest {
 	@Order(5)
 	void pdfToPurchaseOrder493_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-493.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
+		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 493);
 
@@ -647,7 +659,7 @@ public class DepositControlServiceTest {
 	@Order(6)
 	void pdfToPurchaseOrder619_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-619.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
+		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, admYDespachoId);
 		assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01033.0031"))
@@ -756,7 +768,7 @@ public class DepositControlServiceTest {
 	@DisplayName("ENCONTRAR ORDEN DE COMPRA N 365_24 CON ITEMS")
 	@Order(7)
 	void findFullPurchaseOrder365_24() throws Exception {
-		PurchaseOrderDto purchaseOrderDto = depositControlService.findFullPurchaseOrder(1L);
+		PurchaseOrderDto purchaseOrderDto = depositControlService.findFullPurchaseOrder(purchaseOrder365Id);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
 		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
@@ -1112,22 +1124,23 @@ public class DepositControlServiceTest {
 		}).toList();
 		depositControlRepository.saveAll(depositItems);
 	//List<DepositControl> updatedControls =  depositControlRepository.saveAll(DepositControlMapper.INSTANCE.dtosToDepositControls(udpatedItems));
-		List<Long> depositItemIds = depositItems.stream().map(m-> m.getId()).collect(Collectors.toList());
+		
 		List<BigBagItemDto> bigBagItemDtos =  depositItems.stream().map(depoItem -> {
 			BigBagItemDto dto = new BigBagItemDto();
-			dto.setCode(depoItem.getItemCode());
-			dto.setQuantity(1);
+			dto.setDepositControlId(depoItem.getId());
 			return dto;
 		}).toList();
 		BigBagDto bigBagDto = new BigBagDto();
 		bigBagDto.setName("Navidad");
 		bigBagDto.setItems(bigBagItemDtos);
-		BigBag bigBag = depositControlService.createBigBag(bigBagDto, depositItemIds);
-		bigBagItemRepository.findByBigBag(bigBag).forEach(e -> System.out.println("big bag item code: " +e.getCode()));
+		BigBagDto savedbigBagDto = depositControlService.createBigBag(bigBagDto, admYDespachoId);
+		BigBag returnedbigBag = bigBagRepository.save(BigBagMapper.INSTANCE.dtoToBigBah(savedbigBagDto));
 		
-		bigBagItemRepository.findByBigBag(bigBag).stream().forEach(e ->{
+		bigBagItemRepository.findByBigBag(returnedbigBag).forEach(e -> System.out.println("big bag item code: " +e.getCode()));
+		
+		bigBagItemRepository.findByBigBag(returnedbigBag).stream().forEach(e ->{
 			assertEquals(e.getQuantity(), 1);
 		});
-		assertEquals(depositControlService.getTotalBigBagQuantityAvailable(bigBag.getId(), depositAvellanedaId), 8);
+		assertEquals(depositControlService.getTotalBigBagQuantityAvailable(savedbigBagDto.getId(), depositAvellanedaId), 8);
 	}
 }

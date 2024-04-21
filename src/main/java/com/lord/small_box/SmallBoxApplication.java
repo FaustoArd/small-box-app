@@ -1,6 +1,5 @@
 package com.lord.small_box;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +52,7 @@ public class SmallBoxApplication {
 		SpringApplication.run(SmallBoxApplication.class, args);
 	}
 	
-	//@Bean
+	@Bean
 	CommandLineRunner run(InputRepository inputRepository,
 			ContainerService containerService,
 			SmallBoxService smallBoxService,

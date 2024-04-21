@@ -1,0 +1,97 @@
+
+body{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+.container-flex{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+input{
+    font-family: 'Quattrocento', serif;
+    background: linear-gradient(245.59deg, rgb(233, 235, 240)30%, rgb(230, 228, 238) 50%, #d5d5da 79%);
+    font-weight: bold;
+}
+#table-div{
+    height: 35%;
+   
+}
+label{
+    font-family: 'Quattrocento', serif;
+    font-size: 1.0rem;
+    font-weight: bold;
+}
+#invalid-text{
+    font-size: 0.7rem;
+}
+#invalid-number{
+    font-size: 0.5rem;
+}
+button{
+    background: linear-gradient(245.59deg, rgb(113, 132, 184) 0%, rgb(126, 115, 177) 28.53%, #7e76b9 75.52%); 
+    height: 80%;
+    color:rgb(212, 225, 41);
+    font-weight: bold;
+    border-radius: 0.4rem;
+}
+#sel-text{
+    font-family: 'Quattrocento', serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+#deposit-text{
+    border: 2px solid #020008;
+}
+
+p{
+    font-size: 1rem;
+
+}
+
+h2{
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color:red;
+}
+
+h3{
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+h4{
+    font-family: 'Quattrocento', serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: blue;
+}
+h5{
+    font-family: "Fira Code", monospace;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color:rgb(21, 208, 77);
+}
+
+small{
+   
+    font-family: "Fira Code", monospace;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color:rgb(28, 71, 26);
+}
+.btn{
+    background: linear-gradient(245.59deg, rgb(91, 32, 80)33.33%, rgb(170, 43, 187) 33.33%, #64169f 33.33%); 
+    color:red;
+    font-family: "Fira Code", monospace;
+}
+th{
+    font-family: "Fira Code", monospace;
+    font-size: 0.9rem;
+   
+}
+td{
+    font-family: "Fira Code", monospace;
+    color:rgb(211, 25, 25);
+    font-weight: bold;
+    font-size: 0.9rem;
+}

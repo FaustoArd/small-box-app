@@ -3,6 +3,7 @@ package com.lord.small_box.services;
 import java.util.List;
 
 import com.lord.small_box.dtos.BigBagDto;
+import com.lord.small_box.dtos.BigBagItemDto;
 import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.DepositDto;
 import com.lord.small_box.dtos.DepositResponseDto;
@@ -58,8 +59,14 @@ public interface DepositControlService {
 	
 	public SupplyDto findsupply(long supplyId);
 	
-	public BigBag createBigBag(BigBagDto bigBagDto,List<Long> depositControlIds);
+	public BigBagDto createBigBag(BigBagDto bigBagDto,long organizationId);
 	
 	public int getTotalBigBagQuantityAvailable(long bigBagId, long depositId);
+	
+	public List<BigBagDto> findAllBigBagsByOrg(long organizationId);
+	
+	public BigBagItemDto updateBigBagItemQuantity(long bigBagItemId,int quantity);
+	
+	public List<BigBagItemDto> findAllBigBagItems(long bigBagId);
 
 }

@@ -2,9 +2,7 @@
     background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
     font-family: 'Quattrocento', serif;
 }
-button{
-    background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
-}
+
 
 #create{
     background: linear-gradient(245.59deg, rgb(192, 73, 83) 0%,  rgb(192, 73, 83) 0%, #cf2f6c 75.52%); 

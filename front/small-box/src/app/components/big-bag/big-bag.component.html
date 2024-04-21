@@ -1,0 +1,186 @@
+<body>
+  <app-navbar></app-navbar>
+  <div class="container-flex">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="mt-2">
+          <div class="d-inline">
+            <button (click)="createBigBagSwitch()" class="d-inline ms-5">NUEVO BOLSON</button>
+          </div>
+          <div *ngIf="!createdEnabled" class="d-inline">
+            <button (click)="openDialogSupplyList(bigBagListTemplate)" class="d-inline ms-5 mt-5">VER BOLSONES</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div *ngIf="createdEnabled">
+          <form class="form-inline" [formGroup]="bigBagForm">
+            <div class="row">
+              <div class="col-md-4">
+                <label class="mt-2" for="name">Nombre del bolson:</label>
+              </div>
+              <div class="col-md-8">
+                <div class="form-group mt-1">
+                  <input type="text" class="form-control w-100  border border-dark" placeholder="ingrese un nombre"
+                    formControlName="name" id="name">
+                  <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
+                    <div class="ms-1" id="invalid-text" *ngIf="name.errors?.['required']">
+                      Debe ingresar un nombre para el bolson.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div *ngIf="createdEnabled">
+          <button (click)="createBigBag()" class="btn btn-sm  mt-1">GUARDAR</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mt-4  ms-3" *ngIf="createdEnabled">
+          <div id="sel-text" class="border border-dark">
+            <p class="d-inline">Seleccione items del deposito </p>
+            <div id="deposit-selection" class="d-inline">
+              <small>{{currentDepositName}}</small>
+            </div>
+          </div>
+          <div id="table-div" class=" border border-dark">
+            <table class="table table-stripe table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">CODIGO</th>
+                  <th scope="col">U.MEDIDA</th>
+                  <th scope="col">DESCRIPCION</th>
+                  <th scope="col">ELIMINAR</th>
+              </thead>
+              <tbody class="text-center">
+                <tr *ngFor="let bigBagItem of bigBagItemSelectedList">
+                  <td>{{bigBagItem.code}}</td>
+                  <td>{{bigBagItem.measureUnit}}</td>
+                  <td>{{bigBagItem.description}}</td>
+                  <td><button (click)="deleteDepositeItemFromSelection(bigBagItem.depositControlId)"
+                      class="btn btn-sm">-</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div id="deposit-text" class=" mt-2">
+          <h3 class="d-inline">DEPOSITO: </h3>
+          <div id="deposit-selection" class="d-inline">
+            <small>{{currentDepositName}}</small>
+          </div>
+        </div>
+        <div id="table-div" class="overflow-scroll  border border-dark">
+          <table class="table table-sm table-stripe table-bordered text-center">
+            <thead>
+              <tr>
+                <th scope="col">CODIGO</th>
+                <th scope="col">U.MEDIDA</th>
+                <th scope="col">DESCRIPCION</th>
+                <th scope="col">CANTIDAD</th>
+                <th scope="col">SELECCIONAR</th>
+            </thead>
+            <tbody class="text-center">
+              <tr *ngFor="let depositControl of depositControlDtos">
+                <td class="text-primary">{{depositControl.itemCode}}</td>
+                <td class="text-primary">{{depositControl.measureUnit}}</td>
+                <td class="text-primary">{{depositControl.itemName}}</td>
+                <td class="text-primary">{{depositControl.quantity}}</td>
+                <td>
+                  <button *ngIf="createdEnabled" (click)="selectDepositItem(depositControl.itemCode,depositControl.measureUnit,
+                  depositControl.itemName,depositControl.id)" class="mx-2">-</button>
+                  <button *ngIf="!createdEnabled" (click)="selectDepositItem(depositControl.itemCode,depositControl.measureUnit,
+                    depositControl.itemName,depositControl.id)" class="mx-2" disabled>X</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<ng-template #bigBagListTemplate>
+  <button id="closeButton" (click)="onCloseBigBagListTemplate()" class="btn btn-sm text-white">X</button>
+  <div class="mt-1 ms-1">
+    <h1 class="d-inline">Bolsones</h1>
+  </div>
+  <div *ngIf="bigBagTotalQuantity>-1">
+    <h2>Cantidad: {{bigBagTotalQuantity}}</h2>
+  </div>
+  <table class="table-sm table-bordered h-75">
+    <thead>
+      <tr>
+        <th scope="col">Fecha de creacion</th>
+        <th scope="col">Nombre</th>
+        <th>VER ITEMS</th>
+        <th>CALCULAR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let bigBag of findedBigBagDtos">
+        <td>{{bigBag.creationDate}}</td>
+        <td>{{bigBag.name}}</td>
+        <td>
+          <button (click)="openDialogBigBagItemsList(bigBag.id)" class="btn btn-sm">-</button>
+        </td>
+        <td>
+          <button (click)="calculateBigBagTotalQuantity(bigBag.id)" class="btn btn-sm">-</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
+<ng-template #bigBagItemsListTemplate>
+  <button id="closeButton" (click)="onCloseBigBagItemListTemplate()" class="btn btn-sm text-white">X</button>
+  <div class="mt-1">
+    <h1 class="d-inline">Items:</h1>
+  </div>
+  <table class="table-sm table-bordered h-75">
+    <thead>
+      <tr class="text-center">
+        <th scope="col">CODIGO</th>
+        <th scope="col">U.MEDIDA</th>
+        <th scope="col">DESCRIPCION</th>
+        <th scope="col">P.UNITARIO</th>
+        <th scope="col">TOTAL</th>
+        <th scope="col">CANTIDAD</th>
+        <th scope="col">NUEVA CANTIDAD</th>
+        <th scope="col">APLICAR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="text-center" *ngFor="let bigBagItem of findedBigBagItems">
+        <td>{{bigBagItem.code}}</td>
+        <td>{{bigBagItem.measureUnit}}</td>
+        <td>{{bigBagItem.description}}</td>
+        <td>{{bigBagItem.unitCost | currency: '$': 'symbol'}}</td>
+        <td>{{bigBagItem.totalCost| currency: '$': 'symbol'}}</td>
+        <td>{{bigBagItem.quantity}}</td>
+        <td>
+          <form [formGroup]="bigBagItemForm" class=" w-25 form-group fw-bold ms-1">
+            <div class="form-group">
+              <input class="form-control border-dark" type="quantity" placeholder="0" formControlName="quantity" id="quantity">
+              <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)" class="text-danger">
+                <div *ngIf="quantity.errors?.['required']">
+                  debe poner una cantidad valida
+                </div>
+              </div>
+            </div>
+          </form>
+        </td>
+        <td>
+          <button (click)="updateBigBagItemQuantity(bigBagItem.id)" class="btn btn-sm">-</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>

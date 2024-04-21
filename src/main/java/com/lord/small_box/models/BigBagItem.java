@@ -43,6 +43,8 @@ public class BigBagItem {
 	
 	private int quantity;
 	
+	private String description;
+	
 	private BigDecimal unitCost;
 	
 	private BigDecimal totalCost;

@@ -25,8 +25,6 @@ import { Router } from '@angular/router';
   templateUrl: './deposit-home.component.html',
   styleUrls: ['./deposit-home.component.css']
 })
-
-
 export class DepositHomeComponent implements OnInit {
   purchaseOrderDto!: PurchaseOrderDto
   purchaseOrderItemDtos: Array<PurchaseOrderItemDto> = [];
@@ -41,7 +39,6 @@ export class DepositHomeComponent implements OnInit {
     , private router: Router
   ) { }
 
-
   ngOnInit(): void {
     this.getCurrentDeposit();
     console.log(this.selectedDepositBol)
@@ -51,12 +48,12 @@ export class DepositHomeComponent implements OnInit {
   file!: File;
   fileDetails!: FileDetails;
   fileUris: Array<string> = [];
-  //Upload file last
   selectFile(event: any) {
     console.log("select file: " + event.target.files.item(0))
     this.file = event.target.files.item(0);
   }
 
+  /**PURCHASE ORDER*/
   uploadPurchaseOrderFile() {
     const orgId = this.cookieService.getUserMainOrganizationId();
     console.log(orgId);
@@ -70,16 +67,11 @@ export class DepositHomeComponent implements OnInit {
       complete: () => {
         this.openPurchaseOrderTableTemplate(this.purchaseOrderDto.items);
       }
-
     });
-
   }
-  onClosePurchaseOrderTableTemplate(): void {
-    this.purchaseOrderTableMatDialogRef.close();
-  }
-
   private purchaseOrderTableMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('purchaseOrderTableTemplate') purchaseOrderTableTemplate !: TemplateRef<any>
+
   openPurchaseOrderTableTemplate(purchaseOrderItems: PurchaseOrderItemDto[]): void {
     this.purchaseOrderItemDtos = purchaseOrderItems;
     const template = this.purchaseOrderTableTemplate;
@@ -87,41 +79,10 @@ export class DepositHomeComponent implements OnInit {
       template
     });
     this.purchaseOrderTableMatDialogRef.afterClosed().subscribe();
-
   }
-  uploadSupplyFile() {
-    const orgId = Number(this.cookieService.getUserMainOrganizationId());
-    this.fileUploadService.sendSupplyPdfToBackEnd(this.file, orgId).subscribe({
-      next: (supplyData) => {
-        this.supplyDto = supplyData;
-      },
-      error: (errorData) => {
-        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
-      },
-      complete: () => {
-        this.openSupplyTableTemplate(this.supplyDto.supplyItems);
-      }
-    });
-
+  onClosePurchaseOrderTableTemplate(): void {
+    this.purchaseOrderTableMatDialogRef.close();
   }
-  onCloseSupplyTableTemplate() {
-    this.supplyTableTemplateRef.close();
-    this.router.navigateByUrl('deposit-home');
-  }
-
-  private supplyTableTemplateRef!: MatDialogRef<DialogTemplateComponent>;
-
-  @ViewChild('supplyTableTemplate') supplyTableTemplate !: TemplateRef<any>
-  openSupplyTableTemplate(supplyItems: SupplyItemDto[]): void {
-    this.supplyItemDtos = supplyItems;
-    const template = this.supplyTableTemplate;
-    this.supplyTableTemplateRef = this.dialogService.openSupplyCorrectionNoteCreation({
-      template
-    });
-    this.supplyTableTemplateRef.afterClosed().subscribe();
-
-  }
-
   onClosepurchaseOrderListTemplate() {
     this.purchaseOrderTemplateRef.close();
   }
@@ -136,9 +97,6 @@ export class DepositHomeComponent implements OnInit {
     });
     this.purchaseOrderTemplateRef.afterClosed().subscribe();
   }
-
- 
-
   private confirmData!: boolean;
   confirmDepositLoad(purchaseOrderId: number, loadedToDeposit: boolean, orderNumber: number): void {
     if (loadedToDeposit) {
@@ -177,7 +135,6 @@ export class DepositHomeComponent implements OnInit {
   }
 
   private orderToDepositMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
-
   @ViewChild('purchaseOrderToDepositTemplate') purchaseOrderReportTemplateRef !: TemplateRef<any>
   openDialogOrderToDepositReport(): void {
     const template = this.purchaseOrderReportTemplateRef;
@@ -203,14 +160,14 @@ export class DepositHomeComponent implements OnInit {
     this.purchaseOrderItemListMatDialogRef.afterClosed().subscribe();
   }
 
-  findedPurchaseOrder!:PurchaseOrderDto;
-  getPurchaseOrder(orderId:number){
+  findedPurchaseOrder!: PurchaseOrderDto;
+  getPurchaseOrder(orderId: number) {
     this.depositControlService.findPurchaseOrderById(orderId).subscribe({
-      next:(orderData)=>{
+      next: (orderData) => {
         this.findedPurchaseOrder = orderData;
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
     });
   }
@@ -238,6 +195,39 @@ export class DepositHomeComponent implements OnInit {
     })
   }
 
+  /**SUPPLY */
+  uploadSupplyFile() {
+    const orgId = Number(this.cookieService.getUserMainOrganizationId());
+    this.fileUploadService.sendSupplyPdfToBackEnd(this.file, orgId).subscribe({
+      next: (supplyData) => {
+        this.supplyDto = supplyData;
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      },
+      complete: () => {
+        this.openSupplyTableTemplate(this.supplyDto.supplyItems);
+      }
+    });
+
+  }
+  onCloseSupplyTableTemplate() {
+    this.supplyTableTemplateRef.close();
+    this.router.navigateByUrl('deposit-home');
+  }
+
+  private supplyTableTemplateRef!: MatDialogRef<DialogTemplateComponent>;
+
+  @ViewChild('supplyTableTemplate') supplyTableTemplate !: TemplateRef<any>
+  openSupplyTableTemplate(supplyItems: SupplyItemDto[]): void {
+    this.supplyItemDtos = supplyItems;
+    const template = this.supplyTableTemplate;
+    this.supplyTableTemplateRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.supplyTableTemplateRef.afterClosed().subscribe();
+
+  }
   onCloseSupplyListTemplate() {
     this.supplyListMatDialogRef.close();
   }
@@ -252,18 +242,18 @@ export class DepositHomeComponent implements OnInit {
     this.supplyListMatDialogRef.afterClosed().subscribe();
 
   }
-  
-  findedSupply!:SupplyDto;
-getSupplybyId(supplyId:number){
-  this.depositControlService.findSupplyById(supplyId).subscribe({
-    next:(supplyData)=>{
-      this.findedSupply = supplyData;
-    },
-    error:(errorData)=>{
-      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-    }
-  })
-}
+
+  findedSupply!: SupplyDto;
+  getSupplybyId(supplyId: number) {
+    this.depositControlService.findSupplyById(supplyId).subscribe({
+      next: (supplyData) => {
+        this.findedSupply = supplyData;
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    })
+  }
 
   suppliesDto: SupplyDto[] = [];
   getAllSupplies(organizationId: number) {
@@ -290,7 +280,7 @@ getSupplybyId(supplyId:number){
     this.supplyItemListMatDialogRef.afterClosed().subscribe();
   }
 
- 
+
 
   supplyItemsDtoListShow: SupplyItemDto[] = [];
   getSupplyItems(supplyId: number) {
@@ -308,7 +298,7 @@ getSupplybyId(supplyId:number){
 
   getDepositControlsByOrganization() {
     const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
-    this.depositControlService.findDepositControlsByDeposit(depoId).subscribe({
+    this.depositControlService.findAllDepositControlsByDeposit(depoId).subscribe({
       next: (depositData) => {
         this.depositControlDtos = depositData;
       },
@@ -453,7 +443,7 @@ getSupplybyId(supplyId:number){
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
-      },complete:()=>{
+      }, complete: () => {
         this.onCloseDepositSelectionTemplate();
       }
     });
@@ -479,59 +469,58 @@ getSupplybyId(supplyId:number){
     });
   }
 
-  purchaseOrderConfirmData!:boolean;
-  confirmDeletePurchaseOrder(orderId:number){
+  purchaseOrderConfirmData!: boolean;
+  confirmDeletePurchaseOrder(orderId: number) {
     var confirmText = "Desea eliminar la orden?";
     this.confirmDialogService.confirmDialog(confirmText).subscribe({
-      next:(confirmData)=>{
+      next: (confirmData) => {
         this.purchaseOrderConfirmData = confirmData;
-        if(this.purchaseOrderConfirmData){
+        if (this.purchaseOrderConfirmData) {
           this.deletePurchaseOrderById(orderId);
-          }else{
-          this.snackBar.openSnackBar('Se cancelo la operacion.','Cerrar',3000);
+        } else {
+          this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
         }
       }
     });
   }
 
-  deletePurchaseOrderById(orderId:number){
+  deletePurchaseOrderById(orderId: number) {
     this.depositControlService.deletePurchaseOrderById(orderId).subscribe({
-      next:(orderNumberDeletedData)=>{
-        this.snackBar.openSnackBar('Se elimino la order de compra: ' +orderNumberDeletedData,'Cerrar',3000);
+      next: (orderNumberDeletedData) => {
+        this.snackBar.openSnackBar('Se elimino la order de compra: ' + orderNumberDeletedData, 'Cerrar', 3000);
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
     });
   }
 
-  supplyConfirmData!:boolean;
-  confirmDeleteSupply(supplyId:number){
+  supplyConfirmData!: boolean;
+  confirmDeleteSupply(supplyId: number) {
     var confirmText = "Desea eliminar el suministro?";
     this.confirmDialogService.confirmDialog(confirmText).subscribe({
-      next:(confirmData)=>{
+      next: (confirmData) => {
         this.supplyConfirmData = confirmData;
-        if(this.supplyConfirmData){
+        if (this.supplyConfirmData) {
           this.deleteSupplyById(supplyId);
-        }else{
-          this.snackBar.openSnackBar('Se cancelo la operacion.','Cerrar',3000);
+        } else {
+          this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
         }
       }
-    
+
     });
   }
-  deleteSupplyById(supplyId:number){
+  deleteSupplyById(supplyId: number) {
     this.depositControlService.deleteSupplyById(supplyId).subscribe({
-      next:(supplyNumberDetetedData)=>{
-        this.snackBar.openSnackBar('Se elimino el suministro numero: ' +supplyNumberDetetedData,'Cerrar',3000);
+      next: (supplyNumberDetetedData) => {
+        this.snackBar.openSnackBar('Se elimino el suministro numero: ' + supplyNumberDetetedData, 'Cerrar', 3000);
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
     })
   }
 
- 
   get name() {
     return this.depositFormbuilder.controls.name;
   }
@@ -541,6 +530,7 @@ getSupplybyId(supplyId:number){
   get houseNumber() {
     return this.depositFormbuilder.controls.houseNumber;
   }
+
 
 
 
