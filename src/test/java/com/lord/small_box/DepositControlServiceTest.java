@@ -53,6 +53,7 @@ import com.lord.small_box.repositories.PurchaseOrderRepository;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.text_analisys.TextToPurchaseOrder;
+import com.lord.small_box.utils.ExcelToListUtils;
 import com.lord.small_box.utils.PdfToStringUtils;
 
 @SpringBootTest
@@ -90,6 +91,8 @@ public class DepositControlServiceTest {
 	
 	private long purchaseOrder365Id;
 	
+	@Autowired
+	private ExcelToListUtils excelToListUtils;
 	
 
 	@BeforeAll
@@ -1111,7 +1114,7 @@ public class DepositControlServiceTest {
 	}
 
 	@Test
-	@DisplayName("Crear Bolson Navidad")
+	@DisplayName("CREAR BOLSON NAVIDAD")
 	@Order(15)
 	void createBigbagNavidad() throws Exception {
 		Deposit deposit = depositRepository.findById(depositAvellanedaId).get();
@@ -1142,5 +1145,25 @@ public class DepositControlServiceTest {
 			assertEquals(e.getQuantity(), 1);
 		});
 		assertEquals(depositControlService.getTotalBigBagQuantityAvailable(savedbigBagDto.getId(), depositAvellanedaId), 8);
+	}
+	
+	@Test
+	@DisplayName("EXCEL A DEPOSITO")
+	@Order(16)
+	void excelToDepositControl() throws Exception{
+		String fileLocation = "D:\\filetest\\control_excel2.xls";
+		Deposit deposit = depositRepository.findById(depositAvellanedaId).get();
+		
+		List<DepositControl> result = excelToListUtils.excelDataToDeposit(fileLocation, deposit);
+		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0001")).findFirst().get().getQuantity()).isEqualTo(3);
+		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0001")).findFirst().get().getMeasureUnit()).isEqualTo("CAJON");
+		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0001")).findFirst().get().getItemUnitPrice().doubleValue()).isEqualTo(29450.00);
+		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0008")).findFirst().get().getQuantity()).isEqualTo(25);
+		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0008")).findFirst().get().getMeasureUnit()).isEqualTo("KILOGRAMO");
+		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0008")).findFirst().get().getItemUnitPrice().doubleValue()).isEqualTo(8900.00);
+		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00604.0003")).findFirst().get().getQuantity()).isEqualTo(10);
+		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00604.0003")).findFirst().get().getMeasureUnit()).isEqualTo("KILOGRAMO");
+		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00604.0003")).findFirst().get().getItemUnitPrice().doubleValue()).isEqualTo(7800.00);
+		
 	}
 }
