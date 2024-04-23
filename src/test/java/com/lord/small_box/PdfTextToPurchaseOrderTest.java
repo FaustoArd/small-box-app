@@ -249,6 +249,9 @@ public class PdfTextToPurchaseOrderTest {
 
 			String itemDetails = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1)
 					.map(m -> m.replaceAll("[0-9\\W]", "")).collect(Collectors.joining("-"));
+			if(itemDetails.regionMatches(0, "UNO", 0, 3)) {
+				itemDetails = itemDetails.substring(itemDetails.indexOf("O"),itemDetails.length()-1);
+			}
 			purchaseOrderItemDto.setItemDetail(itemDetails);
 
 			purchaseOrderItemDto

@@ -7,11 +7,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.isNotNull;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.TestInstance;
@@ -28,13 +32,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.BigBagItemDto;
 import com.lord.small_box.dtos.DepositControlDto;
+import com.lord.small_box.dtos.ExcelItemDto;
+import com.lord.small_box.dtos.DepositItemComparatorDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
+import com.lord.small_box.dtos.PurchaseOrderItemCandidateDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.mappers.BigBagMapper;
 import com.lord.small_box.mappers.DepositControlMapper;
+import com.lord.small_box.mappers.PurchaseOrderItemMapper;
 import com.lord.small_box.mappers.PurchaseOrderMapper;
 import com.lord.small_box.models.BigBag;
 import com.lord.small_box.models.Deposit;
@@ -72,28 +80,33 @@ public class DepositControlServiceTest {
 
 	@Autowired
 	private OrganizationResponsibleRepository organizationResponsibleRepository;
-	
+
 	@Autowired
 	private BigBagRepository bigBagRepository;
-	
+
 	@Autowired
 	private BigBagItemRepository bigBagItemRepository;
 
 	@Autowired
 	private DepositRepository depositRepository;
-	
+
 	@Autowired
 	private DepositControlRepository depositControlRepository;
 
 	private long depositAvellanedaId;
-	
+
 	private long admYDespachoId;
-	
+
 	private long purchaseOrder365Id;
-	
+
+	@Autowired
+	private PurchaseOrderRepository purchaseOrderRepository;
+
+	@Autowired
+	private PurchaseOrderItemRepository purchaseOrderItemRepository;
+
 	@Autowired
 	private ExcelToListUtils excelToListUtils;
-	
 
 	@BeforeAll
 	void setup() {
@@ -167,8 +180,6 @@ public class DepositControlServiceTest {
 		depositAvellanedaId = savedDeposit.getId();
 	}
 
-
-
 	@Test
 	@DisplayName("CARGAR ORDEN DE COMPRA N 365_24")
 	@Order(1)
@@ -178,20 +189,28 @@ public class DepositControlServiceTest {
 		purchaseOrder365Id = purchaseOrderDto.getId();
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
 		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 15);
+		assertThat(purchaseOrderDto.getItems().get(0).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
 		assertEquals(purchaseOrderDto.getItems().get(1).getQuantity(), 8);
+		assertThat(purchaseOrderDto.getItems().get(1).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getItems().get(2).getCode(), "2.1.1.00592.0001");
 		assertEquals(purchaseOrderDto.getItems().get(2).getQuantity(), 15);
+		assertThat(purchaseOrderDto.getItems().get(2).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getItems().get(3).getCode(), "2.1.1.00591.0002");
 		assertEquals(purchaseOrderDto.getItems().get(3).getQuantity(), 20);
+		assertThat(purchaseOrderDto.getItems().get(3).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getItems().get(4).getCode(), "2.1.1.00705.0036");
 		assertEquals(purchaseOrderDto.getItems().get(4).getQuantity(), 10);
+		assertThat(purchaseOrderDto.getItems().get(4).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getItems().get(5).getCode(), "2.1.1.00511.0008");
 		assertEquals(purchaseOrderDto.getItems().get(5).getQuantity(), 10);
+		assertThat(purchaseOrderDto.getItems().get(5).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getItems().get(6).getCode(), "2.1.1.00705.0012");
 		assertEquals(purchaseOrderDto.getItems().get(6).getQuantity(), 8);
+		assertThat(purchaseOrderDto.getItems().get(6).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
 		assertEquals(purchaseOrderDto.getItems().get(7).getQuantity(), 1);
+		assertThat(purchaseOrderDto.getItems().get(7).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
 
 		// Assert Purchase Order total cost equals sum of all items total cost
@@ -201,10 +220,10 @@ public class DepositControlServiceTest {
 		// Assert item unit cost * item quantity equals item total cost
 		ListIterator<PurchaseOrderItemDto> items = purchaseOrderDto.getItems().listIterator();
 		items.forEachRemaining(item -> {
+
 			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
 					item.getTotalEstimatedCost().doubleValue());
 		});
-
 		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(), 295600.00);
 	}
 
@@ -811,7 +830,6 @@ public class DepositControlServiceTest {
 	@Order(9)
 	void loadSupply551_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-551.pdf");
-		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -870,7 +888,6 @@ public class DepositControlServiceTest {
 	@Order(10)
 	void loadSupply223_23() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-223.pdf");
-		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -911,7 +928,6 @@ public class DepositControlServiceTest {
 	@Order(11)
 	void loadSupply177_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-177.pdf");
-		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -995,7 +1011,6 @@ public class DepositControlServiceTest {
 	@Order(12)
 	void loadSupply1043_23() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-1043.pdf");
-		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -1028,7 +1043,6 @@ public class DepositControlServiceTest {
 	@Order(13)
 	void loadSupply100_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-100.pdf");
-		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -1064,7 +1078,6 @@ public class DepositControlServiceTest {
 	@Order(14)
 	void loadSupply525_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-525.pdf");
-		System.err.println(text);
 		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -1119,16 +1132,17 @@ public class DepositControlServiceTest {
 	void createBigbagNavidad() throws Exception {
 		Deposit deposit = depositRepository.findById(depositAvellanedaId).get();
 		List<DepositControl> depositItems = depositControlRepository.findAllByDeposit(deposit).stream().map(m -> {
-			if(m.getItemCode().equals("2.1.1.00705.0035")) {
+			if (m.getItemCode().equals("2.1.1.00705.0035")) {
 				return m;
 			}
 			m.setQuantity(20);
 			return m;
 		}).toList();
 		depositControlRepository.saveAll(depositItems);
-	//List<DepositControl> updatedControls =  depositControlRepository.saveAll(DepositControlMapper.INSTANCE.dtosToDepositControls(udpatedItems));
-		
-		List<BigBagItemDto> bigBagItemDtos =  depositItems.stream().map(depoItem -> {
+		// List<DepositControl> updatedControls =
+		// depositControlRepository.saveAll(DepositControlMapper.INSTANCE.dtosToDepositControls(udpatedItems));
+
+		List<BigBagItemDto> bigBagItemDtos = depositItems.stream().map(depoItem -> {
 			BigBagItemDto dto = new BigBagItemDto();
 			dto.setDepositControlId(depoItem.getId());
 			return dto;
@@ -1138,32 +1152,88 @@ public class DepositControlServiceTest {
 		bigBagDto.setItems(bigBagItemDtos);
 		BigBagDto savedbigBagDto = depositControlService.createBigBag(bigBagDto, admYDespachoId);
 		BigBag returnedbigBag = bigBagRepository.save(BigBagMapper.INSTANCE.dtoToBigBah(savedbigBagDto));
-		
-		bigBagItemRepository.findByBigBag(returnedbigBag).forEach(e -> System.out.println("big bag item code: " +e.getCode()));
-		
-		bigBagItemRepository.findByBigBag(returnedbigBag).stream().forEach(e ->{
+		bigBagItemRepository.findByBigBag(returnedbigBag).stream().forEach(e -> {
 			assertEquals(e.getQuantity(), 1);
 		});
-		assertEquals(depositControlService.getTotalBigBagQuantityAvailable(savedbigBagDto.getId(), depositAvellanedaId), 8);
+		assertEquals(depositControlService.getTotalBigBagQuantityAvailable(savedbigBagDto.getId(), depositAvellanedaId),
+				8);
 	}
-	
+
 	@Test
 	@DisplayName("EXCEL A DEPOSITO")
 	@Order(16)
-	void excelToDepositControl() throws Exception{
-		String fileLocation = "D:\\filetest\\control_excel2.xls";
+	void excelToDepositControl() throws Exception {
+		String fileLocation = "D:\\filetest\\control_excel3.xls";
 		Deposit deposit = depositRepository.findById(depositAvellanedaId).get();
+
+		List<ExcelItemDto> excelCandidates = excelToListUtils.excelDataToDeposit(fileLocation, deposit);
+		/*excelCandidates.forEach(e -> System.out.println("[" + e.getExcelItemId() + "] " + "[" + e.getItemDescription()
+				+ "] " + "[" + e.getItemMeasureUnit() + "] " + "[" + e.getQuantity() + "]"));*/
+		Organization organization = organizationService.findById(admYDespachoId);
+		List<DepositItemComparatorDto> comparators = getDepositComparator(organization, excelCandidates);
+		//comparators.forEach(e -> System.out.println("Candidates: " +
+		//e.getExcelItemDto().getExcelItemId()+" " + e.getExcelItemDto().getItemDescription()));
+		comparators.stream().forEach(e -> {
+			List<PurchaseOrderItemCandidateDto>  dtos = e.getPurchaseOrderItemCandidateDtos();
+			dtos.forEach(item -> System.out.println("orderID: " + item.getOrderId() +  "description: " + item.getItemDetail()));
+		});
 		
-		List<DepositControl> result = excelToListUtils.excelDataToDeposit(fileLocation, deposit);
-		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0001")).findFirst().get().getQuantity()).isEqualTo(3);
-		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0001")).findFirst().get().getMeasureUnit()).isEqualTo("CAJON");
-		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0001")).findFirst().get().getItemUnitPrice().doubleValue()).isEqualTo(29450.00);
-		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0008")).findFirst().get().getQuantity()).isEqualTo(25);
-		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0008")).findFirst().get().getMeasureUnit()).isEqualTo("KILOGRAMO");
-		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00621.0008")).findFirst().get().getItemUnitPrice().doubleValue()).isEqualTo(8900.00);
-		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00604.0003")).findFirst().get().getQuantity()).isEqualTo(10);
-		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00604.0003")).findFirst().get().getMeasureUnit()).isEqualTo("KILOGRAMO");
-		assertThat(result.stream().filter(f ->f.getItemCode().equals("2.1.1.00604.0003")).findFirst().get().getItemUnitPrice().doubleValue()).isEqualTo(7800.00);
+
+	}
+
+	@Test
+	@DisplayName("EXCEL A DEPOSITO")
+	@Order(17)
+	void compareExcelListWithPurchaseOrders() throws Exception {
 		
+	}
+
+	private List<DepositItemComparatorDto> getDepositComparator(Organization organization,
+			List<ExcelItemDto> excelItems) {
+List<DepositItemComparatorDto> comparators = excelItems.stream().map(xlsItem -> {
+DepositItemComparatorDto comparatorDto = new DepositItemComparatorDto();
+			String strItemDesc = xlsItem.getItemDescription().split(" ")[0];
+			Pattern pItemDesc = Pattern.compile("^(?=.*(" + strItemDesc + "))",
+					Pattern.CASE_INSENSITIVE);
+			ExcelItemDto createdExcelItemDto = new ExcelItemDto();
+			List<PurchaseOrderItemCandidateDto> orderItemCandidates = purchaseOrderItemRepository
+					.findAllByPurchaseOrderIn(purchaseOrderRepository.findAllByOrganization(organization)).stream()
+					.map(orderItem -> {
+						PurchaseOrderItemCandidateDto orderItemCandidateDto = new PurchaseOrderItemCandidateDto();
+						if (pItemDesc.matcher(orderItem.getItemDetail()).find()) {
+							orderItemCandidateDto.setOrderId(orderItem.getId());
+							orderItemCandidateDto.setExcelItemDtoId(xlsItem.getExcelItemId());
+							orderItemCandidateDto.setCode(orderItem.getCode());
+							orderItemCandidateDto.setItemDetail(orderItem.getItemDetail());
+							orderItemCandidateDto.setMeasureUnit(orderItem.getMeasureUnit());
+
+							return orderItemCandidateDto;
+						}
+						return new PurchaseOrderItemCandidateDto();
+					}).toList();
+			Optional<PurchaseOrderItemCandidateDto> orderItemCandidateCheck = orderItemCandidates.stream()
+					.filter(f -> f.getExcelItemDtoId() == xlsItem.getExcelItemId()).findFirst();
+
+			if (orderItemCandidateCheck.isPresent()) {
+				createdExcelItemDto.setExcelItemId(xlsItem.getExcelItemId());
+				createdExcelItemDto.setItemDescription(xlsItem.getItemDescription());
+				createdExcelItemDto.setItemMeasureUnit(createdExcelItemDto.getItemMeasureUnit());
+				createdExcelItemDto.setQuantity(createdExcelItemDto.getQuantity());
+				comparatorDto.setExcelItemDto(createdExcelItemDto);
+				comparatorDto.setPurchaseOrderItemCandidateDtos(orderItemCandidates);
+			} else {
+				createdExcelItemDto.setExcelItemId(xlsItem.getExcelItemId());
+				createdExcelItemDto.setItemDescription(xlsItem.getItemDescription());
+				createdExcelItemDto.setItemMeasureUnit(createdExcelItemDto.getItemMeasureUnit());
+				createdExcelItemDto.setQuantity(createdExcelItemDto.getQuantity());
+				comparatorDto.setExcelItemDto(createdExcelItemDto);
+				PurchaseOrderItemCandidateDto candidateNotFound = new PurchaseOrderItemCandidateDto();
+				candidateNotFound.setItemDetail("No encontrado");
+				comparatorDto.setPurchaseOrderItemCandidateDtos(List.of(candidateNotFound));
+			}
+			return comparatorDto;
+
+		}).toList();
+		return comparators;
 	}
 }

@@ -163,7 +163,7 @@ public class LoadSupplyToDepositTest {
 				supplyReportDto.setSupplyItemDetail(supplyItem.getItemDetail());
 				supplyReportDto.setSupplyItemQuantity(supplyItem.getQuantity());
 				supplyReportDto.setDepositItemCode(depositItem.get().getItemCode());
-				supplyReportDto.setDepositItemDetail(depositItem.get().getItemName());
+				supplyReportDto.setDepositItemDetail(depositItem.get().getItemDescription());
 				supplyReportDto.setDepositItemQuantity(depositItem.get().getQuantity());
 				supplyReportDto.setDepositQuantityLeft(depositItem.get().getQuantity()-supplyItem.getQuantity());
 				return supplyReportDto;

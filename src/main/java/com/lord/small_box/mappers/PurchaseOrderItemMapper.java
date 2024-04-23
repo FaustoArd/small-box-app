@@ -17,6 +17,9 @@ public interface PurchaseOrderItemMapper {
 	@Mapping(target="purchaseOrder.id", source="purchaseOrderId")
 	public PurchaseOrderItem dtoToItem(PurchaseOrderItemDto itemDto);
 	
+	@Mapping(target="purchaseOrderId", source="purchaseOrder.id")
+	public PurchaseOrderItemDto itemToDto(PurchaseOrderItem purchaseOrderItem);
+	
 	public List<PurchaseOrderItem> dtoToItems(List<PurchaseOrderItemDto> itemDtos);
 	
 	public List<PurchaseOrderItemDto> itemsToDtos(List<PurchaseOrderItem> items);

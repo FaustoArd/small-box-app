@@ -13,7 +13,7 @@ public class DepositControlDto {
     
 	private String place;
 	
-	private String itemName;
+	private String itemDescription;
 	
 	private String itemCode;
 	

@@ -38,11 +38,11 @@ public class TextToSupply {
 		supplyDto.setSupplyItems(getSupplyItemList(arrTextSplitN));
 		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
 		supplyDto.setDependencyApplicant(getApplicant(arrTextSplitN));
-		System.out.println("Applicant: " + supplyDto.getDependencyApplicant());
+		/*System.out.println("Applicant: " + supplyDto.getDependencyApplicant());
 		System.out.println("Estimated: " + supplyDto.getEstimatedTotalCost());
 		System.out.println("TEST: " + supplyDto.getSupplyNumber());
 		System.out.println("TEST: " + supplyDto.getDate().getTime());
-		System.out.println("TEST: " + supplyDto.getSupplyItems());
+		System.out.println("TEST: " + supplyDto.getSupplyItems());*/
 		return supplyDto;
 	}
 

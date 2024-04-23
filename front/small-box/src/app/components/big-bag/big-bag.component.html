@@ -92,13 +92,13 @@
               <tr *ngFor="let depositControl of depositControlDtos">
                 <td class="text-primary">{{depositControl.itemCode}}</td>
                 <td class="text-primary">{{depositControl.measureUnit}}</td>
-                <td class="text-primary">{{depositControl.itemName}}</td>
+                <td class="text-primary">{{depositControl.itemDescription}}</td>
                 <td class="text-primary">{{depositControl.quantity}}</td>
                 <td>
                   <button *ngIf="createdEnabled" (click)="selectDepositItem(depositControl.itemCode,depositControl.measureUnit,
-                  depositControl.itemName,depositControl.id)" class="mx-2">-</button>
+                  depositControl.itemDescription,depositControl.id)" class="mx-2">-</button>
                   <button *ngIf="!createdEnabled" (click)="selectDepositItem(depositControl.itemCode,depositControl.measureUnit,
-                    depositControl.itemName,depositControl.id)" class="mx-2" disabled>X</button>
+                    depositControl.itemDescription,depositControl.id)" class="mx-2" disabled>X</button>
                 </td>
               </tr>
             </tbody>

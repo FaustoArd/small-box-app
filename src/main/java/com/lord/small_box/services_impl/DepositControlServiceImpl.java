@@ -171,7 +171,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 				depositControl.setItemTotalPrice(
 						depositControl.getItemUnitPrice().multiply(new BigDecimal(depositControl.getQuantity())));
 				report.add(
-						new PurchaseOrderToDepositReportDto(depositControl.getItemCode(), depositControl.getItemName(),
+						new PurchaseOrderToDepositReportDto(depositControl.getItemCode(), depositControl.getItemDescription(),
 								depositControl.getQuantity(), depositControl.getMeasureUnit(), "ACTUALIZADO"));
 				order.setLoadedToDeposit(true);
 				order.setLoadedToDepositId(deposit.getId());
@@ -183,7 +183,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 				log.info("new item,creating deposit control item");
 				DepositControl depositControl = new DepositControl();
 				depositControl.setItemCode(orderItem.getCode());
-				depositControl.setItemName(orderItem.getItemDetail());
+				depositControl.setItemDescription(orderItem.getItemDetail());
 				depositControl.setQuantity(orderItem.getQuantity());
 				depositControl.setItemTotalPrice(
 						orderItem.getUnitCost().multiply(new BigDecimal(depositControl.getQuantity())));
@@ -192,7 +192,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 				depositControl.setMeasureUnit(orderItem.getMeasureUnit());
 				depositControl.setDeposit(deposit);
 				report.add(
-						new PurchaseOrderToDepositReportDto(depositControl.getItemCode(), depositControl.getItemName(),
+						new PurchaseOrderToDepositReportDto(depositControl.getItemCode(), depositControl.getItemDescription(),
 								depositControl.getQuantity(), depositControl.getMeasureUnit(), "NUEVO"));
 				order.setLoadedToDeposit(true);
 				order.setLoadedToDepositId(deposit.getId());
@@ -273,7 +273,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 				supplyReportDto.setSupplyItemQuantity(supplyItem.getQuantity());
 				supplyReportDto.setDepositItemCode(depositItem.get().getItemCode());
 				supplyReportDto.setDepositItemMeasureUnit(depositItem.get().getMeasureUnit());
-				supplyReportDto.setDepositItemDetail(depositItem.get().getItemName());
+				supplyReportDto.setDepositItemDetail(depositItem.get().getItemDescription());
 				supplyReportDto.setDepositItemQuantity(depositItem.get().getQuantity());
 				supplyReportDto.setDepositQuantityLeft(depositItem.get().getQuantity() - supplyItem.getQuantity());
 				return supplyReportDto;
@@ -456,7 +456,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 					.measureUnit(depoItem.getMeasureUnit())
 					.quantity(bigBagItemDtos.stream().filter(f -> f.getDepositControlId() == depoItem.getId())
 							.findFirst().get().getQuantity())
-					.description(depoItem.getItemName()).unitCost(depoItem.getItemUnitPrice())
+					.description(depoItem.getItemDescription()).unitCost(depoItem.getItemUnitPrice())
 					.totalCost(depoItem.getItemUnitPrice().multiply(new BigDecimal(bigBagItemDtos.stream()
 							.filter(f -> f.getDepositControlId() == depoItem.getId()).findFirst().get().getQuantity())))
 					.bigBag(bigBag).build();
