@@ -23,7 +23,9 @@ import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.BigBagItemDto;
 import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.DepositDto;
+import com.lord.small_box.dtos.DepositItemComparatorDto;
 import com.lord.small_box.dtos.DepositResponseDto;
+import com.lord.small_box.dtos.ExcelItemDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
@@ -31,8 +33,8 @@ import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
-import com.lord.small_box.models.Deposit;
 import com.lord.small_box.services.DepositControlService;
+import com.lord.small_box.utils.ExcelToListUtils;
 import com.lord.small_box.utils.PdfToStringUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -49,6 +51,9 @@ public class DepositControlController {
 	
 	@Autowired
 	private final PdfToStringUtils pdfToStringUtils;
+	
+	@Autowired
+	private final ExcelToListUtils excelToListUtils;
 	
 	@GetMapping(path="/find-deposit-controls-by-deposit")
 	ResponseEntity<List<DepositControlDto>> findDepositControlsByDeposit(@RequestParam("depositId")long depositId){
@@ -92,6 +97,14 @@ public class DepositControlController {
 		String text = pdfToStringUtils.pdfToString(file.getOriginalFilename());
 		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, OrganizationId);
 		return new ResponseEntity<PurchaseOrderDto>(purchaseOrderDto,HttpStatus.CREATED);
+	}
+	
+	@PostMapping(path="/excel-order-comparator",consumes =MediaType.MULTIPART_FORM_DATA_VALUE)
+	ResponseEntity<List<DepositItemComparatorDto>> generateExcelToOrderComparator(@RequestPart("file")MultipartFile file,
+			@RequestParam("organizationId")long organizationId) throws Exception{
+		List<ExcelItemDto> excelItems = excelToListUtils.excelDataToDeposit(file.getOriginalFilename(),organizationId);
+		List<DepositItemComparatorDto> comparatorsDto = depositControlService.getExcelToPuchaseOrderComparator(excelItems, organizationId);
+		return new ResponseEntity<List<DepositItemComparatorDto>>(comparatorsDto,HttpStatus.CREATED);
 	}
 	
 	//Find purchase order, with items.
@@ -193,4 +206,6 @@ public class DepositControlController {
 		int result = depositControlService.getTotalBigBagQuantityAvailable(bigBagId, depositId);
 		return ResponseEntity.ok(result);
 	}
+	
+	
 }

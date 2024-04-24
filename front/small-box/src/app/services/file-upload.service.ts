@@ -4,6 +4,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { DispatchControlDto } from '../models/dispatchControlDto';
 import { SupplyDto } from '../models/SupplyDto';
 import { PurchaseOrderDto } from '../models/purchaseOrderDto';
+import { DepositItemComparatorDto } from '../models/depositItemComparatorDto';
 const PDF_STRING_BASE_URL = 'http://localhost:8080/api/v1/smallbox/dispatchs';
 const DEPOSIT_CONTROL_BASE_URL = 'http://localhost:8080/api/v1/smallbox/deposit-control';
 
@@ -43,12 +44,17 @@ httpOptionsForm = {
     return this.http.post<PurchaseOrderDto>(`${DEPOSIT_CONTROL_BASE_URL}/collect-purchase-order-pdf?file=${file}&organizationId=${organizationId}`,formData)
     .pipe(catchError(this.handleError));
    }
-
-
-   sendSupplyPdfToBackEnd(file:File,organizationId:number):Observable<SupplyDto>{
+ sendSupplyPdfToBackEnd(file:File,organizationId:number):Observable<SupplyDto>{
     const formData:FormData = new FormData;
     formData.append('file',file);
     return this.http.post<SupplyDto>(`${DEPOSIT_CONTROL_BASE_URL}/collect-supply-pdf?file=${file}&organizationId=${organizationId}`,formData)
+    .pipe(catchError(this.handleError));
+   }
+
+   sendDepositItemExcelFileToBackEnd(file:File,organizationId:number):Observable<DepositItemComparatorDto[]>{
+    const formData:FormData = new FormData;
+    formData.append('file',file);
+    return this.http.post<DepositItemComparatorDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/excel-order-comparator?file=${file}&organizationId=${organizationId}`,formData)
     .pipe(catchError(this.handleError));
    }
 }

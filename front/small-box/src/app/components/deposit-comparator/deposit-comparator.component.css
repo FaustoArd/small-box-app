@@ -1,0 +1,82 @@
+body{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+jumbotron{
+    background-color: aliceblue;
+}
+.btn{
+    background: linear-gradient(245.59deg, rgb(91, 32, 80)33.33%, rgb(170, 43, 187) 33.33%, #64169f 33.33%); 
+    color:red;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
+}
+#bigBag{
+    background: linear-gradient(245.59deg, rgb(91, 32, 80)33.33%, rgb(170, 43, 187) 33.33%, #64169f 33.33%); 
+   color:rgb(230, 229, 221)
+}
+
+.btn:hover{
+    background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
+    color:rgb(215, 154, 41);
+}
+h1{
+    font-size: 1rem;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+h2{
+    color: rgb(56, 18, 195);
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+h3{
+    font-family: 'Noto Sans', sans-serif;
+}
+h4{
+    font-family: 'Quattrocento', serif;
+    font-weight: 500;
+    font-size: 1rem;
+    
+}
+
+h5{
+    color:#2a31b6;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
+    font-size: 2.1rem;
+}
+
+
+p{
+    color: #361e96;
+    font-size: 0.9rem;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
+}
+
+#orderItem{
+    margin-left: 1.1rem;
+}
+#uploadInput{
+    font-size: 0.7rem;
+ color: #1b4f4f;
+}
+th{
+    font-size: 0.6rem;
+}
+td{
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
+small{
+    color:rgb(27, 118, 42);
+    font-weight: bold;
+    font-family: 'Quattrocento', serif;
+    font-size: 1rem;
+}
+#closeButton{
+  position: absolute;
+  right: 0;
+}

@@ -227,7 +227,7 @@ public class SmallBoxApplication {
 			organizationRepository.save(org4);
 			organizationRepository.save(org5);
 			
-			Supply supply = Supply.builder().supplyNumber(551)
+			/*Supply supply = Supply.builder().supplyNumber(551)
 					.date(Calendar.getInstance())
 					.dependencyApplicant("Direccion de Inclusion")
 					.estimatedTotalCost(new BigDecimal(70500))
@@ -263,7 +263,7 @@ public class SmallBoxApplication {
 					.supply(savedSupply)
 					.build();
 			List<SupplyItem> supplyItems = List.of(supplyItem1,supplyItem2,supplyItem3);
-			supplyItemRepository.saveAll(supplyItems);
+			supplyItemRepository.saveAll(supplyItems);*/
 			Deposit deposit = Deposit.builder().name("AVELLANEDA")
 					.streetName("AVELLANEDA").houseNumber("2212")
 					.organization(dirAdmDesp).build();

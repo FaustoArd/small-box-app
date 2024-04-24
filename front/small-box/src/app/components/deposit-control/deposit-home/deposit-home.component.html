@@ -1,9 +1,6 @@
 <body>
     <app-navbar></app-navbar>
-
-
-
-    <div class="container-flex">
+ <div class="container-flex">
         <div class="row">
             <div class="col-md-3">
                 <button routerLink="/big-bag" id="bigBag" class="btn btn-md  ms-5 mt-1">Bolsones</button>
@@ -87,13 +84,19 @@
             <div class="col-md-1"></div>
             <div class="col-md-3 mt-1">
                 <!-- Deposit jumbotron -->
+
                 <div class="jumbotron  ms-1">
                     <p class="d-inline display-4">VER STOCK</p>
                     <a (click)="openDepositControlListTemplate(depositControlListTemplate)" class="btn btn-sm ms-3 "
                         role="button">-</a>
+                    </div>
+                    <div>
+                        <p class="d-inline display-4">IMPORTAR EXCEL</p>
+                        <a routerLink="/deposit-comparator" class="btn btn-sm ms-3 " role="button">-</a>
+                      </div>
                     <p class="lead">
                         <hr class="my-4">
-                </div>
+             
             </div>
         </div>
 
@@ -212,8 +215,9 @@
         </div>
     </div>
 </ng-template>
+
 <ng-template #supplyTableTemplate>
-    <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button>
+ <div *ngIf="supplyItemDtos.length>0" class="container-flex">
     <div class="row mt-1">
         <div class="col-md-5"></div>
         <div class="col-md-5">
@@ -276,6 +280,7 @@
             </table>
         </div>
     </div>
+</div>
 </ng-template>
 
 <ng-template #purchaseOrderListTemplate>

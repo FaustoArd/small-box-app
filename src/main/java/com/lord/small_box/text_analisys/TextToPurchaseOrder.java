@@ -1,10 +1,15 @@
 package com.lord.small_box.text_analisys;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -109,7 +114,7 @@ public class TextToPurchaseOrder {
 	// REGEX to find items data.
 	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
 	private final String itemQuantityRegex = "^(?=.*([0-9])*(,)([0-9]){3})";
-	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
+	private final String itemProgCatRegex = "^(([0-9]){1,2}(.)([0-9]){2}(.)([0-9]){2})";
 	private final String itemUnitPrice = "^(?=.*([0-9].)*(,)([0-9]){5})";
 	private final Pattern pItemCode = Pattern.compile(itemCodeRegex);
 	private final Pattern pItemQuantity = Pattern.compile(itemQuantityRegex);
@@ -119,52 +124,87 @@ public class TextToPurchaseOrder {
 	// This method find all the purchase order items.
 	private List<PurchaseOrderItemDto> getItems(String[] arrText) {
 		log.info("Text to purchase order Get Items");
+		
 		// This list contains all lines that match the item code REGEX
 		List<String> itemsText = Stream.of(arrText).filter(f -> pItemCode.matcher(f).find())
 				.collect(Collectors.toList());
 
 		// Iterate the list and save each item element in a new PurchaseOrderItem
 		// object.
+		
+		
 		return itemsText.stream().map(item -> {
-
 			PurchaseOrderItemDto purchaseOrderItem = new PurchaseOrderItemDto();
 			String[] arrItems = item.split(" ");
-			purchaseOrderItem
-					.setCode(Stream.of(arrItems).filter(f -> pItemCode.matcher(f).find()).findFirst().get().strip());
-
-			purchaseOrderItem
-					.setQuantity(Integer.parseInt(Stream.of(arrItems).filter(f -> pItemQuantity.matcher(f).find())
-							.map(m -> m.substring(0, m.indexOf(","))).findFirst().get()));
-
-			String measureUnitResult = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst().get();
-			if (measureUnitResult.equalsIgnoreCase("cada")) {
-				measureUnitResult = measureUnitResult + "-UNO";
-			}
-			purchaseOrderItem.setMeasureUnit(measureUnitResult);
-
-			purchaseOrderItem.setProgramaticCat(
-					Stream.of(arrItems).filter(f -> pProgCat.matcher(f).find()).findFirst().get().strip());
-
-			String itemDetail = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1)
-					.map(m -> m.replaceAll("[0-9\\W]", "")).collect(Collectors.joining("-"));
-			if (itemDetail.startsWith("UNO-")) {
-				itemDetail = itemDetail.substring(itemDetail.indexOf("-") + 1, itemDetail.length() - 1);
-			}
-			purchaseOrderItem.setItemDetail(itemDetail);
-			purchaseOrderItem.setUnitCost(new BigDecimal(Stream.of(arrItems).filter(f -> pUnitPrice.matcher(f).find())
-					.map(m -> m.replace(".", "").replace(",", ".")).findFirst().get()));
-
-			purchaseOrderItem.setTotalEstimatedCost(new BigDecimal(
-					item.substring(item.lastIndexOf("$") + 1).replace(".", "").replace(",", ".").strip()));
+			purchaseOrderItem.setCode(getItemCode(arrItems));
+			purchaseOrderItem.setQuantity(getItemQuantity(arrItems));
+			purchaseOrderItem.setMeasureUnit(getItemMeasureUnit(arrItems));
+			purchaseOrderItem.setProgramaticCat(getItemProgramaticCat(arrItems));
+			purchaseOrderItem.setItemDetail(getItemDetail(arrItems));
+			purchaseOrderItem.setUnitCost(getUnitCost(arrItems));
+			purchaseOrderItem.setTotalEstimatedCost(getItemTotalCost(item));
 			return purchaseOrderItem;
-
 		}).toList();
+	}
+
+	private String getItemCode(String[] arrItems) {
+		log.info("Text to purchase order get item code");
+		return Stream.of(arrItems).filter(f -> pItemCode.matcher(f).find()).findFirst().get().strip();
+	}
+
+	private int getItemQuantity(String[] arrItems){
+		log.info("Text to purchase order get item quantity");
+		String strQuantity = Stream.of(arrItems).filter(f -> pItemQuantity.matcher(f).find())
+				.map(m -> m.substring(0, m.indexOf(",")).trim()).findFirst().get();
+		if(strQuantity.contains("."));
+		strQuantity = strQuantity.replace(".", "");
+		int quantity = Integer.parseInt(strQuantity);
+		System.out.println("Quantitry: " + quantity);
+		return quantity;
+		
+		/*return Integer.parseInt(Stream.of(arrItems).filter(f -> pItemQuantity.matcher(f).find())
+				.map(m -> m.substring(0, m.indexOf(","))).findFirst().get());*/
+	}
+
+	private String getItemMeasureUnit(String[] arrItems) {
+		log.info("Text to purchase order get item measure unit");
+		String measureUnitResult = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst().get();
+		if (measureUnitResult.equalsIgnoreCase("cada")) {
+			measureUnitResult = measureUnitResult + "-UNO";
+		}
+		return measureUnitResult;
+	}
+
+	private String getItemProgramaticCat(String[] arrItems) {
+		log.info("Text to purchase order get item programatic cat");
+		return Stream.of(arrItems).filter(f -> pProgCat.matcher(f).find()).findFirst().get().strip();
+	}
+
+	private String getItemDetail(String[] arrItems) {
+		log.info("Text to purchase order get item detail");
+		String itemDetail = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1)
+				.map(m -> m.replaceAll("[0-9\\W]", "")).collect(Collectors.joining("-"));
+		if (itemDetail.startsWith("UNO-")) {
+			itemDetail = itemDetail.substring(itemDetail.indexOf("-") + 1, itemDetail.length() - 1);
+		}
+		return itemDetail;
+	}
+
+	private BigDecimal getUnitCost(String[] arrItems) {
+		log.info("Text to purchase order get item unit cost");
+		return new BigDecimal(Stream.of(arrItems).filter(f -> pUnitPrice.matcher(f).find())
+				.map(m -> m.replace(".", "").replace(",", ".")).findFirst().get());
+	}
+
+	private BigDecimal getItemTotalCost(String item) {
+		log.info("Text to purchase order get item total cost");
+		return new BigDecimal(item.substring(item.lastIndexOf("$") + 1).replace(".", "").replace(",", ".").strip());
 	}
 
 	private final String strDateV2 = "^(?=.*(?=.*[0-9]{2})*(?=.*[/]{1})){2}(?=.*[0-9]{2,4})";
 
 	private Calendar getDate(String text) {
-		log.info("Text to purchase order Get date");
+		log.info("Text to purchase order get date");
 		Pattern pDate = Pattern.compile(strDateV2);
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");

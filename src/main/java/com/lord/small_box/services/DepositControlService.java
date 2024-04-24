@@ -6,7 +6,9 @@ import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.BigBagItemDto;
 import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.DepositDto;
+import com.lord.small_box.dtos.DepositItemComparatorDto;
 import com.lord.small_box.dtos.DepositResponseDto;
+import com.lord.small_box.dtos.ExcelItemDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
@@ -68,5 +70,9 @@ public interface DepositControlService {
 	public BigBagItemDto updateBigBagItemQuantity(long bigBagItemId,int quantity);
 	
 	public List<BigBagItemDto> findAllBigBagItems(long bigBagId);
+	
+	public List<DepositItemComparatorDto> getExcelToPuchaseOrderComparator(List<ExcelItemDto> excelItems,long organizationId);
+	
+	public List<PurchaseOrderItem> saveExcelItemsToDepositControls(long organizationId,List<Long> selectedPurchaseOrderItemIds);
 
 }

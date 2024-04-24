@@ -41,6 +41,7 @@ import { DepositHomeComponent } from './components/deposit-control/deposit-home/
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
 import { RouterModule } from '@angular/router';
 import { BigBagComponent } from './components/big-bag/big-bag.component';
+import { DepositComparatorComponent } from './components/deposit-comparator/deposit-comparator.component';
 
 
 
@@ -75,6 +76,7 @@ import { BigBagComponent } from './components/big-bag/big-bag.component';
     DepositHomeComponent,
     UserPanelComponent,
     BigBagComponent,
+    DepositComparatorComponent,
    
    
     

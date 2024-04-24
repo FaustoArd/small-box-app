@@ -19,6 +19,7 @@ import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DepositDto } from 'src/app/models/depositDto';
 import { Router } from '@angular/router';
+import { DepositItemComparatorDto } from 'src/app/models/depositItemComparatorDto';
 
 @Component({
   selector: 'app-deposit-home',
@@ -69,6 +70,9 @@ export class DepositHomeComponent implements OnInit {
       }
     });
   }
+
+ 
+
   private purchaseOrderTableMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('purchaseOrderTableTemplate') purchaseOrderTableTemplate !: TemplateRef<any>
 
@@ -92,7 +96,7 @@ export class DepositHomeComponent implements OnInit {
   openDialogPurchaseOrderList(template: any) {
     const orgId = Number(this.cookieService.getUserMainOrganizationId());
     this.getAllPurchaseOrders(orgId);
-    this.purchaseOrderTemplateRef = this.dialogService.openDialogCreation({
+    this.purchaseOrderTemplateRef = this.dialogService.openDialogDepositListCreation({
       template
     });
     this.purchaseOrderTemplateRef.afterClosed().subscribe();

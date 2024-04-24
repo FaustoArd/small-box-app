@@ -10,9 +10,13 @@ public class PurchaseOrderItemCandidateDto {
 	
 	private long orderId;
 	
-	private int excelItemDtoId;
+	private long excelItemDtoId;
 	
 	private String code;
+	
+	private String programaticCategory;
+	
+	private int quantity;
 	
 	private String measureUnit;
 	

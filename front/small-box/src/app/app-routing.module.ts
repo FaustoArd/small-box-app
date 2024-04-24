@@ -20,6 +20,7 @@ import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatc
 import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component';
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
 import { BigBagComponent } from './components/big-bag/big-bag.component';
+import { DepositComparatorComponent } from './components/deposit-comparator/deposit-comparator.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -43,7 +44,8 @@ const routes: Routes = [
   { path:'dispatch-page',component:DispatchMatComponent},
   { path:'deposit-home', component:DepositHomeComponent},
   { path:'user-panel',component:UserPanelComponent},
-  {path:'big-bag', component:BigBagComponent}
+  {path:'big-bag', component:BigBagComponent},
+  {path:'deposit-comparator', component:DepositComparatorComponent}
 ];
 
 @NgModule({

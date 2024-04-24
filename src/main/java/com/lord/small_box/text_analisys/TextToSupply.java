@@ -95,7 +95,7 @@ public class TextToSupply {
 	}
 
 	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
-	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
+	private final String itemProgCatRegex = "^(([0-9]){1,2}(.)([0-9]){2}(.)([0-9]){2})";
 	private final String itemQuantityRegex = "([0-9]*[,]{1})?([0-9]{1,3}[.]{1}[0-9]{2}){1}";
 	private final String itemUnitPrice = "^(?=.*([0-9].)*(,)([0-9]){5})";
 	// private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";

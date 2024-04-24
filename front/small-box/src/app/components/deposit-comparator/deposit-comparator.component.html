@@ -1,0 +1,85 @@
+<body>
+    <app-navbar></app-navbar>
+    <div class="container-flex">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <div class="jumbotron ms-1 mt-2">
+                    <div>
+                        <p class="d-inline display-4">SUBIR EXCEL</p>
+                        <a (click)="uploadDepositExcelFile()" class="btn btn-sm ms-1 " role="button">-</a>
+                        <input id="uploadInput" class="w-50 ms-2" type="file" (change)="selectFile($event)" />
+                    </div>
+                  
+                    <p class="lead">
+                        <hr class="my-4">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="jumbotron ms-1 mt-2">
+                <div id="orderItem" class="mt-1 ms-2">
+                    <p class="d-inline display-4 ms-5">NADA</p>
+                    <a  class="btn btn-sm ms-3"
+                        role="button">-</a>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+        <div  class="col-md-8">
+            <table *ngIf="depositComparators!=null" class="table table-flex table-bordered h-75">
+                <thead>
+                    <tr>
+                        <th scope="col">EXCEL ITEM ID</th>
+                        <th scope="col">EXCEL ITEM DESC</th>
+                        <th scope="col">EXCEL ITEM U.MEDIDA</th>
+                        <th scope="col">EXCEL ITEM ORDER ID</th>
+                        <th scope="col">EXCEL ITEM QUANTITY</th>
+                        <th scope="col">ITEM OC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let comparator of depositComparators">
+                        <td>{{comparator.excelItemDto.excelItemId}}</td>
+                        <td>{{comparator.excelItemDto.itemDescription}}</td>
+                        <td>{{comparator.excelItemDto.itemMeasureUnit}}</td>
+                        <td>{{comparator.excelItemDto.purchaseOrderId}}</td>
+                        <td>{{comparator.excelItemDto.quantity}}</td>
+                        <td>
+                            <table class="table table-flex table-bordered h-75">
+                            <thead>
+                                <tr>
+                                    <th scope="col">EXCEL ITEM ID</th>
+                                    <th scope="col">O.C CODIGO</th>
+                                    <th scope="col">CAT.PROG.</th>
+                                    <th scope="col">O.C DSCRIPCION</th>
+                                    <th scope="col">O.C U.MEDIDA</th>
+                                    <th scope="col">O.C CANTIDAD</th>
+                                    <th scope="col">O.C ID</th>
+                                   <th scope="col">Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let itemPO of comparator.purchaseOrderItemCandidateDtos">
+                             <td><p>{{itemPO.excelItemDtoId}}</p></td>
+                            <td> <p>{{itemPO.code}}</p></td>
+                            <td> <p>{{itemPO.programaticCategory}}</p></td>
+                           <td><p>{{itemPO.itemDetail}}</p></td>
+                            <td> <p>{{itemPO.measureUnit}}</p></td>
+                            <td *ngIf="itemPO.quantity>=10"> <p  class="text-success">{{itemPO.quantity}}</p></td>
+                            <td *ngIf="itemPO.quantity<10"> <p  class="text-success">{{itemPO.quantity}}</p></td>
+                            <td *ngIf="itemPO.quantity==0"> <p  class="text-success">0</p></td>
+                           <td><p>{{itemPO.orderId}}</p></td>
+                           <td><button class="btn btn-sm">-</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>    
+        </div>
+    </div>
+</body>

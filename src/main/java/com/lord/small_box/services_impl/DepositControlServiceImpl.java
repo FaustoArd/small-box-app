@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -19,7 +20,9 @@ import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.BigBagItemDto;
 import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.DepositDto;
+import com.lord.small_box.dtos.DepositItemComparatorDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
+import com.lord.small_box.dtos.PurchaseOrderItemCandidateDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
@@ -27,6 +30,7 @@ import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
 import com.lord.small_box.dtos.DepositResponseDto;
+import com.lord.small_box.dtos.ExcelItemDto;
 import com.lord.small_box.exceptions.DuplicateItemException;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.BigBagItemMapper;
@@ -61,6 +65,8 @@ import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.text_analisys.TextToPurchaseOrder;
 import com.lord.small_box.text_analisys.TextToSupply;
+import com.lord.small_box.utils.ExcelToListUtils;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -77,7 +83,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	private final PurchaseOrderRepository purchaseOrderRepository;
 
 	@Autowired
-	private final PurchaseOrderItemRepository purchaseOrderItemDao;
+	private final PurchaseOrderItemRepository purchaseOrderItemRepository;
 
 	@Autowired
 	private final SupplyRepository supplyRepository;
@@ -106,6 +112,11 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Autowired
 	private final BigBagItemRepository bigBagItemRepository;
 
+	@Autowired
+	private final ExcelToListUtils excelToListUtils;
+
+	Sort purchaseOrderDateSort = Sort.by("date").descending();
+
 	private static final Logger log = LoggerFactory.getLogger(DepositControlService.class);
 
 	@Transactional
@@ -128,7 +139,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 			m.setPurchaseOrder(savedOrder);
 			return m;
 		}).toList();
-		purchaseOrderItemDao.saveAll(updatedItems);
+		purchaseOrderItemRepository.saveAll(updatedItems);
 		PurchaseOrderDto orderDto = PurchaseOrderMapper.INSTANCE.orderToDto(savedOrder);
 		orderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
 
@@ -140,7 +151,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		log.info("Find full purchase order");
 		PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro la orden"));
-		List<PurchaseOrderItem> items = purchaseOrderItemDao.findAllByPurchaseOrder(purchaseOrder);
+		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(purchaseOrder);
 		PurchaseOrderDto purchaseOrderDto = PurchaseOrderMapper.INSTANCE.orderToDto(purchaseOrder);
 		purchaseOrderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
 
@@ -155,7 +166,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrderId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro la orden"));
 
-		List<PurchaseOrderItem> items = purchaseOrderItemDao.findAllByPurchaseOrder(order);
+		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(order);
 
 		List<PurchaseOrderToDepositReportDto> report = new ArrayList<>();
 		Deposit deposit = depositRepository.findById(depositId)
@@ -170,9 +181,9 @@ public class DepositControlServiceImpl implements DepositControlService {
 				depositControl.setQuantity(depositControl.getQuantity() + orderItem.getQuantity());
 				depositControl.setItemTotalPrice(
 						depositControl.getItemUnitPrice().multiply(new BigDecimal(depositControl.getQuantity())));
-				report.add(
-						new PurchaseOrderToDepositReportDto(depositControl.getItemCode(), depositControl.getItemDescription(),
-								depositControl.getQuantity(), depositControl.getMeasureUnit(), "ACTUALIZADO"));
+				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemCode(),
+						depositControl.getItemDescription(), depositControl.getQuantity(),
+						depositControl.getMeasureUnit(), "ACTUALIZADO"));
 				order.setLoadedToDeposit(true);
 				order.setLoadedToDepositId(deposit.getId());
 				order.setLoadedToDepositName(deposit.getName());
@@ -191,9 +202,9 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 				depositControl.setMeasureUnit(orderItem.getMeasureUnit());
 				depositControl.setDeposit(deposit);
-				report.add(
-						new PurchaseOrderToDepositReportDto(depositControl.getItemCode(), depositControl.getItemDescription(),
-								depositControl.getQuantity(), depositControl.getMeasureUnit(), "NUEVO"));
+				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemCode(),
+						depositControl.getItemDescription(), depositControl.getQuantity(),
+						depositControl.getMeasureUnit(), "NUEVO"));
 				order.setLoadedToDeposit(true);
 				order.setLoadedToDepositId(deposit.getId());
 				order.setLoadedToDepositName(deposit.getName());
@@ -297,7 +308,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Override
 	public List<PurchaseOrderDto> findAllOrdersByOrganizationId(long organizationId) {
 		Organization organization = organizationService.findById(organizationId);
-		List<PurchaseOrder> orders = purchaseOrderRepository.findAllByOrganization(organization);
+		List<PurchaseOrder> orders = purchaseOrderRepository.findAllByOrganization(organization, purchaseOrderDateSort);
 		return PurchaseOrderMapper.INSTANCE.ordersToDtos(orders);
 	}
 
@@ -320,7 +331,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	public List<PurchaseOrderItemDto> findPurchaseOrderItems(long purchaseOrderId) {
 		PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontrol la orden"));
-		List<PurchaseOrderItem> items = purchaseOrderItemDao.findAllByPurchaseOrder(purchaseOrder);
+		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(purchaseOrder);
 		return PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items);
 	}
 
@@ -431,14 +442,15 @@ public class DepositControlServiceImpl implements DepositControlService {
 	public BigBagDto createBigBag(BigBagDto bigBagDto, long organizationId) {
 		log.info("Create BigBag");
 		Organization org = organizationService.findById(organizationId);
-		BigBag bigBag = BigBag.builder().name(bigBagDto.getName()).organization(org).creationDate(Calendar.getInstance()).build();
+		BigBag bigBag = BigBag.builder().name(bigBagDto.getName()).organization(org)
+				.creationDate(Calendar.getInstance()).build();
 		BigBag savedBigBag = bigBagRepository.save(bigBag);
 		List<Long> depositControlIds = bigBagDto.getItems().stream().map(item -> item.getDepositControlId())
 				.collect(Collectors.toList());
 		bigBagDto.setItems(bigBagDto.getItems().stream().map(m -> {
 			m.setQuantity(1);
 			return m;
-		}).collect(Collectors.toList())); 
+		}).collect(Collectors.toList()));
 		List<BigBagItem> bigBagItems = dtoToBigBagItems(savedBigBag, bigBagDto.getItems(), depositControlIds);
 		List<BigBagItem> items = bigBagItemRepository.saveAll(bigBagItems);
 		BigBagDto dto = BigBagMapper.INSTANCE.bigBagToDto(savedBigBag);
@@ -482,25 +494,26 @@ public class DepositControlServiceImpl implements DepositControlService {
 		DepositControl depositMinItemQuantity = depositItems.stream()
 				.min(Comparator.comparing(DepositControl::getQuantity))
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el item del deposito."));
-		int result =  Math.floorDiv(depositMinItemQuantity.getQuantity(), bigBagMaxItemQuantity.getQuantity());
+		int result = Math.floorDiv(depositMinItemQuantity.getQuantity(), bigBagMaxItemQuantity.getQuantity());
 		log.info("total bigBag quantity available: " + result);
 		return result;
 	}
 
 	private static final Sort sort = Sort.by("creationDate").descending();
-	
+
 	@Override
 	public List<BigBagDto> findAllBigBagsByOrg(long organizationId) {
-		
+
 		Organization org = organizationService.findById(organizationId);
-		List<BigBag> bigBags = bigBagRepository.findAllByOrganization(org,sort);
+		List<BigBag> bigBags = bigBagRepository.findAllByOrganization(org, sort);
 		return BigBagMapper.INSTANCE.bigBagToDto(bigBags);
 	}
 
 	@Override
-	public BigBagItemDto updateBigBagItemQuantity(long bigBagItemId,int quantity) {
+	public BigBagItemDto updateBigBagItemQuantity(long bigBagItemId, int quantity) {
+		log.info("Update bigBag item quantity ");
 		BigBagItem item = bigBagItemRepository.findById(bigBagItemId)
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro el item del bolson."));
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el item del bolson."));
 		item.setQuantity(quantity);
 		BigBagItem updatedItem = bigBagItemRepository.save(item);
 		return BigBagItemMapper.INSTANCE.itemToDto(updatedItem);
@@ -508,9 +521,89 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	@Override
 	public List<BigBagItemDto> findAllBigBagItems(long bigBagId) {
-		BigBag bigBag  = bigBagRepository.findById(bigBagId).orElseThrow(()-> new ItemNotFoundException("No se encontro el bolson."));
+		log.info("Find All bigBag items by bigBag id.");
+		BigBag bigBag = bigBagRepository.findById(bigBagId)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el bolson."));
 		List<BigBagItem> items = bigBagItemRepository.findByBigBag(bigBag);
 		return BigBagItemMapper.INSTANCE.itemstoDtos(items);
+	}
+
+	@Override
+	public List<DepositItemComparatorDto> getExcelToPuchaseOrderComparator(List<ExcelItemDto> excelItems,
+			long organizationId) {
+		log.info("Get excel data to list <DepositItemComparatorDto>.");
+		Organization org = organizationService.findById(organizationId);
+		List<DepositItemComparatorDto> comparators = getDepositComparator(org, excelItems);
+		return comparators;
+	}
+
+	private List<DepositItemComparatorDto> getDepositComparator(Organization organization,
+			List<ExcelItemDto> excelItems) {
+		log.info("Get deposit comparator private method");
+		List<DepositItemComparatorDto> comparators = excelItems.stream().map(xlsItem -> {
+			DepositItemComparatorDto comparatorDto = new DepositItemComparatorDto();
+			String strItemDesc = xlsItem.getItemDescription().split(" ")[0];
+			Pattern pItemDesc = Pattern.compile("^(?=.*(" + strItemDesc + "))", Pattern.CASE_INSENSITIVE);
+			ExcelItemDto createdExcelItemDto = new ExcelItemDto();
+			List<PurchaseOrderItemCandidateDto> orderItemCandidates = purchaseOrderItemRepository
+					.findAllByPurchaseOrderIn(
+							purchaseOrderRepository.findAllByOrganization(organization, purchaseOrderDateSort))
+					.stream().map(orderItem -> {
+						if (pItemDesc.matcher(orderItem.getItemDetail()).find()) {
+							PurchaseOrderItemCandidateDto orderItemCandidateDto = purchaseOrderItemToCandidateDto(orderItem,
+									xlsItem.getExcelItemId());
+							return orderItemCandidateDto;
+						}
+						return new PurchaseOrderItemCandidateDto();
+					}).toList();
+			Optional<PurchaseOrderItemCandidateDto> orderItemCandidateCheck = orderItemCandidates.stream()
+					.filter(f -> f.getExcelItemDtoId() == xlsItem.getExcelItemId()).findFirst();
+
+			if (orderItemCandidateCheck.isPresent()) {
+				createdExcelItemDto.setExcelItemId(xlsItem.getExcelItemId());
+				createdExcelItemDto.setItemDescription(xlsItem.getItemDescription());
+				createdExcelItemDto.setItemMeasureUnit(createdExcelItemDto.getItemMeasureUnit());
+				createdExcelItemDto.setQuantity(createdExcelItemDto.getQuantity());
+				comparatorDto.setExcelItemDto(createdExcelItemDto);
+				orderItemCandidates = orderItemCandidates.stream().filter(f -> f.getExcelItemDtoId() != 0).toList();
+				comparatorDto.setPurchaseOrderItemCandidateDtos(orderItemCandidates);
+			} else {
+				createdExcelItemDto.setExcelItemId(xlsItem.getExcelItemId());
+				createdExcelItemDto.setItemDescription(xlsItem.getItemDescription());
+				createdExcelItemDto.setItemMeasureUnit(createdExcelItemDto.getItemMeasureUnit());
+				createdExcelItemDto.setQuantity(createdExcelItemDto.getQuantity());
+				comparatorDto.setExcelItemDto(createdExcelItemDto);
+				PurchaseOrderItemCandidateDto candidateNotFound = new PurchaseOrderItemCandidateDto();
+				candidateNotFound.setItemDetail("No encontrado");
+				comparatorDto.setPurchaseOrderItemCandidateDtos(List.of(candidateNotFound));
+			}
+			return comparatorDto;
+
+		}).toList();
+		return comparators;
+	}
+
+	private PurchaseOrderItemCandidateDto purchaseOrderItemToCandidateDto(PurchaseOrderItem purchaseOrderItem,
+			long xlsItemId) {
+		if (purchaseOrderItem == null) {
+			return null;
+		}
+		PurchaseOrderItemCandidateDto dto = new PurchaseOrderItemCandidateDto();
+		dto.setOrderId(purchaseOrderItem.getId());
+		dto.setExcelItemDtoId(xlsItemId);
+		dto.setCode(purchaseOrderItem.getCode());
+		dto.setProgramaticCategory(purchaseOrderItem.getProgramaticCat());
+		dto.setQuantity(purchaseOrderItem.getQuantity());
+		dto.setItemDetail(purchaseOrderItem.getItemDetail());
+		dto.setMeasureUnit(purchaseOrderItem.getMeasureUnit());
+		return dto;
+	}
+
+	@Override
+	public List<PurchaseOrderItem> saveExcelItemsToDepositControls(long organizationId,
+			List<Long> selectedPurchaseOrderItemIds) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

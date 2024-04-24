@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class ExcelItemDto {
 
-	private int excelItemId;
+	private long excelItemId;
 	
 	private long purchaseOrderId;
 	
