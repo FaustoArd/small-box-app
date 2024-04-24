@@ -1241,7 +1241,7 @@ public class DepositControlServiceTest {
 	@Test
 	@DisplayName("CARGAR ORDEN DE COMPRA N 572_24")
 	@Order(18)
-	void pdtToPurchaseOrder572_24()throws Exception{
+	void pdfToPurchaseOrder572_24()throws Exception{
 		String text = pdfToStringUtils.pdfToString("oc-572.pdf");
 		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, admYDespachoId);
 
