@@ -73,6 +73,7 @@ public interface DepositControlService {
 	
 	public List<DepositItemComparatorDto> getExcelToPuchaseOrderComparator(List<ExcelItemDto> excelItems,long organizationId);
 	
-	public List<PurchaseOrderItem> saveExcelItemsToDepositControls(long organizationId,List<Long> selectedPurchaseOrderItemIds);
+	public List<DepositControlDto> saveExcelItemsToDepositControls(long organizationId
+			,long depositId, List<ExcelItemDto> excelItemDtos);
 
 }

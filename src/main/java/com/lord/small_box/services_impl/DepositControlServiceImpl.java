@@ -47,6 +47,8 @@ import com.lord.small_box.models.BigBagItem;
 import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.DepositOrganizationSelect;
+import com.lord.small_box.models.ExcelItem;
+import com.lord.small_box.models.ExcelItemContainer;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
@@ -57,6 +59,8 @@ import com.lord.small_box.repositories.BigBagRepository;
 import com.lord.small_box.repositories.DepositControlRepository;
 import com.lord.small_box.repositories.DepositOrganizationSelectRepository;
 import com.lord.small_box.repositories.DepositRepository;
+import com.lord.small_box.repositories.ExcelItemContainerRepository;
+import com.lord.small_box.repositories.ExcelItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
 import com.lord.small_box.repositories.SupplyItemRepository;
@@ -114,6 +118,12 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	@Autowired
 	private final ExcelToListUtils excelToListUtils;
+	
+	@Autowired
+	private final ExcelItemRepository excelItemRepository;
+	
+	@Autowired
+	private final ExcelItemContainerRepository excelItemContainerRepository;
 
 	Sort purchaseOrderDateSort = Sort.by("date").descending();
 
@@ -538,11 +548,11 @@ public class DepositControlServiceImpl implements DepositControlService {
 	}
 
 	private List<DepositItemComparatorDto> getDepositComparator(Organization organization,
-			List<ExcelItemDto> excelItems) {
+			List<ExcelItemDto> excelItemDtos) {
 		log.info("Get deposit comparator private method");
-		List<DepositItemComparatorDto> comparators = excelItems.stream().map(xlsItem -> {
+		List<DepositItemComparatorDto> comparators = excelItemDtos.stream().map(xlsItemDto -> {
 			DepositItemComparatorDto comparatorDto = new DepositItemComparatorDto();
-			String strItemDesc = xlsItem.getItemDescription().split(" ")[0];
+			String strItemDesc = xlsItemDto.getItemDescription().split(" ")[0];
 			Pattern pItemDesc = Pattern.compile("^(?=.*(" + strItemDesc + "))", Pattern.CASE_INSENSITIVE);
 			ExcelItemDto createdExcelItemDto = new ExcelItemDto();
 			List<PurchaseOrderItemCandidateDto> orderItemCandidates = purchaseOrderItemRepository
@@ -551,25 +561,25 @@ public class DepositControlServiceImpl implements DepositControlService {
 					.stream().map(orderItem -> {
 						if (pItemDesc.matcher(orderItem.getItemDetail()).find()) {
 							PurchaseOrderItemCandidateDto orderItemCandidateDto = purchaseOrderItemToCandidateDto(orderItem,
-									xlsItem.getExcelItemId());
+									xlsItemDto.getExcelItemId());
 							return orderItemCandidateDto;
 						}
 						return new PurchaseOrderItemCandidateDto();
 					}).toList();
 			Optional<PurchaseOrderItemCandidateDto> orderItemCandidateCheck = orderItemCandidates.stream()
-					.filter(f -> f.getExcelItemDtoId() == xlsItem.getExcelItemId()).findFirst();
+					.filter(f -> f.getExcelItemDtoId() == xlsItemDto.getExcelItemId()).findFirst();
 
 			if (orderItemCandidateCheck.isPresent()) {
-				createdExcelItemDto.setExcelItemId(xlsItem.getExcelItemId());
-				createdExcelItemDto.setItemDescription(xlsItem.getItemDescription());
+				createdExcelItemDto.setExcelItemId(xlsItemDto.getExcelItemId());
+				createdExcelItemDto.setItemDescription(xlsItemDto.getItemDescription());
 				createdExcelItemDto.setItemMeasureUnit(createdExcelItemDto.getItemMeasureUnit());
 				createdExcelItemDto.setQuantity(createdExcelItemDto.getQuantity());
 				comparatorDto.setExcelItemDto(createdExcelItemDto);
 				orderItemCandidates = orderItemCandidates.stream().filter(f -> f.getExcelItemDtoId() != 0).toList();
 				comparatorDto.setPurchaseOrderItemCandidateDtos(orderItemCandidates);
 			} else {
-				createdExcelItemDto.setExcelItemId(xlsItem.getExcelItemId());
-				createdExcelItemDto.setItemDescription(xlsItem.getItemDescription());
+				createdExcelItemDto.setExcelItemId(xlsItemDto.getExcelItemId());
+				createdExcelItemDto.setItemDescription(xlsItemDto.getItemDescription());
 				createdExcelItemDto.setItemMeasureUnit(createdExcelItemDto.getItemMeasureUnit());
 				createdExcelItemDto.setQuantity(createdExcelItemDto.getQuantity());
 				comparatorDto.setExcelItemDto(createdExcelItemDto);
@@ -600,10 +610,30 @@ public class DepositControlServiceImpl implements DepositControlService {
 	}
 
 	@Override
-	public List<PurchaseOrderItem> saveExcelItemsToDepositControls(long organizationId,
-			List<Long> selectedPurchaseOrderItemIds) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<DepositControlDto> saveExcelItemsToDepositControls(long organizationId
+			,long depositId, List<ExcelItemDto> excelItemDtos) {
+		
+		Deposit deposit = depositRepository.findById(depositId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+		List<DepositControl> depositControlItems = purchaseOrderItemRepository
+				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderId()).toList())
+				.stream().map(orderItem ->{
+					DepositControl depositControl=  excelItemDtos.stream()
+							.filter(excelItemDto -> excelItemDto.getPurchaseOrderId()==orderItem.getId()).map(excelItemDto ->{
+						DepositControl control = new DepositControl();
+						control.setItemCode(orderItem.getCode());
+						control.setMeasureUnit(orderItem.getMeasureUnit());
+						control.setItemDescription(orderItem.getItemDetail());
+						control.setItemUnitPrice(orderItem.getUnitCost());
+						control.setQuantity(excelItemDto.getQuantity());
+						control.setDeposit(deposit);
+						return control;
+					}).findFirst().get();
+					return depositControl;
+					
+				}).toList();
+		return DepositControlMapper.INSTANCE.depositControlsToDtos(depositControlItems);
+		
 	}
 
 }

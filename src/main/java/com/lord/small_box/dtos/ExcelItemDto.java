@@ -17,4 +17,6 @@ public class ExcelItemDto {
 	
 	private int quantity;
 	
+	private long excelItemContainerId;
+	
 }

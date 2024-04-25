@@ -14,4 +14,6 @@ public interface PurchaseOrderItemRepository extends JpaRepository<PurchaseOrder
 	public List<PurchaseOrderItem> findAllByPurchaseOrder(PurchaseOrder purchaseOrder);
 	
 	public List<PurchaseOrderItem> findAllByPurchaseOrderIn(List<PurchaseOrder> purchaseOrders);
+	
+	
 }

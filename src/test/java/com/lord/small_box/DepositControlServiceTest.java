@@ -1258,9 +1258,7 @@ public class DepositControlServiceTest {
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00481.0010"))
 				.findFirst().get().getUnitCost().doubleValue(),1146.11000);
 
-		
-
-		 //Assert Purchase Order total cost equals sum of all items total cost
+		//Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
 				.stream().mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
 
