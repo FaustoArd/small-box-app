@@ -154,7 +154,7 @@ public class LoadSupplyToDepositTest {
 	}
 	
 	private List<SupplyReportDto> createReport(List<SupplyItem> supplyItems) {
-		Deposit deposit = depositRepository.findById(2L).orElseThrow(()-> new ItemNotFoundException(" No se encontro el deposito")); 
+		Deposit deposit = depositRepository.findById(1L).orElseThrow(()-> new ItemNotFoundException(" No se encontro el deposito")); 
 		List<SupplyReportDto> report = supplyItems.stream().map(supplyItem -> {
 			SupplyReportDto supplyReportDto = new SupplyReportDto();
 			Optional<DepositControl> depositItem = depositControlRepository.findByItemCodeAndDeposit(supplyItem.getCode(),deposit);
