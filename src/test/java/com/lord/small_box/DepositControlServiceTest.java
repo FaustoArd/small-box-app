@@ -1187,9 +1187,9 @@ public class DepositControlServiceTest {
 		String fileLocation = "control_excel3.xls";
 		List<ExcelItemDto> excelCandidates = excelToListUtils.excelDataToDeposit(fileLocation,admYDespachoId);
 		
-		//  excelCandidates.forEach(e -> System.out.println("[" + e.getExcelItemId() +
-		 // "] " + "[" + e.getItemDescription() + "] " + "[" + e.getItemMeasureUnit() +
-		// "] " + "[" + e.getQuantity() + "]"));
+		  excelCandidates.forEach(e -> System.out.println("[" + e.getExcelItemId() +
+		 "] " + "[" + e.getItemDescription() + "] " + "[" + e.getItemMeasureUnit() +
+		 "] " + "[" + e.getItemQuantity() + "]"));
 		 
 		List<DepositItemComparatorDto> comparators = depositControlService
 				.getExcelToPuchaseOrderComparator(excelCandidates, admYDespachoId);

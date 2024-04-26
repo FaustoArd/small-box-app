@@ -65,7 +65,7 @@ public class ExcelToListUtils {
 			 * dataFormatter.formatCellValue(row.getCell(++i)).replace(".", "").replace(",",
 			 * ".").trim(); control.setItemUnitPrice(new BigDecimal(unitPrice));
 			 */
-			excelItem.setQuantity((int) row.getCell(++i).getNumericCellValue());
+			excelItem.setItemQuantity((int) row.getCell(++i).getNumericCellValue());
 			excelItems.add(excelItem);
 		}
 		workbook.close();
@@ -87,7 +87,7 @@ public class ExcelToListUtils {
 			ExcelItemDto excelItemDto = new ExcelItemDto();
 			excelItemDto.setItemDescription(excelItem.getItemDescription());
 			excelItemDto.setItemMeasureUnit(excelItem.getItemMeasureUnit());
-			excelItemDto.setQuantity(excelItem.getQuantity());
+			excelItemDto.setItemQuantity(excelItem.getItemQuantity());
 			excelItemDto.setExcelItemId(excelItem.getId());
 			excelItemDto.setExcelItemContainerId(excelItem.getExcelItemContainer().getId());
 			return excelItemDto;

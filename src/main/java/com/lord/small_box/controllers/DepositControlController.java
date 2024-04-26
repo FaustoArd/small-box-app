@@ -206,6 +206,13 @@ public class DepositControlController {
 		int result = depositControlService.getTotalBigBagQuantityAvailable(bigBagId, depositId);
 		return ResponseEntity.ok(result);
 	}
+	@PostMapping(path="/save-excel-items-to-deposit")
+	ResponseEntity<List<DepositControlDto>> saveExcelItemsToDeposit(@RequestParam("organizationId")long organizationId
+			,@RequestParam("depositId")long depositId,@RequestBody List<ExcelItemDto> excelItemDtos){
+		List<DepositControlDto> depositControlDtos = depositControlService
+				.saveExcelItemsToDepositControls(organizationId, depositId, excelItemDtos);
+		return new ResponseEntity<List<DepositControlDto>>(depositControlDtos,HttpStatus.CREATED);
+	}
 	
 	
 }

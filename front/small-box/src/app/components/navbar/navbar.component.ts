@@ -37,6 +37,7 @@ onLogout(){
     this.cookieService.deleteToken();
     this.cookieService.deleteCurrentContainerId();
     this.cookieService.deleteCurrentDepositSelectedId();
+    this.cookieService.deleteCurrentUserId();
     this.cookieService.deleteCurrentUsername();
     this.cookieService.deleteMainUserOrganizationId();
     this.router.navigateByUrl("/login")

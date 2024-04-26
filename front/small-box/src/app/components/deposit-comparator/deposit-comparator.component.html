@@ -26,17 +26,17 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-1"></div>
-        <div  class="col-md-8">
-            <table *ngIf="depositComparators!=null" class="table table-flex table-bordered h-75">
+           
+        <div *ngIf="depositComparators!=null"  class="col-md-8 ms-1">
+            <label for="thead">EXCEL</label>
+            <table  class="table table-flex table-bordered h-75">
                 <thead>
                     <tr>
-                        <th scope="col">EXCEL ITEM ID</th>
-                        <th scope="col">EXCEL ITEM DESC</th>
-                        <th scope="col">EXCEL ITEM U.MEDIDA</th>
-                        <th scope="col">EXCEL ITEM ORDER ID</th>
-                        <th scope="col">EXCEL ITEM QUANTITY</th>
-                        <th scope="col">ITEM OC</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">DESC</th>
+                        <th scope="col">U.MEDIDA</th>
+                       <th scope="col">CANTIDAD</th>
+                       
                     </tr>
                 </thead>
                 <tbody>
@@ -44,9 +44,9 @@
                         <td>{{comparator.excelItemDto.excelItemId}}</td>
                         <td>{{comparator.excelItemDto.itemDescription}}</td>
                         <td>{{comparator.excelItemDto.itemMeasureUnit}}</td>
-                        <td>{{comparator.excelItemDto.purchaseOrderId}}</td>
-                        <td>{{comparator.excelItemDto.quantity}}</td>
+                        <td>{{comparator.excelItemDto.itemQuantity}}</td>
                         <td>
+                            <label for="thead">ORDEN DE COMPRA</label>
                             <table class="table table-flex table-bordered h-75">
                             <thead>
                                 <tr>
@@ -67,11 +67,11 @@
                             <td> <p>{{itemPO.programaticCategory}}</p></td>
                            <td><p>{{itemPO.itemDetail}}</p></td>
                             <td> <p>{{itemPO.measureUnit}}</p></td>
-                            <td *ngIf="itemPO.quantity>=10"> <p  class="text-success">{{itemPO.quantity}}</p></td>
-                            <td *ngIf="itemPO.quantity<10"> <p  class="text-success">{{itemPO.quantity}}</p></td>
-                            <td *ngIf="itemPO.quantity==0"> <p  class="text-success">0</p></td>
+                            <td > <p  class="text-success">{{itemPO.quantity}}</p></td>
+                          
                            <td><p>{{itemPO.orderId}}</p></td>
-                           <td><button class="btn btn-sm">-</button></td>
+                           <td *ngIf="itemPO.excelItemDtoId==0"><button (click)="selectPurchaseOrderItem(itemPO.excelItemDtoId,itemPO.orderId)" class="btn btn-sm" disabled>-</button></td>
+                           <td *ngIf="itemPO.excelItemDtoId>0"><button (click)="selectPurchaseOrderItem(itemPO.excelItemDtoId,itemPO.orderId)" class="btn btn-sm">-</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -79,7 +79,65 @@
                     </tr>
                 </tbody>
             </table>
-        </div>    
+        </div>  
+        <div  *ngIf="depositComparators!=null" class="col-md-3">
+            <button (click)="saveExcelItemsToDeposit()" class="btn btn-sm">GUARDAR</button>
+            <label for="thead">ITEMS SELECCIONADOS</label>
+            <table class="table table-flex table-bordered">
+                
+                <thead>
+                    <tr>
+                        <th scope="col">CODIGO</th>
+                        <th scope="col">DESCRIPCION</th>
+                        <th scope="col">U.MEDIDA</th>
+                        <th scope="col">CANTIDAD</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="selectedExcelItemDtos.length>0">
+                    <tr *ngFor="let item of selectedExcelItemsDtoShows">
+                        <td>{{item.code}}</td>
+                        <td>{{item.itemDetail}}</td>
+                        <td>{{item.measureUnit}}</td>
+                        <td>{{item.quantity}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>  
         </div>
     </div>
 </body>
+<ng-template #depositControlTemplate>
+<div class="container-flex">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-6">
+            <h1>SE GUARDARON LOS SIGUIENTES ITEMS</h1>
+            <table class="table table-flex table-bordered h-75">
+                <thead>
+                    <tr>
+                        <th scope="col">CODIGO</th>
+                        <th scope="col">U.MEDIDA</th>
+                        <th scope="col">DESCRIPCION</th>
+                        <th scope="col">P.UNITARIO</th>
+                        <th scope="col">TOTAL</th>
+                        <th scope="col">CANTIDAD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of depositControlDtos">
+                        <td>{{item.itemCode}}</td>
+                        <td>{{item.measureUnit}}</td>
+                        <td>{{item.itemDescription}}</td>
+                        <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
+                        <td>{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
+                        <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
+                        <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</ng-template>

@@ -28,7 +28,7 @@ public class ExcelItem {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private int quantity;
+	private int itemQuantity;
 	
 	private String itemMeasureUnit;
 	

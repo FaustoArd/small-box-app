@@ -116,15 +116,6 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Autowired
 	private final BigBagItemRepository bigBagItemRepository;
 
-	@Autowired
-	private final ExcelToListUtils excelToListUtils;
-	
-	@Autowired
-	private final ExcelItemRepository excelItemRepository;
-	
-	@Autowired
-	private final ExcelItemContainerRepository excelItemContainerRepository;
-
 	Sort purchaseOrderDateSort = Sort.by("date").descending();
 
 	private static final Logger log = LoggerFactory.getLogger(DepositControlService.class);
@@ -572,16 +563,16 @@ public class DepositControlServiceImpl implements DepositControlService {
 			if (orderItemCandidateCheck.isPresent()) {
 				createdExcelItemDto.setExcelItemId(xlsItemDto.getExcelItemId());
 				createdExcelItemDto.setItemDescription(xlsItemDto.getItemDescription());
-				createdExcelItemDto.setItemMeasureUnit(createdExcelItemDto.getItemMeasureUnit());
-				createdExcelItemDto.setQuantity(createdExcelItemDto.getQuantity());
+				createdExcelItemDto.setItemMeasureUnit(xlsItemDto.getItemMeasureUnit());
+				createdExcelItemDto.setItemQuantity(xlsItemDto.getItemQuantity());
 				comparatorDto.setExcelItemDto(createdExcelItemDto);
 				orderItemCandidates = orderItemCandidates.stream().filter(f -> f.getExcelItemDtoId() != 0).toList();
 				comparatorDto.setPurchaseOrderItemCandidateDtos(orderItemCandidates);
 			} else {
 				createdExcelItemDto.setExcelItemId(xlsItemDto.getExcelItemId());
 				createdExcelItemDto.setItemDescription(xlsItemDto.getItemDescription());
-				createdExcelItemDto.setItemMeasureUnit(createdExcelItemDto.getItemMeasureUnit());
-				createdExcelItemDto.setQuantity(createdExcelItemDto.getQuantity());
+				createdExcelItemDto.setItemMeasureUnit(xlsItemDto.getItemMeasureUnit());
+				createdExcelItemDto.setItemQuantity(xlsItemDto.getItemQuantity());
 				comparatorDto.setExcelItemDto(createdExcelItemDto);
 				PurchaseOrderItemCandidateDto candidateNotFound = new PurchaseOrderItemCandidateDto();
 				candidateNotFound.setItemDetail("No encontrado");
@@ -625,15 +616,17 @@ public class DepositControlServiceImpl implements DepositControlService {
 						control.setMeasureUnit(orderItem.getMeasureUnit());
 						control.setItemDescription(orderItem.getItemDetail());
 						control.setItemUnitPrice(orderItem.getUnitCost());
-						control.setQuantity(excelItemDto.getQuantity());
+						control.setQuantity(excelItemDto.getItemQuantity());
+						control.setItemTotalPrice(orderItem.getUnitCost()
+								.multiply(new BigDecimal(excelItemDto.getItemQuantity())));
 						control.setDeposit(deposit);
 						return control;
 					}).findFirst().get();
 					return depositControl;
-					
-				}).toList();
-		return DepositControlMapper.INSTANCE.depositControlsToDtos(depositControlItems);
+					}).toList();
+		List<DepositControl> savedDepositControls = depositControlRepository.saveAll(depositControlItems);
+		return DepositControlMapper.INSTANCE.depositControlsToDtos(savedDepositControls);
 		
 	}
-
+	
 }

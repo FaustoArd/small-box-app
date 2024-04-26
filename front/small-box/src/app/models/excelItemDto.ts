@@ -3,5 +3,11 @@ export class ExcelItemDto{
     purchaseOrderId!:number;
     itemDescription!:string;
     itemMeasureUnit!:string;
-    quantity!:number;
+    itemQuantity!:number;
+
+
+    constructor(purchaseOrderId:number,itemQuantity:number){
+        this.purchaseOrderId = purchaseOrderId;
+        this.itemQuantity = itemQuantity;
+    }
 }

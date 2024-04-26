@@ -13,6 +13,7 @@ import { DepositDto } from '../models/depositDto';
 import { DepositReponseDto } from '../models/depositReponseDto';
 import { BigBagDto } from '../models/bigBagDto';
 import { BigBagItemDto } from '../models/bigBagItemDto';
+import { ExcelItemDto } from '../models/excelItemDto';
 
 const DEPOSIT_CONTROL_BASE_URL = "http://localhost:8080/api/v1/smallbox/deposit-control";
 
@@ -140,4 +141,9 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
     .pipe(catchError(this.handleError));
    }
 
+   saveExcelItemsToDeposit(organizationId:number,depositId:number,excelItemDtos:ExcelItemDto[]):Observable<DepositControlDto[]>{
+    return this.http.post<DepositControlDto[]>
+    (`${DEPOSIT_CONTROL_BASE_URL}/save-excel-items-to-deposit?organizationId=${organizationId}&depositId=${depositId}`,
+    excelItemDtos,this.httpOptions).pipe(catchError(this.handleError));
+   }
   }

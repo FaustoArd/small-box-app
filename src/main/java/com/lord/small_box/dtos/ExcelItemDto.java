@@ -15,7 +15,7 @@ public class ExcelItemDto {
 	
 	private String itemMeasureUnit;
 	
-	private int quantity;
+	private int itemQuantity;
 	
 	private long excelItemContainerId;
 	
