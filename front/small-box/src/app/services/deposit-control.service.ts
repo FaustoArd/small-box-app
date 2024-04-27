@@ -146,4 +146,9 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
     (`${DEPOSIT_CONTROL_BASE_URL}/save-excel-items-to-deposit?organizationId=${organizationId}&depositId=${depositId}`,
     excelItemDtos,this.httpOptions).pipe(catchError(this.handleError));
    }
+
+   deleteDepositControlById(depositControlId:number):Observable<string>{
+    return this.http.delete<string>(`${DEPOSIT_CONTROL_BASE_URL}/delete-deposit-control/${depositControlId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
   }

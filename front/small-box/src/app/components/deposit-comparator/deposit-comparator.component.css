@@ -63,10 +63,12 @@ p{
  color: #1b4f4f;
 }
 th{
-    font-size: 0.6rem;
+    font-family: 'Quattrocento', serif;
+    text-align: center;
+    font-size: 0.7rem;
 }
 td{
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     font-family: 'Quattrocento', serif;
     font-weight: bold;
 }
@@ -79,4 +81,13 @@ small{
 #closeButton{
   position: absolute;
   right: 0;
+}
+#table-div{
+    height: 35rem;
+   
+   
+}
+#selected_items_table-div{
+    height: 35rem;
+    width: 30rem;
 }

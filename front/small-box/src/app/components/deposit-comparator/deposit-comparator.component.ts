@@ -14,6 +14,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
+import { PurchaseOrderItemCandidateDto } from 'src/app/models/purchaseOrderItemCandidateDto';
 
 @Component({
   selector: 'app-deposit-comparator',
@@ -44,7 +45,6 @@ export class DepositComparatorComponent {
     this.fileUploadService.sendDepositItemExcelFileToBackEnd(this.file, orgId).subscribe({
       next: (comparatorDatas) => {
         this.depositComparators = comparatorDatas;
-
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
@@ -54,50 +54,54 @@ export class DepositComparatorComponent {
       }
     });
   }
-
-
   selectedExcelItemDtos: ExcelItemDto[] = [];
-  selectedExcelItemsDtoShows: PurchaseOrderItemDto[] = [];
-  selectedOrderItem!: PurchaseOrderItemDto;
-  selectPurchaseOrderItem(excelItemId: number, purchaseOrderId: number): void {
-    const exelItemQuantity = this.depositComparators.filter(f => f.excelItemDto.excelItemId == excelItemId).map(m => m.excelItemDto.itemQuantity);
-    this.selectedExcelItemDtos.push(new ExcelItemDto(purchaseOrderId, Number(exelItemQuantity)));
-    
-      this.selectedOrderItem = new PurchaseOrderItemDto();
-      this.depositComparators
-        .filter(f => f.excelItemDto.excelItemId == excelItemId)
-        .map(m => m.purchaseOrderItemCandidateDtos
-          .map(m => {
-            if(m.orderId==purchaseOrderId){
-            this.selectedOrderItem.code = m.code;
-            this.selectedOrderItem.itemDetail = m.itemDetail;
-            this.selectedOrderItem.measureUnit = m.measureUnit;
-            this.selectedOrderItem.quantity = Number(exelItemQuantity);
-            }
-          }));
-          this.selectedExcelItemsDtoShows.push(this.selectedOrderItem);
-          this.depositComparators.map(m => m).map((item, index) => {
-            if (item.excelItemDto.excelItemId == excelItemId) {
-              this.depositComparators.splice(index, 1);
-            }
-          });
+  selectedExcelItemsDtoShows: ExcelItemDto[] = [];
+  repeatedExcelItem!: ExcelItemDto;
+  itemIndex!:number;
+  selectPurchaseOrderItem(itemPO: PurchaseOrderItemCandidateDto): void {
+    const excelItemQuantity = this.depositComparators
+      .filter(f => f.excelItemDto.excelItemId == itemPO.excelItemDtoId)
+      .map(m => m.excelItemDto.itemQuantity);
+      console.log("EXcel quantity"+excelItemQuantity)
+      const index = this.selectedExcelItemDtos.findIndex(item => item.itemCode==itemPO.code);
+      console.log("EXcel index:"+index)
+      if(index>-1){
+        this.selectedExcelItemDtos[index].itemQuantity =this.selectedExcelItemDtos[index].itemQuantity + Number(excelItemQuantity);
+      }else{
+        this.selectedExcelItemDtos.push(
+          new ExcelItemDto(itemPO.excelItemDtoId,itemPO.orderId,itemPO.code,Number(excelItemQuantity),itemPO.measureUnit,itemPO.itemDetail));
+      }
+      this.depositComparators.map(m => m).map((item, index) => {
+        if (item.excelItemDto.excelItemId == itemPO.excelItemDtoId) {
+          this.depositComparators.splice(index, 1);
+        }
+      });
+  }
+  
+  deleteSelectedItem(excelItemId: number): void {
+    this.selectedExcelItemDtos.forEach((item, index) => {
+      if (item.excelItemId === excelItemId) {
+        this.selectedExcelItemDtos.splice(index, 1);
+      }
+    });
   }
 
-depositControlDtos:DepositControlDto[]=[];
-  saveExcelItemsToDeposit(){
-    const orgId =Number(this.cookieService.getUserMainOrganizationId()) ;
-    const depositId =Number(this.cookieService.getCurrentDepositSelectedId()) ;
-    this.depositControlService.saveExcelItemsToDeposit(orgId,depositId,this.selectedExcelItemDtos).subscribe({
-      next:(depositControlDatas)=>{
+  depositControlDtos: DepositControlDto[] = [];
+  saveExcelItemsToDeposit() {
+    const orgId = Number(this.cookieService.getUserMainOrganizationId());
+    const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
+    this.depositControlService.saveExcelItemsToDeposit(orgId, depositId, this.selectedExcelItemDtos).subscribe({
+      next: (depositControlDatas) => {
         this.depositControlDtos = depositControlDatas;
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-      },complete:()=>{
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }, complete: () => {
         this.openDialogPurchaseOrderItemsList();
       }
     });
   }
+
 
   onCloseDepositControlistTemplate() {
     this.depositControlListMatDialogRef.close();
@@ -105,11 +109,13 @@ depositControlDtos:DepositControlDto[]=[];
   @ViewChild('depositControlTemplate') depositControlTemplateTemplateRef !: TemplateRef<any>
   private depositControlListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogPurchaseOrderItemsList() {
-   const template = this.depositControlTemplateTemplateRef;
+    const template = this.depositControlTemplateTemplateRef;
     this.depositControlListMatDialogRef = this.dialogService.openDialogCreation({
       template
     });
     this.depositControlListMatDialogRef.afterClosed().subscribe();
   }
+
+  
 
 }

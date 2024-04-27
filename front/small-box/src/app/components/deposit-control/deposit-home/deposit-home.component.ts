@@ -198,6 +198,31 @@ export class DepositHomeComponent implements OnInit {
       }
     })
   }
+  purchaseOrderConfirmData!: boolean;
+  confirmDeletePurchaseOrder(orderId: number) {
+    var confirmText = "Desea eliminar la orden?";
+    this.confirmDialogService.confirmDialog(confirmText).subscribe({
+      next: (confirmData) => {
+        this.purchaseOrderConfirmData = confirmData;
+        if (this.purchaseOrderConfirmData) {
+          this.deletePurchaseOrderById(orderId);
+        } else {
+          this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
+        }
+      }
+    });
+  }
+  deletePurchaseOrderById(orderId: number) {
+    this.depositControlService.deletePurchaseOrderById(orderId).subscribe({
+      next: (orderNumberDeletedData) => {
+        this.snackBar.openSnackBar('Se elimino la order de compra: ' + orderNumberDeletedData, 'Cerrar', 3000);
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+  }
+
 
   /**SUPPLY */
   uploadSupplyFile() {
@@ -297,33 +322,6 @@ export class DepositHomeComponent implements OnInit {
       }
     });
   }
-
-  depositControlDtos: DepositControlDto[] = [];
-
-  getDepositControlsByOrganization() {
-    const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
-    this.depositControlService.findAllDepositControlsByDeposit(depoId).subscribe({
-      next: (depositData) => {
-        this.depositControlDtos = depositData;
-      },
-      error: (errorData) => {
-        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
-      }
-    })
-  }
-
-  onCloseDepositControlListTemplate() {
-    this.depositControlListMatDialogRef.close();
-  }
-  private depositControlListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
-  openDepositControlListTemplate(template: any): void {
-    this.getDepositControlsByOrganization();
-    this.depositControlListMatDialogRef = this.dialogService.openDialogDepositListCreation({
-      template
-    });
-    this.depositControlListMatDialogRef.afterClosed().subscribe();
-  }
-
   onCloseSupplyCorrectionNoteTemplate() {
     this.supplyCorrectionNoteMatDialogRef.close();
   }
@@ -351,6 +349,61 @@ export class DepositHomeComponent implements OnInit {
       }
     });
   }
+
+  supplyConfirmData!: boolean;
+  confirmDeleteSupply(supplyId: number) {
+    var confirmText = "Desea eliminar el suministro?";
+    this.confirmDialogService.confirmDialog(confirmText).subscribe({
+      next: (confirmData) => {
+        this.supplyConfirmData = confirmData;
+        if (this.supplyConfirmData) {
+          this.deleteSupplyById(supplyId);
+        } else {
+          this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
+        }
+      }
+
+    });
+  }
+  deleteSupplyById(supplyId: number) {
+    this.depositControlService.deleteSupplyById(supplyId).subscribe({
+      next: (supplyNumberDetetedData) => {
+        this.snackBar.openSnackBar('Se elimino el suministro numero: ' + supplyNumberDetetedData, 'Cerrar', 3000);
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    })
+  }
+
+  /**DEPOSIT */
+  depositControlDtos: DepositControlDto[] = [];
+
+  getDepositControlsByOrganization() {
+    const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
+    this.depositControlService.findAllDepositControlsByDeposit(depoId).subscribe({
+      next: (depositData) => {
+        this.depositControlDtos = depositData;
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    })
+  }
+
+  onCloseDepositControlListTemplate() {
+    this.depositControlListMatDialogRef.close();
+  }
+  private depositControlListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
+  openDepositControlListTemplate(template: any): void {
+    this.getDepositControlsByOrganization();
+    this.depositControlListMatDialogRef = this.dialogService.openDialogDepositListCreation({
+      template
+    });
+    this.depositControlListMatDialogRef.afterClosed().subscribe();
+  }
+
+  
 
   depositFormbuilder = this.formBuilder.group({
     name: ['', Validators.required],
@@ -473,40 +526,15 @@ export class DepositHomeComponent implements OnInit {
     });
   }
 
-  purchaseOrderConfirmData!: boolean;
-  confirmDeletePurchaseOrder(orderId: number) {
-    var confirmText = "Desea eliminar la orden?";
+
+  deopsitControlConfirmData!: boolean;
+  confirmDeleteDepositControl(supplyId: number) {
+    var confirmText = "Desea eliminar el item de deposito?";
     this.confirmDialogService.confirmDialog(confirmText).subscribe({
       next: (confirmData) => {
-        this.purchaseOrderConfirmData = confirmData;
-        if (this.purchaseOrderConfirmData) {
-          this.deletePurchaseOrderById(orderId);
-        } else {
-          this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
-        }
-      }
-    });
-  }
-
-  deletePurchaseOrderById(orderId: number) {
-    this.depositControlService.deletePurchaseOrderById(orderId).subscribe({
-      next: (orderNumberDeletedData) => {
-        this.snackBar.openSnackBar('Se elimino la order de compra: ' + orderNumberDeletedData, 'Cerrar', 3000);
-      },
-      error: (errorData) => {
-        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
-      }
-    });
-  }
-
-  supplyConfirmData!: boolean;
-  confirmDeleteSupply(supplyId: number) {
-    var confirmText = "Desea eliminar el suministro?";
-    this.confirmDialogService.confirmDialog(confirmText).subscribe({
-      next: (confirmData) => {
-        this.supplyConfirmData = confirmData;
-        if (this.supplyConfirmData) {
-          this.deleteSupplyById(supplyId);
+        this.deopsitControlConfirmData = confirmData;
+        if (this.deopsitControlConfirmData) {
+          this.deleteDepositControlById(supplyId);
         } else {
           this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
         }
@@ -514,16 +542,20 @@ export class DepositHomeComponent implements OnInit {
 
     });
   }
-  deleteSupplyById(supplyId: number) {
-    this.depositControlService.deleteSupplyById(supplyId).subscribe({
-      next: (supplyNumberDetetedData) => {
-        this.snackBar.openSnackBar('Se elimino el suministro numero: ' + supplyNumberDetetedData, 'Cerrar', 3000);
+ 
+  deleteDepositControlById(depositControlId:number){
+    this.depositControlService.deleteDepositControlById(depositControlId).subscribe({
+      next:(deletedData)=>{
+        this.snackBar.openSnackBar('Se elimino el item codigo: ' + deletedData + '.','Cerrar',3000);
       },
-      error: (errorData) => {
-        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
       }
-    })
+    });
   }
+
+ 
+ 
 
   get name() {
     return this.depositFormbuilder.controls.name;

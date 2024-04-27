@@ -36,11 +36,13 @@ import com.lord.small_box.repositories.SupplyItemRepository;
 import com.lord.small_box.repositories.SupplyRepository;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.services.OrganizationService;
+import com.lord.small_box.services.PurchaseOrderService;
+import com.lord.small_box.services.SupplyService;
 import com.lord.small_box.utils.PdfToStringUtils;
 
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
-public class LoadSupplyToDepositTest {
+public class LoadSupplyReportTest {
 	
 	
 	
@@ -49,6 +51,12 @@ public class LoadSupplyToDepositTest {
 	
 	@Autowired
 	private DepositControlService depositControlService;
+	
+	@Autowired
+	private PurchaseOrderService purchaseOrderService;
+	
+	@Autowired
+	private SupplyService supplyService;
 	
 	@Autowired
 	private LoadTestData loadTestData;
@@ -82,8 +90,8 @@ public class LoadSupplyToDepositTest {
 	void setup()throws Exception {
 		loadTestData.loadData();
 		String strPurchaseOrder365= pdfToStringUtils.pdfToString("oc-365.pdf");
-		purchaseOrderDto365 = depositControlService.collectPurchaseOrderFromText(strPurchaseOrder365,2L);
-		depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderDto365.getId(),1L);
+		purchaseOrderDto365 = purchaseOrderService.collectPurchaseOrderFromText(strPurchaseOrder365,2L);
+		purchaseOrderService.loadPurchaseOrderToDepositControl(purchaseOrderDto365.getId(),1L);
 		assertThat(purchaseOrderDto365.getOrderNumber()).isEqualTo(365);
 		purchaseOrderDto365.getItems().forEach(e -> System.out.println("Items: " + e.getCode()));
 		purchaseOrderDto365.getItems().forEach(e -> System.out.println("Items: " + e.getQuantity()));

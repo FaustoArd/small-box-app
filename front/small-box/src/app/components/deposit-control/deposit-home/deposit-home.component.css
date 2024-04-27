@@ -1,6 +1,12 @@
 body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
+#correction{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+#orderListTemplate{
+    background: linear-gradient(245.59deg, rgb(202, 200, 219)30%, rgb(166, 164, 192) 50%, #b2afc1 79%);
+}
 jumbotron{
     background-color: aliceblue;
 }

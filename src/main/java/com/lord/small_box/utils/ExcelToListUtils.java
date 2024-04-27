@@ -58,13 +58,8 @@ public class ExcelToListUtils {
 			Row row = sheet.getRow(n);
 			ExcelItem excelItem = new ExcelItem();
 			int i = row.getFirstCellNum();
-			excelItem.setItemDescription(dataFormatter.formatCellValue(row.getCell(i)).trim());
-			excelItem.setItemMeasureUnit(dataFormatter.formatCellValue(row.getCell(++i)).trim());
-			/*
-			 * String unitPrice =
-			 * dataFormatter.formatCellValue(row.getCell(++i)).replace(".", "").replace(",",
-			 * ".").trim(); control.setItemUnitPrice(new BigDecimal(unitPrice));
-			 */
+			excelItem.setItemMeasureUnit(dataFormatter.formatCellValue(row.getCell(i)).trim());
+			excelItem.setItemDescription(dataFormatter.formatCellValue(row.getCell(++i)).trim());
 			excelItem.setItemQuantity((int) row.getCell(++i).getNumericCellValue());
 			excelItems.add(excelItem);
 		}

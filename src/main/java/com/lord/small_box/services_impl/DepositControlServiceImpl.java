@@ -90,24 +90,6 @@ public class DepositControlServiceImpl implements DepositControlService {
 	private final PurchaseOrderItemRepository purchaseOrderItemRepository;
 
 	@Autowired
-	private final SupplyRepository supplyRepository;
-
-	@Autowired
-	private final SupplyItemRepository supplyItemRepository;
-
-	@Autowired
-	private final TextToPurchaseOrder textToPurchaseOrder;
-
-	@Autowired
-	private final TextToSupply textToSupply;
-
-	@Autowired
-	private final OrganizationService organizationService;
-
-	@Autowired
-	private final AppUserServiceImpl userService;
-
-	@Autowired
 	private final DepositOrganizationSelectRepository depositOrganizationSelectRepository;
 
 	@Autowired
@@ -116,234 +98,15 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Autowired
 	private final BigBagItemRepository bigBagItemRepository;
 
-	Sort purchaseOrderDateSort = Sort.by("date").descending();
+	@Autowired
+	private final OrganizationService organizationService;
+
+	@Autowired
+	private final AppUserServiceImpl userService;
 
 	private static final Logger log = LoggerFactory.getLogger(DepositControlService.class);
 
-	@Transactional
-	@Override
-	public PurchaseOrderDto collectPurchaseOrderFromText(String text, long organizationId) {
-		log.info("Load purchase order from text, organization id: " + organizationId);
-		PurchaseOrderDto purchaseOrderDto = textToPurchaseOrder.textToPurchaseOrder(text, organizationService);
-		Optional<PurchaseOrder> checkDuplicate = purchaseOrderRepository
-				.findByOrderNumber(purchaseOrderDto.getOrderNumber());
-		if (checkDuplicate.isPresent()) {
-			throw new DuplicateItemException(
-					"La orden de compra con el numero: " + purchaseOrderDto.getOrderNumber() + " ya fue cargada.");
-		}
-		PurchaseOrder purchaseOrder = PurchaseOrderMapper.INSTANCE.dtoToOrder(purchaseOrderDto);
-		Organization org = organizationService.findById(organizationId);
-		purchaseOrder.setOrganization(org);
-		List<PurchaseOrderItem> items = PurchaseOrderItemMapper.INSTANCE.dtoToItems(purchaseOrderDto.getItems());
-		PurchaseOrder savedOrder = purchaseOrderRepository.save(purchaseOrder);
-		List<PurchaseOrderItem> updatedItems = items.stream().map(m -> {
-			m.setPurchaseOrder(savedOrder);
-			return m;
-		}).toList();
-		purchaseOrderItemRepository.saveAll(updatedItems);
-		PurchaseOrderDto orderDto = PurchaseOrderMapper.INSTANCE.orderToDto(savedOrder);
-		orderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
-
-		return orderDto;
-	}
-
-	@Override
-	public PurchaseOrderDto findFullPurchaseOrder(Long id) {
-		log.info("Find full purchase order");
-		PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro la orden"));
-		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(purchaseOrder);
-		PurchaseOrderDto purchaseOrderDto = PurchaseOrderMapper.INSTANCE.orderToDto(purchaseOrder);
-		purchaseOrderDto.setItems(PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items));
-
-		return purchaseOrderDto;
-	}
-
-	@Transactional
-	@Override
-	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositControl(Long purchaseOrderId,
-			Long depositId) {
-		log.info("Load purchase order to deposit");
-		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrderId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro la orden"));
-
-		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(order);
-
-		List<PurchaseOrderToDepositReportDto> report = new ArrayList<>();
-		Deposit deposit = depositRepository.findById(depositId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
-
-		List<DepositControl> collectedItems = items.stream().map(orderItem -> {
-			Optional<DepositControl> opt = depositControlRepository.findByItemCodeAndDeposit(orderItem.getCode(),
-					deposit);
-			if (opt.isPresent()) {
-				log.info("Item exist in deposit, updating");
-				DepositControl depositControl = opt.get();
-				depositControl.setQuantity(depositControl.getQuantity() + orderItem.getQuantity());
-				depositControl.setItemTotalPrice(
-						depositControl.getItemUnitPrice().multiply(new BigDecimal(depositControl.getQuantity())));
-				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemCode(),
-						depositControl.getItemDescription(), depositControl.getQuantity(),
-						depositControl.getMeasureUnit(), "ACTUALIZADO"));
-				order.setLoadedToDeposit(true);
-				order.setLoadedToDepositId(deposit.getId());
-				order.setLoadedToDepositName(deposit.getName());
-				purchaseOrderRepository.save(order);
-				return depositControl;
-
-			} else {
-				log.info("new item,creating deposit control item");
-				DepositControl depositControl = new DepositControl();
-				depositControl.setItemCode(orderItem.getCode());
-				depositControl.setItemDescription(orderItem.getItemDetail());
-				depositControl.setQuantity(orderItem.getQuantity());
-				depositControl.setItemTotalPrice(
-						orderItem.getUnitCost().multiply(new BigDecimal(depositControl.getQuantity())));
-				depositControl.setItemUnitPrice(orderItem.getUnitCost());
-
-				depositControl.setMeasureUnit(orderItem.getMeasureUnit());
-				depositControl.setDeposit(deposit);
-				report.add(new PurchaseOrderToDepositReportDto(depositControl.getItemCode(),
-						depositControl.getItemDescription(), depositControl.getQuantity(),
-						depositControl.getMeasureUnit(), "NUEVO"));
-				order.setLoadedToDeposit(true);
-				order.setLoadedToDepositId(deposit.getId());
-				order.setLoadedToDepositName(deposit.getName());
-				purchaseOrderRepository.save(order);
-				return depositControl;
-			}
-
-		}).toList();
-		depositControlRepository.saveAll(collectedItems);
-		return report;
-	}
-
-	@Transactional
-	@Override
-	public SupplyDto collectSupplyFromText(String text, long organizationId) {
-		log.info("Collect supply from text");
-		SupplyDto supplyDto = textToSupply.textToSupply(text, organizationService);
-		Optional<Supply> check = supplyRepository.findBySupplyNumber(supplyDto.getSupplyNumber());
-		if (check.isPresent()) {
-			throw new DuplicateItemException("El suministro numero: " + check.get().getSupplyNumber() + " ya existe.");
-		}
-		Organization org = organizationService.findById(organizationId);
-		Supply supply = SupplyMapper.INSTANCE.dtoToSupply(supplyDto);
-		supply.setOrganization(org);
-		Supply savedSupply = supplyRepository.save(supply);
-
-		List<SupplyItem> items = SupplyItemMapper.INSTANCE.dtoToItems(supplyDto.getSupplyItems());
-		List<SupplyItem> savedItems = supplyItemRepository.saveAll(items.stream().map(item -> {
-			item.setSupply(savedSupply);
-			return item;
-		}).toList());
-		SupplyDto supplyDtoResponse = SupplyMapper.INSTANCE.supplyToDto(savedSupply);
-		supplyDtoResponse.setSupplyItems(SupplyItemMapper.INSTANCE.itemToDtos(savedItems));
-		return supplyDtoResponse;
-
-	}
-
-	@Override
-	public List<SupplyReportDto> createSupplyReport(long supplyId, long depositId) {
-		log.info("Create supply report");
-		Supply supply = supplyRepository.findById(supplyId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el suministro"));
-		List<SupplyItem> supplyItems = supplyItemRepository.findAllBySupply(supply);
-		return getSupplyReport(supplyItems, depositId);
-	}
-
-	@Override
-	public SupplyCorrectionNoteDto createSupplyCorrectionNote(long supplyId, Long depositId) {
-		log.info("Create supply correction note");
-		Supply supply = supplyRepository.findById(supplyId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el suministro"));
-		List<SupplyItem> supplyItems = supplyItemRepository.findAllBySupply(supply);
-		List<SupplyReportDto> reportDtos = getSupplyReport(supplyItems, depositId);
-		Organization org = organizationService.findById(1L);
-		String to = supply.getDependencyApplicant();
-		SupplyCorrectionNoteDto supplyCorrectionNote = new SupplyCorrectionNoteDto();
-		supplyCorrectionNote.setSupplyNumber(supply.getSupplyNumber());
-		supplyCorrectionNote.setFrom(org.getOrganizationName());
-		supplyCorrectionNote.setTo(to);
-		supplyCorrectionNote.setSupplyReport(reportDtos);
-		supplyCorrectionNote.setDepositName(depositRepository.findById(depositId).get().getName());
-		return supplyCorrectionNote;
-	}
-
-	private List<SupplyReportDto> getSupplyReport(List<SupplyItem> supplyItems, Long depositId) {
-		log.info("private method getSupplyReport");
-		Deposit deposit = depositRepository.findById(depositId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
-		List<SupplyReportDto> report = supplyItems.stream().map(supplyItem -> {
-			SupplyReportDto supplyReportDto = new SupplyReportDto();
-			Optional<DepositControl> depositItem = depositControlRepository
-					.findByItemCodeAndDeposit(supplyItem.getCode(), deposit);
-			if (depositItem.isPresent()) {
-				supplyReportDto.setSupplyItemCode(supplyItem.getCode());
-				supplyReportDto.setSupplyItemMeasureUnit(supplyItem.getMeasureUnit());
-				supplyReportDto.setSupplyItemDetail(supplyItem.getItemDetail());
-				supplyReportDto.setSupplyItemQuantity(supplyItem.getQuantity());
-				supplyReportDto.setDepositItemCode(depositItem.get().getItemCode());
-				supplyReportDto.setDepositItemMeasureUnit(depositItem.get().getMeasureUnit());
-				supplyReportDto.setDepositItemDetail(depositItem.get().getItemDescription());
-				supplyReportDto.setDepositItemQuantity(depositItem.get().getQuantity());
-				supplyReportDto.setDepositQuantityLeft(depositItem.get().getQuantity() - supplyItem.getQuantity());
-				return supplyReportDto;
-			} else {
-
-				supplyReportDto.setSupplyItemCode(supplyItem.getCode());
-				supplyReportDto.setSupplyItemMeasureUnit(supplyItem.getMeasureUnit());
-				supplyReportDto.setSupplyItemDetail(supplyItem.getItemDetail());
-				supplyReportDto.setSupplyItemQuantity(supplyItem.getQuantity());
-				supplyReportDto.setDepositItemCode("No encontrado");
-				supplyReportDto.setDepositItemMeasureUnit("No encontrado");
-				supplyReportDto.setDepositItemDetail("No encontrado");
-				supplyReportDto.setDepositItemQuantity(0);
-
-				return supplyReportDto;
-			}
-		}).toList();
-		return report;
-	}
-
-	@Override
-	public List<PurchaseOrderDto> findAllOrdersByOrganizationId(long organizationId) {
-		Organization organization = organizationService.findById(organizationId);
-		List<PurchaseOrder> orders = purchaseOrderRepository.findAllByOrganization(organization, purchaseOrderDateSort);
-		return PurchaseOrderMapper.INSTANCE.ordersToDtos(orders);
-	}
-
-	@Override
-	public List<SupplyDto> findAllSuppliesByOrganizationId(long organizationId) {
-		Organization organization = organizationService.findById(organizationId);
-		List<Supply> supplies = supplyRepository.findAllByOrganization(organization);
-		return SupplyMapper.INSTANCE.suppliesToDtos(supplies);
-	}
-
-	@Override
-	public List<SupplyItemDto> findSupplyItems(long supplyId) {
-		Supply supply = supplyRepository.findById(supplyId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el suministro"));
-		List<SupplyItem> items = supplyItemRepository.findAllBySupply(supply);
-		return SupplyItemMapper.INSTANCE.itemToDtos(items);
-	}
-
-	@Override
-	public List<PurchaseOrderItemDto> findPurchaseOrderItems(long purchaseOrderId) {
-		PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontrol la orden"));
-		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(purchaseOrder);
-		return PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items);
-	}
-
-	@Override
-	public List<DepositControlDto> findDepositControlsByDeposit(long depositId) {
-		Deposit deposit = depositRepository.findById(depositId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
-		List<DepositControl> controls = depositControlRepository.findAllByDeposit(deposit);
-
-		return DepositControlMapper.INSTANCE.depositControlsToDtos(controls);
-	}
+	Sort purchaseOrderDateSort = Sort.by("date").descending();
 
 	@Override
 	public String createDeposit(DepositDto depositDto) {
@@ -398,44 +161,6 @@ public class DepositControlServiceImpl implements DepositControlService {
 			log.info("User current deposit found, deposit ID: " + depo.getId());
 			return new DepositResponseDto(depo.getId(), depo.getName());
 		}
-	}
-
-	@Override
-	public int deletePurchaseOrder(long orderId) {
-		if (purchaseOrderRepository.existsById(orderId)) {
-			int orderNumberDeleted = purchaseOrderRepository.findById(orderId).get().getOrderNumber();
-			purchaseOrderRepository.deleteById(orderId);
-			return orderNumberDeleted;
-
-		} else {
-			throw new ItemNotFoundException("No se encontro la orden de compra");
-		}
-	}
-
-	@Override
-	public int deleteSupply(long supplyId) {
-		if (supplyRepository.existsById(supplyId)) {
-			int supplyNumberDeleted = supplyRepository.findById(supplyId).get().getSupplyNumber();
-			supplyRepository.deleteById(supplyId);
-			return supplyNumberDeleted;
-
-		} else {
-			throw new ItemNotFoundException("No se encontro el suministro");
-		}
-	}
-
-	@Override
-	public PurchaseOrderDto findPurchaseOrder(long purchaseOrderId) {
-		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrderId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro la orden de compra"));
-		return PurchaseOrderMapper.INSTANCE.orderToDto(order);
-	}
-
-	@Override
-	public SupplyDto findsupply(long supplyId) {
-		Supply supply = supplyRepository.findById(supplyId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el suministro"));
-		return SupplyMapper.INSTANCE.supplyToDto(supply);
 	}
 
 	@Transactional
@@ -551,8 +276,8 @@ public class DepositControlServiceImpl implements DepositControlService {
 							purchaseOrderRepository.findAllByOrganization(organization, purchaseOrderDateSort))
 					.stream().map(orderItem -> {
 						if (pItemDesc.matcher(orderItem.getItemDetail()).find()) {
-							PurchaseOrderItemCandidateDto orderItemCandidateDto = purchaseOrderItemToCandidateDto(orderItem,
-									xlsItemDto.getExcelItemId());
+							PurchaseOrderItemCandidateDto orderItemCandidateDto = purchaseOrderItemToCandidateDto(
+									orderItem, xlsItemDto.getExcelItemId());
 							return orderItemCandidateDto;
 						}
 						return new PurchaseOrderItemCandidateDto();
@@ -601,32 +326,70 @@ public class DepositControlServiceImpl implements DepositControlService {
 	}
 
 	@Override
-	public List<DepositControlDto> saveExcelItemsToDepositControls(long organizationId
-			,long depositId, List<ExcelItemDto> excelItemDtos) {
-		
+	public List<DepositControlDto> saveExcelItemsToDepositControls(long organizationId, long depositId,
+			List<ExcelItemDto> excelItemDtos) {
+
 		Deposit deposit = depositRepository.findById(depositId)
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
+
 		List<DepositControl> depositControlItems = purchaseOrderItemRepository
-				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderId()).toList())
-				.stream().map(orderItem ->{
-					DepositControl depositControl=  excelItemDtos.stream()
-							.filter(excelItemDto -> excelItemDto.getPurchaseOrderId()==orderItem.getId()).map(excelItemDto ->{
-						DepositControl control = new DepositControl();
-						control.setItemCode(orderItem.getCode());
-						control.setMeasureUnit(orderItem.getMeasureUnit());
-						control.setItemDescription(orderItem.getItemDetail());
-						control.setItemUnitPrice(orderItem.getUnitCost());
-						control.setQuantity(excelItemDto.getItemQuantity());
-						control.setItemTotalPrice(orderItem.getUnitCost()
-								.multiply(new BigDecimal(excelItemDto.getItemQuantity())));
-						control.setDeposit(deposit);
-						return control;
-					}).findFirst().get();
+				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderId()).toList()).stream()
+				.map(orderItem -> {
+					DepositControl depositControl = excelItemDtos.stream()
+							.filter(excelItemDto -> excelItemDto.getPurchaseOrderId() == orderItem.getId())
+							.map(excelItemDto -> {
+								Optional<DepositControl> checkRepeated = depositControlRepository
+										.findByItemCodeAndDeposit(orderItem.getCode(), deposit);
+								if (checkRepeated.isPresent()) {
+									DepositControl control = checkRepeated.get();
+									control.setQuantity(control.getQuantity() + excelItemDto.getItemQuantity());
+									control.setDeposit(deposit);
+									return control;
+								}
+								return excelItemToDepositControl(excelItemDto, orderItem, deposit);
+								}).findFirst().get();
+					
 					return depositControl;
-					}).toList();
+				}).toList();
+		
 		List<DepositControl> savedDepositControls = depositControlRepository.saveAll(depositControlItems);
 		return DepositControlMapper.INSTANCE.depositControlsToDtos(savedDepositControls);
-		
+
 	}
 	
+	
+	
+	
+	private DepositControl excelItemToDepositControl(ExcelItemDto excelItemDto, PurchaseOrderItem orderItem,
+			Deposit deposit) {
+		DepositControl control = new DepositControl();
+		control.setItemCode(orderItem.getCode());
+		control.setMeasureUnit(orderItem.getMeasureUnit());
+		control.setItemDescription(orderItem.getItemDetail());
+		control.setItemUnitPrice(orderItem.getUnitCost());
+		
+		
+		control.setQuantity(excelItemDto.getItemQuantity());
+		control.setItemTotalPrice(orderItem.getUnitCost().multiply(new BigDecimal(excelItemDto.getItemQuantity())));
+		control.setDeposit(deposit);
+		return control;
+	}
+
+	@Override
+	public List<DepositControlDto> findDepositControlsByDeposit(long depositId) {
+		Deposit deposit = depositRepository.findById(depositId)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
+		List<DepositControl> controls = depositControlRepository.findAllByDeposit(deposit);
+
+		return DepositControlMapper.INSTANCE.depositControlsToDtos(controls);
+	}
+
+	@Override
+	public String deleteDepositControlById(long depositControlId) {
+		DepositControl control = depositControlRepository.findById(depositControlId)
+					.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+			depositControlRepository.deleteById(depositControlId);
+			return control.getItemCode();
+		}
+
 }

@@ -61,6 +61,8 @@ import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
 import com.lord.small_box.services.OrganizationService;
+import com.lord.small_box.services.PurchaseOrderService;
+import com.lord.small_box.services.SupplyService;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.text_analisys.TextToPurchaseOrder;
 import com.lord.small_box.utils.ExcelToListUtils;
@@ -73,6 +75,12 @@ public class DepositControlServiceTest {
 
 	@Autowired
 	private DepositControlService depositControlService;
+	
+	@Autowired
+	private PurchaseOrderService purchaseOrderService;
+	
+	@Autowired
+	private SupplyService supplyService;
 
 	@Autowired
 	private PdfToStringUtils pdfToStringUtils;
@@ -94,6 +102,8 @@ public class DepositControlServiceTest {
 
 	@Autowired
 	private DepositControlRepository depositControlRepository;
+	
+	
 
 	private long depositAvellanedaId;
 
@@ -191,7 +201,7 @@ public class DepositControlServiceTest {
 	@Order(1)
 	void pdfToPurchaseOrder365_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-365.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, 2L);
 		purchaseOrder365Id = purchaseOrderDto.getId();
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
 		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 15);
@@ -238,7 +248,7 @@ public class DepositControlServiceTest {
 	@Order(2)
 	void pdfToPurchaseOrder340_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-340.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, 2L);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0091");
 		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 350);
 		assertEquals(purchaseOrderDto.getItems().get(0).getUnitCost().doubleValue(), 1580.00000);
@@ -292,7 +302,7 @@ public class DepositControlServiceTest {
 	@Order(3)
 	void pdfToPurchaseOrder429_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-429.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, 2L);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, 2L);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.02610.0001");
 		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 32);
 		assertEquals(purchaseOrderDto.getItems().get(0).getProgramaticCat(), "38.09.00");
@@ -368,7 +378,7 @@ public class DepositControlServiceTest {
 	@Order(4)
 	void pdfToPurchaseOrder454_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-454.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, admYDespachoId);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 454);
 
@@ -534,7 +544,7 @@ public class DepositControlServiceTest {
 	@Order(5)
 	void pdfToPurchaseOrder493_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-493.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, admYDespachoId);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 493);
 
@@ -689,7 +699,7 @@ public class DepositControlServiceTest {
 	@Order(6)
 	void pdfToPurchaseOrder619_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-619.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, admYDespachoId);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 		assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.01033.0031"))
@@ -800,7 +810,7 @@ public class DepositControlServiceTest {
 	@DisplayName("ENCONTRAR ORDEN DE COMPRA N 365_24 CON ITEMS")
 	@Order(7)
 	void findFullPurchaseOrder365_24() throws Exception {
-		PurchaseOrderDto purchaseOrderDto = depositControlService.findFullPurchaseOrder(purchaseOrder365Id);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.findFullPurchaseOrder(purchaseOrder365Id);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
 		assertEquals(purchaseOrderDto.getItems().get(7).getCode(), "2.1.1.02113.0002");
@@ -812,7 +822,7 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 365_24 A DEPOSITO")
 	@Order(8)
 	void loadPurchaseOrder365_24ToDepositControl() throws Exception {
-		List<PurchaseOrderToDepositReportDto> report = depositControlService
+		List<PurchaseOrderToDepositReportDto> report = purchaseOrderService
 				.loadPurchaseOrderToDepositControl(purchaseOrder365Id, depositAvellanedaId);
 		List<DepositControlDto> depositItems = depositControlService.findDepositControlsByDeposit(depositAvellanedaId);
 
@@ -840,7 +850,7 @@ public class DepositControlServiceTest {
 	@Order(9)
 	void loadSupply551_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-551.pdf");
-		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
+		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		cal.set(2024, 1, 5);
@@ -909,7 +919,7 @@ public class DepositControlServiceTest {
 	@Order(10)
 	void loadSupply223_23() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-223.pdf");
-		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
+		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		cal.set(2023, 0, 9);
@@ -949,7 +959,7 @@ public class DepositControlServiceTest {
 	@Order(11)
 	void loadSupply177_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-177.pdf");
-		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
+		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		cal.set(2024, 0, 10);
@@ -1032,7 +1042,7 @@ public class DepositControlServiceTest {
 	@Order(12)
 	void loadSupply1043_23() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-1043.pdf");
-		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
+		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		cal.set(2023, 2, 7);
@@ -1064,7 +1074,7 @@ public class DepositControlServiceTest {
 	@Order(13)
 	void loadSupply100_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-100.pdf");
-		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
+		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		cal.set(2024, 0, 7);
@@ -1099,7 +1109,7 @@ public class DepositControlServiceTest {
 	@Order(14)
 	void loadSupply525_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-525.pdf");
-		SupplyDto dto = depositControlService.collectSupplyFromText(text, 2L);
+		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		cal.set(2024, 1, 4);
@@ -1208,7 +1218,7 @@ public class DepositControlServiceTest {
 	@Order(17)
 	void pdfToPurchaseOrder360_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("oc-360.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, admYDespachoId);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 360);
 
@@ -1243,7 +1253,7 @@ public class DepositControlServiceTest {
 	@Order(18)
 	void pdfToPurchaseOrder572_24()throws Exception{
 		String text = pdfToStringUtils.pdfToString("oc-572.pdf");
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, admYDespachoId);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 572);
 

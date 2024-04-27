@@ -34,6 +34,8 @@ import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.dtos.SupplyReportDto;
 import com.lord.small_box.services.DepositControlService;
+import com.lord.small_box.services.PurchaseOrderService;
+import com.lord.small_box.services.SupplyService;
 import com.lord.small_box.utils.ExcelToListUtils;
 import com.lord.small_box.utils.PdfToStringUtils;
 
@@ -46,6 +48,12 @@ public class DepositControlController {
 
 	@Autowired
 	private final DepositControlService depositControlService;
+	
+	@Autowired
+	private final PurchaseOrderService purchaseOrderService;
+	
+	@Autowired
+	private final SupplyService supplyService;
 	
 	private static final Gson gson = new Gson();
 	
@@ -63,23 +71,23 @@ public class DepositControlController {
 	
 	@GetMapping(path = "/find-all-orders-by-org")
 	ResponseEntity<List<PurchaseOrderDto>> findAllOrdersByOrganization(@RequestParam("organizationId")long organizationId){
-		List<PurchaseOrderDto> purchaseOrderDtos =depositControlService.findAllOrdersByOrganizationId(organizationId);
+		List<PurchaseOrderDto> purchaseOrderDtos =purchaseOrderService.findAllOrdersByOrganizationId(organizationId);
 		return ResponseEntity.ok(purchaseOrderDtos);
 	}
 	@GetMapping(path="/find-order-items")
 	ResponseEntity<List<PurchaseOrderItemDto>> findPurchaseOrderItems(@RequestParam("purchaseOrderId")long purchaseOrderId){
-		List<PurchaseOrderItemDto> itemDtos = depositControlService.findPurchaseOrderItems(purchaseOrderId);
+		List<PurchaseOrderItemDto> itemDtos = purchaseOrderService.findPurchaseOrderItems(purchaseOrderId);
 		return ResponseEntity.ok(itemDtos);
 	}
 	
 	@GetMapping(path ="/find-all-supplies-by-org")
 	ResponseEntity<List<SupplyDto>> findAllSuppliesByOrganization(@RequestParam("organizationId")long organizationId){
-		List<SupplyDto> supplyDtos = depositControlService.findAllSuppliesByOrganizationId(organizationId);
+		List<SupplyDto> supplyDtos = supplyService.findAllSuppliesByOrganizationId(organizationId);
 		return ResponseEntity.ok(supplyDtos);
 	}
 	@GetMapping(path = "/find-supply-items")
 	ResponseEntity<List<SupplyItemDto>> findSupplyItems(@RequestParam("supplyId")long supplyId){
-		List<SupplyItemDto> itemDtos = depositControlService.findSupplyItems(supplyId);
+		List<SupplyItemDto> itemDtos = supplyService.findSupplyItems(supplyId);
 		return ResponseEntity.ok(itemDtos);
 	}
 
@@ -87,7 +95,7 @@ public class DepositControlController {
 	ResponseEntity<SupplyDto> collectSupplyFromText(@RequestPart("file") MultipartFile file,
 			@RequestParam("organizationId") long organizationId) throws Exception {
 		String text = pdfToStringUtils.pdfToString(file.getOriginalFilename());
-		SupplyDto supplyDto = depositControlService.collectSupplyFromText(text,organizationId);
+		SupplyDto supplyDto = supplyService.collectSupplyFromText(text,organizationId);
 		return new ResponseEntity<SupplyDto>(supplyDto, HttpStatus.CREATED);
 	}
 	
@@ -95,7 +103,7 @@ public class DepositControlController {
 	ResponseEntity<PurchaseOrderDto> collectPurchaseOrderFromText(@RequestPart("file")MultipartFile file,
 			@RequestParam("organizationId")long OrganizationId) throws Exception{
 		String text = pdfToStringUtils.pdfToString(file.getOriginalFilename());
-		PurchaseOrderDto purchaseOrderDto = depositControlService.collectPurchaseOrderFromText(text, OrganizationId);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, OrganizationId);
 		return new ResponseEntity<PurchaseOrderDto>(purchaseOrderDto,HttpStatus.CREATED);
 	}
 	
@@ -110,28 +118,28 @@ public class DepositControlController {
 	//Find purchase order, with items.
 	@GetMapping(path ="/find-full-purchase-order/{purchaseOrderId}")
 	ResponseEntity<PurchaseOrderDto> findFullPurchaseOrder(@PathVariable("purchaseOrderId")long purchaseOrderId){
-		PurchaseOrderDto purchaseOrderDto = depositControlService.findFullPurchaseOrder(purchaseOrderId);
+		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.findFullPurchaseOrder(purchaseOrderId);
 		return ResponseEntity.ok(purchaseOrderDto);
 	}
 	
 	@PutMapping(path = "/load-order-to-deposit")
 	ResponseEntity<List<PurchaseOrderToDepositReportDto>> loadPurchaseOrdertoDeposit
 	(@RequestBody long purchaseOrderId,@RequestParam("depositId")long depositId){
-		List<PurchaseOrderToDepositReportDto> loadReport = depositControlService.loadPurchaseOrderToDepositControl(purchaseOrderId,depositId);
+		List<PurchaseOrderToDepositReportDto> loadReport = purchaseOrderService.loadPurchaseOrderToDepositControl(purchaseOrderId,depositId);
 		return new ResponseEntity<List<PurchaseOrderToDepositReportDto>>(loadReport,HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/create-supply-report")
 	ResponseEntity<List<SupplyReportDto>> createSupplyResport
 	(@RequestParam("supplyId")long supplyId,@RequestParam("depositId")long depositId){
-		List<SupplyReportDto> report = depositControlService.createSupplyReport(supplyId,depositId);
+		List<SupplyReportDto> report = supplyService.createSupplyReport(supplyId,depositId);
 		return ResponseEntity.ok(report);
 	}
 	
 	@GetMapping(path = "/create-supply-correction-note")
 	ResponseEntity<SupplyCorrectionNoteDto> createSupplyCorrectionNote
 	(@RequestParam("supplyId")long supplyId,@RequestParam("depositId")long depositId){
-		SupplyCorrectionNoteDto supplyCorrectionNote = depositControlService.createSupplyCorrectionNote(supplyId,depositId);
+		SupplyCorrectionNoteDto supplyCorrectionNote = supplyService.createSupplyCorrectionNote(supplyId,depositId);
 		return ResponseEntity.ok(supplyCorrectionNote);
 	}
 	
@@ -159,24 +167,24 @@ public class DepositControlController {
 	}
 	@DeleteMapping(path="/delete-purchase-order/{orderId}")
 	ResponseEntity<Integer> deletePurchaseOrder(@PathVariable("orderId")long orderId){
-		int orderNumberDeleted = depositControlService.deletePurchaseOrder(orderId);
+		int orderNumberDeleted = purchaseOrderService.deletePurchaseOrder(orderId);
 		return ResponseEntity.ok(orderNumberDeleted);
 	}
 	@DeleteMapping(path="/delete-supply/{supplyId}")
 	ResponseEntity<Integer> deleteSupply(@PathVariable("supplyId")long supplyId){
-		int supplyNumberDeleted = depositControlService.deleteSupply(supplyId);
+		int supplyNumberDeleted = supplyService.deleteSupply(supplyId);
 		return ResponseEntity.ok(supplyNumberDeleted);
 	}
 	
 	//Find purchase order, without items.
 	@GetMapping(path="/find-purchase-order/{orderId}")
 	ResponseEntity<PurchaseOrderDto> findPurchaseOrderById(@PathVariable("orderId")long orderId){
-		PurchaseOrderDto dto = depositControlService.findPurchaseOrder(orderId);
+		PurchaseOrderDto dto = purchaseOrderService.findPurchaseOrder(orderId);
 		return ResponseEntity.ok(dto);
 	}
 	@GetMapping(path="/find-supply/{supplyId}")
 	ResponseEntity<SupplyDto> findSupplyById(@PathVariable("supplyId")long supplyId){
-		SupplyDto dto = depositControlService.findsupply(supplyId);
+		SupplyDto dto = supplyService.findsupply(supplyId);
 		return ResponseEntity.ok(dto);
 	}
 	@PostMapping(path="/create-big-bag")
@@ -212,6 +220,11 @@ public class DepositControlController {
 		List<DepositControlDto> depositControlDtos = depositControlService
 				.saveExcelItemsToDepositControls(organizationId, depositId, excelItemDtos);
 		return new ResponseEntity<List<DepositControlDto>>(depositControlDtos,HttpStatus.CREATED);
+	}
+	@DeleteMapping(path="/delete-deposit-control/{depositControlId}")
+	ResponseEntity<String> deleteDepositControlById(@PathVariable("depositControlId")long depositControlId){
+		String deletedControlCode = depositControlService.deleteDepositControlById(depositControlId);
+		return ResponseEntity.ok(gson.toJson(deletedControlCode));
 	}
 	
 	
