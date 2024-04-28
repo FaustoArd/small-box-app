@@ -208,8 +208,8 @@ public class TextToPurchaseOrder {
 		Pattern pDate = Pattern.compile(strDateV2);
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		String date = Stream.of(text).filter(f -> pDate.matcher(f).find()).findFirst().get().replaceAll("[a-zA-Z]", "")
-				.replace("/", "-").strip();
+		String date = Stream.of(text.split(" ")).filter(f -> pDate.matcher(f).find()).skip(1).findFirst().get()
+				.replaceAll("[a-zA-Z]", "").replace("/", "-").strip();
 		try {
 			cal.setTime(sdf.parse(date));
 

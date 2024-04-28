@@ -141,5 +141,9 @@ public class TextToSupply {
 
 		}).toList();
 	}
+	
+	private String getItemCode(String[] arrItems) {
+		return Stream.of(arrItems).filter(f -> pCode.matcher(f).find()).findFirst().get().strip();
+	}
 
 }

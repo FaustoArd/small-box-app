@@ -236,7 +236,11 @@ public class DepositControlServiceTest {
 		assertEquals(purchaseOrderDto.getItems().get(7).getQuantity(), 1);
 		assertThat(purchaseOrderDto.getItems().get(7).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
-
+		Calendar cal = Calendar.getInstance();
+		Calendar cal2 = Calendar.getInstance();
+		cal.set(2024, 1, 18);
+		cal2.set(2024, 1, 20);
+		assertThat(purchaseOrderDto.getDate()).isBetween(cal, cal2);
 		
 		
 		// Assert Purchase Order total cost equals sum of all items total cost
@@ -293,7 +297,11 @@ public class DepositControlServiceTest {
 		assertEquals(purchaseOrderDto.getItems().get(7).getUnitCost().doubleValue(), 1400.00000);
 		assertEquals(purchaseOrderDto.getItems().get(7).getMeasureUnit(), "UNIDAD");
 		assertEquals(purchaseOrderDto.getOrderNumber(), 340);
-
+		Calendar cal = Calendar.getInstance();
+		Calendar cal2 = Calendar.getInstance();
+		cal.set(2024, 1, 15);
+		cal2.set(2024, 1, 17);
+		assertThat(purchaseOrderDto.getDate()).isBetween(cal, cal2);
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
 				.stream().mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -369,7 +377,13 @@ public class DepositControlServiceTest {
 		assertEquals(purchaseOrderDto.getItems().get(12).getUnitCost().doubleValue(), 9370.00000);
 		assertEquals(purchaseOrderDto.getItems().get(12).getMeasureUnit(), "KILOGRAMO");
 		assertEquals(purchaseOrderDto.getOrderNumber(), 429);
-
+		Calendar cal = Calendar.getInstance();
+		Calendar cal2 = Calendar.getInstance();
+		cal.set(2024, 1, 21);
+		cal2.set(2024, 1, 23);
+		assertThat(purchaseOrderDto.getDate()).isBetween(cal, cal2);
+		
+		
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
 				.stream().mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
