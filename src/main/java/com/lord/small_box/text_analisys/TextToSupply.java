@@ -38,11 +38,13 @@ public class TextToSupply {
 		supplyDto.setSupplyItems(getSupplyItemList(arrTextSplitN));
 		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
 		supplyDto.setDependencyApplicant(getApplicant(arrTextSplitN));
-		/*System.out.println("Applicant: " + supplyDto.getDependencyApplicant());
-		System.out.println("Estimated: " + supplyDto.getEstimatedTotalCost());
-		System.out.println("TEST: " + supplyDto.getSupplyNumber());
-		System.out.println("TEST: " + supplyDto.getDate().getTime());
-		System.out.println("TEST: " + supplyDto.getSupplyItems());*/
+		/*
+		 * System.out.println("Applicant: " + supplyDto.getDependencyApplicant());
+		 * System.out.println("Estimated: " + supplyDto.getEstimatedTotalCost());
+		 * System.out.println("TEST: " + supplyDto.getSupplyNumber());
+		 * System.out.println("TEST: " + supplyDto.getDate().getTime());
+		 * System.out.println("TEST: " + supplyDto.getSupplyItems());
+		 */
 		return supplyDto;
 	}
 
@@ -111,39 +113,64 @@ public class TextToSupply {
 		return strItems.stream().map(item -> {
 			SupplyItemDto supplyItemDto = new SupplyItemDto();
 			String[] arrItems = item.split(" ");
-			supplyItemDto.setCode(Stream.of(arrItems).filter(f -> pCode.matcher(f).find()).findFirst().get().strip());
-			String quantityResult = Stream.of(arrItems).filter(f -> pQuantity.matcher(f).matches()).findFirst().get();
 
-			if (quantityResult.contains(",")) {
-				quantityResult = quantityResult.replace(",", "");
-				supplyItemDto.setQuantity(new BigDecimal(quantityResult).intValue());
-			} else {
-				supplyItemDto.setQuantity(new BigDecimal(quantityResult).intValue());
-			}
-			String measureUnitResult = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst().get();
-			if (measureUnitResult.equalsIgnoreCase("cada")) {
-				measureUnitResult = measureUnitResult + "-UNO";
-			}
-			supplyItemDto.setMeasureUnit(measureUnitResult);
+			supplyItemDto.setCode(getItemCode(arrItems));
 
-			supplyItemDto.setProgramaticCat(
-					Stream.of(arrItems).filter(f -> pProgCat.matcher(f).find()).findFirst().get().strip());
+			supplyItemDto.setQuantity(getItemQuantity(arrItems));
 
-			supplyItemDto.setItemDetail(Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1)
-					.map(m -> m.replaceAll("[0-9\\W]", "")).collect(Collectors.joining("-")));
+			supplyItemDto.setMeasureUnit(getItemMeasureUnit(arrItems));
 
-			supplyItemDto.setUnitCost(new BigDecimal(Stream.of(arrItems).filter(f -> pUnitPrice.matcher(f).find())
-					.map(m -> m.replace(".", "").replace(",", ".")).findFirst().get()));
+			supplyItemDto.setProgramaticCat(getItemProgramaticCat(arrItems));
 
-			supplyItemDto.setTotalEstimatedCost(new BigDecimal(
-					item.substring(item.lastIndexOf("$") + 1).replace(".", "").replace(",", ".").strip()));
+			supplyItemDto.setItemDetail(getItemDetails(arrItems));
+
+			supplyItemDto.setUnitCost(getItemUnitCost(arrItems));
+
+			supplyItemDto.setTotalEstimatedCost(getItemTotalEstimatedCost(item));
+
 			return supplyItemDto;
 
 		}).toList();
 	}
-	
+
 	private String getItemCode(String[] arrItems) {
 		return Stream.of(arrItems).filter(f -> pCode.matcher(f).find()).findFirst().get().strip();
+	}
+
+	private int getItemQuantity(String[] arrItems) {
+		String quantityResult = Stream.of(arrItems).filter(f -> pQuantity.matcher(f).matches()).findFirst().get();
+		if (quantityResult.contains(",")) {
+			quantityResult = quantityResult.replace(",", "");
+			return new BigDecimal(quantityResult).intValue();
+		} else {
+			return new BigDecimal(quantityResult).intValue();
+		}
+	}
+
+	private String getItemMeasureUnit(String[] arrItems) {
+		String measureUnitResult = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst().get();
+		if (measureUnitResult.equalsIgnoreCase("cada")) {
+			measureUnitResult = measureUnitResult + "-UNO";
+		}
+		return measureUnitResult;
+	}
+
+	private String getItemProgramaticCat(String[] arrItems) {
+		return Stream.of(arrItems).filter(f -> pProgCat.matcher(f).find()).findFirst().get().strip();
+	}
+
+	private String getItemDetails(String[] arrItems) {
+		return Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1).map(m -> m.replaceAll("[0-9\\W]", ""))
+				.collect(Collectors.joining("-"));
+	}
+
+	private BigDecimal getItemUnitCost(String[] arrItems) {
+		return new BigDecimal(Stream.of(arrItems).filter(f -> pUnitPrice.matcher(f).find())
+				.map(m -> m.replace(".", "").replace(",", ".")).findFirst().get());
+	}
+
+	private BigDecimal getItemTotalEstimatedCost(String item) {
+		return new BigDecimal(item.substring(item.lastIndexOf("$") + 1).replace(".", "").replace(",", ".").strip());
 	}
 
 }
