@@ -120,19 +120,23 @@
                         <th scope="col">P.UNITARIO</th>
                         <th scope="col">TOTAL</th>
                         <th scope="col">CANTIDAD</th>
-                        <th scope="col">ELIMINAR</th>   
+                        <th scope="col">MODIFICAR</th> 
+                        <th scope="col">ELIMINAR</th>  
+                       
                     </tr>
                 </thead>
                 <tbody class="text-center">
                     <tr *ngFor="let item of depositControlDtos">
-                        <td>{{item.itemCode}}</td>
+                        <td class="text-primary">{{item.itemCode}}</td>
                         <td>{{item.measureUnit}}</td>
                         <td>{{item.itemDescription}}</td>
                         <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
-                        <td>{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
+                        <td class="text-primary">{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
                         <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
                         <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
+                        <td><button (click)="openDialogDepositControlUpdate(item.id,updateDepositContolTemplate)" class="btn btn-sm">-</button></td>
                         <td><button (click)="confirmDeleteDepositControl(item.id)" class="btn btn-sm">-</button></td>
+                        
                     </tr>
 
                 </tbody>
@@ -286,7 +290,10 @@
 </ng-template>
 
 <ng-template #purchaseOrderListTemplate>
-    <div id="orderListTemplate" class="container-flex">
+    <body id="orderListTemplate">
+        
+   
+    <div  class="container">
 
 
         <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
@@ -296,7 +303,7 @@
         <div class="row">
             <div class="col-md-4"></div>
             <div class="col-md-4">
-                <h2 class="text-center ">ORDENES DE COMPRA</h2>
+                <h2 class="text-center">ORDENES DE COMPRA</h2>
                 <p class="lead">
                     <hr class="my-4">
             </div>
@@ -324,7 +331,7 @@
                             <td class="text-primary">{{order.orderNumber}}</td>
                             <td>{{order.executerUnit}}</td>
                             <td>{{order.dependency}}</td>
-                            <td class="text-danger">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
+                            <td class="text-primary">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
                             <td class="text-center"><button
                                     (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
                                     class="btn btn-sm  text-danger">-</button></td>
@@ -348,6 +355,7 @@
             </div>
         </div>
     </div>
+</body>
 </ng-template>
 <ng-template #purchaseOrderItemsListTemplate>
     <button id="closeButton" (click)="onClosepurchaseOrderItemListTemplate()" class="btn btn-sm text-white">X</button>
@@ -369,7 +377,7 @@
         </thead>
         <tbody class="text-center">
             <tr *ngFor="let orderItem of purchaseOrderItemDtosListShow">
-                <td>{{orderItem.code}}</td>
+                <td class="text-primary">{{orderItem.code}}</td>
                 <td>{{orderItem.programaticCat}}</td>
                 <td *ngIf="orderItem.quantity>=10" class="text-success">{{orderItem.quantity}}</td>
                 <td *ngIf="orderItem.quantity<10" class="text-danger">{{orderItem.quantity}}</td>
@@ -405,9 +413,9 @@
         <tbody>
             <tr *ngFor="let supply of suppliesDto">
                 <td>{{supply.date |date: 'dd-MM-yyyy'}}</td>
-                <td>{{supply.supplyNumber}}</td>
+                <td class="text-primary">{{supply.supplyNumber}}</td>
                 <td>{{supply.dependencyApplicant}}</td>
-                <td>{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
+                <td class="text-primary">{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
                 <td class="text-center"><button (click)="openDialogSuppliesItemList(supplyItemsListTemplate,supply.id)"
                         class="btn btn-lg  text-danger"></button></td>
                 <td class="text-center"><button
@@ -444,13 +452,14 @@
         </thead>
         <tbody>
             <tr *ngFor="let supplyItem of supplyItemsDtoListShow">
-                <td>{{supplyItem.code}}</td>
+                <td class="text-primary">{{supplyItem.code}}</td>
                 <td>{{supplyItem.programaticCat}}</td>
-                <td>{{supplyItem.quantity}}</td>
+                <td *ngIf="supplyItem.quantity>=10" class="text-success">{{supplyItem.quantity}}</td>
+                <td *ngIf="supplyItem.quantity<10" class="text-danger">{{supplyItem.quantity}}</td>
                 <td>{{supplyItem.measureUnit}}</td>
                 <td>{{supplyItem.itemDetail}}</td>
                 <td>{{supplyItem.unitCost | currency: '$': 'symbol'}}</td>
-                <td>{{supplyItem.totalEstimatedCost | currency: '$': 'symbol'}}</td>
+                <td class="text-primary">{{supplyItem.totalEstimatedCost | currency: '$': 'symbol'}}</td>
 
             </tr>
 
@@ -669,4 +678,53 @@
             </div>
         </div>
     </div>
+</ng-template>
+<ng-template #updateDepositContolTemplate>
+    <div id="udpateDepositControlTemplate" class="container-fluid">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-6 text-center ms-4">
+                <form [formGroup]="depositControlUpdateForm" class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+                    <div class="form-group">
+                        <label for="itemCode" class=" form-label fs-7 ">CODIGO</label>
+                        <input class="form-control border-dark" type="text" formControlName="itemCode" id="itemCode"  [readonly] = "disableSelect">
+                      </div>
+                    <div class="form-group">
+                        <label for="measureUnit" class=" form-label fs-7 ">U.MEDIDA</label>
+                        <input class="form-control border-dark" type="text" formControlName="measureUnit" id="measureUnit"
+                        [readonly] = "disableSelect">
+                      </div>
+                      <div class="form-group">
+                            <label for="itemDescription" class=" form-label fs-7 ">DESCRIPCION</label>
+                            <input class="form-control border-dark" type="text" formControlName="itemDescription" id="itemDescription"  [readonly] = "disableSelect">
+                          </div>
+                          <div class="form-group">
+                            <label for="itemUnitPrice" class=" form-label fs-7 ">P.UNITARIO</label>
+                            <input class="form-control border-dark" type="number" formControlName="itemUnitPrice" id="itemUnitPrice"  [readonly] = "disableSelect">
+                          </div>
+                <div class="form-group">
+                    <label for="quantity" class=" form-label fs-7 ">CANTIDAD</label>
+                    <input class="form-control border-dark" type="number" formControlName="quantity" id="quantity">
+                    <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)" class="text-danger">
+                        <div *ngIf="quantity.errors?.['required']">
+                         Debe ingresar una cantidad validad
+                        </div>
+                    </div>
+                </div>
+               
+             </form>
+            </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-3 ms-5"></div>
+                <div class="col-md-1">
+                    <button id="btnControlUpdate" (click)="updateDepositControl()" class="btn btn-sm text-white">Actualizar</button>
+                </div>
+                <div class="col-md-1 ms-5">
+                    <button id="btnControlCancel" (click)="onCloseUpdateDepositControlTemplate()" class="btn btn-sm text-dark">Cancelar</button>
+                </div>
+                 
+            </div>     
+    </div>
+
 </ng-template>

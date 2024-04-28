@@ -104,7 +104,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Autowired
 	private final AppUserServiceImpl userService;
 
-	private static final Logger log = LoggerFactory.getLogger(DepositControlService.class);
+	private static final Logger log = LoggerFactory.getLogger(DepositControlServiceImpl.class);
 
 	Sort purchaseOrderDateSort = Sort.by("date").descending();
 
@@ -311,6 +311,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	private PurchaseOrderItemCandidateDto purchaseOrderItemToCandidateDto(PurchaseOrderItem purchaseOrderItem,
 			long xlsItemId) {
+		log.info("Map purchase order item to item candidate dto");
 		if (purchaseOrderItem == null) {
 			return null;
 		}
@@ -328,28 +329,15 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Override
 	public List<DepositControlDto> saveExcelItemsToDepositControls(long organizationId, long depositId,
 			List<ExcelItemDto> excelItemDtos) {
-
+		log.info("Save excel item to deposit");
 		Deposit deposit = depositRepository.findById(depositId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
 
 		List<DepositControl> depositControlItems = purchaseOrderItemRepository
-				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderId()).toList()).stream()
+				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderId()).toList())
+				.stream()
 				.map(orderItem -> {
-					DepositControl depositControl = excelItemDtos.stream()
-							.filter(excelItemDto -> excelItemDto.getPurchaseOrderId() == orderItem.getId())
-							.map(excelItemDto -> {
-								Optional<DepositControl> checkRepeated = depositControlRepository
-										.findByItemCodeAndDeposit(orderItem.getCode(), deposit);
-								if (checkRepeated.isPresent()) {
-									DepositControl control = checkRepeated.get();
-									control.setQuantity(control.getQuantity() + excelItemDto.getItemQuantity());
-									control.setDeposit(deposit);
-									return control;
-								}
-								return excelItemToDepositControl(excelItemDto, orderItem, deposit);
-								}).findFirst().get();
-					
-					return depositControl;
+					return mapExcelItemToDeposit(excelItemDtos, orderItem, deposit);
 				}).toList();
 		
 		List<DepositControl> savedDepositControls = depositControlRepository.saveAll(depositControlItems);
@@ -357,18 +345,39 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	}
 	
+	private DepositControl mapExcelItemToDeposit(List<ExcelItemDto> excelItemDtos ,PurchaseOrderItem orderItem, Deposit deposit) {
+		log.info("Map excel items to deposit");
+		DepositControl depositControl =  excelItemDtos.stream()
+				.filter(excelItemDto -> excelItemDto.getPurchaseOrderId() == orderItem.getId())
+				.map(excelItemDto -> {
+					Optional<DepositControl> checkRepeated = depositControlRepository
+							.findByItemCodeAndDeposit(orderItem.getCode(), deposit);
+					if (checkRepeated.isPresent()) {
+						return updateDepositControlQuantity(checkRepeated.get(), excelItemDto, deposit);
+					}
+					return excelItemToDepositControl(excelItemDto, orderItem, deposit);
+					}).findFirst().get();
+		
+		return depositControl;
+	}
 	
+	
+	private DepositControl updateDepositControlQuantity(DepositControl control,ExcelItemDto excelItemDto,Deposit deposit) {
+		log.info("item exist. updating quantity");
+		control.setQuantity(control.getQuantity() + excelItemDto.getItemQuantity());
+		control.setDeposit(deposit);
+		return control;
+	}
 	
 	
 	private DepositControl excelItemToDepositControl(ExcelItemDto excelItemDto, PurchaseOrderItem orderItem,
 			Deposit deposit) {
+		log.info("creating new deposit item");
 		DepositControl control = new DepositControl();
 		control.setItemCode(orderItem.getCode());
 		control.setMeasureUnit(orderItem.getMeasureUnit());
 		control.setItemDescription(orderItem.getItemDetail());
 		control.setItemUnitPrice(orderItem.getUnitCost());
-		
-		
 		control.setQuantity(excelItemDto.getItemQuantity());
 		control.setItemTotalPrice(orderItem.getUnitCost().multiply(new BigDecimal(excelItemDto.getItemQuantity())));
 		control.setDeposit(deposit);
@@ -377,6 +386,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	@Override
 	public List<DepositControlDto> findDepositControlsByDeposit(long depositId) {
+		log.info("Find deposit controls by deposit");
 		Deposit deposit = depositRepository.findById(depositId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
 		List<DepositControl> controls = depositControlRepository.findAllByDeposit(deposit);
@@ -386,10 +396,28 @@ public class DepositControlServiceImpl implements DepositControlService {
 
 	@Override
 	public String deleteDepositControlById(long depositControlId) {
+		log.info("Delete deposit controls by id");
 		DepositControl control = depositControlRepository.findById(depositControlId)
 					.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
 			depositControlRepository.deleteById(depositControlId);
 			return control.getItemCode();
 		}
+
+	@Override
+	public DepositControlDto findDepositControlById(long depositControlId) {
+		DepositControl depositControl=  depositControlRepository.findById(depositControlId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el item de deposito"));
+		return DepositControlMapper.INSTANCE.depositControlToDto(depositControl);
+	}
+
+	@Override
+	public DepositControlDto updateDepositControl(DepositControlDto depositControlDto,long depositId) {
+		Deposit deposit = depositRepository.findById(depositId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+		DepositControl depositControl = DepositControlMapper.INSTANCE.dtoToDepositControl(depositControlDto);
+		depositControl.setDeposit(deposit);
+		DepositControl savedControl = depositControlRepository.save(depositControl);
+		return DepositControlMapper.INSTANCE.depositControlToDto(savedControl);
+	}
 
 }

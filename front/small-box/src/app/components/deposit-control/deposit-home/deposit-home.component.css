@@ -5,7 +5,7 @@ body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
 #orderListTemplate{
-    background: linear-gradient(245.59deg, rgb(202, 200, 219)30%, rgb(166, 164, 192) 50%, #b2afc1 79%);
+    background: linear-gradient(245.59deg, rgb(216, 215, 224)30%, rgb(208, 206, 217) 50%, #dad8e1 79%);
 }
 jumbotron{
     background-color: aliceblue;
@@ -85,4 +85,23 @@ small{
 #closeButton{
   position: absolute;
   right: 0;
+}
+form{
+    font-weight: bold;
+    font-family: 'Quattrocento', serif;
+    font-size: 1rem; 
+}
+input{
+    font-weight: bold;
+}
+
+#udpateDepositControlTemplate{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+
+#btnControlUpdate{
+    background: linear-gradient(245.59deg, rgb(206, 118, 118)30%, rgb(223, 114, 117) 50%, #d87a7e 79%);
+}
+#btnControlCancel{
+    background: linear-gradient(245.59deg, rgb(214, 225, 153)30%, rgb(211, 212, 128) 50%, #bbd976 79%);
 }

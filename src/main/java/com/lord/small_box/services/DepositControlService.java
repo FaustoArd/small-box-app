@@ -54,5 +54,9 @@ public interface DepositControlService {
 			List<ExcelItemDto> excelItemDtos);
 	
 	public String deleteDepositControlById(long depositControlId);
+	
+	public DepositControlDto findDepositControlById(long depositControlId);
+	
+	public DepositControlDto updateDepositControl(DepositControlDto depositControlDto,long depositId);
 
 }

@@ -226,6 +226,17 @@ public class DepositControlController {
 		String deletedControlCode = depositControlService.deleteDepositControlById(depositControlId);
 		return ResponseEntity.ok(gson.toJson(deletedControlCode));
 	}
+	@GetMapping(path="/find-deposit-control/{depositControlId}")
+	ResponseEntity<DepositControlDto> findDepositControlById(@PathVariable("depositControlId")long depositControlId){
+		DepositControlDto depositControlDto = depositControlService.findDepositControlById(depositControlId);
+		return ResponseEntity.ok(depositControlDto);
+	}
+	@PutMapping(path="/update-deposit-control")
+	ResponseEntity<DepositControlDto> updateDepositControl(@RequestBody DepositControlDto depositControlDto,
+			@RequestParam("depositId")long depositId){
+		DepositControlDto updatedDepositControlDto = depositControlService.updateDepositControl(depositControlDto,depositId);
+		return new ResponseEntity<DepositControlDto>(updatedDepositControlDto,HttpStatus.OK);
+	}
 	
 	
 }

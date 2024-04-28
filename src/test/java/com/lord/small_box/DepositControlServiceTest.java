@@ -40,6 +40,7 @@ import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.BigBagMapper;
 import com.lord.small_box.mappers.DepositControlMapper;
 import com.lord.small_box.mappers.PurchaseOrderItemMapper;
@@ -51,6 +52,7 @@ import com.lord.small_box.models.ExcelItem;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.PurchaseOrder;
+import com.lord.small_box.models.Supply;
 import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.repositories.BigBagItemRepository;
 import com.lord.small_box.repositories.BigBagRepository;
@@ -60,6 +62,7 @@ import com.lord.small_box.repositories.ExcelItemRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
+import com.lord.small_box.repositories.SupplyRepository;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.PurchaseOrderService;
 import com.lord.small_box.services.SupplyService;
@@ -103,13 +106,16 @@ public class DepositControlServiceTest {
 	@Autowired
 	private DepositControlRepository depositControlRepository;
 	
-	
+	@Autowired
+	private SupplyRepository supplyRepository;
 
 	private long depositAvellanedaId;
 
 	private long admYDespachoId;
 
 	private long purchaseOrder365Id;
+	
+	private long supply177Id;
 
 	@Autowired
 	private PurchaseOrderRepository purchaseOrderRepository;
@@ -122,6 +128,8 @@ public class DepositControlServiceTest {
 	
 	@Autowired
 	private ExcelItemRepository excelItemRepository;
+	
+	private long depositControlTestId;
 	
 
 	@BeforeAll
@@ -229,6 +237,8 @@ public class DepositControlServiceTest {
 		assertThat(purchaseOrderDto.getItems().get(7).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
 
+		
+		
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
 				.stream().mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -239,6 +249,7 @@ public class DepositControlServiceTest {
 
 			assertEquals(item.getUnitCost().multiply(new BigDecimal(item.getQuantity())).doubleValue(),
 					item.getTotalEstimatedCost().doubleValue());
+			
 		});
 		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(), 295600.00);
 	}
@@ -825,7 +836,7 @@ public class DepositControlServiceTest {
 		List<PurchaseOrderToDepositReportDto> report = purchaseOrderService
 				.loadPurchaseOrderToDepositControl(purchaseOrder365Id, depositAvellanedaId);
 		List<DepositControlDto> depositItems = depositControlService.findDepositControlsByDeposit(depositAvellanedaId);
-
+			depositControlTestId = depositItems.stream().filter(f -> f.getItemCode().equals("2.1.1.00788.0013")).findFirst().get().getId();
 		report.stream().forEach(e -> {
 			assertEquals(e.getDepositItemStatus(), "NUEVO");
 		});
@@ -960,6 +971,7 @@ public class DepositControlServiceTest {
 	void loadSupply177_24() throws Exception {
 		String text = pdfToStringUtils.pdfToString("sum-177.pdf");
 		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
+		supply177Id = dto.getId();
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		cal.set(2024, 0, 10);
@@ -1281,5 +1293,46 @@ public class DepositControlServiceTest {
 
 		assertEquals(purchaseOrderDto.getPurchaseOrderTotal().doubleValue(),  2017632.97);
 	}
+	
+	@Test
+	@DisplayName("ACTUALIZAR ITEM DE DEPOSITO")
+	@Order(19)
+	void updateDepositControlById() {
+		DepositControlDto depositControlDto = depositControlService.findDepositControlById(depositControlTestId);
+		int quantityOld = depositControlDto.getQuantity();
+		depositControlDto.setQuantity(180);
+		DepositControlDto updatedDepositControlDto = depositControlService.updateDepositControl(depositControlDto,depositAvellanedaId);
+		assertThat(updatedDepositControlDto.getId()).isEqualTo(depositControlTestId);
+		assertThat(updatedDepositControlDto.getItemDescription()).isEqualTo(depositControlDto.getItemDescription());
+		assertThat(updatedDepositControlDto.getQuantity()).isEqualTo(180);
+		assertThat(updatedDepositControlDto.getMeasureUnit()).isEqualTo(depositControlDto.getMeasureUnit());
+		assertThat(depositControlRepository.findById(depositControlTestId).get().getDeposit().getId()).isEqualTo(depositAvellanedaId);
+	}
+	
+	@Test
+	@DisplayName("TESTEAR ORGANIZATION ID EN ORDEN DE COMPRA")
+	@Order(20)
+	void checkPurchaseOrderOrgId() {
+		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrder365Id).orElseThrow(()->new ItemNotFoundException("No se encontro la orden"));
+		assertThat(order.getOrganization().getId()).isGreaterThan(0l);
+		
+	}
+	@Test
+	@DisplayName("TESTEAR ORGANIZATION ID EN SUMINISTRO")
+	@Order(21)
+	void checkSupplyOrgId() {
+		Supply supply = supplyRepository.findById(purchaseOrder365Id).orElseThrow(()->new ItemNotFoundException("No se encontro el suministro"));
+		assertThat(supply.getOrganization().getId()).isGreaterThan(0l);
+		
+	}
+	@Test
+	@DisplayName("TESTEAR ORGANIZATION ID EN DEPOSITO")
+	@Order(22)
+	void checkDepositOrgId() {
+		Deposit deposit = depositRepository.findById(depositAvellanedaId).orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+		assertThat(deposit.getOrganization().getId()).isGreaterThan(0l);
+		
+	}
+	
 	
 }

@@ -151,4 +151,14 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
     return this.http.delete<string>(`${DEPOSIT_CONTROL_BASE_URL}/delete-deposit-control/${depositControlId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
    }
+
+   findDepositControlbyId(depositControlId:number):Observable<DepositControlDto>{
+    return this.http.get<DepositControlDto>(`${DEPOSIT_CONTROL_BASE_URL}/find-deposit-control/${depositControlId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+
+   updateDepositControl(depositControlDto:DepositControlDto,depositId:number):Observable<DepositControlDto>{
+    return this.http.put<DepositControlDto>(`${DEPOSIT_CONTROL_BASE_URL}/update-deposit-control?depositId=${depositId}`
+    ,depositControlDto,this.httpOptions).pipe(catchError(this.handleError));
+   }
   }

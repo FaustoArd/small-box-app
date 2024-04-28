@@ -33,6 +33,7 @@ export class DepositHomeComponent implements OnInit {
   supplyDto!: SupplyDto;
   selectedDepositBol: boolean = false;
   selectedDepositStr: string = "";
+  disableSelect:boolean = true;
   constructor(private dialogService: DialogService,
     private fileUploadService: FileUploadService, private snackBar: SnackBarService
     , private depositControlService: DepositControlService, private cookieService: CookieStorageService,
@@ -71,7 +72,7 @@ export class DepositHomeComponent implements OnInit {
     });
   }
 
- 
+
 
   private purchaseOrderTableMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('purchaseOrderTableTemplate') purchaseOrderTableTemplate !: TemplateRef<any>
@@ -379,7 +380,7 @@ export class DepositHomeComponent implements OnInit {
   /**DEPOSIT */
   depositControlDtos: DepositControlDto[] = [];
 
-  getDepositControlsByOrganization() {
+  getDepositControlsByDeposit() {
     const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
     this.depositControlService.findAllDepositControlsByDeposit(depoId).subscribe({
       next: (depositData) => {
@@ -396,14 +397,14 @@ export class DepositHomeComponent implements OnInit {
   }
   private depositControlListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDepositControlListTemplate(template: any): void {
-    this.getDepositControlsByOrganization();
+    this.getDepositControlsByDeposit();
     this.depositControlListMatDialogRef = this.dialogService.openDialogDepositListCreation({
       template
     });
     this.depositControlListMatDialogRef.afterClosed().subscribe();
   }
 
-  
+
 
   depositFormbuilder = this.formBuilder.group({
     name: ['', Validators.required],
@@ -528,13 +529,15 @@ export class DepositHomeComponent implements OnInit {
 
 
   deopsitControlConfirmData!: boolean;
-  confirmDeleteDepositControl(supplyId: number) {
-    var confirmText = "Desea eliminar el item de deposito?";
+  confirmDeleteDepositControl(depositControlId: number) {
+    const controlIndex = this.depositControlDtos.findIndex(item => item.id == depositControlId);
+    const controlCode = this.depositControlDtos[controlIndex].itemCode;
+    var confirmText = "Desea eliminar el item de deposito numero: " + controlCode;
     this.confirmDialogService.confirmDialog(confirmText).subscribe({
       next: (confirmData) => {
         this.deopsitControlConfirmData = confirmData;
         if (this.deopsitControlConfirmData) {
-          this.deleteDepositControlById(supplyId);
+          this.deleteDepositControlById(depositControlId);
         } else {
           this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
         }
@@ -542,20 +545,104 @@ export class DepositHomeComponent implements OnInit {
 
     });
   }
- 
-  deleteDepositControlById(depositControlId:number){
-    this.depositControlService.deleteDepositControlById(depositControlId).subscribe({
-      next:(deletedData)=>{
-        this.snackBar.openSnackBar('Se elimino el item codigo: ' + deletedData + '.','Cerrar',3000);
+  depositControlUpdateForm = this.formBuilder.group({
+    id: [0],
+    supplyNumber: [''],
+    itemDescription: [''],
+    itemCode: [''],
+    quantity: [0, Validators.required],
+    expirationDate: [''],
+    provider: [''],
+    measureUnit: [''],
+    itemUnitPrice: [0],
+    itemTotalPrice: [0]
+  });
+  get quantity() {
+    return this.depositControlUpdateForm.controls.quantity;
+  }
+
+  findedDepositControlDto!: DepositControlDto;
+  updateDepositControlShow(findedDepositControlDto: DepositControlDto): void {
+    this.depositControlUpdateForm.patchValue({
+      id: this.findedDepositControlDto.id,
+      supplyNumber: this.findedDepositControlDto.supplyNumber,
+      itemCode:this.findedDepositControlDto.itemCode,
+      itemDescription: this.findedDepositControlDto.itemDescription,
+      quantity: this.findedDepositControlDto.quantity,
+      expirationDate: JSON.stringify(this.findedDepositControlDto.expirationDate),
+      provider: this.findedDepositControlDto.provider,
+      measureUnit: this.findedDepositControlDto.measureUnit,
+      itemUnitPrice: this.findedDepositControlDto.itemUnitPrice,
+      itemTotalPrice: this.findedDepositControlDto.itemTotalPrice
+    });
+  }
+  onCloseUpdateDepositControlTemplate() {
+    this.updateDepositControlMatDialogRef.close();
+
+  }
+
+
+  private updateDepositControlMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+
+  openDialogDepositControlUpdate(depositControlId: number, template: TemplateRef<any>) {
+    this.getDepositControlById(depositControlId);
+    this.updateDepositControlMatDialogRef = this.dialogService.openDialogCreation({
+      template
+    })
+    this.updateDepositControlMatDialogRef.afterClosed().subscribe();
+  }
+
+  updatedDepositControl!: DepositControlDto;
+  updateDepositControl() {
+    if (this.depositControlUpdateForm.valid) {
+      this.findedDepositControlDto = Object.assign(this.findedDepositControlDto, this.depositControlUpdateForm.value);
+      const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
+      this.depositControlService.updateDepositControl(this.findedDepositControlDto, depositId).subscribe({
+        next: (controlData) => {
+          this.updatedDepositControl = controlData;
+        },
+        error: (errorData) => {
+          this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+        },
+        complete:()=>{
+          this.onCloseUpdateDepositControlTemplate();
+          this.getDepositControlsByDeposit()
+        }
+      });
+    }
+  }
+
+
+  getDepositControlById(depositControlId: number) {
+    this.depositControlService.findDepositControlbyId(depositControlId).subscribe({
+      next: (controlData) => {
+        this.findedDepositControlDto = controlData;
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      },
+      complete: () => {
+        console.log("Item code"+this.findedDepositControlDto.itemCode)
+        this.updateDepositControlShow(this.findedDepositControlDto);
       }
     });
   }
 
- 
- 
+
+
+  deleteDepositControlById(depositControlId: number) {
+    this.depositControlService.deleteDepositControlById(depositControlId).subscribe({
+      next: (deletedData) => {
+        this.snackBar.openSnackBar('Se elimino el item codigo: ' + deletedData + '.', 'Cerrar', 3000);
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+  }
+
+
+
 
   get name() {
     return this.depositFormbuilder.controls.name;

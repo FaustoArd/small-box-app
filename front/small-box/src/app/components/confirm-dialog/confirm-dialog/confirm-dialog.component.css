@@ -1,0 +1,11 @@
+#containerId{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+    border: 2px solid black;
+}
+
+#btn-confirm{
+    background: linear-gradient(245.59deg, rgb(206, 118, 118)30%, rgb(223, 114, 117) 50%, #d87a7e 79%);
+}
+#btn-cancel{
+    background: linear-gradient(245.59deg, rgb(214, 225, 153)30%, rgb(211, 212, 128) 50%, #bbd976 79%);
+}
