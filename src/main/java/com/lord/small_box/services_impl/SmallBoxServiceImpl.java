@@ -154,31 +154,42 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 		//copy the data from the forEach consumer and then save SmallBoxUnified to database
 		while (smIt.hasNext()) {
 			findAllByContainerIdAndInputInputNumber(containerId, smIt.next()).forEach(sm -> {
-				SmallBoxUnifier smUnifier = new SmallBoxUnifier();
-				smUnifier.setDate(sm.getDate());
-				smUnifier.setTicketNumber(sm.getTicketNumber());
-				smUnifier.setProvider(sm.getProvider());
-				smUnifier.setDescription(sm.getInput().getDescription());
-				smUnifier.setTicketTotal(sm.getTicketTotal());
-				smUnifier.setInputNumber(sm.getInput().getInputNumber());
-				smUnifier.setContainer(container);
-				currentInput = sm.getInput().getInputNumber();
-				smallBoxUnifierRepository.save(smUnifier);
+				
+			currentInput = 	mapSmallBoxToSmallBoxUnifier(sm, container);
 			});
-			//then create a new SmallBoxUnifier to set the subtotal of all  the tickets that correspond
+			//then create a new SmallBoxUnifier to set the sub total of all  the tickets that correspond
 			//to the input number.
-			SmallBoxUnifier smUnifierSTotal = new SmallBoxUnifier();
-			smUnifierSTotal.setSubtotal(calculateSubtotal(containerId, currentInput).getSubtotal());
-			smUnifierSTotal.setSubtotalTitle("SubTotal");
-			smUnifierSTotal.setContainer(container);
-			container.setSmallBoxCreated(true);
-			containerRepository.save(container);
-			smallBoxUnifierRepository.save(smUnifierSTotal);
+			setSmallBoxUnifierSubTotal(containerId, currentInput, container);
 		}
 		addAllTicketTotals(containerId);
 		return (List<SmallBoxUnifier>) smallBoxUnifierRepository.findByContainerId(containerId);
 
 	}
+	private String mapSmallBoxToSmallBoxUnifier(SmallBox sm,Container container) {
+		SmallBoxUnifier smUnifier = new SmallBoxUnifier();
+		smUnifier.setDate(sm.getDate());
+		smUnifier.setTicketNumber(sm.getTicketNumber());
+		smUnifier.setProvider(sm.getProvider());
+		smUnifier.setDescription(sm.getInput().getDescription());
+		smUnifier.setTicketTotal(sm.getTicketTotal());
+		smUnifier.setInputNumber(sm.getInput().getInputNumber());
+		smUnifier.setContainer(container);
+		smallBoxUnifierRepository.save(smUnifier);
+		return sm.getInput().getInputNumber();
+		
+	}
+	
+	private void setSmallBoxUnifierSubTotal(long containerId,String currentInput,Container container) {
+		SmallBoxUnifier smUnifierSTotal = new SmallBoxUnifier();
+		smUnifierSTotal.setSubtotal(calculateSubtotal(containerId, currentInput).getSubtotal());
+		smUnifierSTotal.setSubtotalTitle("SubTotal");
+		smUnifierSTotal.setContainer(container);
+		container.setSmallBoxCreated(true);
+		containerRepository.save(container);
+		smallBoxUnifierRepository.save(smUnifierSTotal);
+	}
+	
+	
 	
 	@Transactional
 	@Override
