@@ -137,12 +137,12 @@ public class ContainerServiceImpl implements ContainerService {
 	}
 
 	@Override
-	public void setContainerTotalWrite(Long containerId, String totalWrite) {
+	public String setContainerTotalWrite(Long containerId, String totalWrite) {
 		log.info("Setting container total write");
 		Container container = containerRepository.findById(containerId)
 				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
 		container.setTotalWrite(totalWrite);
-		containerRepository.save(container);
+		return containerRepository.save(container).getTotalWrite();
 
 	}
 
@@ -153,17 +153,21 @@ public class ContainerServiceImpl implements ContainerService {
 				.findAllByOrganizationInOrderByIdAsc(
 						appUserService.findById(userId).getOrganizations().stream().map(org -> org).toList())
 				.stream().map(container -> {
-					ContainerDto containerDto = new ContainerDto();
-					containerDto.setId(container.getId());
-					containerDto.setOrganization(container.getOrganization().getOrganizationName());
-					containerDto.setResponsible(
-							container.getResponsible().getName() + " " + container.getResponsible().getLastname());
-					containerDto.setSmallBoxDate(container.getSmallBoxDate());
-					containerDto.setSmallBoxType(container.getSmallBoxType().getSmallBoxType());
-					containerDto.setTotal(container.getTotal());
-					containerDto.setTotalWrite(container.getTotalWrite());
-					return containerDto;
+					return mapContainerToDto(container);
 				}).toList();
+	}
+	
+	private ContainerDto mapContainerToDto(Container container) {
+		ContainerDto containerDto = new ContainerDto();
+		containerDto.setId(container.getId());
+		containerDto.setOrganization(container.getOrganization().getOrganizationName());
+		containerDto.setResponsible(
+				container.getResponsible().getName() + " " + container.getResponsible().getLastname());
+		containerDto.setSmallBoxDate(container.getSmallBoxDate());
+		containerDto.setSmallBoxType(container.getSmallBoxType().getSmallBoxType());
+		containerDto.setTotal(container.getTotal());
+		containerDto.setTotalWrite(container.getTotalWrite());
+		return containerDto;
 	}
 
 	@Override

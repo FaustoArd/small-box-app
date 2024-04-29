@@ -13,5 +13,7 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
 
 	public List<PurchaseOrder> findAllByOrganization(Organization organization,Sort sort);
 	
-	public Optional<PurchaseOrder> findByOrderNumber(int orderNumber);
+	//public Optional<PurchaseOrder> findByOrderNumber(int orderNumber);
+	
+	public Optional<PurchaseOrder> findByOrderNumberAndOrganization(int orderNumber,Organization organization);
 }

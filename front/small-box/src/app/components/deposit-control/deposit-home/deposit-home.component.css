@@ -76,6 +76,19 @@ td{
     font-family: 'Quattrocento', serif;
     font-weight: bold;
 }
+#fullBlue_td{
+    color: #2a31b6;
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
+#supplyReportFullBlue{
+    color: #2a31b6;
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
+
 small{
     color:rgb(27, 118, 42);
     font-weight: bold;

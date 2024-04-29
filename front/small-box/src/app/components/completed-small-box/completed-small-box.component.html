@@ -7,7 +7,7 @@
         <div class="col-md-9"></div>
         <div class="col-md-3 mt-3">
             <button routerLink="/small-box" class="btn">Editar</button>
-            <button class="btn  ms-4" title="Share s PDF" (click)="checkMaxAmount()">Ver presentacion</button>
+            <button class="btn  ms-4" title="Share s PDF" (click)="setTotalWrite()">Ver presentacion</button>
         </div>
 
     </div>
@@ -98,20 +98,30 @@
             </div>
         </div>
 
-        <div id="totalWrite" class="row mt-0">
+        <div id="totalWriteContainer" class="row mt-0">
 
             <div class="col-md-3 ms-2 mt-3">
                 <div id="legend">Importa la presente rendición de cuentas la suma de pesos:</div>
 
             </div>
-            <div class="col-md-5 mt-2  ms-0">
-                <input type="text" #totalWrite class="form-control w-100 h-75"  id="totalWriteInput"
-                    placeholder="Ingrese importe total en letras">
-
+            <div class="col-md-6">
+            <div>
+                <form [formGroup]="totalWriteForm">
+                    <div class="form-group">
+                         <input class="form-control border-dark mt-1" type="text" formControlName="totalWrite" id="totalWrite">
+                        <div *ngIf="totalWrite.invalid && (totalWrite.dirty || totalWrite.touched)" class="text-danger">
+                            <div *ngIf="totalWrite.errors?.['required']">
+                               Debe ingresar un importe en letras
+                            </div>
+                        </div>
+                    </div>
+               
+                </form>
             </div>
-            <div class="col-md-2 mt-2">
-                <button (click)="setTotalWrite(totalWrite.value)" class="btn">Aplicar</button>
-            </div>
+        </div>
+         <!-- <div class="col-md-2 mt-2">
+                <button (click)="setTotalWrite()" class="btn">Aplicar</button>
+            </div> -->
 
         </div>
 

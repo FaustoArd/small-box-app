@@ -70,6 +70,7 @@ orgResponse!:number;
           this.snackBar.openSnackBar(errorData,'Cerrar',3000);
         },
         complete:()=>{
+          this.cookieService.deleteCurrentDepositSelectedId();
           this.router.navigateByUrl("/home");
         }
       });

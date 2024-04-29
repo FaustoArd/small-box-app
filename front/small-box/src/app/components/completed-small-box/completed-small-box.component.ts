@@ -6,6 +6,7 @@ import { ContainerService } from 'src/app/services/container.service';
 import { SmallBoxService } from 'src/app/services/small-box.service';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { FormBuilder, Validators } from '@angular/forms';
 
 
 
@@ -22,13 +23,13 @@ export class CompletedSmallBoxComponent implements OnInit {
   errorData!: string;
   container!: ContainerDto;
   smallBoxCreated!: boolean;
-
+  totalWriteCheck:string = '';
 
 
 
   constructor(private smallBoxService: SmallBoxService, private containerService: ContainerService,
     private cookieService: CookieStorageService, private route: ActivatedRoute, private router: Router, 
-    private snackBarService:SnackBarService) { }
+    private snackBarService:SnackBarService,private formBuilder:FormBuilder) { }
 
 
   ngOnInit(): void {
@@ -43,6 +44,13 @@ export class CompletedSmallBoxComponent implements OnInit {
     next: (containerData) => {
       this.container = new ContainerDto();
       this.container = containerData;
+      this.totalWriteValueShow();
+      console.log('container data' + containerData.totalWrite)
+      if(containerData.totalWrite!=null){
+      this.totalWriteCheck = containerData.totalWrite;
+      }else{
+        this.totalWriteCheck =  '';
+      }
       //this.cookieService.setCurrentContainerId(JSON.stringify(containerData.id));
       this.smallBoxCreated = containerData.smallBoxCreated;
       //Delete current unified smallboxes by container id.
@@ -55,7 +63,7 @@ export class CompletedSmallBoxComponent implements OnInit {
     }
   });
  }
- totalWriteCheck!:string;
+
  //This method do the smallbox calculations and show the final results.
   onCompleteSmallBox(): void {
     this.smallBoxService.completeSmallBox(Number(this.cookieService.getCurrentContainerId())).subscribe({
@@ -111,33 +119,48 @@ export class CompletedSmallBoxComponent implements OnInit {
   }
 
  
-  
+
+  totalWriteForm = this.formBuilder.group({
+    totalWrite:['',Validators.required]
+  });
+
+  get totalWrite(){
+    return this.totalWriteForm.controls.totalWrite;
+  }
+
+  totalWriteValueShow(){
+    this.totalWriteForm.patchValue({
+      totalWrite:this.container.totalWrite
+    });
+  }
+ 
 //Set the total letter write
-  setTotalWrite(totalWrite:string):void{
-    console.log(totalWrite);
-    this.containerService.setContainerTotalWrite(Number(this.cookieService.getCurrentContainerId()), totalWrite).subscribe({
+  setTotalWrite():void{
+    if(this.totalWriteForm.valid){
+      //const objTotalWrite = Object.assign(this.totalWriteForm.value);
+      const totalWrite = this.totalWriteForm.value.totalWrite;
+      //const totalWriteFixed = totalWrite?.replace('"','');
+    this.containerService.setContainerTotalWrite(Number(this.cookieService.getCurrentContainerId()), JSON.stringify(totalWrite).replaceAll('"','')).subscribe({
       next:(totalData)=>{
-        this.snackBarService.openSnackBar(totalData,'Cerrar', 3000);
+        this.totalWriteCheck = totalData;
+        this.snackBarService.openSnackBar('Se guardo el importe: ' +totalData,'Cerrar', 3000);
       },error:(errorData)=>{
         this.snackBarService.openSnackBar(errorData,'Cerrar', 3000);
+      },
+      complete:()=>{
+        this.checkMaxAmount();
       }
     });
+  }else{
+    this.snackBarService.openSnackBar('Debe ingresar un importe en letras','Cerrar',3000);
+  }
   };
-
+  
   //check if total amount is valid
   checkMaxAmount():void{
-    const containerId = Number(this.cookieService.getCurrentContainerId());
+  const containerId = Number(this.cookieService.getCurrentContainerId());
    // const userId = Number(this.cookieService.getCurrentUserId());
-   this.containerService.getContainerById(Number(this.cookieService.getCurrentContainerId())).subscribe({
-    next:(containerData)=>{
-      this.totalWriteCheck = containerData.totalWrite;
-    }
-  })
-  console.log('totalWrit: ' +this.totalWriteCheck)
-  if(this.totalWriteCheck===undefined||this.totalWriteCheck===null){
-    this.snackBarService.openSnackBar('Debe ingresar un importe en letras','Cerrar',3000);
-  }else{
-    this.smallBoxService.checkMaxAmount(containerId).subscribe({
+  this.smallBoxService.checkMaxAmount(containerId).subscribe({
       next:(checkData)=>{
         this.snackBarService.openSnackBar(checkData,'Cerrar',4000);
       },
@@ -148,8 +171,6 @@ export class CompletedSmallBoxComponent implements OnInit {
         this.navigateAssociates();
       }
     })
+    
   }
-  }
-
-
 }

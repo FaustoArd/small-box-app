@@ -3,6 +3,8 @@ package com.lord.small_box.services_impl;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,10 +23,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
 	@Autowired
 	private final JwtEncoder jwtEncoder;
+	
+	private static final Logger log = LoggerFactory.getLogger(JwtTokenServiceImpl.class);
 
 	@Override
 	public String generateJwt(Authentication auth) {
-
+		log.info("Generating Jwt Token");
 		Instant now = Instant.now();
 		String scope = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(" "));

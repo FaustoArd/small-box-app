@@ -57,6 +57,7 @@ h2{
 h3{
     font-family: 'Quattrocento', serif;
    font-weight: bold;
+  
 }
 h4{
     font-family: 'Quattrocento', serif;
@@ -66,6 +67,11 @@ h4{
 h5{
     font-family:'Quattrocento', serif; 
     font-weight: bold;
+}
+
+#orgTitleSm{
+    font-weight: bolder;
+    font-size: 0.9rem;
 }
 
 #rendicion{
@@ -87,5 +93,8 @@ button{
 }
 #main-row{
     font-weight: bold;
+}
+#totalWriteLetters{
+    font-size: 1.1rem;
 }
 

@@ -68,8 +68,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService{
 	public PurchaseOrderDto collectPurchaseOrderFromText(String text, long organizationId) {
 		log.info("Load purchase order from text, organization id: " + organizationId);
 		PurchaseOrderDto purchaseOrderDto = textToPurchaseOrder.textToPurchaseOrder(text, organizationService);
+		Organization org = organizationService.findById(organizationId);
 		Optional<PurchaseOrder> checkDuplicate = purchaseOrderRepository
-				.findByOrderNumber(purchaseOrderDto.getOrderNumber());
+				.findByOrderNumberAndOrganization(purchaseOrderDto.getOrderNumber(),org);
 		if (checkDuplicate.isPresent()) {
 			if(checkDuplicate.get().getDate().get(Calendar.YEAR)==purchaseOrderDto.getDate().get(Calendar.YEAR)) {
 				throw new DuplicateItemException(
@@ -79,7 +80,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService{
 		
 		}
 		PurchaseOrder purchaseOrder = PurchaseOrderMapper.INSTANCE.dtoToOrder(purchaseOrderDto);
-		Organization org = organizationService.findById(organizationId);
 		purchaseOrder.setOrganization(org);
 		List<PurchaseOrderItem> items = PurchaseOrderItemMapper.INSTANCE.dtoToItems(purchaseOrderDto.getItems());
 		PurchaseOrder savedOrder = purchaseOrderRepository.save(purchaseOrder);
@@ -97,15 +97,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService{
 
 	@Override
 	public PurchaseOrderDto findPurchaseOrder(long purchaseOrderId) {
+		log.info("Find purchase order by id");
 		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrderId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro la orden de compra"));
 		return PurchaseOrderMapper.INSTANCE.orderToDto(order);
 	}
 
 	@Override
-	public PurchaseOrderDto findFullPurchaseOrder(Long id) {
-		log.info("Find full purchase order");
-		PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
+	public PurchaseOrderDto findFullPurchaseOrder(Long purchaseOrderId) {
+		log.info("Find full purchase order by id");
+		PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro la orden"));
 		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(purchaseOrder);
 		PurchaseOrderDto purchaseOrderDto = PurchaseOrderMapper.INSTANCE.orderToDto(purchaseOrder);
@@ -116,6 +117,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService{
 
 	@Override
 	public int deletePurchaseOrder(long orderId) {
+		log.info("Delete purchase order by id");
 		if (purchaseOrderRepository.existsById(orderId)) {
 			int orderNumberDeleted = purchaseOrderRepository.findById(orderId).get().getOrderNumber();
 			purchaseOrderRepository.deleteById(orderId);

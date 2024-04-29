@@ -153,7 +153,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 				.findByUserAndOrganizationId(user, organizationId, sort).stream().findFirst();
 
 		if (depositOrganizationSelect.isEmpty()) {
-			log.info("User current deposit not found , returning DepositResponse(null,\"Sin Asignar\"");
+			log.info("User current deposit not found , returning DepositResponse(null,\"Sin Asignar\")");
 			return new DepositResponseDto(null, "Sin Asignar");
 		} else {
 			Deposit depo = depositRepository.findById(depositOrganizationSelect.get().getDepositId())
@@ -208,18 +208,24 @@ public class DepositControlServiceImpl implements DepositControlService {
 		log.info("Get total bigBag quantity available");
 		Deposit deposit = depositRepository.findById(depositId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito."));
+
 		BigBag bigBag = bigBagRepository.findById(bigBagId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el bolson."));
+
 		List<String> bigBagItemCodes = bigBagItemRepository.findByBigBag(bigBag).stream().map(m -> m.getCode())
 				.collect(Collectors.toList());
+
 		BigBagItem bigBagMaxItemQuantity = bigBagItemRepository.findByBigBag(bigBag).stream()
 				.max(Comparator.comparing(BigBagItem::getQuantity))
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el item del bolson."));
+
 		List<DepositControl> depositItems = depositControlRepository.findAllByItemCodeInAndDeposit(bigBagItemCodes,
 				deposit);
+
 		DepositControl depositMinItemQuantity = depositItems.stream()
 				.min(Comparator.comparing(DepositControl::getQuantity))
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el item del deposito."));
+
 		int result = Math.floorDiv(depositMinItemQuantity.getQuantity(), bigBagMaxItemQuantity.getQuantity());
 		log.info("total bigBag quantity available: " + result);
 		return result;
@@ -271,47 +277,63 @@ public class DepositControlServiceImpl implements DepositControlService {
 			String strItemDesc = xlsItemDto.getItemDescription().split(" ")[0];
 			Pattern pItemDesc = Pattern.compile("^(?=.*(" + strItemDesc + "))", Pattern.CASE_INSENSITIVE);
 			ExcelItemDto createdExcelItemDto = new ExcelItemDto();
-			List<PurchaseOrderItemCandidateDto> orderItemCandidates = purchaseOrderItemRepository
-					.findAllByPurchaseOrderIn(
-							purchaseOrderRepository.findAllByOrganization(organization, purchaseOrderDateSort))
-					.stream().map(orderItem -> {
-						if (pItemDesc.matcher(orderItem.getItemDetail()).find()) {
-							PurchaseOrderItemCandidateDto orderItemCandidateDto = purchaseOrderItemToCandidateDto(
-									orderItem, xlsItemDto.getExcelItemId());
-							return orderItemCandidateDto;
-						}
-						return new PurchaseOrderItemCandidateDto();
-					}).toList();
+			List<PurchaseOrderItemCandidateDto> orderItemCandidates = getPurchaseOrderItemCandidateDto(organization,
+					pItemDesc, xlsItemDto);
+
 			Optional<PurchaseOrderItemCandidateDto> orderItemCandidateCheck = orderItemCandidates.stream()
 					.filter(f -> f.getExcelItemDtoId() == xlsItemDto.getExcelItemId()).findFirst();
 
-			if (orderItemCandidateCheck.isPresent()) {
-				createdExcelItemDto.setExcelItemId(xlsItemDto.getExcelItemId());
-				createdExcelItemDto.setItemDescription(xlsItemDto.getItemDescription());
-				createdExcelItemDto.setItemMeasureUnit(xlsItemDto.getItemMeasureUnit());
-				createdExcelItemDto.setItemQuantity(xlsItemDto.getItemQuantity());
-				comparatorDto.setExcelItemDto(createdExcelItemDto);
-				orderItemCandidates = orderItemCandidates.stream().filter(f -> f.getExcelItemDtoId() != 0).toList();
-				comparatorDto.setPurchaseOrderItemCandidateDtos(orderItemCandidates);
-			} else {
-				createdExcelItemDto.setExcelItemId(xlsItemDto.getExcelItemId());
-				createdExcelItemDto.setItemDescription(xlsItemDto.getItemDescription());
-				createdExcelItemDto.setItemMeasureUnit(xlsItemDto.getItemMeasureUnit());
-				createdExcelItemDto.setItemQuantity(xlsItemDto.getItemQuantity());
-				comparatorDto.setExcelItemDto(createdExcelItemDto);
-				PurchaseOrderItemCandidateDto candidateNotFound = new PurchaseOrderItemCandidateDto();
-				candidateNotFound.setItemDetail("No encontrado");
-				comparatorDto.setPurchaseOrderItemCandidateDtos(List.of(candidateNotFound));
-			}
-			return comparatorDto;
+			return mapExcelAndDepositItemToComparatorDto(orderItemCandidateCheck, createdExcelItemDto, comparatorDto,
+					xlsItemDto, orderItemCandidates);
 
 		}).toList();
 		return comparators;
 	}
 
+	private DepositItemComparatorDto mapExcelAndDepositItemToComparatorDto(
+			Optional<PurchaseOrderItemCandidateDto> orderItemCandidateCheck, ExcelItemDto createdExcelItemDto,
+			DepositItemComparatorDto comparatorDto, ExcelItemDto xlsItemDto,
+			List<PurchaseOrderItemCandidateDto> orderItemCandidates) {
+		if (orderItemCandidateCheck.isPresent()) {
+			createdExcelItemDto.setExcelItemId(xlsItemDto.getExcelItemId());
+			createdExcelItemDto.setItemDescription(xlsItemDto.getItemDescription());
+			createdExcelItemDto.setItemMeasureUnit(xlsItemDto.getItemMeasureUnit());
+			createdExcelItemDto.setItemQuantity(xlsItemDto.getItemQuantity());
+			comparatorDto.setExcelItemDto(createdExcelItemDto);
+			orderItemCandidates = orderItemCandidates.stream().filter(f -> f.getExcelItemDtoId() != 0).toList();
+			comparatorDto.setPurchaseOrderItemCandidateDtos(orderItemCandidates);
+		} else {
+			createdExcelItemDto.setExcelItemId(xlsItemDto.getExcelItemId());
+			createdExcelItemDto.setItemDescription(xlsItemDto.getItemDescription());
+			createdExcelItemDto.setItemMeasureUnit(xlsItemDto.getItemMeasureUnit());
+			createdExcelItemDto.setItemQuantity(xlsItemDto.getItemQuantity());
+			comparatorDto.setExcelItemDto(createdExcelItemDto);
+			PurchaseOrderItemCandidateDto candidateNotFound = new PurchaseOrderItemCandidateDto();
+			candidateNotFound.setItemDetail("No encontrado");
+			comparatorDto.setPurchaseOrderItemCandidateDtos(List.of(candidateNotFound));
+		}
+		return comparatorDto;
+	}
+
+	private List<PurchaseOrderItemCandidateDto> getPurchaseOrderItemCandidateDto(Organization organization,
+			Pattern pItemDesc, ExcelItemDto xlsItemDto) {
+		log.info("Get purchase order items to candidate dtos");
+		List<PurchaseOrderItemCandidateDto> orderItemCandidates = purchaseOrderItemRepository
+				.findAllByPurchaseOrderIn(
+						purchaseOrderRepository.findAllByOrganization(organization, purchaseOrderDateSort))
+				.stream().map(orderItem -> {
+					if (pItemDesc.matcher(orderItem.getItemDetail()).find()) {
+						PurchaseOrderItemCandidateDto orderItemCandidateDto = purchaseOrderItemToCandidateDto(orderItem,
+								xlsItemDto.getExcelItemId());
+						return orderItemCandidateDto;
+					}
+					return new PurchaseOrderItemCandidateDto();
+				}).toList();
+		return orderItemCandidates;
+	}
+
 	private PurchaseOrderItemCandidateDto purchaseOrderItemToCandidateDto(PurchaseOrderItem purchaseOrderItem,
 			long xlsItemId) {
-		log.info("Map purchase order item to item candidate dto");
 		if (purchaseOrderItem == null) {
 			return null;
 		}
@@ -334,42 +356,40 @@ public class DepositControlServiceImpl implements DepositControlService {
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
 
 		List<DepositControl> depositControlItems = purchaseOrderItemRepository
-				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderId()).toList())
-				.stream()
+				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderId()).toList()).stream()
 				.map(orderItem -> {
 					return mapExcelItemToDeposit(excelItemDtos, orderItem, deposit);
 				}).toList();
-		
+
 		List<DepositControl> savedDepositControls = depositControlRepository.saveAll(depositControlItems);
 		return DepositControlMapper.INSTANCE.depositControlsToDtos(savedDepositControls);
 
 	}
-	
-	private DepositControl mapExcelItemToDeposit(List<ExcelItemDto> excelItemDtos ,PurchaseOrderItem orderItem, Deposit deposit) {
+
+	private DepositControl mapExcelItemToDeposit(List<ExcelItemDto> excelItemDtos, PurchaseOrderItem orderItem,
+			Deposit deposit) {
 		log.info("Map excel items to deposit");
-		DepositControl depositControl =  excelItemDtos.stream()
-				.filter(excelItemDto -> excelItemDto.getPurchaseOrderId() == orderItem.getId())
-				.map(excelItemDto -> {
+		DepositControl depositControl = excelItemDtos.stream()
+				.filter(excelItemDto -> excelItemDto.getPurchaseOrderId() == orderItem.getId()).map(excelItemDto -> {
 					Optional<DepositControl> checkRepeated = depositControlRepository
 							.findByItemCodeAndDeposit(orderItem.getCode(), deposit);
 					if (checkRepeated.isPresent()) {
 						return updateDepositControlQuantity(checkRepeated.get(), excelItemDto, deposit);
 					}
 					return excelItemToDepositControl(excelItemDto, orderItem, deposit);
-					}).findFirst().get();
-		
+				}).findFirst().get();
+
 		return depositControl;
 	}
-	
-	
-	private DepositControl updateDepositControlQuantity(DepositControl control,ExcelItemDto excelItemDto,Deposit deposit) {
+
+	private DepositControl updateDepositControlQuantity(DepositControl control, ExcelItemDto excelItemDto,
+			Deposit deposit) {
 		log.info("item exist. updating quantity");
 		control.setQuantity(control.getQuantity() + excelItemDto.getItemQuantity());
 		control.setDeposit(deposit);
 		return control;
 	}
-	
-	
+
 	private DepositControl excelItemToDepositControl(ExcelItemDto excelItemDto, PurchaseOrderItem orderItem,
 			Deposit deposit) {
 		log.info("creating new deposit item");
@@ -398,22 +418,24 @@ public class DepositControlServiceImpl implements DepositControlService {
 	public String deleteDepositControlById(long depositControlId) {
 		log.info("Delete deposit controls by id");
 		DepositControl control = depositControlRepository.findById(depositControlId)
-					.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
-			depositControlRepository.deleteById(depositControlId);
-			return control.getItemCode();
-		}
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
+		depositControlRepository.deleteById(depositControlId);
+		return control.getItemCode();
+	}
 
 	@Override
 	public DepositControlDto findDepositControlById(long depositControlId) {
-		DepositControl depositControl=  depositControlRepository.findById(depositControlId)
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro el item de deposito"));
+		log.info("find deposit control by id");
+		DepositControl depositControl = depositControlRepository.findById(depositControlId)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el item de deposito"));
 		return DepositControlMapper.INSTANCE.depositControlToDto(depositControl);
 	}
 
 	@Override
-	public DepositControlDto updateDepositControl(DepositControlDto depositControlDto,long depositId) {
+	public DepositControlDto updateDepositControl(DepositControlDto depositControlDto, long depositId) {
+		log.info("update deposit control. Deposit id: " + depositId);
 		Deposit deposit = depositRepository.findById(depositId)
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
 		DepositControl depositControl = DepositControlMapper.INSTANCE.dtoToDepositControl(depositControlDto);
 		depositControl.setDeposit(deposit);
 		DepositControl savedControl = depositControlRepository.save(depositControl);

@@ -67,14 +67,15 @@ public class SupplyServiceImpl implements SupplyService {
 	public SupplyDto collectSupplyFromText(String text, long organizationId) {
 		log.info("Collect supply from text");
 		SupplyDto supplyDto = textToSupply.textToSupply(text, organizationService);
-		Optional<Supply> check = supplyRepository.findBySupplyNumber(supplyDto.getSupplyNumber());
+		Organization org = organizationService.findById(organizationId);
+		Optional<Supply> check = supplyRepository.findBySupplyNumberAndOrganization(supplyDto.getSupplyNumber(),org);
 		if (check.isPresent()) {
 			if(check.get().getDate().get(Calendar.YEAR)==check.get().getDate().get(Calendar.YEAR)) {
 				throw new DuplicateItemException("El suministro numero: " + check.get().getSupplyNumber() + "-"
 			+ check.get().getDate().get(Calendar.YEAR) +" ya existe.");
 			}
 		}
-		Organization org = organizationService.findById(organizationId);
+		
 		Supply supply = SupplyMapper.INSTANCE.dtoToSupply(supplyDto);
 		supply.setOrganization(org);
 		Supply savedSupply = supplyRepository.save(supply);
@@ -156,6 +157,7 @@ public class SupplyServiceImpl implements SupplyService {
 
 	@Override
 	public List<SupplyDto> findAllSuppliesByOrganizationId(long organizationId) {
+		log.info("Find all supplies by organization id");
 		Organization organization = organizationService.findById(organizationId);
 		List<Supply> supplies = supplyRepository.findAllByOrganization(organization,supplyDatesort);
 		return SupplyMapper.INSTANCE.suppliesToDtos(supplies);
@@ -163,6 +165,7 @@ public class SupplyServiceImpl implements SupplyService {
 
 	@Override
 	public List<SupplyItemDto> findSupplyItems(long supplyId) {
+		log.info("Find all supplies items by supply id");
 		Supply supply = supplyRepository.findById(supplyId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el suministro"));
 		List<SupplyItem> items = supplyItemRepository.findAllBySupply(supply);
@@ -171,6 +174,7 @@ public class SupplyServiceImpl implements SupplyService {
 
 	@Override
 	public int deleteSupply(long supplyId) {
+		log.info("Delete supply by id: " + supplyId);
 		if (supplyRepository.existsById(supplyId)) {
 			int supplyNumberDeleted = supplyRepository.findById(supplyId).get().getSupplyNumber();
 			supplyRepository.deleteById(supplyId);
@@ -183,6 +187,7 @@ public class SupplyServiceImpl implements SupplyService {
 
 	@Override
 	public SupplyDto findsupply(long supplyId) {
+		log.info("find supply by id: " + supplyId);
 		Supply supply = supplyRepository.findById(supplyId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el suministro"));
 		return SupplyMapper.INSTANCE.supplyToDto(supply);

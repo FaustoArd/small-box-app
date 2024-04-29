@@ -89,8 +89,8 @@ public class ContainerController {
 	ResponseEntity<String> setContainerTotalWrite(@RequestParam("containerId") Long containerId,
 			@RequestParam("totalWrite") String totalWrite) {
 		log.info("Set total write to container");
-		containerService.setContainerTotalWrite(containerId, totalWrite);
-		return ResponseEntity.ok(gson.toJson("Guardado!"));
+		String savedTotalWrite  = containerService.setContainerTotalWrite(containerId, totalWrite);
+		return ResponseEntity.ok(gson.toJson(savedTotalWrite));
 	}
 
 	@GetMapping("/all-by-organizations-by-user")

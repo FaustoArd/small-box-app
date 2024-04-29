@@ -249,13 +249,13 @@ export class SmallBoxComponent implements OnInit {
     })
   }
 
-  navigateAssociates() {
+  /*navigateAssociates() {
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['/completed'])
     );
   
     window.open(url, '_blank');
-  }
+  }*/
 
   completeSmallBox(){
     const id = Number(this.cookieService.getCurrentContainerId())
@@ -265,7 +265,7 @@ export class SmallBoxComponent implements OnInit {
       },error:(errorData)=>{
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);
       },complete:()=>{
-        this.navigateAssociates();
+        this.router.navigateByUrl('/completed');
       }
     });
    

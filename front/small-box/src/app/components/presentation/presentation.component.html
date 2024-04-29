@@ -14,9 +14,22 @@
 <body #screen>
     <div class="container">
         <div class="row">
-            <a id="logo" (click)="captureScreen()" class="col text-center">
-                <img class="w-25" src="./assets/img/logomoron.png" alt="">
-            </a>
+            <div class="col-md-3">
+                <div>
+                <img class="w-75 ms-3 mt-1 " src="./assets/img/moron- malvinas-2024-v3.png" alt="">
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div id="logo" class="col text-center">
+                
+                <img class="w-100" src="./assets/img/moron-logo-2024-v2.png" alt="">
+               
+            </div>
+           
+        </div>
+        <div class="col-md-3">
+            <h5 id="orgTitleSm" class=" ">{{container.organization}}</h5>
+        </div>
         </div>
         <div class="row">
             <div class="col mt-1">
@@ -43,7 +56,7 @@
                 <h4>Ejercicio:</h4>
             </div>
             <div class="col-md-2  ms-4" *ngIf="container">
-                <h3 class=" ">2024</h3>
+                <h3 class=" ">{{currentYear}}</h3>
             </div>
         </div>
         <div class="row mt-0 mb-0">
@@ -59,7 +72,7 @@
                 <h4> Dependencia:</h4>
             </div>
             <div class="col-md-4  ms-4 " *ngIf="container">
-                <h3 class=" ">{{container.organization}}</h3>
+                <h3>{{container.organization}}</h3>
 
             </div>
 
@@ -130,7 +143,7 @@
         <div id="totalWrite" class="row mt-2">
             <div class="col-md-8">
                 <div class="d-inline">Importa la presente rendición de cuentas la suma de pesos:</div>
-                <div class="d-inline ms-1">{{container.totalWrite}}</div>
+                <div id="totalWriteLetters" class="d-inline ms-1">{{container.totalWrite}}</div>
             </div>
           
             

@@ -108,7 +108,7 @@
         <div class="col-md-1"></div>
         <div class="col-md-6 ms-2">
             <!-- Deposit control table -->
-            <h2 *ngIf="selectedDepositBol"> DEPOSITO: {{selectedDepositStr}}</h2>
+            <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline">{{selectedDepositStr}}</h2></h3>
             <p class="lead">
                 <hr class="my-4">
             <table class="table table-flex table-bordered h-75">
@@ -127,11 +127,11 @@
                 </thead>
                 <tbody class="text-center">
                     <tr *ngFor="let item of depositControlDtos">
-                        <td class="text-primary">{{item.itemCode}}</td>
+                        <td id="fullBlue_td">{{item.itemCode}}</td>
                         <td>{{item.measureUnit}}</td>
                         <td>{{item.itemDescription}}</td>
                         <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
-                        <td class="text-primary">{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
+                        <td id="fullBlue_td">{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
                         <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
                         <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
                         <td><button (click)="openDialogDepositControlUpdate(item.id,updateDepositContolTemplate)" class="btn btn-sm">-</button></td>
@@ -273,13 +273,13 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let item of supplyItemDtos">
-                        <td>{{item.code}}</td>
+                        <td id="fullBlue_td">{{item.code}}</td>
                         <td>{{item.programaticCat}}</td>
                         <td>{{item.quantity}}</td>
                         <td>{{item.measureUnit}}</td>
                         <td>{{item.itemDetail}}</td>
                         <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
-                        <td class="text-primary">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
+                        <td id="fullBlue_td">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
                     </tr>
 
                 </tbody>
@@ -328,10 +328,10 @@
                     <tbody>
                         <tr *ngFor="let order of purchaseOrderDtos">
                             <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
-                            <td class="text-primary">{{order.orderNumber}}</td>
+                            <td id="fullBlue_td">{{order.orderNumber}}</td>
                             <td>{{order.executerUnit}}</td>
                             <td>{{order.dependency}}</td>
-                            <td class="text-primary">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
+                            <td id="fullBlue_td">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
                             <td class="text-center"><button
                                     (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
                                     class="btn btn-sm  text-danger">-</button></td>
@@ -377,14 +377,14 @@
         </thead>
         <tbody class="text-center">
             <tr *ngFor="let orderItem of purchaseOrderItemDtosListShow">
-                <td class="text-primary">{{orderItem.code}}</td>
+                <td id="fullBlue_td">{{orderItem.code}}</td>
                 <td>{{orderItem.programaticCat}}</td>
                 <td *ngIf="orderItem.quantity>=10" class="text-success">{{orderItem.quantity}}</td>
                 <td *ngIf="orderItem.quantity<10" class="text-danger">{{orderItem.quantity}}</td>
                 <td>{{orderItem.measureUnit}}</td>
                 <td>{{orderItem.itemDetail}}</td>
                 <td>{{orderItem.unitCost | currency: '$': 'symbol'}}</td>
-                <td class="text-primary">{{orderItem.totalEstimatedCost | currency: '$': 'symbol'}}</td>
+                <td id="fullBlue_td">{{orderItem.totalEstimatedCost | currency: '$': 'symbol'}}</td>
 
             </tr>
 
@@ -413,9 +413,9 @@
         <tbody>
             <tr *ngFor="let supply of suppliesDto">
                 <td>{{supply.date |date: 'dd-MM-yyyy'}}</td>
-                <td class="text-primary">{{supply.supplyNumber}}</td>
+                <td id="fullBlue_td">{{supply.supplyNumber}}</td>
                 <td>{{supply.dependencyApplicant}}</td>
-                <td class="text-primary">{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
+                <td id="fullBlue_td">{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
                 <td class="text-center"><button (click)="openDialogSuppliesItemList(supplyItemsListTemplate,supply.id)"
                         class="btn btn-lg  text-danger"></button></td>
                 <td class="text-center"><button
@@ -452,14 +452,14 @@
         </thead>
         <tbody>
             <tr *ngFor="let supplyItem of supplyItemsDtoListShow">
-                <td class="text-primary">{{supplyItem.code}}</td>
+                <td id="fullBlue_td">{{supplyItem.code}}</td>
                 <td>{{supplyItem.programaticCat}}</td>
                 <td *ngIf="supplyItem.quantity>=10" class="text-success">{{supplyItem.quantity}}</td>
                 <td *ngIf="supplyItem.quantity<10" class="text-danger">{{supplyItem.quantity}}</td>
                 <td>{{supplyItem.measureUnit}}</td>
                 <td>{{supplyItem.itemDetail}}</td>
                 <td>{{supplyItem.unitCost | currency: '$': 'symbol'}}</td>
-                <td class="text-primary">{{supplyItem.totalEstimatedCost | currency: '$': 'symbol'}}</td>
+                <td id="fullBlue_td">{{supplyItem.totalEstimatedCost | currency: '$': 'symbol'}}</td>
 
             </tr>
 
@@ -561,14 +561,14 @@
             <div class="col-md-3">
                 <div class="mt-2">
                     <p>ITEM SUMINISTRO:</p>
-                    <h1 class="d-inline">CODIGO:</h1><small class="ms-2 text-primary"> {{item.supplyItemCode}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2 "> {{item.supplyItemCode}}</small>
                 </div>
 
                 <div>
-                    <h1 class="d-inline"> DETALLE:</h1><small class="ms-2 text-primary"> {{item.supplyItemDetail}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2 "> {{item.supplyItemDetail}}</small>
                 </div>
                 <div>
-                    <h1 class="d-inline"> U.MEDIDA:</h1><small class="ms-2 text-primary"> {{item.supplyItemMeasureUnit}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2 "> {{item.supplyItemMeasureUnit}}</small>
                 </div>
                 <div>
                     <h1 class="d-inline"> CANTIDAD:</h1> <small class="ms-2 text-success">{{item.supplyItemQuantity}}</small>
@@ -578,14 +578,14 @@
             <div class="col-md-3">
                 <div class="mt-2">
                     <p>ITEM DEPOSITO:</p>
-                    <h1 class="d-inline">CODIGO:</h1><small class="ms-2 text-primary"> {{item.depositItemCode}} </small>
+                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2"> {{item.depositItemCode}} </small>
                 </div>
 
                 <div>
-                    <h1 class="d-inline"> DETALLE:</h1><small class="ms-2 text-primary"> {{item.depositItemDetail}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2"> {{item.depositItemDetail}}</small>
                 </div>
                 <div>
-                    <h1 class="d-inline"> U.MEDIDA:</h1><small class="ms-2 text-primary"> {{item.depositItemMeasureUnit}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2"> {{item.depositItemMeasureUnit}}</small>
                 </div>
                 <div *ngIf="item.depositItemQuantity>=10">
                     <h1 class="d-inline">CANTIDAD :</h1> <small class="ms-2 text-success">{{item.depositItemQuantity}}</small>
@@ -680,10 +680,12 @@
     </div>
 </ng-template>
 <ng-template #updateDepositContolTemplate>
-    <div id="udpateDepositControlTemplate" class="container-fluid">
+    <body>
+        <button id="closeButton" (click)="onCloseUpdateDepositControlTemplate()" class="btn btn-sm text-white">X</button>
+         <div class="container-sm w-75">
         <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-6 text-center ms-4">
+            <div class="col-md-3"></div>
+            <div class="col-md-6 text-center">
                 <form [formGroup]="depositControlUpdateForm" class="row g-6 form-group justifty-center text-center fw-bold ms-1">
                     <div class="form-group">
                         <label for="itemCode" class=" form-label fs-7 ">CODIGO</label>
@@ -716,7 +718,7 @@
             </div>
             </div>
             <div class="row mt-1">
-                <div class="col-md-3 ms-5"></div>
+                <div class="col-md-4 ms-5"></div>
                 <div class="col-md-1">
                     <button id="btnControlUpdate" (click)="updateDepositControl()" class="btn btn-sm text-white">Actualizar</button>
                 </div>
@@ -726,5 +728,5 @@
                  
             </div>     
     </div>
-
+</body>
 </ng-template>

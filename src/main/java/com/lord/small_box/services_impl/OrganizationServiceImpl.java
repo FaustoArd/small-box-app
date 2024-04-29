@@ -120,6 +120,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 
 	@Override
 	public long setUserMainOrganization(long organizationId, long userId) {
+		log.info("Set user main organization." + "user id:" + userId + " organization id:" + organizationId);
 		AppUser user= appUserService.findById(userId);
 		user.setMainOrganizationId(organizationId);
 		AppUser savedUser =  appUserService.save(user);
@@ -128,10 +129,13 @@ public class OrganizationServiceImpl implements OrganizationService{
 
 	@Override
 	public long getUserMainOrganization(long userId) {
+		log.info("Get user main organization");
 		AppUser user= appUserService.findById(userId);
 		if(user.getMainOrganizationId()<1L) {
+			log.info("Main organization not found, returning 0");
 			return 0;
 		}else {
+			log.info("Main organization found. id: " + user.getMainOrganizationId());
 			return user.getMainOrganizationId();
 		}
 	}

@@ -1,6 +1,8 @@
 package com.lord.small_box.services_impl;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -25,10 +27,11 @@ public class WorkTemplateServiceImpl implements WorkTemplateService {
 	@Autowired
 	private final OrganizationService organizationService;
 	
-	 
+	 private static final Logger log= LoggerFactory.getLogger(WorkTemplateServiceImpl.class);
 
 	@Override
 	public WorkTemplate createTemplate(WorkTemplate workTemplate) {
+		log.info("Create work template");
 		Organization org = organizationService.findById(workTemplate.getOrganization().getId());
 	workTemplate.setOrganization(org);
 	return workTemplateRepository.save(workTemplate);
@@ -38,18 +41,21 @@ public class WorkTemplateServiceImpl implements WorkTemplateService {
 
 	@Override
 	public WorkTemplate findWorkTemplateById(Long id) {
+		log.info("Find work template by id: " + id);
 	return workTemplateRepository.findById(id).orElseThrow(()-> new ItemNotFoundException("No se encontro el template de trabajo"));
 	
 	}
 
 	@Override
 	public List<WorkTemplate> findAllWorkTemplatesByOrganization(Long organizationId) {
+		log.info("Find all work templates by organization id: " + organizationId);
 		Organization org = organizationService.findById(organizationId);
 	return (List<WorkTemplate>)workTemplateRepository.findAllWorkTemplatesByOrganization(org);
 	}
 
 	@Override
 	public List<WorkTemplate> findAllWorkTemplatesByOrganizationByUserId(Long userId) {
+		log.info("Find all work templates by user  id: " + userId);
 		List<Organization> organizations = organizationService.findAllOrganizationsByUsers(userId);
 		List<WorkTemplate> workTemplates = workTemplateRepository.findAllWorkTemplatesByOrganizationIn(organizations);
 		return workTemplates;
@@ -57,6 +63,7 @@ public class WorkTemplateServiceImpl implements WorkTemplateService {
 
 	@Override
 	public List<WorkTemplate> FindWorkTemplateByExampleAndUserId(WorkTemplate workTemplate,Long userId) {
+		log.info("Find all work templates by  exmaple and user  id: " + userId);
 		List<Long> organizationsId = organizationService.findAllOrganizationsByUsers(userId).stream().map(org -> org.getId()).toList();
 		StringMatcher match = StringMatcher.CONTAINING;
 		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(match).withIgnoreCase();
@@ -68,6 +75,7 @@ public class WorkTemplateServiceImpl implements WorkTemplateService {
 
 	@Override
 	public String deleteWorkTemplateById(Long id) {
+		log.info("Delete work template by id: " + id);
 		if(workTemplateRepository.existsById(id)) {
 			String result = workTemplateRepository.findById(id).map(wt -> wt.getCorrespond()+ " " + wt.getCorrespondNumber()).toString();
 			workTemplateRepository.deleteById(id);

@@ -25,7 +25,7 @@ button:hover{
     background: linear-gradient(245.59deg, rgb(187, 88, 13) 0%, rgb(124, 71, 35) 28.53%, #8a5725 75.52%);
 }
 
-#totalWrite{
+#totalWriteContainer{
     color: white;
     background: linear-gradient(245.59deg, rgb(83, 94, 126) 0%, rgb(93, 83, 140) 28.53%, #6c639f 75.52%);
     font-family:'Quattrocento', serif; 
@@ -39,5 +39,8 @@ button:hover{
 }
 #legend{
     font-size: 0.8rem;
+}
+input{
+    background-color: ;
 }
 

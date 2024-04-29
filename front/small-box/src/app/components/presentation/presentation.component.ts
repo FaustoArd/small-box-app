@@ -25,7 +25,7 @@ export class PresentationComponent implements OnInit {
 
 imgBase64 = '';
 downloaded!:boolean;
-
+currentYear!:string;
   completedSmallBox: SmallBoxUnifierDto[] = [];
   errorData!: string;
   container!: ContainerDto;
@@ -47,6 +47,8 @@ ngOnInit(): void {
         this.container = new ContainerDto();
         this.container = containerData;
         this.smallBoxCreated = containerData.smallBoxCreated;
+        this.currentYear = containerData.smallBoxDate.toString();
+        this.currentYear =this.currentYear.substring(0,4)
         this.getSmallBoxCompleteByContainerId(this.container.id);
 
        
