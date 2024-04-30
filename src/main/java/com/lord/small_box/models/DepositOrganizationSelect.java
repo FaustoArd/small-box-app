@@ -22,7 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name="deopsit_organization_select")
+@Table(name="deposit_organization_select")
 public class DepositOrganizationSelect {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

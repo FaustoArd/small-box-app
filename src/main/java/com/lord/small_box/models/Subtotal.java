@@ -25,14 +25,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @Entity
-@Table(name="sub_total")
-public class SubTotal {
+@Table(name="small_box_subtotal")
+public class Subtotal {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="sub_total")
+	@Column(name="subtotal")
 	private BigDecimal subtotal;
 	
 	@OneToMany(mappedBy = "subtotal")

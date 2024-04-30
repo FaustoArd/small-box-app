@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,9 +43,6 @@ public class PdfTextToSupplyTest {
 
 	@Autowired
 	private PdfToStringUtils pdfToStringUtils;
-
-	@Autowired
-	private OrganizationRepository organizationRepository;
 
 	@Autowired
 	private OrganizationService organizationService;
@@ -136,9 +134,9 @@ public class PdfTextToSupplyTest {
 	@Test
 	void mustReturnSupplyDto() throws Exception {
 		SupplyDto supplyDto = new SupplyDto();
-		supplyDto.setSupplyNumber(mustReturnSupplyNumber(arrTextSplitN));
-		supplyDto.setDate(mustReturnDate(text));
-		supplyDto.setSupplyItems(mustReturnSupplyItemList(arrTextSplitN));
+		supplyDto.setSupplyNumber(getSupplyNumber(arrTextSplitN));
+		supplyDto.setDate(getDate(text));
+		supplyDto.setSupplyItems(getSupplyItemList(arrTextSplitN));
 		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
 		supplyDto.setDependencyApplicant(getApplicant(arrTextSplitN));
 		/*Optional<OrganizationDto> optApplicantDto = Optional.of(getApplicant(arrTextSplitN));
@@ -154,177 +152,139 @@ public class PdfTextToSupplyTest {
 		supplyDto.getSupplyItems().forEach(e -> System.out.println("quant: " + e.getQuantity()));
 		supplyDto.getSupplyItems().forEach(e -> System.out.println("measure unit: " + e.getMeasureUnit()));
 		assertEquals(supplyDto.getSupplyItems().get(0).getMeasureUnit(), "KILOGRAMO");
-		assertEquals(supplyDto.getSupplyItems().get(1).getMeasureUnit(), "CADA UNO");
-		assertEquals(supplyDto.getSupplyItems().get(2).getMeasureUnit(), "CADA UNO");
-		assertEquals(supplyDto.getSupplyItems().get(3).getMeasureUnit(), "CADA UNO");
-		assertEquals(supplyDto.getSupplyItems().get(4).getMeasureUnit(), "CADA UNO");
-		assertEquals(supplyDto.getSupplyItems().get(5).getMeasureUnit(), "CADA UNO");
-		assertEquals(supplyDto.getSupplyItems().get(6).getMeasureUnit(), "CADA UNO");
-		assertEquals(supplyDto.getSupplyItems().get(7).getMeasureUnit(), "CADA UNO");
-		assertEquals(supplyDto.getSupplyItems().get(8).getMeasureUnit(), "CADA UNO");
-		assertEquals(supplyDto.getSupplyItems().get(9).getMeasureUnit(), "CADA UNO");
+		assertEquals(supplyDto.getSupplyItems().get(1).getMeasureUnit(), "CADA-UNO");
+		assertEquals(supplyDto.getSupplyItems().get(2).getMeasureUnit(), "CADA-UNO");
+		assertEquals(supplyDto.getSupplyItems().get(3).getMeasureUnit(), "CADA-UNO");
+		assertEquals(supplyDto.getSupplyItems().get(4).getMeasureUnit(), "CADA-UNO");
+		assertEquals(supplyDto.getSupplyItems().get(5).getMeasureUnit(), "CADA-UNO");
+		assertEquals(supplyDto.getSupplyItems().get(6).getMeasureUnit(), "CADA-UNO");
+		assertEquals(supplyDto.getSupplyItems().get(7).getMeasureUnit(), "CADA-UNO");
+		assertEquals(supplyDto.getSupplyItems().get(8).getMeasureUnit(), "CADA-UNO");
+		assertEquals(supplyDto.getSupplyItems().get(9).getMeasureUnit(), "CADA-UNO");
 	}
 
 	private String getApplicant(String[] arrText) {
+		
 		String applicant = Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst()
 				.map(m -> m.substring(m.indexOf("O") + 1, m.lastIndexOf("M") - 1).replace("Secretaría de", "")
 						.replace("Dirección de", "").replace("Subsecretaría de", "").trim())
 				.get();
-		System.err.println("getApplicant: " + applicant);
-		return applicant;
-	}
-	
-	
 
-	private OrganizationDto getOrganization(String applicant) {
-		String orgFinderRegex = "(?=.*(" + applicant + "))";
-		Pattern pOrgFinderRegex = Pattern.compile(orgFinderRegex, Pattern.CASE_INSENSITIVE);
-		organizationService.findAll().forEach(e -> System.out.println(e.getOrganizationName()));
-		OrganizationDto findedOrgDto = organizationService.findAll().stream()
-				.filter(f -> pOrgFinderRegex.matcher(f.getOrganizationName()).find()).findFirst()
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
-		System.out.println("FInded org: " + findedOrgDto.getOrganizationName());
-		return findedOrgDto;
+		return applicant;
 	}
 
 	private BigDecimal getEstimatedTotal(String[] arrText) {
-		System.out.println("EStimated Raw=" +Stream.of(arrText).filter(f -> f.toLowerCase().contains("total")).findFirst().get());
-		String result = Stream.of(arrText).filter(f -> f.toLowerCase().contains("total")).findFirst().get()
-				.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".")
-				.strip();
-		System.out.println("Estimated = " +result);
-		return  new BigDecimal(Stream.of(arrText).filter(f -> f.toLowerCase().contains("total")).findFirst().get()
+		
+		return new BigDecimal(Stream.of(arrText).filter(f -> f.toLowerCase().contains("total")).findFirst().get()
 				.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".")
 				.strip());
-		
-	
 	}
 
 	private final String supplyNumberTitleRegex = "(SOLICITUD DE PEDIDO Nº)";
 
-	private int mustReturnSupplyNumber(String[] arrText) throws Exception {
+	private int getSupplyNumber(String[] arrText) {
+		
+
 		Pattern p = Pattern.compile(supplyNumberTitleRegex);
-		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 27))
+		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 28))
 				.map(m -> m.replaceAll("[a-zA-Z\\D]", "")).collect(Collectors.joining(""));
-		System.out.println("Sum number: " + number + "fin.");
+
 		return Integer.parseInt(number);
 	}
 
 	private final String strDateV2 = "^(?=.*([0-9]{2})*([/]{1})){2}([0-9]{2,4})";
 
-	private Calendar mustReturnDate(String text) throws Exception {
+	private Calendar getDate(String text) {
+		
+
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Pattern p = Pattern.compile(strDateV2);
 		String date = Stream.of(text.split(" ")).filter(f -> p.matcher(f).find()).findFirst().get()
 				.replaceAll("[a-zA-Z]", "").replace("/", "-").trim();
 
-		System.out.println("Test fecha: " + date);
-		cal.setTime(sdf.parse(date));
-		return cal;
+		try {
+			cal.setTime(sdf.parse(date));
+			return cal;
+		} catch (ParseException ex) {
+			throw new RuntimeException("Error al parsear la fecha");
+		}
 	}
 
-	
-	//private final String itemUnitPrice = "^(?=.*([0-9])*([\\D])([0-9]){3}([\\D])([0-9]){5})";
-	// private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";
 	private final String itemCodeRegex = "^(?=.*([0-9].){3}([0-9]){5}(.)([0-9]){4})";
-	private final String itemProgCatRegex = "^(([0-9]){2}(.)([0-9]){2}(.)([0-9]){2})";
+	private final String itemProgCatRegex = "^(([0-9]){1,2}(.)([0-9]){2}(.)([0-9]){2})";
 	private final String itemQuantityRegex = "([0-9]*[,]{1})?([0-9]{1,3}[.]{1}[0-9]{2}){1}";
-	private final String itemUnitPrice = "^(?=.*([0-9][,.])*([,.])([0-9]){5})";
+	private final String itemUnitPrice = "^(?=.*([0-9].)*(,)([0-9]){5})";
+	// private final String itemMeasureUnitRegex ="(?=.*(cada)?(kilogramo)?)";
+
+	Pattern pCode = Pattern.compile(itemCodeRegex);
+	Pattern pProgCat = Pattern.compile(itemProgCatRegex);
+	Pattern pQuantity = Pattern.compile(itemQuantityRegex);
+	Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
+
+	private List<SupplyItemDto> getSupplyItemList(String[] arrText) {
 	
-	private List<SupplyItemDto> mustReturnSupplyItemList(String[] arrText) throws Exception {
-		Pattern pCode = Pattern.compile(itemCodeRegex);
-		Pattern pProgCat = Pattern.compile(itemProgCatRegex);
-		Pattern pQuantity = Pattern.compile(itemQuantityRegex);
-		Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
-		// Pattern pMesaureUnit =
-		// Pattern.compile(itemMeasureUnitRegex,Pattern.CASE_INSENSITIVE);
 		List<String> strItems = Stream.of(arrText).filter(f -> pCode.matcher(f).find()).collect(Collectors.toList());
 		return strItems.stream().map(item -> {
 			SupplyItemDto supplyItemDto = new SupplyItemDto();
-			supplyItemDto.setItemDetail(item.replaceAll("([0-9]*\\W)", " ").trim());
-			
-			  supplyItemDto.setTotalEstimatedCost(new
-			  BigDecimal(item.substring(item.indexOf("$")+1) .replace(".", "").replace(",",
-			  ".").strip()));
-			 
-			ListIterator<String> list = Stream.of(item.split(" ")).toList().listIterator();
-			list.forEachRemaining(i -> {
-				if (pCode.matcher(i).find()) {
-					supplyItemDto.setCode(i);
-				}
-				if (pProgCat.matcher(i).matches()) {
-					supplyItemDto.setProgramaticCat(i);
-				}
-				if (pQuantity.matcher(i).matches()) {
-					System.err.println("Quantity: " + i);
-					if (i.contains(",")) {
-						i = i.replace(",", "");
-						
-						supplyItemDto.setQuantity(new BigDecimal(i).intValue());
-					} else {
+			String[] arrItems = item.split(" ");
 
-						
-						supplyItemDto.setQuantity(new BigDecimal(i).intValue());
-					}
+			supplyItemDto.setCode(getItemCode(arrItems));
 
-				}
+			supplyItemDto.setQuantity(getItemQuantity(arrItems));
 
-				if (pUnitPrice.matcher(i).find()) {
-					
-						i =  i.substring(0,i.length()-6);
-						i = i.replace(".", "").replace(",", "");
-					supplyItemDto.setUnitCost(new BigDecimal(i));
-					/*i = i.replace(".", "");
-					i = i.replace(",", ".");
-					supplyItemDto.setUnitCost(new BigDecimal(i));*/
-				}
-				
-				if(isMeasureUnit(i)) {
-					if(i.toLowerCase().contains("cada")) {
-						i = i + "-UNO";
-					}
-					supplyItemDto.setMeasureUnit(i);
-				}
-				
-				
+			supplyItemDto.setMeasureUnit(getItemMeasureUnit(arrItems));
 
-				/*if (i.toLowerCase().contains("cada")) {
-					i = i + " UNO";
-					supplyItemDto.setMeasureUnit(i);
-				}
-				if (i.toLowerCase().contains("kilogramo")) {
-					supplyItemDto.setMeasureUnit(i);
-				}
-				if (i.toLowerCase().contains("unidad")) {
-					supplyItemDto.setMeasureUnit(i);
-				}*/
+			supplyItemDto.setProgramaticCat(getItemProgramaticCat(arrItems));
 
-			});
+			supplyItemDto.setItemDetail(getItemDetails(arrItems));
+
+			supplyItemDto.setUnitCost(getItemUnitCost(arrItems));
+
+			supplyItemDto.setTotalEstimatedCost(getItemTotalEstimatedCost(item));
 
 			return supplyItemDto;
+
 		}).toList();
-
-	}
-	
-	private boolean isMeasureUnit(String i){
-	return 	measureUnits.stream().filter(f -> i.toLowerCase().contains(f.toLowerCase())).findFirst().isPresent();
-	}
-	
-	
-
-	/*
-	 * private int findPointsQuantity(String text) { char[] arrText =
-	 * text.toCharArray(); int count = 0; for(int i = 0;i<arrText.length;i++) {
-	 * if(arrText[i]=='.') { count ++; } } }
-	 */
-
-	@Test
-	void patternTest() throws Exception {
-		Pattern p2 = Pattern.compile("^(([0-9][,])*([0-9]){1,3}([.]){1}([0-9]){2})", Pattern.CASE_INSENSITIVE);
-		// Matcher m = p2.matcher("P.V. Nro. 00007 -");
-		// System.out.println("test: "+arrTextSplitN[2]);
-		assertTrue(p2.matcher("5,500.00").find());
 	}
 
+	private String getItemCode(String[] arrItems) {
+		return Stream.of(arrItems).filter(f -> pCode.matcher(f).find()).findFirst().get().strip();
+	}
+
+	private int getItemQuantity(String[] arrItems) {
+		String quantityResult = Stream.of(arrItems).filter(f -> pQuantity.matcher(f).matches()).findFirst().get();
+		if (quantityResult.contains(",")) {
+			quantityResult = quantityResult.replace(",", "");
+			return new BigDecimal(quantityResult).intValue();
+		} else {
+			return new BigDecimal(quantityResult).intValue();
+		}
+	}
+
+	private String getItemMeasureUnit(String[] arrItems) {
+		String measureUnitResult = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst().get();
+		if (measureUnitResult.equalsIgnoreCase("cada")) {
+			measureUnitResult = measureUnitResult + "-UNO";
+		}
+		return measureUnitResult;
+	}
+
+	private String getItemProgramaticCat(String[] arrItems) {
+		return Stream.of(arrItems).filter(f -> pProgCat.matcher(f).find()).findFirst().get().strip();
+	}
+
+	private String getItemDetails(String[] arrItems) {
+		return Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1).map(m -> m.replaceAll("[0-9\\W]", ""))
+				.collect(Collectors.joining("-"));
+	}
+
+	private BigDecimal getItemUnitCost(String[] arrItems) {
+		return new BigDecimal(Stream.of(arrItems).filter(f -> pUnitPrice.matcher(f).find())
+				.map(m -> m.replace(".", "").replace(",", ".")).findFirst().get());
+	}
+
+	private BigDecimal getItemTotalEstimatedCost(String item) {
+		return new BigDecimal(item.substring(item.lastIndexOf("$") + 1).replace(".", "").replace(",", ".").strip());
+	}
 }

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lord.small_box.models.SubTotal;
+import com.lord.small_box.models.Subtotal;
 
 import lombok.Getter;
 import lombok.Setter;

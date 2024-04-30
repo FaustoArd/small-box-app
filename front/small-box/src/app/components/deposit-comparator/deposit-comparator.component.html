@@ -115,6 +115,7 @@
     </div>
 </body>
 <ng-template #depositControlTemplate>
+    <button id="closeButton" (click)="onCloseDepositControlistTemplate()" class="btn btn-sm text-white">X</button>
     <div class="container-flex">
         <div class="row">
             <div class="col-md-1"></div>
@@ -124,23 +125,23 @@
                 <table class="table table-sm table-bordered w-75">
                     <thead>
                         <tr>
-                            <th scope="col">CODIGO</th>
-                            <th scope="col">U.MEDIDA</th>
-                            <th scope="col">DESCRIPCION</th>
-                            <th scope="col">P.UNITARIO</th>
-                            <th scope="col">TOTAL</th>
-                            <th scope="col">CANTIDAD</th>
+                            <th id="savedItemTh" scope="col">CODIGO</th>
+                            <th id="savedItemTh" scope="col">U.MEDIDA</th>
+                            <th id="savedItemTh" scope="col">DESCRIPCION</th>
+                            <th id="savedItemTh" scope="col">P.UNITARIO</th>
+                            <th id="savedItemTh" scope="col">TOTAL</th>
+                            <th id="savedItemTh" scope="col">CANTIDAD</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of depositControlDtos">
-                            <td>{{item.itemCode}}</td>
-                            <td>{{item.measureUnit}}</td>
-                            <td>{{item.itemDescription}}</td>
-                            <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
-                            <td>{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
-                            <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
-                            <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
+                            <td id="supplyReportFullBlue">{{item.itemCode}}</td>
+                            <td id="savedItemTd">{{item.measureUnit}}</td>
+                            <td id="savedItemTd">{{item.itemDescription}}</td>
+                            <td id="supplyReportFullBlue">{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
+                            <td id="savedItemTd">{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
+                            <td id="savedItemTd" *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
+                            <td id="savedItemTd" *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
                         </tr>
 
                     </tbody>

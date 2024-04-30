@@ -22,7 +22,7 @@ import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxType;
-import com.lord.small_box.models.SubTotal;
+import com.lord.small_box.models.Subtotal;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
@@ -34,7 +34,7 @@ import com.lord.small_box.services.SmallBoxService;
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class CalculateSubTotalTest {
+public class CalculateSubtotalTest {
 	
 	@Autowired
 	private SmallBoxService smallBoxService;
@@ -145,7 +145,7 @@ public class CalculateSubTotalTest {
 	@Test
 	@Order(2)
 	void calculateSubtotalTest() {
-		SubTotal SubTotal = smallBoxService.calculateSubtotal(containerId, "211");
+		Subtotal SubTotal = smallBoxService.calculateSubtotal(containerId, "211");
 		assertEquals(SubTotal.getSubtotal().intValue(), 14000);
 	}
 	

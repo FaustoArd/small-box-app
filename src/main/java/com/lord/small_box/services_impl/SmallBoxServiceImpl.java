@@ -16,7 +16,7 @@ import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.models.SmallBoxUnifier;
-import com.lord.small_box.models.SubTotal;
+import com.lord.small_box.models.Subtotal;
 import com.lord.small_box.repositories.ContainerRepository;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
@@ -114,12 +114,12 @@ public class SmallBoxServiceImpl implements SmallBoxService {
 	}
 
 	@Override
-	public SubTotal calculateSubtotal(Long containerId, String inputNumber) {
+	public Subtotal calculateSubtotal(Long containerId, String inputNumber) {
 		log.info("Calculate smallBoxes subtotal");
 		List<SmallBox> smallBoxes = smallBoxRepo.findAllByContainerIdAndInputInputNumber(containerId, inputNumber);
 		Double totalResult = smallBoxes.stream().mapToDouble(s -> s.getTicketTotal().doubleValue()).sum();
-		SubTotal subTotal = SubTotal.builder().subtotal(new BigDecimal(totalResult)).build();
-		SubTotal savedSubtotal = subTotalRepository.save(subTotal);
+		Subtotal subtotal = Subtotal.builder().subtotal(new BigDecimal(totalResult)).build();
+		Subtotal savedSubtotal = subTotalRepository.save(subtotal);
 		smallBoxes.forEach(s -> s.setSubtotal(savedSubtotal));
 		smallBoxRepo.saveAll(smallBoxes);
 		return savedSubtotal;

@@ -94,4 +94,22 @@ small{
 #items-saved-table-div{
     height: 35rem;
     width: 50rem;
+   
+}
+#savedItemTd{
+    font-family: 'Quattrocento', serif;
+    font-size: 1.0rem;
+    font-weight: bold;
+}
+#savedItemTh{
+    font-family: 'Quattrocento', serif;
+    text-align: center;
+    font-size: 1.0rem;
+    font-weight: bold;
+}
+#supplyReportFullBlue{
+    color: #2a31b6;
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
 }

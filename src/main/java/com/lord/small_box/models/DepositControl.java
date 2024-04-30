@@ -48,7 +48,7 @@ public class DepositControl {
 	private BigDecimal itemTotalPrice;
 	
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinColumn(name="organization_id", referencedColumnName = "id")
+	@JoinColumn(name="deposit_id", referencedColumnName = "id")
 	private Deposit deposit;
 
 }

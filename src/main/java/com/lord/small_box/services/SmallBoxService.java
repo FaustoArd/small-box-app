@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxUnifier;
-import com.lord.small_box.models.SubTotal;
+import com.lord.small_box.models.Subtotal;
 
 public interface SmallBoxService {
 	
@@ -24,7 +24,7 @@ public interface SmallBoxService {
 	
 	public List<SmallBox> findAllByContainerIdAndInputInputNumber(Long containerId, String inputNumber);
 	
-	public SubTotal calculateSubtotal(Long containerid,String inputNumber);
+	public Subtotal calculateSubtotal(Long containerid,String inputNumber);
 	
 	public List<SmallBoxUnifier> completeSmallBox(Long containerId);
 	

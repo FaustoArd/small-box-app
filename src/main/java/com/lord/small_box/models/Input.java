@@ -33,7 +33,5 @@ public class Input {
 	@Column(name="input_number")
 	private String inputNumber;
 	
-	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
-	@JoinColumn(name="sub_total_id", referencedColumnName = "id")
-	private SubTotal subtotal;
+	
 }

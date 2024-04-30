@@ -1,10 +1,10 @@
 <body>
     <app-navbar></app-navbar>
- <div class="container-flex">
+    <div class="container-flex">
         <div class="row">
             <div class="col-md-3">
                 <button routerLink="/big-bag" id="bigBag" class="btn btn-md  ms-5 mt-1">Bolsones</button>
-            </div> 
+            </div>
             <div class="col-md-5">
 
             </div>
@@ -39,8 +39,8 @@
             <div class="col-md-1"></div>
             <div class="col-md-3">
                 <h5 class="d-inline">DEPOSITO</h5>
-                <button (click)="openDialogDepositCreation(createDepositTemplate)"
-                    class="btn btn-sm ms-5 mb-3 text-white">Crear deposito</button>
+                <div id="createDepositBtn" (click)="openDialogDepositCreation(createDepositTemplate)"
+                    class="btn btn-sm  ms-5 mb-3 ">Crear deposito</div>
                 <hr class="my-4">
             </div>
         </div>
@@ -82,21 +82,22 @@
                 </div>
             </div>
             <div class="col-md-1"></div>
-            <div class="col-md-3 mt-1">
+            <div class="col-md-3">
                 <!-- Deposit jumbotron -->
 
-                <div class="jumbotron  ms-1">
+                <div class="jumbotron ms-1">
+                    <div id="import_excel">
                     <p class="d-inline display-4">VER STOCK</p>
                     <a (click)="openDepositControlListTemplate(depositControlListTemplate)" class="btn btn-sm ms-3 "
                         role="button">-</a>
                     </div>
-                    <div>
-                        <p class="d-inline display-4">IMPORTAR EXCEL</p>
-                        <a routerLink="/deposit-comparator" class="btn btn-sm ms-3 " role="button">-</a>
-                      </div>
-                    <p class="lead">
-                        <hr class="my-4">
-             
+                <div  class="mt-1">
+                    <p class="d-inline display-4">IMPORTAR EXCEL</p>
+                    <a routerLink="/deposit-comparator" class="btn btn-sm ms-2 " role="button">-</a>
+                </div>
+                <p class="lead">
+                    <hr class="my-4">
+                </div>
             </div>
         </div>
 
@@ -108,7 +109,8 @@
         <div class="col-md-1"></div>
         <div class="col-md-6 ms-2">
             <!-- Deposit control table -->
-            <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline">{{selectedDepositStr}}</h2></h3>
+            <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline">{{selectedDepositStr}}</h2>
+            </h3>
             <p class="lead">
                 <hr class="my-4">
             <table class="table table-flex table-bordered h-75">
@@ -120,9 +122,9 @@
                         <th scope="col">P.UNITARIO</th>
                         <th scope="col">TOTAL</th>
                         <th scope="col">CANTIDAD</th>
-                        <th scope="col">MODIFICAR</th> 
-                        <th scope="col">ELIMINAR</th>  
-                       
+                        <th scope="col">MODIFICAR</th>
+                        <th scope="col">ELIMINAR</th>
+
                     </tr>
                 </thead>
                 <tbody class="text-center">
@@ -134,9 +136,10 @@
                         <td id="fullBlue_td">{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
                         <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
                         <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
-                        <td><button (click)="openDialogDepositControlUpdate(item.id,updateDepositContolTemplate)" class="btn btn-sm">-</button></td>
+                        <td><button (click)="openDialogDepositControlUpdate(item.id,updateDepositContolTemplate)"
+                                class="btn btn-sm">-</button></td>
                         <td><button (click)="confirmDeleteDepositControl(item.id)" class="btn btn-sm">-</button></td>
-                        
+
                     </tr>
 
                 </tbody>
@@ -224,130 +227,62 @@
 
 <ng-template #supplyTableTemplate>
     <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button>
- <div *ngIf="supplyItemDtos.length>0" class="container-flex">
-    <div class="row mt-1">
-        <div class="col-md-5"></div>
-        <div class="col-md-5">
-            <h2 class="d-inline">SUMINISTRO NUMERO: </h2>
-            <h2 class="d-inline text-danger">{{supplyDto.supplyNumber}} </h2>
+    <div *ngIf="supplyItemDtos.length>0" class="container-flex">
+        <div class="row mt-1">
+            <div class="col-md-5"></div>
+            <div class="col-md-5">
+                <h2 class="d-inline">SUMINISTRO NUMERO: </h2>
+                <h2 class="d-inline text-danger">{{supplyDto.supplyNumber}} </h2>
 
-        </div>
-     <div class="col-md-2">
-            <h3>FECHA: {{supplyDto.date |date: 'dd-MM-yyyy' }}</h3>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h3>UNIDAD EJECUTORA:</h3>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h3>DEPENDENCIA SOLICITANTE: {{supplyDto.dependencyApplicant}}</h3>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h3 class="d-inline">TOTAL:</h3>
-            <h3 class="d-inline text-danger">{{supplyDto.estimatedTotalCost| currency: '$': 'symbol'}}</h3>
-        </div>
-    </div>
-    <div class="row mt-1">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <table class="table table-flex table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">CODIGO</th>
-                        <th scope="col">CAT PROG</th>
-                        <th scope="col">CANTIDAD</th>
-                        <th scope="col">U.MEDIDA</th>
-                        <th scope="col">DESCRIPCION</th>
-                        <th scope="col">P.UNITARIO</th>
-                        <th scope="col">TOTAL</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of supplyItemDtos">
-                        <td id="fullBlue_td">{{item.code}}</td>
-                        <td>{{item.programaticCat}}</td>
-                        <td>{{item.quantity}}</td>
-                        <td>{{item.measureUnit}}</td>
-                        <td>{{item.itemDetail}}</td>
-                        <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
-                        <td id="fullBlue_td">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
-                    </tr>
-
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-</ng-template>
-
-<ng-template #purchaseOrderListTemplate>
-    <body id="orderListTemplate">
-        
-   
-    <div  class="container">
-
-
-        <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
-
-
-
-        <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
-                <h2 class="text-center">ORDENES DE COMPRA</h2>
-                <p class="lead">
-                    <hr class="my-4">
+            </div>
+            <div class="col-md-2">
+                <h3>FECHA: {{supplyDto.date |date: 'dd-MM-yyyy' }}</h3>
             </div>
         </div>
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-10">
-                <table class="table table-flex table-bordered table-striped h-75">
+                <h3>UNIDAD EJECUTORA:</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <h3>DEPENDENCIA SOLICITANTE: {{supplyDto.dependencyApplicant}}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <h3 class="d-inline">TOTAL:</h3>
+                <h3 class="d-inline text-danger">{{supplyDto.estimatedTotalCost| currency: '$': 'symbol'}}</h3>
+            </div>
+        </div>
+        <div class="row mt-1">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <table class="table table-flex table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col">FECHA</th>
-                            <th scope="col">NUMERO</th>
-                            <th scope="col">UNIDAD EJECUTORA</th>
-                            <th scope="col">DEPENDENCIA</th>
+                            <th scope="col">CODIGO</th>
+                            <th scope="col">CAT PROG</th>
+                            <th scope="col">CANTIDAD</th>
+                            <th scope="col">U.MEDIDA</th>
+                            <th scope="col">DESCRIPCION</th>
+                            <th scope="col">P.UNITARIO</th>
                             <th scope="col">TOTAL</th>
-                            <th>VER ITEMS</th>
-                            <th>A DEPOSITO</th>
-                            <th>CARGADO</th>
-                            <th>Eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let order of purchaseOrderDtos">
-                            <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
-                            <td id="fullBlue_td">{{order.orderNumber}}</td>
-                            <td>{{order.executerUnit}}</td>
-                            <td>{{order.dependency}}</td>
-                            <td id="fullBlue_td">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
-                            <td class="text-center"><button
-                                    (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
-                                    class="btn btn-sm  text-danger">-</button></td>
-                            <td class="text-center">
-                                <button *ngIf="order.loadedToDeposit"
-                                    (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
-                                    class="btn btn-sm text-danger" disabled>-</button>
-                                <button *ngIf="!order.loadedToDeposit"
-                                    (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
-                                    class="btn btn-sm text-danger">-</button>
-                            </td>
-                            <td *ngIf="order.loadedToDeposit" class="text-success text-center">
-                                {{order.loadedToDepositName}}</td>
-                            <td *ngIf="!order.loadedToDeposit" class="text-danger  text-center">No</td>
-                            <td> <button (click)="confirmDeletePurchaseOrder(order.id)"
-                                    class="btn btn-sm text-danger">-</button></td>
+                        <tr *ngFor="let item of supplyItemDtos">
+                            <td id="fullBlue_td">{{item.code}}</td>
+                            <td>{{item.programaticCat}}</td>
+                            <td>{{item.quantity}}</td>
+                            <td>{{item.measureUnit}}</td>
+                            <td>{{item.itemDetail}}</td>
+                            <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
+                            <td id="fullBlue_td">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
                         </tr>
 
                     </tbody>
@@ -355,11 +290,81 @@
             </div>
         </div>
     </div>
-</body>
+</ng-template>
+
+<ng-template #purchaseOrderListTemplate>
+
+    <body id="orderListTemplate">
+
+
+        <div class="container">
+
+
+            <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()"
+                class="btn btn-sm text-white">X</button>
+
+
+
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <h2 class="text-center">ORDENES DE COMPRA</h2>
+                    <p class="lead">
+                        <hr class="my-4">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <table class="table table-flex table-bordered table-striped h-75">
+                        <thead>
+                            <tr>
+                                <th scope="col">FECHA</th>
+                                <th scope="col">NUMERO</th>
+                                <th scope="col">UNIDAD EJECUTORA</th>
+                                <th scope="col">DEPENDENCIA</th>
+                                <th scope="col">TOTAL</th>
+                                <th>VER ITEMS</th>
+                                <th>A DEPOSITO</th>
+                                <th>CARGADO</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let order of purchaseOrderDtos">
+                                <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
+                                <td id="fullBlue_td">{{order.orderNumber}}</td>
+                                <td>{{order.executerUnit}}</td>
+                                <td>{{order.dependency}}</td>
+                                <td id="fullBlue_td">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
+                                <td class="text-center"><button
+                                        (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
+                                        class="btn btn-sm  text-danger">-</button></td>
+                                <td class="text-center">
+                                    <button *ngIf="order.loadedToDeposit"
+                                        (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
+                                        class="btn btn-sm text-danger" disabled>-</button>
+                                    <button *ngIf="!order.loadedToDeposit"
+                                        (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
+                                        class="btn btn-sm text-danger">-</button>
+                                </td>
+                                <td *ngIf="order.loadedToDeposit" class="text-success text-center">
+                                    {{order.loadedToDepositName}}</td>
+                                <td *ngIf="!order.loadedToDeposit" class="text-danger  text-center">No</td>
+                                <td> <button (click)="confirmDeletePurchaseOrder(order.id)"
+                                        class="btn btn-sm text-danger">-</button></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
 </ng-template>
 <ng-template #purchaseOrderItemsListTemplate>
     <button id="closeButton" (click)="onClosepurchaseOrderItemListTemplate()" class="btn btn-sm text-white">X</button>
-    <div class="mt-1 ms-1" >
+    <div class="mt-1 ms-1">
         <h1 class="d-inline">O.C NUMERO:</h1>
         <h2 class="d-inline"> {{findedPurchaseOrder.orderNumber}}</h2>
     </div>
@@ -421,8 +426,7 @@
                 <td class="text-center"><button
                         (click)="openSupplyCorrectionNoteDialog(supplyCorrectionNoteTemplate,supply.id)"
                         class="btn btn-lg text-danger"></button></td>
-                <td class="text-center"><button
-                        (click)="confirmDeleteSupply(supply.id)"
+                <td class="text-center"><button (click)="confirmDeleteSupply(supply.id)"
                         class="btn btn-lg text-danger"></button></td>
 
             </tr>
@@ -434,10 +438,10 @@
 </ng-template>
 <ng-template #supplyItemsListTemplate>
     <button id="closeButton" (click)="onCloseSupplyItemListTemplate()" class="btn btn-sm text-white">X</button>
-    <div class="mt-1" >
-    <h1 class="d-inline">SUMINISTRO NUMERO:</h1>
-    <h2 class="d-inline"> {{findedSupply.supplyNumber}}</h2>
-</div>
+    <div class="mt-1">
+        <h1 class="d-inline">SUMINISTRO NUMERO:</h1>
+        <h2 class="d-inline"> {{findedSupply.supplyNumber}}</h2>
+    </div>
     <table class="table-sm table-bordered h-75">
         <thead>
             <tr>
@@ -498,9 +502,10 @@
     </table>
 </ng-template>
 <ng-template #supplyCorrectionNoteTemplate>
-   
+
     <div class="container-flex">
-        <button id="closeButton" (click)="onCloseSupplyCorrectionNoteTemplate()" class="btn btn-sm text-white">X</button>
+        <button id="closeButton" (click)="onCloseSupplyCorrectionNoteTemplate()"
+            class="btn btn-sm text-white">X</button>
         <div class="row mt-2">
             <div class="col-md-3">
 
@@ -561,37 +566,46 @@
             <div class="col-md-3">
                 <div class="mt-2">
                     <p>ITEM SUMINISTRO:</p>
-                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2 "> {{item.supplyItemCode}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2 ">
+                        {{item.supplyItemCode}}</small>
                 </div>
 
                 <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2 "> {{item.supplyItemDetail}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2 ">
+                        {{item.supplyItemDetail}}</small>
                 </div>
                 <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2 "> {{item.supplyItemMeasureUnit}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2 ">
+                        {{item.supplyItemMeasureUnit}}</small>
                 </div>
                 <div>
-                    <h1 class="d-inline"> CANTIDAD:</h1> <small class="ms-2 text-success">{{item.supplyItemQuantity}}</small>
+                    <h1 class="d-inline"> CANTIDAD:</h1> <small
+                        class="ms-2 text-success">{{item.supplyItemQuantity}}</small>
                 </div>
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-3">
                 <div class="mt-2">
                     <p>ITEM DEPOSITO:</p>
-                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2"> {{item.depositItemCode}} </small>
+                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2">
+                        {{item.depositItemCode}} </small>
                 </div>
 
                 <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2"> {{item.depositItemDetail}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2">
+                        {{item.depositItemDetail}}</small>
                 </div>
                 <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2"> {{item.depositItemMeasureUnit}}</small>
+                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2">
+                        {{item.depositItemMeasureUnit}}</small>
                 </div>
                 <div *ngIf="item.depositItemQuantity>=10">
-                    <h1 class="d-inline">CANTIDAD :</h1> <small class="ms-2 text-success">{{item.depositItemQuantity}}</small>
+                    <h1 class="d-inline">CANTIDAD :</h1> <small
+                        class="ms-2 text-success">{{item.depositItemQuantity}}</small>
                 </div>
                 <div *ngIf="item.depositItemQuantity<10">
-                    <h1 class="d-inline">CANTIDAD :</h1> <small class="ms-2 text-danger">{{item.depositItemQuantity}}</small>
+                    <h1 class="d-inline">CANTIDAD :</h1> <small
+                        class="ms-2 text-danger">{{item.depositItemQuantity}}</small>
                 </div>
                 <div *ngIf="item.depositQuantityLeft>0">
                     <h1 class="d-inline">SOBRANTE :</h1> <small
@@ -680,53 +694,86 @@
     </div>
 </ng-template>
 <ng-template #updateDepositContolTemplate>
+
     <body>
-        <button id="closeButton" (click)="onCloseUpdateDepositControlTemplate()" class="btn btn-sm text-white">X</button>
-         <div class="container-sm w-75">
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-6 text-center">
-                <form [formGroup]="depositControlUpdateForm" class="row g-6 form-group justifty-center text-center fw-bold ms-1">
-                    <div class="form-group">
-                        <label for="itemCode" class=" form-label fs-7 ">CODIGO</label>
-                        <input class="form-control border-dark" type="text" formControlName="itemCode" id="itemCode"  [readonly] = "disableSelect">
-                      </div>
-                    <div class="form-group">
-                        <label for="measureUnit" class=" form-label fs-7 ">U.MEDIDA</label>
-                        <input class="form-control border-dark" type="text" formControlName="measureUnit" id="measureUnit"
-                        [readonly] = "disableSelect">
-                      </div>
-                      <div class="form-group">
+        <button id="closeButton" (click)="onCloseUpdateDepositControlTemplate()"
+            class="btn btn-sm text-white">X</button>
+        <div class="container-sm w-75">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 text-center">
+                    <form [formGroup]="depositControlUpdateForm"
+                        class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+
+                        <div class="form-group">
+                            <label for="itemCode" class=" form-label fs-7 ">CODIGO</label>
+                            <input class="form-control border-dark" type="text" formControlName="itemCode" id="itemCode"
+                                [readonly]="disableSelect">
+                        </div>
+                        <div class="form-group">
+                            <label for="measureUnit" class=" form-label fs-7 ">U.MEDIDA</label>
+                            <input class="form-control border-dark" type="text" formControlName="measureUnit"
+                                id="measureUnit" [readonly]="disableSelect">
+                        </div>
+                        <div class="form-group">
                             <label for="itemDescription" class=" form-label fs-7 ">DESCRIPCION</label>
-                            <input class="form-control border-dark" type="text" formControlName="itemDescription" id="itemDescription"  [readonly] = "disableSelect">
-                          </div>
-                          <div class="form-group">
+                            <input class="form-control border-dark" type="text" formControlName="itemDescription"
+                                id="itemDescription" [readonly]="disableSelect">
+                        </div>
+                        <div class="form-group">
                             <label for="itemUnitPrice" class=" form-label fs-7 ">P.UNITARIO</label>
-                            <input class="form-control border-dark" type="number" formControlName="itemUnitPrice" id="itemUnitPrice"  [readonly] = "disableSelect">
-                          </div>
-                <div class="form-group">
-                    <label for="quantity" class=" form-label fs-7 ">CANTIDAD</label>
-                    <input class="form-control border-dark" type="number" formControlName="quantity" id="quantity">
-                    <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)" class="text-danger">
-                        <div *ngIf="quantity.errors?.['required']">
-                         Debe ingresar una cantidad validad
+                            <input class="form-control border-dark" type="number" formControlName="itemUnitPrice"
+                                id="itemUnitPrice" [readonly]="disableSelect">
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity" class=" form-label fs-7 ">CANTIDAD</label>
+                            <input class="form-control border-dark" type="number" formControlName="quantity"
+                                id="quantity">
+                            <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)" class="text-danger">
+                                <div *ngIf="quantity.errors?.['required']">
+                                    Debe ingresar una cantidad validad
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="col-md-3">
+                    <div class="ms-5 mt-2">
+                    <div *ngIf="disableSelect">
+                        <div class="d-inline mt-3">
+                            <div id="label-disable-select">HABILITAR EDICION</div>
+                        </div>
+                        <div class="d-inlin">
+                            <div id="btnDisableSelect" (click)="editAllDepositControlfields(false)"
+                                class="btn btn-sm text-white ms-5 btn-danger border-dark"></div>
+                        </div>
+                    </div>
+                    <div *ngIf="!disableSelect">
+                        <div class="d-inline mt-3">
+                            <div id="label-disable-select">DESHABILITAR EDICION</div>
+                        </div>
+                        <div class="d-inlin">
+                            <div id="btnDisableSelect" (click)="editAllDepositControlfields(true)"
+                                class="btn btn-sm text-white ms-5 btn-warning border-dark"></div>
                         </div>
                     </div>
                 </div>
-               
-             </form>
-            </div>
+                </div>
             </div>
             <div class="row mt-1">
                 <div class="col-md-4 ms-5"></div>
                 <div class="col-md-1">
-                    <button id="btnControlUpdate" (click)="updateDepositControl()" class="btn btn-sm text-white">Actualizar</button>
+                    <button id="btnControlUpdate" (click)="updateDepositControl()"
+                        class="btn btn-sm text-white">Actualizar</button>
                 </div>
                 <div class="col-md-1 ms-5">
-                    <button id="btnControlCancel" (click)="onCloseUpdateDepositControlTemplate()" class="btn btn-sm text-dark">Cancelar</button>
+                    <button id="btnControlCancel" (click)="onCloseUpdateDepositControlTemplate()"
+                        class="btn btn-sm text-dark">Cancelar</button>
                 </div>
-                 
-            </div>     
-    </div>
-</body>
+            </div>
+        </div>
+    </body>
 </ng-template>

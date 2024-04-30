@@ -33,7 +33,8 @@ export class DepositHomeComponent implements OnInit {
   supplyDto!: SupplyDto;
   selectedDepositBol: boolean = false;
   selectedDepositStr: string = "";
-  disableSelect:boolean = true;
+  disableSelect:boolean=true;
+
   constructor(private dialogService: DialogService,
     private fileUploadService: FileUploadService, private snackBar: SnackBarService
     , private depositControlService: DepositControlService, private cookieService: CookieStorageService,
@@ -220,6 +221,13 @@ export class DepositHomeComponent implements OnInit {
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      },
+      complete:()=>{
+        this.purchaseOrderDtos.forEach((item,index)=>{
+          if(item.id==orderId){
+            this.purchaseOrderDtos.splice(index,1);
+          }
+        })
       }
     });
   }
@@ -373,8 +381,15 @@ export class DepositHomeComponent implements OnInit {
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      },
+      complete:()=>{
+        this.suppliesDto.forEach((item,index)=>{
+          if(item.id==supplyId){
+            this.suppliesDto.splice(index,1);
+          }
+        });
       }
-    })
+    });
   }
 
   /**DEPOSIT */
@@ -585,6 +600,7 @@ export class DepositHomeComponent implements OnInit {
   private updateDepositControlMatDialogRef!: MatDialogRef<DialogTemplateComponent>
 
   openDialogDepositControlUpdate(depositControlId: number, template: TemplateRef<any>) {
+    
     this.getDepositControlById(depositControlId);
     this.updateDepositControlMatDialogRef = this.dialogService.openDialogCreation({
       template
@@ -595,6 +611,7 @@ export class DepositHomeComponent implements OnInit {
   updatedDepositControl!: DepositControlDto;
   updateDepositControl() {
     if (this.depositControlUpdateForm.valid) {
+     
       this.findedDepositControlDto = Object.assign(this.findedDepositControlDto, this.depositControlUpdateForm.value);
       const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
       this.depositControlService.updateDepositControl(this.findedDepositControlDto, depositId).subscribe({
@@ -610,6 +627,10 @@ export class DepositHomeComponent implements OnInit {
         }
       });
     }
+  }
+
+  editAllDepositControlfields(disableSelect:boolean):void{
+    this.disableSelect=disableSelect;
   }
 
 
@@ -637,6 +658,13 @@ export class DepositHomeComponent implements OnInit {
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      },
+      complete:()=>{
+        this.depositControlDtos.forEach((item,index)=>{
+          if(item.id==depositControlId){
+            this.depositControlDtos.splice(index,1);
+          }
+        })
       }
     });
   }
