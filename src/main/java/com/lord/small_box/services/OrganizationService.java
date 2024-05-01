@@ -22,6 +22,8 @@ public interface OrganizationService {
 	
 	public String addOrganizationToUser(Long userId,List<Long> organizationsId);
 	
+	public List<String> addORganizationReceiversToUser(long userId, List<Long> organizationReceiverIds);
+	
 	public List<OrganizationDto> findAllById(List<Long> organizationsId);
 	
 	public List<Organization> findAllOrganizationsByUsers(Long userId);

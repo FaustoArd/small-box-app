@@ -74,8 +74,10 @@ public class AppUser implements UserDetails {
 	@Column(name="main_organization_id")
 	private long mainOrganizationId;
 	
-	//@Column(name="current_deposit_id")
-	//private long currentDepositId;
+	@ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinTable(name = "user_organization_receiver_junction", joinColumns = { @JoinColumn(name="user_id", referencedColumnName = "id") },
+	inverseJoinColumns = { @JoinColumn(name="organization_id", referencedColumnName = "id") })
+	private List<Organization> organizationReceivers;
 	
 	
 	
@@ -171,6 +173,13 @@ public class AppUser implements UserDetails {
 	
 	public void setOrganizations(List<Organization> organizations) {
 		this.organizations = organizations;
+	}
+	
+	public List<Organization> getOrganizationReceivers(){
+		return organizationReceivers;
+	}
+	public void setOrganizationReceivers(List<Organization> organizationReceivers) {
+		this.organizationReceivers = organizationReceivers;
 	}
 	
 	public Long getMainOrganizationId() {

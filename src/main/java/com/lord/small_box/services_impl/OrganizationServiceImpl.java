@@ -94,6 +94,8 @@ public class OrganizationServiceImpl implements OrganizationService{
 					.reduce((org , element) -> org +  ", " + element)
 					.orElse( "Ninguna");
 		}
+	
+	
 
 	
 
@@ -138,6 +140,12 @@ public class OrganizationServiceImpl implements OrganizationService{
 			log.info("Main organization found. id: " + user.getMainOrganizationId());
 			return user.getMainOrganizationId();
 		}
+	}
+
+	@Override
+	public List<String> addORganizationReceiversToUser(long userId, List<Long> organizationReceiverIds) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	
