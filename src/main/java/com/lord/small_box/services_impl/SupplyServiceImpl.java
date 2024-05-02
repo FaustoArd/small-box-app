@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
+import com.lord.small_box.dtos.SupplyItemRequestDto;
 import com.lord.small_box.dtos.SupplyReportDto;
 import com.lord.small_box.exceptions.DuplicateItemException;
 import com.lord.small_box.exceptions.ItemNotFoundException;
@@ -192,5 +193,39 @@ public class SupplyServiceImpl implements SupplyService {
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el suministro"));
 		return SupplyMapper.INSTANCE.supplyToDto(supply);
 	}
+
+	@Override
+	public String setOrganizationApplicant(long supplyId,long organizationId) {
+		log.info("Set organization Applicant id: " + organizationId);
+		Supply supply = supplyRepository.findById(supplyId).orElseThrow(()-> new ItemNotFoundException("No se encontro el suministro"));
+		Organization org = organizationService.findById(organizationId);
+		supply.setOrganizationApplicant(org);
+		supplyRepository.save(supply);
+		return org.getOrganizationName();
+	}
+
+	@Override
+	public List<SupplyItemRequestDto> findAllSupplyItemsByOrganizationApplicant(long organizationApplicantId) {
+		log.info("Find all supply items by organization Applicant id: " + organizationApplicantId);
+		Organization org = organizationService.findById(organizationApplicantId);
+		List<Supply> supplies =supplyRepository.findAllByOrganizationApplicant(org);
+		List<SupplyItemRequestDto> itemRequests = supplyItemRepository
+				.findAllBySupplyIn(supplies.stream().map(s -> s).toList())
+				.stream().map(this::mapSupplyItemsToSupplyItemRequestDto).toList();
+		return itemRequests;
+	}
+	
+	private SupplyItemRequestDto mapSupplyItemsToSupplyItemRequestDto(SupplyItem supplyItem){
+		if(supplyItem==null) {
+			return null;
+		}
+		SupplyItemRequestDto supplyItemRequestDto = new SupplyItemRequestDto();
+		supplyItemRequestDto.setItemId(supplyItem.getId());
+		supplyItemRequestDto.setCode(supplyItem.getCode());
+		supplyItemRequestDto.setMeasureUnit(supplyItem.getMeasureUnit());
+		supplyItemRequestDto.setItemDetail(supplyItem.getItemDetail());
+		return supplyItemRequestDto;
+	}
+	
 
 }

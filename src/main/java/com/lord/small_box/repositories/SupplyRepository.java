@@ -14,4 +14,6 @@ public interface SupplyRepository extends JpaRepository<Supply, Long>{
 	public List<Supply> findAllByOrganization(Organization organization,Sort sort);
 	
 	public Optional<Supply> findBySupplyNumberAndOrganization(int orderNumber,Organization organization);
+	
+	public List<Supply> findAllByOrganizationApplicant(Organization organizationApplicant);
 }

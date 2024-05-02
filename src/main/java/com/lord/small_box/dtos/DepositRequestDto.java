@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 public class DepositRequestDto {
 	
-private Long id;
+	private Long id;
 	
 	private Calendar requestDate;
 	
@@ -21,5 +21,7 @@ private Long id;
 	private long organizationId;
 	
 	private List<DepositControlRequestDto> depositControlRequestDtos;
+	
+	private String requestCode;
 
 }

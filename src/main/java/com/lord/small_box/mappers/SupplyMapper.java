@@ -15,10 +15,12 @@ public interface SupplyMapper {
 	public static SupplyMapper INSTANCE = Mappers.getMapper(SupplyMapper.class);
 	
 	@Mapping(target = "organization", ignore = true)
+	@Mapping(target="organizationApplicant",ignore = true)
 	public Supply dtoToSupply(SupplyDto supplyDto);
 	
 	
 	@Mapping(target = "supplyItems", ignore = true)
+	@Mapping(target="organizationApplicant",source="organizationApplicant.organizationName")
 	public SupplyDto supplyToDto(Supply supply);
 	
 	public List<Supply> dtosToSupplies(List<SupplyDto> suppliesDtos);

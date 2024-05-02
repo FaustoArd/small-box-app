@@ -46,5 +46,9 @@ public class Supply {
 	
 	
 	private String dependencyApplicant;
+	
+	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinColumn(name="organization_applicant_id",referencedColumnName = "id")
+	private Organization organizationApplicant;
 
 }

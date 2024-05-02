@@ -26,7 +26,7 @@ public class DepositReceiver {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String receptionDate;
+	private Calendar receptionDate;
 	
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="organization_id",referencedColumnName = "id")

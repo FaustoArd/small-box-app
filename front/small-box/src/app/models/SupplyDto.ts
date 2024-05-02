@@ -9,4 +9,5 @@ export class SupplyDto{
     estimatedTotalCost!:number;
     dependencyApplicant!:string;
     dependecyApplicantOrganizationId!:number;
+    organizationApplicant!:string;
 }

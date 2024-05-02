@@ -26,12 +26,14 @@ import com.lord.small_box.dtos.DepositDto;
 import com.lord.small_box.dtos.DepositItemComparatorDto;
 import com.lord.small_box.dtos.DepositResponseDto;
 import com.lord.small_box.dtos.ExcelItemDto;
+import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
 import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
+import com.lord.small_box.dtos.SupplyItemRequestDto;
 import com.lord.small_box.dtos.SupplyReportDto;
 import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.services.PurchaseOrderService;
@@ -237,6 +239,16 @@ public class DepositControlController {
 		DepositControlDto updatedDepositControlDto = depositControlService.updateDepositControl(depositControlDto,depositId);
 		return new ResponseEntity<DepositControlDto>(updatedDepositControlDto,HttpStatus.OK);
 	}
-	
+	@PutMapping(path="/set-supply-organization-applicant")
+	ResponseEntity<String> setSupplyOrganizationApplicant(@RequestBody OrganizationDto organizationDto,@RequestParam("supplyId")long supplyId){
+		String orgName = supplyService.setOrganizationApplicant(supplyId,organizationDto.getId());
+		return new ResponseEntity<String>(gson.toJson(orgName),HttpStatus.OK);
+	}
+	@GetMapping(path="/find-all-supply-items-by-organization-applicant")
+	ResponseEntity<List<SupplyItemRequestDto>> findAllSupplyItemsByOrganizationApplicant
+	(@RequestParam("organizationApplicantId")long organizationApplicantId){
+		List<SupplyItemRequestDto> supplyItems = supplyService.findAllSupplyItemsByOrganizationApplicant(organizationApplicantId);
+		return ResponseEntity.ok(supplyItems);
+	}
 	
 }

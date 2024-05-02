@@ -34,6 +34,6 @@ public class DepositRequest {
 	@JoinColumn(name="organization_id",referencedColumnName = "id")
 	private Organization organization;
 	
-	
+	private String requestCode;
 
 }

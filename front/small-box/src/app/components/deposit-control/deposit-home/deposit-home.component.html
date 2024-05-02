@@ -272,7 +272,7 @@
                             <th scope="col">DESCRIPCION</th>
                             <th scope="col">P.UNITARIO</th>
                             <th scope="col">TOTAL</th>
-                        </tr>
+                           </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of supplyItemDtos">
@@ -283,11 +283,34 @@
                             <td>{{item.itemDetail}}</td>
                             <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
                             <td id="fullBlue_td">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
-                        </tr>
+                           </tr>
 
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-4">
+                <form [formGroup]="supplyOrganizationApplicantForm"
+                class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+                <div class="form-group">
+                    <label for="id" class="form-label fs-7 ">DEPENDENCIA</label>
+                    <select id="id" formControlName="id" class="form-select  border-dark">
+                        <option type="number" class="form-control border-dark " *ngFor="let orgs of organizationsDto"
+                            id="id" [value]="orgs.id">
+                            {{orgs.organizationName}}</option>
+                        </select>
+                        <div *ngIf="id.invalid && (id.dirty || id.touched)"
+                        class="text-danger">
+                        <div *ngIf="id.errors?.['required']">
+                            Debe seleccionar una organizacion
+                        </div>
+                    </div>
+                </div>
+                <button (click)="setSupplyOrganizationApplicant(supplyDto.id)" class="btn btn-sm">APLICAR</button>
+            </form>
+            </div> 
         </div>
     </div>
 </ng-template>
@@ -366,7 +389,7 @@
     <button id="closeButton" (click)="onClosepurchaseOrderItemListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="mt-1 ms-1">
         <h1 class="d-inline">O.C NUMERO:</h1>
-        <h2 class="d-inline"> {{findedPurchaseOrder.orderNumber}}</h2>
+        <h2 class="d-inline"> {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.date.toString().substring(2,4)}}</h2>
     </div>
     <table class="table-sm table-bordered h-75">
         <thead>
@@ -419,7 +442,7 @@
             <tr *ngFor="let supply of suppliesDto">
                 <td>{{supply.date |date: 'dd-MM-yyyy'}}</td>
                 <td id="fullBlue_td">{{supply.supplyNumber}}</td>
-                <td>{{supply.dependencyApplicant}}</td>
+                <td>{{supply.organizationApplicant}}</td>
                 <td id="fullBlue_td">{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
                 <td class="text-center"><button (click)="openDialogSuppliesItemList(supplyItemsListTemplate,supply.id)"
                         class="btn btn-lg  text-danger"></button></td>
@@ -440,7 +463,7 @@
     <button id="closeButton" (click)="onCloseSupplyItemListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="mt-1">
         <h1 class="d-inline">SUMINISTRO NUMERO:</h1>
-        <h2 class="d-inline"> {{findedSupply.supplyNumber}}</h2>
+        <h2 class="d-inline"> {{findedSupply.supplyNumber + '/' + findedSupply.date.toString().substring(2,4)}}</h2>
     </div>
     <table class="table-sm table-bordered h-75">
         <thead>

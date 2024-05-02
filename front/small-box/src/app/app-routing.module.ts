@@ -21,6 +21,8 @@ import { DepositHomeComponent } from './components/deposit-control/deposit-home/
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
 import { BigBagComponent } from './components/big-bag/big-bag.component';
 import { DepositComparatorComponent } from './components/deposit-comparator/deposit-comparator.component';
+import { DepositRequestComponent } from './components/deposit-request/deposit-request.component';
+import { DepositReceiverComponent } from './components/deposit-receiver/deposit-receiver.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -45,7 +47,9 @@ const routes: Routes = [
   { path:'deposit-home', component:DepositHomeComponent},
   { path:'user-panel',component:UserPanelComponent},
   {path:'big-bag', component:BigBagComponent},
-  {path:'deposit-comparator', component:DepositComparatorComponent}
+  {path:'deposit-comparator', component:DepositComparatorComponent},
+  {path:'deposit-request', component:DepositRequestComponent},
+  {path:'deposit-receiver', component:DepositReceiverComponent}
 ];
 
 @NgModule({

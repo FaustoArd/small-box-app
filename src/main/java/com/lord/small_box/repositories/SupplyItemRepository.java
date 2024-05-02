@@ -10,5 +10,7 @@ import com.lord.small_box.models.SupplyItem;
 public interface SupplyItemRepository extends JpaRepository<SupplyItem, Long> {
 	
 	public List<SupplyItem> findAllBySupply(Supply supply);
+	
+	public List<SupplyItem> findAllBySupplyIn(List<Supply> supplies);
 
 }

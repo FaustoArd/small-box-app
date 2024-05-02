@@ -1,0 +1,208 @@
+<app-navbar></app-navbar>
+
+<body>
+
+
+    <div class="container-flex">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-8">
+                <div class="jumbotron mt-3">
+                    <div>
+                        <h1 class="d-inline display-4">Nuevo</h1>
+                        <button (click)="opencreateRequestTemplate(createRequestTemplate)" id="btnSend"
+                            class="d-inline btn btn-primary btn-md ms-3 mb-2" role="button">-</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="barofcolour mt-3">-</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div *ngIf="depositRequestDtos.length<=0" class="mt-3">
+                    <h1 class="display-4">No has enviado ningun pedido</h1>
+                    <hr class="my-4">
+                </div>
+                <div *ngIf="depositRequestDtos.length>0">
+                    <div *ngFor="let request of depositRequestDtos">
+                        <div class="d-inline mt-3">
+                            <a class="ms-1">{{request.requestDate}}</a>
+                            <a class="ms-3">{{request.requestCode}}</a>
+                            <hr class="my-4">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<ng-template #createRequestTemplate>
+    <div class="container-flex">
+        <div class="row">
+            <div class="col-md-3"></div>
+
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <form [formGroup]="depositRequestFormBuilder">
+                        <div class="form-group text-center">
+                            <label for="organizationId" class="form-label ">Seleccione su dependencia</label>
+                            <select id="organizationId" formControlName="organizationId"
+                                class="form-select  border-dark">
+                                <option type="number" class="form-control border-dark "
+                                    *ngFor="let orgs of organizationDtos" id="categoryId" [value]="orgs.id">
+                                    {{orgs.organizationName}}</option>
+                            </select>
+                            <div *ngIf="organizationId.invalid && (organizationId.dirty || organizationId.touched)"
+                                class="text-danger">
+                                <div *ngIf="organizationId.errors?.['required']">
+                                    Debe seleccionar una organizacion
+                                </div>
+                            </div>
+                            <button (click)="createRequest()" class="btn btn-sm mt-2">APLICAR</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #supplyItemRequestSelectionTemplate>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="d-inline">
+                    <h3 class="text-center">Items seleccionados</h3>
+                  </div>
+                <table class="table table-flex table-bordered h-75">
+                    <thead>
+                        <tr>
+                            <th scope="col">CODIGO</th>
+                            <th scope="col">U.MEDIDA</th>
+                            <th scope="col">DESCRIPCION</th>
+                            <th scope="col">CANTIDAD</th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        <tr *ngFor="let item of selectedSupplyItemRequestDtos">
+                            <td id="fullBlue_td">{{item.itemCode}}</td>
+                            <td>{{item.itemMeasureUnit}}</td>
+                            <td>{{item.itemDescription}}</td>
+                            <td id="quantityShow">{{item.itemQuantity}}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-2 mt-3 ms-5">
+                <button (click)="saveControlRequestItems()" class="text-white">GUARDAR</button>
+            </div>
+            <div class="col-md-4 ms-4">
+                <div class="d-inline">
+                <h3 class="text-center">Seleccionar items</h3>
+              </div>
+             <table class="table table-flex table-bordered h-75 text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">CODIGO</th>
+                            <th scope="col">U.MEDIDA</th>
+                            <th scope="col">DESCRIPCION</th>
+                            <th scope="col">CANTIDAD</th>
+                            <th scope="col">APLICAR</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        <tr *ngFor="let item of supplyItemRequestDtos">
+                            <td id="fullBlue_td">{{item.code}}</td>
+                            <td>{{item.measureUnit}}</td>
+                            <td>{{item.itemDetail}}</td>
+                            <td>
+                                <form [formGroup]="itemQuantityForm" clasS="form-group">
+                                    <div class="form-group">
+                                        <input class="form-control border-dark" type="number" name="quantity"
+                                            id="quantity" formControlName="quantity">
+                                        <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)"
+                                            class="text-danger">
+                                            <div *ngIf="quantity.errors?.['required']">
+                                                Debe ingresar una cantidad valida.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </td>
+                            <td><button (click)="selectedSupplyItemRequest(item.itemId)" class="btn btn-sm">-</button>
+                            </td>
+
+
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col">Hola</div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #savedDepositControlRequestTemplate>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-6">
+                <table class="table table-flex table-bordered h-75 text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">CODIGO</th>
+                            <th scope="col">U.MEDIDA</th>
+                            <th scope="col">DESCRIPCION</th>
+                            <th scope="col">CANTIDAD</th>
+                          
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        <tr *ngFor="let item of toSendDepositRequestDto.depositControlRequestDtos">
+                            <td id="fullBlue_td">{{item.itemCode}}</td>
+                            <td>{{item.itemMeasureUnit}}</td>
+                            <td>{{item.itemDescription}}</td>
+                            <td>{{item.itemQuantity}}</td>
+                      </tr>
+  </tbody>
+                </table>
+            </div>
+            <div class="col-md-2">
+                <form [formGroup]="destinationOrganizationForm"
+                class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+                <div class="form-group">
+                    <label for="destinationOrganizationId" class="form-label fs-7 ">DEPENDENCIA</label>
+                    <select id="destinationOrganizationId" formControlName="destinationOrganizationId" class="form-select  border-dark">
+                        <option type="number" class="form-control border-dark " *ngFor="let orgs of allOrganizationDtos"
+                            id="destinationOrganizationId" [value]="orgs.id">
+                            {{orgs.organizationName}}</option>
+                        </select>
+                        <div *ngIf="destinationOrganizationId.invalid && (destinationOrganizationId.dirty || destinationOrganizationId.touched)"
+                        class="text-danger">
+                        <div *ngIf="destinationOrganizationId.errors?.['required']">
+                            Debe seleccionar una organizacion
+                        </div>
+                    </div>
+                </div>
+                <button  (click)="sendDepositRequest()"  class="btn btn-sm">APLICAR</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</ng-template>

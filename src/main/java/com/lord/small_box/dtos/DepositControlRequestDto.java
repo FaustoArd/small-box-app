@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DepositControlRequestDto {
-private Long id;
+	private Long id;
 	
 	private String itemCode;
 	
@@ -15,6 +15,7 @@ private Long id;
 	
 	private String itemDescription;
 	
+	private int itemQuantity;
 	
 	private long depositRequestId;
 }

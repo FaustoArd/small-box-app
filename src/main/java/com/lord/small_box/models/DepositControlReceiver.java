@@ -30,6 +30,8 @@ public class DepositControlReceiver {
 	
 	private String itemMeasureUnit;
 	
+	private int itemQuantity;
+	
 	private String itemDescription;
 	
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)

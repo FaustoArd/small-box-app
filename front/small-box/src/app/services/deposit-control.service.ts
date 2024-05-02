@@ -14,6 +14,8 @@ import { DepositReponseDto } from '../models/depositReponseDto';
 import { BigBagDto } from '../models/bigBagDto';
 import { BigBagItemDto } from '../models/bigBagItemDto';
 import { ExcelItemDto } from '../models/excelItemDto';
+import { OrganizationDto } from '../models/organizationDto';
+import { SupplyItemRequestDto } from '../models/supplyItemRequestDto';
 
 const DEPOSIT_CONTROL_BASE_URL = "http://localhost:8080/api/v1/smallbox/deposit-control";
 
@@ -160,5 +162,17 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
    updateDepositControl(depositControlDto:DepositControlDto,depositId:number):Observable<DepositControlDto>{
     return this.http.put<DepositControlDto>(`${DEPOSIT_CONTROL_BASE_URL}/update-deposit-control?depositId=${depositId}`
     ,depositControlDto,this.httpOptions).pipe(catchError(this.handleError));
+   }
+
+   setSupplyOrganizationApplicant(organizationDto:OrganizationDto,supplyId:number):Observable<string>{
+    return this.http.put<string>
+    (`${DEPOSIT_CONTROL_BASE_URL}/set-supply-organization-applicant?supplyId=${supplyId}`
+    ,organizationDto,this.httpOptions).pipe(catchError(this.handleError));
+   }
+
+   findAllSupplyItemsByOrganizationApplicant(organizationApplicantId:number):Observable<SupplyItemRequestDto[]>{
+    return this.http.get<SupplyItemRequestDto[]>
+    (`${DEPOSIT_CONTROL_BASE_URL}/find-all-supply-items-by-organization-applicant?organizationApplicantId=${organizationApplicantId}`
+    ,this.httpOptions).pipe(catchError(this.handleError));
    }
   }

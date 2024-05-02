@@ -1,5 +1,6 @@
 package com.lord.small_box.dtos;
 
+import java.util.Calendar;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ public class DepositReceiverDto {
 
 	private Long id;
 
-	private String receptionDate;
+	private Calendar receptionDate;
 
 	private long organizationId;
 

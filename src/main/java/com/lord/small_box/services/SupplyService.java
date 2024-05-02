@@ -5,6 +5,7 @@ import java.util.List;
 import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
+import com.lord.small_box.dtos.SupplyItemRequestDto;
 import com.lord.small_box.dtos.SupplyReportDto;
 
 public interface SupplyService {
@@ -22,4 +23,8 @@ public interface SupplyService {
 	public int deleteSupply(long supplyId);
 
 	public SupplyDto findsupply(long supplyId);
+	
+	public String setOrganizationApplicant(long supplyId,long organizationId);
+	
+	public List<SupplyItemRequestDto> findAllSupplyItemsByOrganizationApplicant(long organizationApplicantId);
 }

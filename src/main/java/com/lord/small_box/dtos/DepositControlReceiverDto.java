@@ -14,6 +14,8 @@ public class DepositControlReceiverDto {
 
 	private String itemMeasureUnit;
 
+	private int itemQuantity;
+	
 	private String itemDescription;
 
 	private long depositReceiverId;

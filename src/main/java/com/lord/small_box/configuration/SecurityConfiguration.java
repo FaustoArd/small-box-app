@@ -93,10 +93,11 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/smallbox/template-destination/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/users/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/csv-utils/**").hasRole("ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/deposit-control/**").permitAll();
-			auth.requestMatchers("/api/v1/smallbox/supply/**").permitAll();
-			auth.requestMatchers("/api/v1/smallbox/pdf-to-text/**").permitAll();
-
+			auth.requestMatchers("/api/v1/smallbox/deposit-control/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/supply/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/pdf-to-text/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/deposit-request/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/deposit-receiver/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.anyRequest().authenticated();
 
 		});
