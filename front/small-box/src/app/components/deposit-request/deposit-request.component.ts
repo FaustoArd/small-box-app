@@ -41,19 +41,18 @@ export class DepositRequestComponent implements OnInit {
 
   closeCreateRequestTemplate(): void {
 
-    this.matDialogRef.close();
+    this.createRequestTemplateMatDialogRef.close();
   }
 //Update ticket Mat dialog template
-private matDialogRef!: MatDialogRef<DialogTemplateComponent>
-
+private createRequestTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
 
 opencreateRequestTemplate( template: TemplateRef<any>) {
  this.getAllOrganizationsByUser();
-  this.matDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+  this.createRequestTemplateMatDialogRef = this.dialogService.openDialogCreation({
     template
   })
 
-  this.matDialogRef.afterClosed().subscribe();
+  this.createRequestTemplateMatDialogRef.afterClosed().subscribe();
   this.depositRequestFormBuilder.reset();
  }
 
@@ -65,6 +64,7 @@ opencreateRequestTemplate( template: TemplateRef<any>) {
   this.supplyItemRequestMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
     template
   });
+  
  }
 
   depositRequestDto!: DepositRequestDto;
@@ -81,6 +81,7 @@ opencreateRequestTemplate( template: TemplateRef<any>) {
           this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
         },
         complete:()=>{
+          this.createRequestTemplateMatDialogRef.close();
           this.openSupplyItemRequestSelectionTemplate(this.savedDepositRequestDto.organizationId)
         }
       });
@@ -214,6 +215,7 @@ quantityControlRequest!:QuantityControlRequest;
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);
       },
       complete:()=>{
+        this.supplyItemRequestMatDialogRef.close();
         this.openSavedDepositControlRequestTemplate();
       }
     });

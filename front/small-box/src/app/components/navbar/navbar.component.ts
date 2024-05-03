@@ -14,7 +14,8 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
 export class NavbarComponent implements OnInit {
 
 userMainOrganizationName!:string; 
-userMainOrganizationSelected!:boolean; 
+userMainOrganizationSelected!:boolean;
+userMainOrganizationId!:number; 
 userAuth!:boolean;
 adminAuth!:boolean;
 superUserAuth!:boolean;
@@ -32,8 +33,9 @@ ngOnInit(): void {
     this.userAuth = this.decodeUserToken();*/
     this.getUserOrg();
     this.currentUsername = this.cookieService.getCurrentUsername();
-    this.countDepositReceiverMessages();
-    
+    if(this.adminAuth||this.superUserAuth){
+   
+    }
 }
 onLogout(){
     this.cookieService.deleteToken();
@@ -80,16 +82,20 @@ onLogout(){
         next:(orgData)=>{
           this.userMainOrganizationName = orgData.organizationName;
           this.userMainOrganizationSelected = true;
+          this.userMainOrganizationId= orgData.id;
           this.cookieService.setUserMainOrganizationId(JSON.stringify(orgData.id));
         },
         error:(errorData)=>{
           this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+        },
+        complete:()=>{
+          this.countDepositReceiverMessages(this.userMainOrganizationId);
         }
       });
     
   }
 
-  countDepositReceiverMessages(){
+  countDepositReceiverMessages(organizationId:number){
     const orgId = Number(this.cookieService.getUserMainOrganizationId());
     this.depositReceiverService.countMessages(orgId).subscribe({
       next:(messageQuantityData)=>{

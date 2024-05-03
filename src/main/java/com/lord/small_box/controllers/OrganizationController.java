@@ -1,8 +1,6 @@
 package com.lord.small_box.controllers;
 
-import java.math.BigDecimal;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +17,6 @@ import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.OrganizationResponsibleDto;
 import com.lord.small_box.mappers.OrganizationMapper;
 import com.lord.small_box.models.Organization;
-import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.services.OrganizationResponsibleService;
 import com.lord.small_box.services.OrganizationService;
 

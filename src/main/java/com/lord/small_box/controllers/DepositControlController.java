@@ -1,7 +1,6 @@
 package com.lord.small_box.controllers;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,20 +25,8 @@ import com.lord.small_box.dtos.DepositDto;
 import com.lord.small_box.dtos.DepositItemComparatorDto;
 import com.lord.small_box.dtos.DepositResponseDto;
 import com.lord.small_box.dtos.ExcelItemDto;
-import com.lord.small_box.dtos.OrganizationDto;
-import com.lord.small_box.dtos.PurchaseOrderDto;
-import com.lord.small_box.dtos.PurchaseOrderItemDto;
-import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
-import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
-import com.lord.small_box.dtos.SupplyDto;
-import com.lord.small_box.dtos.SupplyItemDto;
-import com.lord.small_box.dtos.SupplyItemRequestDto;
-import com.lord.small_box.dtos.SupplyReportDto;
 import com.lord.small_box.services.DepositControlService;
-import com.lord.small_box.services.PurchaseOrderService;
-import com.lord.small_box.services.SupplyService;
 import com.lord.small_box.utils.ExcelToListUtils;
-import com.lord.small_box.utils.PdfToStringUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,99 +39,15 @@ public class DepositControlController {
 	private final DepositControlService depositControlService;
 	
 	@Autowired
-	private final PurchaseOrderService purchaseOrderService;
-	
-	@Autowired
-	private final SupplyService supplyService;
+	private final ExcelToListUtils excelToListUtils;
 	
 	private static final Gson gson = new Gson();
-	
-	@Autowired
-	private final PdfToStringUtils pdfToStringUtils;
-	
-	@Autowired
-	private final ExcelToListUtils excelToListUtils;
 	
 	@GetMapping(path="/find-deposit-controls-by-deposit")
 	ResponseEntity<List<DepositControlDto>> findDepositControlsByDeposit(@RequestParam("depositId")long depositId){
 	List<DepositControlDto> controlsDto = depositControlService.findDepositControlsByDeposit(depositId);
 	return ResponseEntity.ok(controlsDto);
 	}
-	
-	@GetMapping(path = "/find-all-orders-by-org")
-	ResponseEntity<List<PurchaseOrderDto>> findAllOrdersByOrganization(@RequestParam("organizationId")long organizationId){
-		List<PurchaseOrderDto> purchaseOrderDtos =purchaseOrderService.findAllOrdersByOrganizationId(organizationId);
-		return ResponseEntity.ok(purchaseOrderDtos);
-	}
-	@GetMapping(path="/find-order-items")
-	ResponseEntity<List<PurchaseOrderItemDto>> findPurchaseOrderItems(@RequestParam("purchaseOrderId")long purchaseOrderId){
-		List<PurchaseOrderItemDto> itemDtos = purchaseOrderService.findPurchaseOrderItems(purchaseOrderId);
-		return ResponseEntity.ok(itemDtos);
-	}
-	
-	@GetMapping(path ="/find-all-supplies-by-org")
-	ResponseEntity<List<SupplyDto>> findAllSuppliesByOrganization(@RequestParam("organizationId")long organizationId){
-		List<SupplyDto> supplyDtos = supplyService.findAllSuppliesByOrganizationId(organizationId);
-		return ResponseEntity.ok(supplyDtos);
-	}
-	@GetMapping(path = "/find-supply-items")
-	ResponseEntity<List<SupplyItemDto>> findSupplyItems(@RequestParam("supplyId")long supplyId){
-		List<SupplyItemDto> itemDtos = supplyService.findSupplyItems(supplyId);
-		return ResponseEntity.ok(itemDtos);
-	}
-
-	@PostMapping(path = "/collect-supply-pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	ResponseEntity<SupplyDto> collectSupplyFromText(@RequestPart("file") MultipartFile file,
-			@RequestParam("organizationId") long organizationId) throws Exception {
-		String text = pdfToStringUtils.pdfToString(file.getOriginalFilename());
-		SupplyDto supplyDto = supplyService.collectSupplyFromText(text,organizationId);
-		return new ResponseEntity<SupplyDto>(supplyDto, HttpStatus.CREATED);
-	}
-	
-	@PostMapping(path="/collect-purchase-order-pdf",consumes =MediaType.MULTIPART_FORM_DATA_VALUE)
-	ResponseEntity<PurchaseOrderDto> collectPurchaseOrderFromText(@RequestPart("file")MultipartFile file,
-			@RequestParam("organizationId")long OrganizationId) throws Exception{
-		String text = pdfToStringUtils.pdfToString(file.getOriginalFilename());
-		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, OrganizationId);
-		return new ResponseEntity<PurchaseOrderDto>(purchaseOrderDto,HttpStatus.CREATED);
-	}
-	
-	@PostMapping(path="/excel-order-comparator",consumes =MediaType.MULTIPART_FORM_DATA_VALUE)
-	ResponseEntity<List<DepositItemComparatorDto>> generateExcelToOrderComparator(@RequestPart("file")MultipartFile file,
-			@RequestParam("organizationId")long organizationId) throws Exception{
-		List<ExcelItemDto> excelItems = excelToListUtils.excelDataToDeposit(file.getOriginalFilename(),organizationId);
-		List<DepositItemComparatorDto> comparatorsDto = depositControlService.getExcelToPuchaseOrderComparator(excelItems, organizationId);
-		return new ResponseEntity<List<DepositItemComparatorDto>>(comparatorsDto,HttpStatus.CREATED);
-	}
-	
-	//Find purchase order, with items.
-	@GetMapping(path ="/find-full-purchase-order/{purchaseOrderId}")
-	ResponseEntity<PurchaseOrderDto> findFullPurchaseOrder(@PathVariable("purchaseOrderId")long purchaseOrderId){
-		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.findFullPurchaseOrder(purchaseOrderId);
-		return ResponseEntity.ok(purchaseOrderDto);
-	}
-	
-	@PutMapping(path = "/load-order-to-deposit")
-	ResponseEntity<List<PurchaseOrderToDepositReportDto>> loadPurchaseOrdertoDeposit
-	(@RequestBody long purchaseOrderId,@RequestParam("depositId")long depositId){
-		List<PurchaseOrderToDepositReportDto> loadReport = purchaseOrderService.loadPurchaseOrderToDepositControl(purchaseOrderId,depositId);
-		return new ResponseEntity<List<PurchaseOrderToDepositReportDto>>(loadReport,HttpStatus.OK);
-	}
-	
-	@GetMapping(path = "/create-supply-report")
-	ResponseEntity<List<SupplyReportDto>> createSupplyResport
-	(@RequestParam("supplyId")long supplyId,@RequestParam("depositId")long depositId){
-		List<SupplyReportDto> report = supplyService.createSupplyReport(supplyId,depositId);
-		return ResponseEntity.ok(report);
-	}
-	
-	@GetMapping(path = "/create-supply-correction-note")
-	ResponseEntity<SupplyCorrectionNoteDto> createSupplyCorrectionNote
-	(@RequestParam("supplyId")long supplyId,@RequestParam("depositId")long depositId){
-		SupplyCorrectionNoteDto supplyCorrectionNote = supplyService.createSupplyCorrectionNote(supplyId,depositId);
-		return ResponseEntity.ok(supplyCorrectionNote);
-	}
-	
 	@PostMapping(path="/create-deposit")
 	ResponseEntity<String> createDeposit(@RequestBody DepositDto depositDto){
 		String depositName = depositControlService.createDeposit(depositDto);
@@ -166,28 +69,6 @@ public class DepositControlController {
 	(@RequestParam("userId")long userId,@RequestParam("organizationId")long organizationId){
 		DepositResponseDto depositResponse = depositControlService.getCurrentDepositId(userId,organizationId);
 		return ResponseEntity.ok(depositResponse);
-	}
-	@DeleteMapping(path="/delete-purchase-order/{orderId}")
-	ResponseEntity<Integer> deletePurchaseOrder(@PathVariable("orderId")long orderId){
-		int orderNumberDeleted = purchaseOrderService.deletePurchaseOrder(orderId);
-		return ResponseEntity.ok(orderNumberDeleted);
-	}
-	@DeleteMapping(path="/delete-supply/{supplyId}")
-	ResponseEntity<Integer> deleteSupply(@PathVariable("supplyId")long supplyId){
-		int supplyNumberDeleted = supplyService.deleteSupply(supplyId);
-		return ResponseEntity.ok(supplyNumberDeleted);
-	}
-	
-	//Find purchase order, without items.
-	@GetMapping(path="/find-purchase-order/{orderId}")
-	ResponseEntity<PurchaseOrderDto> findPurchaseOrderById(@PathVariable("orderId")long orderId){
-		PurchaseOrderDto dto = purchaseOrderService.findPurchaseOrder(orderId);
-		return ResponseEntity.ok(dto);
-	}
-	@GetMapping(path="/find-supply/{supplyId}")
-	ResponseEntity<SupplyDto> findSupplyById(@PathVariable("supplyId")long supplyId){
-		SupplyDto dto = supplyService.findsupply(supplyId);
-		return ResponseEntity.ok(dto);
 	}
 	@PostMapping(path="/create-big-bag")
 	ResponseEntity<BigBagDto> createBigBag(@RequestBody BigBagDto bigBagDto,@RequestParam("organizationId")long organizationId){
@@ -239,16 +120,17 @@ public class DepositControlController {
 		DepositControlDto updatedDepositControlDto = depositControlService.updateDepositControl(depositControlDto,depositId);
 		return new ResponseEntity<DepositControlDto>(updatedDepositControlDto,HttpStatus.OK);
 	}
-	@PutMapping(path="/set-supply-organization-applicant")
-	ResponseEntity<String> setSupplyOrganizationApplicant(@RequestBody OrganizationDto organizationDto,@RequestParam("supplyId")long supplyId){
-		String orgName = supplyService.setOrganizationApplicant(supplyId,organizationDto.getId());
-		return new ResponseEntity<String>(gson.toJson(orgName),HttpStatus.OK);
+
+	@PostMapping(path="/excel-order-comparator",consumes =MediaType.MULTIPART_FORM_DATA_VALUE)
+	ResponseEntity<List<DepositItemComparatorDto>> generateExcelToOrderComparator(@RequestPart("file")MultipartFile file,
+			@RequestParam("organizationId")long organizationId) throws Exception{
+		List<ExcelItemDto> excelItems = excelToListUtils.excelDataToDeposit(file.getOriginalFilename(),organizationId);
+		List<DepositItemComparatorDto> comparatorsDto = depositControlService.getExcelToPuchaseOrderComparator(excelItems, organizationId);
+		return new ResponseEntity<List<DepositItemComparatorDto>>(comparatorsDto,HttpStatus.CREATED);
 	}
-	@GetMapping(path="/find-all-supply-items-by-organization-applicant")
-	ResponseEntity<List<SupplyItemRequestDto>> findAllSupplyItemsByOrganizationApplicant
-	(@RequestParam("organizationApplicantId")long organizationApplicantId){
-		List<SupplyItemRequestDto> supplyItems = supplyService.findAllSupplyItemsByOrganizationApplicant(organizationApplicantId);
-		return ResponseEntity.ok(supplyItems);
-	}
+	
+	
+	
+	
 	
 }

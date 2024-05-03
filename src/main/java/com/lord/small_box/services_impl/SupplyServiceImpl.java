@@ -71,7 +71,7 @@ public class SupplyServiceImpl implements SupplyService {
 		Organization org = organizationService.findById(organizationId);
 		Optional<Supply> check = supplyRepository.findBySupplyNumberAndOrganization(supplyDto.getSupplyNumber(),org);
 		if (check.isPresent()) {
-			if(check.get().getDate().get(Calendar.YEAR)==check.get().getDate().get(Calendar.YEAR)) {
+			if(check.get().getDate().get(Calendar.YEAR)==supplyDto.getDate().get(Calendar.YEAR)) {
 				throw new DuplicateItemException("El suministro numero: " + check.get().getSupplyNumber() + "-"
 			+ check.get().getDate().get(Calendar.YEAR) +" ya existe.");
 			}

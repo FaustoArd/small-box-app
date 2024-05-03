@@ -60,7 +60,6 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/smallbox/inputs/**").hasAnyRole("USER", "SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/smallboxes/**").hasAnyRole("USER", "SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/registration/**").hasRole("ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/organization/all-orgs").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/organization/org/**").hasAnyRole("USER", "SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/organization/all-orgs-by-id").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/organization/new-organization").hasRole("ADMIN");
@@ -78,6 +77,8 @@ public class SecurityConfiguration {
 					"ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/organization/get-max-amount").hasAnyRole("USER", "SUPERUSER",
 					"ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/organization/all-orgs").hasAnyRole("USER", "SUPERUSER",
+					"ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/work-templates/create").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/work-templates/by-id/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/work-templates/by-user-id/**").hasAnyRole("SUPERUSER", "ADMIN");
@@ -94,9 +95,9 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/smallbox/users/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/csv-utils/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/deposit-control/**").hasAnyRole("SUPERUSER", "ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/supply/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/supply/**").hasAnyRole("USER","SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/pdf-to-text/**").hasAnyRole("SUPERUSER", "ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/deposit-request/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/deposit-request/**").hasAnyRole("USER","SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/deposit-receiver/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.anyRequest().authenticated();
 
