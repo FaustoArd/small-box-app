@@ -43,10 +43,16 @@ export class DepositReceiverComponent implements OnInit {
     this.depositReceiverService.markAsReaded(depositReceiverId).subscribe({
       next:(readedData)=>{
         this.messageReaded = readedData;
-        this.snackBar.openSnackBar(String(this.messageReaded),'Cerrar',3000);
+        if(this.messageReaded){
+          this.snackBar.openSnackBar("Listo!",'Cerrar',3000);
+        }
+       
       },
       error:(errorData)=>{
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      },
+      complete:()=>{
+        this.getAllReceiversByOrganization();
       }
     })
   }

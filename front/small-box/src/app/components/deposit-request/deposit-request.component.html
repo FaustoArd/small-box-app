@@ -5,8 +5,8 @@
 
     <div class="container-flex">
         <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-8">
+          
+            <div class="col-md-8 ms-3">
                 <div class="jumbotron mt-3">
                     <div>
                         <h1 class="d-inline display-4">Nuevo</h1>
@@ -22,29 +22,35 @@
                 <div class="barofcolour mt-3">-</div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
+        <div class="row text-center mt-2">
+          
+            <div class="col-md-2 ms-3">
                 <h1>FECHA</h1>
+                <hr class="my-4">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-4">
                 <h1>ENVIADO A</h1>
+                <hr class="my-4">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <h1>CODIGO DE RECEPCION</h1>
+                <hr class="my-4">
             </div>
         </div>
         <div *ngIf="depositRequestDtos.length>0" >
-        <div class="row" *ngFor="let request of depositRequestDtos">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <a class="ms-1">{{request.requestDate}}</a>
+        <div class="row text-center" *ngFor="let request of depositRequestDtos">
+            
+            <div class="col-md-2 ms-3">
+                <h2 class="ms-1">{{request.requestDate}}</h2>
+                <hr class="my-4">
             </div>
-            <div class="col-md-2">
-                <h1>ENVIADO A</h1>
+            <div class="col-md-4">
+                <h2>{{request.destinationOrganizationName}}</h2>
+                <hr class="my-4">
             </div>
-            <div class="col-md-2">
-                <a class="ms-3">{{request.requestCode}}</a>
+            <div class="col-md-3">
+                <h2 class="ms-3">{{request.requestCode}}</h2>
+                <hr class="my-4">
             </div>
         </div>
     </div>
@@ -65,14 +71,14 @@
 
     <form [formGroup]="depositRequestFormBuilder">
         <div class="form-group text-center">
-            <label for="organizationId" class="form-label ">Seleccione su dependencia</label>
-            <select id="organizationId" formControlName="organizationId" class="form-select  border-dark">
+            <label for="mainOrganizationId" class="form-label ">Seleccione su dependencia</label>
+            <select id="mainOrganizationId" formControlName="mainOrganizationId" class="form-select  border-dark">
                 <option type="number" class="form-control border-dark " *ngFor="let orgs of organizationDtos"
-                    id="categoryId" [value]="orgs.id">
+                    id="mainOrganizationId" [value]="orgs.id">
                     {{orgs.organizationName}}</option>
             </select>
-            <div *ngIf="organizationId.invalid && (organizationId.dirty || organizationId.touched)" class="text-danger">
-                <div *ngIf="organizationId.errors?.['required']">
+            <div *ngIf="mainOrganizationId.invalid && (mainOrganizationId.dirty || mainOrganizationId.touched)" class="text-danger">
+                <div *ngIf="mainOrganizationId.errors?.['required']">
                     Debe seleccionar una organizacion
                 </div>
             </div>

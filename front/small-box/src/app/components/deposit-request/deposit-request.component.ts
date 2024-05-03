@@ -32,11 +32,11 @@ export class DepositRequestComponent implements OnInit {
   }
 
   depositRequestFormBuilder = this.formBuilder.group({
-    organizationId: [0, Validators.required]
+    mainOrganizationId: [0, Validators.required]
   });
 
-  get organizationId() {
-    return this.depositRequestFormBuilder.controls.organizationId;
+  get mainOrganizationId() {
+    return this.depositRequestFormBuilder.controls.mainOrganizationId;
   }
 
   closeCreateRequestTemplate(): void {
@@ -52,8 +52,12 @@ opencreateRequestTemplate( template: TemplateRef<any>) {
     template
   })
 
-  this.createRequestTemplateMatDialogRef.afterClosed().subscribe();
-  this.depositRequestFormBuilder.reset();
+  this.createRequestTemplateMatDialogRef.afterClosed().subscribe({
+    complete:()=>{
+      this.depositRequestFormBuilder.reset();
+    }
+  });
+ 
  }
 
  private supplyItemRequestMatDialogRef!:MatDialogRef<DialogTemplateComponent>;
@@ -71,8 +75,9 @@ opencreateRequestTemplate( template: TemplateRef<any>) {
   savedDepositRequestDto!: DepositRequestDto;
   createRequest() {
     if (this.depositRequestFormBuilder.valid) {
-      this.depositRequestDto = new DepositRequestDto();
+     this.depositRequestDto = new DepositRequestDto();
       this.depositRequestDto = Object.assign(this.depositRequestDto, this.depositRequestFormBuilder.value);
+      console.log("deposit request Dto!!!" + this.depositRequestDto.destinationOrganizationId)
       this.depositRequestService.createRequest(this.depositRequestDto).subscribe({
         next: (requestData) => {
           this.savedDepositRequestDto = requestData;
@@ -82,7 +87,7 @@ opencreateRequestTemplate( template: TemplateRef<any>) {
         },
         complete:()=>{
           this.createRequestTemplateMatDialogRef.close();
-          this.openSupplyItemRequestSelectionTemplate(this.savedDepositRequestDto.organizationId)
+        this.openSupplyItemRequestSelectionTemplate(this.savedDepositRequestDto.mainOrganizationId)
         }
       });
     }
@@ -199,6 +204,7 @@ quantityControlRequest!:QuantityControlRequest;
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);
       },complete:()=>{
         this.savedDepositControlrequestMatDialogRef.close();
+        this.getAllDepositRequests();
       }
     })
   }

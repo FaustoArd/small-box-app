@@ -24,7 +24,6 @@ import com.lord.small_box.repositories.SmallBoxRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.repositories.SmallBoxUnifierRepository;
 import com.lord.small_box.repositories.SubTotalRepository;
-import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.SmallBoxService;
 import lombok.RequiredArgsConstructor;
 

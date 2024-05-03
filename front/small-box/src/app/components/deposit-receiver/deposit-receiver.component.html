@@ -3,34 +3,42 @@
 <body>
     <div class="container-flex text-center">
         <div id="titleRow" class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2 mt-3">
+           
+            <div class="col-md-2 mt-3 ms-2">
                 <h1> Fecha</h1>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-3 mt-3">
+                <h1> ORIGEN</h1>
                 <hr class="my-4">
             </div>
             <div class="col-md-3  mt-3">
                 <h1>Codigo de envio</h1>
                 <hr class="my-4">
             </div>
-            <div class="col-md-3  mt-3">
-                <h1>Marcar como leido</h1>
+            <div class="col-md-2  mt-3">
+                <h1>-</h1>
                 <hr class="my-4">
             </div>
         </div>
         <div *ngFor="let receiver of depositReceiverDtos" class="row">
-            <div class="col-md-1"></div>
+          
 
-            <div class="col-md-2">
+            <div class="col-md-2 ms-2">
                 <h2>{{receiver.receptionDate}}</h2>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-3">
+                <h2>{{receiver.fromOrganizationName}}</h2>
                 <hr class="my-4">
             </div>
             <div class="col-md-3">
                 <h2>{{receiver.depositRequestCode}}</h2>
                 <hr class="my-4">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div *ngIf="!receiver.readed">
-                <button (click)="markAsReaded(receiver.id)" class="btn btn-lg"></button>
+                <button (click)="markAsReaded(receiver.id)" class="btn btn-lg">Marcar como leido</button>
                 <hr class="my-4">
             </div>
             <div *ngIf="receiver.readed">

@@ -1,6 +1,5 @@
 package com.lord.small_box.dtos;
 
-import com.lord.small_box.models.DepositReceiver;
 import lombok.Getter;
 import lombok.Setter;
 

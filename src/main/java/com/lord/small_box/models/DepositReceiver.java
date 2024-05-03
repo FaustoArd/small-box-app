@@ -32,6 +32,10 @@ public class DepositReceiver {
 	@JoinColumn(name="organization_id",referencedColumnName = "id")
 	private Organization organization;
 	
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinColumn(name="from_organization_id",referencedColumnName = "id")
+	private Organization fromOrganization;
+	
 	private String depositRequestCode;
 	
 	private boolean readed;

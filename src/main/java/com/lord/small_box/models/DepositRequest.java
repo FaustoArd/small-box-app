@@ -31,8 +31,12 @@ public class DepositRequest {
 	private Calendar requestDate;
 	
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinColumn(name="organization_id",referencedColumnName = "id")
-	private Organization organization;
+	@JoinColumn(name="main_organization_id",referencedColumnName = "id")
+	private Organization mainOrganization;
+	
+	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinColumn(name="destination_organization_id",referencedColumnName = "id")
+	private Organization destinationOrganization;
 	
 	private String requestCode;
 

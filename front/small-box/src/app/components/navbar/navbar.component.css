@@ -28,13 +28,13 @@ span{
 }
 #envelopeOff{
     color: white;
-    background: linear-gradient(245.59deg, rgb(70, 100, 187) 0%, rgb(113, 98, 188) 28.53%, #847abe 75.52%);
+    background: linear-gradient(245.59deg, rgb(32, 211, 59) 0%, rgb(42, 209, 53) 28.53%, #1fe611 75.52%);
     width: 1.5rem;
     height: 1.5rem;
 }
 #envelopeOn{
     color: white;
-    background: linear-gradient(245.59deg, rgb(20, 232, 34) 0%, rgb(11, 233, 11) 28.53%, #22e611 75.52%);
+    background: linear-gradient(245.59deg, rgb(222, 44, 16) 0%, rgb(228, 43, 15) 28.53%, #ca311a 75.52%);
     width: 1.5rem;
     height: 1.5rem;
 }

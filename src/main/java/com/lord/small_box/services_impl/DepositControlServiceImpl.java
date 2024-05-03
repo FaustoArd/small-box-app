@@ -1,75 +1,49 @@
 package com.lord.small_box.services_impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.BigBagItemDto;
 import com.lord.small_box.dtos.DepositControlDto;
 import com.lord.small_box.dtos.DepositDto;
 import com.lord.small_box.dtos.DepositItemComparatorDto;
-import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemCandidateDto;
-import com.lord.small_box.dtos.PurchaseOrderItemDto;
-import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
-import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
-import com.lord.small_box.dtos.SupplyDto;
-import com.lord.small_box.dtos.SupplyItemDto;
-import com.lord.small_box.dtos.SupplyReportDto;
 import com.lord.small_box.dtos.DepositResponseDto;
 import com.lord.small_box.dtos.ExcelItemDto;
-import com.lord.small_box.exceptions.DuplicateItemException;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.BigBagItemMapper;
 import com.lord.small_box.mappers.BigBagMapper;
 import com.lord.small_box.mappers.DepositControlMapper;
 import com.lord.small_box.mappers.DepositMapper;
-import com.lord.small_box.mappers.PurchaseOrderItemMapper;
-import com.lord.small_box.mappers.PurchaseOrderMapper;
-import com.lord.small_box.mappers.SupplyItemMapper;
-import com.lord.small_box.mappers.SupplyMapper;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.BigBag;
 import com.lord.small_box.models.BigBagItem;
 import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.DepositOrganizationSelect;
-import com.lord.small_box.models.ExcelItem;
-import com.lord.small_box.models.ExcelItemContainer;
 import com.lord.small_box.models.Organization;
-import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
-import com.lord.small_box.models.Supply;
-import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.repositories.BigBagItemRepository;
 import com.lord.small_box.repositories.BigBagRepository;
 import com.lord.small_box.repositories.DepositControlRepository;
 import com.lord.small_box.repositories.DepositOrganizationSelectRepository;
 import com.lord.small_box.repositories.DepositRepository;
-import com.lord.small_box.repositories.ExcelItemContainerRepository;
-import com.lord.small_box.repositories.ExcelItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
-import com.lord.small_box.repositories.SupplyItemRepository;
-import com.lord.small_box.repositories.SupplyRepository;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.DepositControlService;
-import com.lord.small_box.text_analisys.TextToPurchaseOrder;
-import com.lord.small_box.text_analisys.TextToSupply;
-import com.lord.small_box.utils.ExcelToListUtils;
+
 
 import lombok.RequiredArgsConstructor;
 

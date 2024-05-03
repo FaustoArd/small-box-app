@@ -1,7 +1,6 @@
 package com.lord.small_box.controllers;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.SmallBoxDto;
 import com.lord.small_box.dtos.SmallBoxUnifierDto;
@@ -24,7 +22,6 @@ import com.lord.small_box.mappers.SmallBoxMapper;
 import com.lord.small_box.mappers.SmallBoxUnifierMapper;
 import com.lord.small_box.models.SmallBox;
 import com.lord.small_box.models.SmallBoxUnifier;
-import com.lord.small_box.services.InputService;
 import com.lord.small_box.services.SmallBoxService;
 import com.lord.small_box.services.SmallBoxUnifierService;
 

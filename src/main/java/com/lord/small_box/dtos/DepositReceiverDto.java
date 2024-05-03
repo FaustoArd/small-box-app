@@ -14,6 +14,8 @@ public class DepositReceiverDto {
 	private Calendar receptionDate;
 
 	private long organizationId;
+	
+	private String fromOrganizationName;
 
 	List<DepositControlReceiverDto> depositControlReceivers;
 	

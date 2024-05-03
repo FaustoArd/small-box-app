@@ -17,8 +17,11 @@ public class DepositRequestDto {
 	
 	private Calendar requestDate;
 	
+	private long mainOrganizationId;
 	
-	private long organizationId;
+	private String destinationOrganizationName;
+	
+	private long destinationOrganizationId;
 	
 	private List<DepositControlRequestDto> depositControlRequestDtos;
 	

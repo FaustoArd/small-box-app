@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
@@ -29,7 +28,6 @@ import com.lord.small_box.repositories.DepositControlRepository;
 import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.SupplyItemRepository;
 import com.lord.small_box.repositories.SupplyRepository;
-import com.lord.small_box.services.DepositControlService;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.SupplyService;
 import com.lord.small_box.text_analisys.TextToSupply;

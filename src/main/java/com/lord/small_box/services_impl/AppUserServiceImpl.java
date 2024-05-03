@@ -1,7 +1,6 @@
 package com.lord.small_box.services_impl;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import com.lord.small_box.dtos.AppUserDto;
-import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.AppUserMapper;
 import com.lord.small_box.models.AppUser;

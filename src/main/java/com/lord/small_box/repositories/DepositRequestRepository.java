@@ -9,5 +9,5 @@ import com.lord.small_box.models.Organization;
 
 public interface DepositRequestRepository extends JpaRepository<DepositRequest, Long> {
 
-	public List<DepositRequest> findAllRequestByOrganizationIn(List<Organization> organizations);
+	public List<DepositRequest> findAllRequestByMainOrganizationIn(List<Organization> organizations);
 }
