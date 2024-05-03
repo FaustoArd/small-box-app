@@ -26,3 +26,15 @@ span{
     font-size: 14px;
     color: rgb(226, 225, 232);
 }
+#envelopeOff{
+    color: white;
+    background: linear-gradient(245.59deg, rgb(70, 100, 187) 0%, rgb(113, 98, 188) 28.53%, #847abe 75.52%);
+    width: 1.5rem;
+    height: 1.5rem;
+}
+#envelopeOn{
+    color: white;
+    background: linear-gradient(245.59deg, rgb(20, 232, 34) 0%, rgb(11, 233, 11) 28.53%, #22e611 75.52%);
+    width: 1.5rem;
+    height: 1.5rem;
+}

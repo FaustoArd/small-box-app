@@ -14,23 +14,26 @@
             </div>
             <div class="col-md-1">
                 <div>
-                <button mat-button [matMenuTriggerFor]="depositRequestMenu" class="text-white">Pedido</button>
-                <mat-menu #depositRequestMenu yPosition="above">
-                    <button mat-menu-item routerLink="/deposit-request">Crear</button>
-                    <button mat-menu-item routerLink="/open-container">Ver</button>
-                </mat-menu>
-            </div>
+                    <button mat-button [matMenuTriggerFor]="depositRequestMenu" class="text-white">Pedido</button>
+                    <mat-menu #depositRequestMenu yPosition="above">
+                        <button mat-menu-item routerLink="/deposit-request">Crear</button>
+                        <button mat-menu-item routerLink="/open-container">Ver</button>
+                    </mat-menu>
+                </div>
             </div>
             <div class="col-md-1">
-            <div>
-                <button mat-button [matMenuTriggerFor]="depositReceiverMenu" class="text-white">INBOX</button>
-                <mat-menu #depositReceiverMenu yPosition="above">
-                    <button mat-menu-item routerLink="/deposit-receiver">Ver</button>
-                    <button mat-menu-item routerLink="/open-container">Ver</button>
-                </mat-menu>
+                <div>
+                    <button mat-button [matMenuTriggerFor]="depositReceiverMenu" class="text-white">INBOX</button>
+                    <mat-menu #depositReceiverMenu yPosition="above">
+                        <button mat-menu-item routerLink="/deposit-receiver">Ver</button>
+                       
+                    </mat-menu>
+                    <img *ngIf="messageQuantity<=0" id="envelopeOff" class="ms-1 mt-1" src="./assets/img/envelope-open-text-solid.svg">
+                    <img *ngIf="messageQuantity>0" id="envelopeOn" class="ms-1 mt-1" src="./assets/img/envelope-open-text-solid.svg">
+                    <small *ngIf="messageQuantity!=null" class="text-white">{{messageQuantity}}</small>
+                </div>
+               
             </div>
-            </div>
-        
             <div class="col-md-1">
                 <button mat-button [matMenuTriggerFor]="userMenu" class="text-white">Usuarios</button>
                 <mat-menu #userMenu yPosition="above">
@@ -40,26 +43,28 @@
                 </mat-menu>
             </div>
             <!-- <div class="col-md-1 ms-3" *ngIf="!adminAuth "></div> -->
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <button mat-button [matMenuTriggerFor]="templateMenu" class="text-white">Plantillas</button>
                 <mat-menu #templateMenu yPosition="above">
                     <button mat-menu-item routerLink="/memo-create">Memo</button>
                     <button mat-menu-item routerLink="/work-template-list">Ver</button>
+                    <button mat-menu-item routerLink="/dispatch-page">Despacho</button>
                 </mat-menu>
                 <!-- <button mat-button routerLink="/dispatch"  class="text-white ms-5">Despacho</button> -->
-                <button mat-button routerLink="/dispatch-page" class="text-white ms-5">Despacho</button>
+
                 <button mat-button routerLink="/deposit-home" class="text-white ms-5">Suministros</button>
             </div>
             <div class="col-md-1 ">
-              <button routerLink="/user-panel"  class="btn btn-sm text-white border-primary">
-                    DEPENDENCIA: <small *ngIf="!userMainOrganizationSelected" class="text-danger">{{userMainOrganizationName}}</small>
+                <button routerLink="/user-panel" class="btn btn-sm text-white border-primary">
+                    DEPENDENCIA: <small *ngIf="!userMainOrganizationSelected"
+                        class="text-danger">{{userMainOrganizationName}}</small>
                     <small *ngIf="userMainOrganizationSelected" class="text-white">{{userMainOrganizationName}}</small>
-                 </button>
-             
-         
-                </div>
+                </button>
+
+
+            </div>
             <div class="col-md-2"></div>
-          
+
             <div class="col-md-2  top-0 end-0 mt-1">
                 <h4 id="user-name" class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>
                 <button id="btnSession" (click)="onLogout()" class="btn btn-sm ms-3 ">Cerrar sesion</button>
@@ -92,12 +97,14 @@
                 <button mat-button routerLink="/dispatch-page" class="text-white ms-5">Despacho</button>
                 <button mat-button routerLink="/deposit-home" class="text-white ms-5">Suministros</button>
                 <button mat-button routerLink="/user-panel" class="text-white ms-4">Configuracion</button>
-                <button routerLink="/user-panel" *ngIf="!userMainOrganizationSelected" class="btn btn-sm text-white border-primary">
+                <button routerLink="/user-panel" *ngIf="!userMainOrganizationSelected"
+                    class="btn btn-sm text-white border-primary">
                     DEPENDENCIA: <small class="text-danger">{{userMainOrganizationName}}</small> </button>
-                <button routerLink="/user-panel" *ngIf="userMainOrganizationSelected" class="btn btn-sm text-white border-primary">
+                <button routerLink="/user-panel" *ngIf="userMainOrganizationSelected"
+                    class="btn btn-sm text-white border-primary">
                     DEPENDENCIA: <small class="text-success">{{userMainOrganizationName}}</small> </button>
             </div>
-         
+
             <div class="col-md-2"></div>
             <div class="col-md-1 ms-5 mt-1">
                 <h4 id="user-name" class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>
@@ -124,9 +131,11 @@
                 </mat-menu>
             </div>
             <div class="col-md-7">
-                <button routerLink="/user-panel" *ngIf="!userMainOrganizationSelected" class="btn btn-sm text-white border-primary">
+                <button routerLink="/user-panel" *ngIf="!userMainOrganizationSelected"
+                    class="btn btn-sm text-white border-primary">
                     DEPENDENCIA: <small class="text-danger">{{userMainOrganizationName}}</small> </button>
-                <button routerLink="/user-panel" *ngIf="userMainOrganizationSelected" class="btn btn-sm text-white border-primary">
+                <button routerLink="/user-panel" *ngIf="userMainOrganizationSelected"
+                    class="btn btn-sm text-white border-primary">
                     DEPENDENCIA: <small class="text-success">{{userMainOrganizationName}}</small> </button>
             </div>
             <div class="col-md-1 ms-5 mt-1">

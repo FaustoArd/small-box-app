@@ -21,6 +21,7 @@ export class DepositReceiverComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    
       this.getAllReceiversByOrganization();
   }
 
@@ -30,6 +31,19 @@ export class DepositReceiverComponent implements OnInit {
     this.depositReceiverService.findAllReceiversByOrganization(organizationId).subscribe({
       next:(receiverDatas)=>{
         this.depositReceiverDtos = receiverDatas;
+        console.log(this.depositReceiverDtos)
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    });
+  }
+  messageReaded!:boolean;
+  markAsReaded(depositReceiverId:number){
+    this.depositReceiverService.markAsReaded(depositReceiverId).subscribe({
+      next:(readedData)=>{
+        this.messageReaded = readedData;
+        this.snackBar.openSnackBar(String(this.messageReaded),'Cerrar',3000);
       },
       error:(errorData)=>{
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);

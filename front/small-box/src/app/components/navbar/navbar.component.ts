@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
+import { DepositReceiverService } from 'src/app/services/deposit-receiver.service';
 import { OrganizationService } from 'src/app/services/organization.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 
@@ -19,9 +20,9 @@ adminAuth!:boolean;
 superUserAuth!:boolean;
 currentUsername!:string;
 destinationsList!:Array<string>
-
+messageQuantity!:number;
 constructor(private cookieService:CookieStorageService,private router:Router,private organizationService:OrganizationService
-  ,private snackBarService:SnackBarService){}
+  ,private snackBarService:SnackBarService,private depositReceiverService:DepositReceiverService){}
 
 
 ngOnInit(): void {
@@ -31,6 +32,7 @@ ngOnInit(): void {
     this.userAuth = this.decodeUserToken();*/
     this.getUserOrg();
     this.currentUsername = this.cookieService.getCurrentUsername();
+    this.countDepositReceiverMessages();
     
 }
 onLogout(){
@@ -85,6 +87,18 @@ onLogout(){
         }
       });
     
+  }
+
+  countDepositReceiverMessages(){
+    const orgId = Number(this.cookieService.getUserMainOrganizationId());
+    this.depositReceiverService.countMessages(orgId).subscribe({
+      next:(messageQuantityData)=>{
+        this.messageQuantity = messageQuantityData;
+      },
+      error:(errorData)=>{
+        this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+      }
+    })
   }
   
  /* decodeAdminToken():boolean{

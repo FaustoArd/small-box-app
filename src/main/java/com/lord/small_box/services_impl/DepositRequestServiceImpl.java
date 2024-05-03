@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lord.small_box.dtos.DepositControlRequestDto;
 import com.lord.small_box.dtos.DepositRequestDto;
@@ -54,10 +55,10 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 
 	@Autowired
 	private RandomCodeGeneratorUtil randomCodeGeneratorUtil;
-	
+
 	@Autowired
 	private AppUserService appUserService;
-	
+
 	private static final Logger log = LoggerFactory.getLogger(DepositControlRequestMapperImpl.class);
 
 	@Override
@@ -71,27 +72,26 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 		DepositRequest savedDepositRequest = depositRequestRepository.save(request);
 		DepositRequestDto requestDto = DepositRequestMapper.INSTANCE.requestToDto(savedDepositRequest);
 		return requestDto;
-}
-	
+	}
+
 	@Override
 	public DepositRequestDto saveItemsToRequest(DepositRequestDto depositRequestDto) {
 		DepositRequest request = depositRequestRepository.findById(depositRequestDto.getId())
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro el pedido de deposito"));
-		
-		List<DepositControlRequestDto> controlRequestDtos = mapDtoToDepositControlRequest(depositRequestDto,
-				request);
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el pedido de deposito"));
+		List<DepositControlRequest> controlRequests = mapDtoToDepositControlRequest(depositRequestDto, request);
+		List<DepositControlRequest> savedControlRequests = depositControlRequestRepository.saveAll(controlRequests);
+		List<DepositControlRequestDto> controlRequestDtos= DepositControlRequestMapper.INSTANCE.requestsToDtos(savedControlRequests);
 		DepositRequestDto requestDto = DepositRequestMapper.INSTANCE.requestToDto(request);
 		requestDto.setDepositControlRequestDtos(controlRequestDtos);
 		return requestDto;
 	}
 
-	private List<DepositControlRequestDto> mapDtoToDepositControlRequest(DepositRequestDto depositRequestDto,
+	private List<DepositControlRequest> mapDtoToDepositControlRequest(DepositRequestDto depositRequestDto,
 			DepositRequest depositRequest) {
 		log.info("Map dto to deposit control request");
 		List<DepositControlRequest> controlRequests = depositRequestDto.getDepositControlRequestDtos().stream()
 				.map(controlDto -> {
 					DepositControlRequest controlRequest = new DepositControlRequest();
-					
 					controlRequest.setItemCode(controlDto.getItemCode());
 					controlRequest.setItemMeasureUnit(controlDto.getItemMeasureUnit());
 					controlRequest.setItemQuantity(controlDto.getItemQuantity());
@@ -100,34 +100,36 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 					return controlRequest;
 				}).toList();
 
-		List<DepositControlRequest> savedControlRequests = depositControlRequestRepository.saveAll(controlRequests);
-		return DepositControlRequestMapper.INSTANCE.requestsToDtos(savedControlRequests);
+		return controlRequests;
+		
 	}
 
+	@Transactional
 	@Override
 	public String sendRequest(long depositRequestId, long destinationOrganizationId) {
 		log.info("Send deposit request");
 		DepositRequest depositRequest = depositRequestRepository.findById(depositRequestId)
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro el pedido de deposito"));
-		
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el pedido de deposito"));
+
 		Organization destinationOrganization = organizationRepository.findById(destinationOrganizationId)
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion"));
-		
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
+
 		DepositReceiver depositReceiver = mapDepositRequestToDepositReceiver(depositRequest, destinationOrganization);
-		List<DepositControlRequest> controlRequests = depositControlRequestRepository.findAllByDepositRequest(depositRequest);
-		mapControlRequestToControlReceiver(controlRequests,depositReceiver);
-		String generatedRequestCode =  generatedRequestCode(depositRequest.getOrganization().getId(),
-				depositRequestId,destinationOrganizationId,depositReceiver.getId()); 
+		List<DepositControlRequest> controlRequests = depositControlRequestRepository
+				.findAllByDepositRequest(depositRequest);
+		mapControlRequestToControlReceiver(controlRequests, depositReceiver);
+		String generatedRequestCode = generatedRequestCode(depositRequest.getOrganization().getId(), depositRequestId);
+		depositReceiver.setDepositRequestCode(generatedRequestCode);
+		depositReceiverRepository.save(depositReceiver);
 		depositRequest.setRequestCode(generatedRequestCode);
 		DepositRequest updatedDepositRequest = depositRequestRepository.save(depositRequest);
 		return updatedDepositRequest.getRequestCode();
 	}
 
-	private String generatedRequestCode(long organizationRequestId, long depositRequestId, long organizationReceiverId,
-			long depositReceiverId) {
+	private String generatedRequestCode(long organizationRequestId, long depositRequestId) {
 		log.info("Generate request code");
-		return "DS-" + organizationRequestId + "-P-" + depositRequestId + "-DR-" + organizationReceiverId + "-DP-"
-				+ depositReceiverId + "-" + randomCodeGeneratorUtil.generateRandomCode(12, true, true);
+		return "DS-" + organizationRequestId + "-P-" + depositRequestId
+				+ randomCodeGeneratorUtil.generateRandomCode(12, true, true);
 	}
 
 	private DepositReceiver mapDepositRequestToDepositReceiver(DepositRequest depositRequest,
@@ -136,7 +138,7 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 		DepositReceiver depositReceiver = new DepositReceiver();
 		depositReceiver.setOrganization(destinationOrganization);
 		depositReceiver.setReceptionDate(Calendar.getInstance());
-		return depositReceiverRepository.save(depositReceiver);
+		return depositReceiver;
 	}
 
 	private List<DepositControlReceiver> mapControlRequestToControlReceiver(List<DepositControlRequest> controlRequests,
@@ -168,13 +170,9 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 	public List<DepositControlRequestDto> findAllRequestControlsByDepositRequest(long depositRequestId) {
 		log.info("Find all control requests by deposit request");
 		DepositRequest request = depositRequestRepository.findById(depositRequestId)
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro el pedido de deposito"));
-		List<DepositControlRequest> controlRequests= depositControlRequestRepository.findAllByDepositRequest(request);
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el pedido de deposito"));
+		List<DepositControlRequest> controlRequests = depositControlRequestRepository.findAllByDepositRequest(request);
 		return DepositControlRequestMapper.INSTANCE.requestsToDtos(controlRequests);
 	}
-
-	
-
-	
 
 }

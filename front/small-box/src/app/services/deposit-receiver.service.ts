@@ -28,4 +28,13 @@ export class DepositReceiverService {
       (`${DEPOSIT_RECEIVER_BASE_URL}/find-receivers-by-organization?organizationId=${organizationId}`)
       .pipe(catchError(this.handleError));
     }
+    markAsReaded(depositReceiverId:number):Observable<boolean>{
+      return this.http.get<boolean>
+      (`${DEPOSIT_RECEIVER_BASE_URL}/mark-as-readed?depositReceiverId=${depositReceiverId}`,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
+    countMessages(organizationId:number):Observable<number>{
+      return this.http.get<number>(`${DEPOSIT_RECEIVER_BASE_URL}/count-messages?organizationId=${organizationId}`,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
 }

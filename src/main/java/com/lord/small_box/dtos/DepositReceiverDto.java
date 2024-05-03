@@ -16,5 +16,9 @@ public class DepositReceiverDto {
 	private long organizationId;
 
 	List<DepositControlReceiverDto> depositControlReceivers;
+	
+	private String depositRequestCode;
+	
+	private boolean readed;
 
 }

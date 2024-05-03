@@ -10,6 +10,7 @@ import { SmallBoxComponent } from './components/small-box/small-box.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ContainerComponent } from './components/container/container.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
@@ -101,6 +102,7 @@ import { DepositReceiverComponent } from './components/deposit-receiver/deposit-
      MatDialogModule,
      NgxCaptureModule,
      NgxPaginationModule,
+     MatIconModule
    
     
     

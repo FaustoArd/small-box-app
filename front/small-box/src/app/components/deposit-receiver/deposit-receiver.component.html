@@ -1,19 +1,42 @@
 <app-navbar></app-navbar>
-<body>
-    <div class="container-flex">
-        <div class="row">
-            <div class="col-md-2">
 
+<body>
+    <div class="container-flex text-center">
+        <div id="titleRow" class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-2 mt-3">
+                <h1> Fecha</h1>
+                <hr class="my-4">
             </div>
-            <div class="col-md-10">
-                <div *ngFor="let receiver of depositReceiverDtos">
-                <div class="d-inline">
-                    <h1>{{receiver.receptionDate}}</h1>
-                    <div *ngFor="let control of receiver.depositControlReceivers">
-                    <span>{{control.itemCode}}</span>
-                    </div>
-                </div>
-                </div>
+            <div class="col-md-3  mt-3">
+                <h1>Codigo de envio</h1>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-3  mt-3">
+                <h1>Marcar como leido</h1>
+                <hr class="my-4">
+            </div>
+        </div>
+        <div *ngFor="let receiver of depositReceiverDtos" class="row">
+            <div class="col-md-1"></div>
+
+            <div class="col-md-2">
+                <h2>{{receiver.receptionDate}}</h2>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-3">
+                <h2>{{receiver.depositRequestCode}}</h2>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-3">
+                <div *ngIf="!receiver.readed">
+                <button (click)="markAsReaded(receiver.id)" class="btn btn-lg"></button>
+                <hr class="my-4">
+            </div>
+            <div *ngIf="receiver.readed">
+                <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/thumbs-up-regular.svg">
+             <hr class="my-4">
+            </div>
             </div>
         </div>
     </div>

@@ -30,4 +30,14 @@ public class DepositReceiverController {
 		List<DepositReceiverDto> receiverDtos = depositRecevierService.findAllReceiversByOrganization(organizationId);
 		return ResponseEntity.ok(receiverDtos);
 	}
+	@GetMapping(path = "/mark-as-readed")
+	ResponseEntity<Boolean> markAsReaded(@RequestParam("depositReceiverId")long  depositReceiverId){
+		boolean readed = depositRecevierService.markAsReaded(depositReceiverId);
+		return ResponseEntity.ok(readed);
+	}
+	@GetMapping(path = "/count-messages")
+	ResponseEntity<Long> countMessages(@RequestParam("organizationId")long organizationId){
+		long messageQuantity = depositRecevierService.countMessages(organizationId);
+		return ResponseEntity.ok(messageQuantity);
+	}
 }

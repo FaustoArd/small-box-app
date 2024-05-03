@@ -8,4 +8,8 @@ export class DepositReceiverDto{
 	organizationId!:number;
 
 	 depositControlReceivers!:DepositControlReceiverDto[];
+
+	depositRequestCode!:string;
+
+	readed!:boolean;
 }

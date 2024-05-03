@@ -1,0 +1,23 @@
+body{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+h1{
+    font-family: "Anton", sans-serif;
+    font-weight: bold;
+}
+h2{
+    font-family: "Anton", sans-serif;
+    font-weight: bold;
+    color: blue;
+}
+button{
+    background: linear-gradient(245.59deg, rgb(111, 111, 199)33.33%, rgb(145, 124, 202) 33.33%, #6f5cae 33.33%);
+    color:red;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
+}
+#thumbsUp{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+

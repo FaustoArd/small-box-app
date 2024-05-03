@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lord.small_box.dtos.DepositReceiverDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.DepositRecieverMapper;
 import com.lord.small_box.models.DepositReceiver;
 import com.lord.small_box.models.Organization;
@@ -34,5 +35,21 @@ public class DepositReceiverServiceImpl implements DepositRecevierService {
 		Organization organization = organizationService.findById(organizationId);
 		List<DepositReceiver>  receivers = depositReceiverRepository.findAllByOrganization(organization);
 		return DepositRecieverMapper.INSTANCE.receiversToDtos(receivers);
+	}
+
+	@Override
+	public boolean markAsReaded(long depositReceaverId) {
+		DepositReceiver depositReceiver = depositReceiverRepository.findById(depositReceaverId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro la recepcion del pedido de deposito"));
+		depositReceiver.setReaded(true);
+		DepositReceiver updatedDepositReceiver =  depositReceiverRepository.save(depositReceiver);
+		return updatedDepositReceiver.isReaded();
+	}
+
+	@Override
+	public long countMessages(long organizationId) {
+		Organization organization = organizationService.findById(organizationId);
+		return depositReceiverRepository.findAllByOrganization(organization).stream()
+				.filter(receiver -> !receiver.isReaded()).count();
 	}
 }
