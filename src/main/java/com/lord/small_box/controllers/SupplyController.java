@@ -42,7 +42,7 @@ public class SupplyController {
 	
 	@GetMapping(path ="/find-all-supplies-by-org")
 	ResponseEntity<List<SupplyDto>> findAllSuppliesByOrganization(@RequestParam("organizationId")long organizationId){
-		List<SupplyDto> supplyDtos = supplyService.findAllSuppliesByOrganizationId(organizationId);
+		List<SupplyDto> supplyDtos = supplyService.findAllSuppliesByMainOrganizationId(organizationId);
 		return ResponseEntity.ok(supplyDtos);
 	}
 	@GetMapping(path = "/find-supply-items")
@@ -73,15 +73,12 @@ public class SupplyController {
 		return ResponseEntity.ok(supplyCorrectionNote);
 	}
 	
-	
-
 	@DeleteMapping(path="/delete-supply/{supplyId}")
 	ResponseEntity<Integer> deleteSupply(@PathVariable("supplyId")long supplyId){
 		int supplyNumberDeleted = supplyService.deleteSupply(supplyId);
 		return ResponseEntity.ok(supplyNumberDeleted);
 	}
 	
-
 	@GetMapping(path="/find-supply/{supplyId}")
 	ResponseEntity<SupplyDto> findSupplyById(@PathVariable("supplyId")long supplyId){
 		SupplyDto dto = supplyService.findsupply(supplyId);
@@ -93,10 +90,11 @@ public class SupplyController {
 		String orgName = supplyService.setOrganizationApplicant(supplyId,organizationDto.getId());
 		return new ResponseEntity<String>(gson.toJson(orgName),HttpStatus.OK);
 	}
+	
 	@GetMapping(path="/find-all-supply-items-by-organization-applicant")
 	ResponseEntity<List<SupplyItemRequestDto>> findAllSupplyItemsByOrganizationApplicant
-	(@RequestParam("organizationApplicantId")long organizationApplicantId){
-		List<SupplyItemRequestDto> supplyItems = supplyService.findAllSupplyItemsByOrganizationApplicant(organizationApplicantId);
+	(@RequestParam("mainOrganization")long mainOrganization, @RequestParam("organizationApplicantId")long organizationApplicantId){
+		List<SupplyItemRequestDto> supplyItems = supplyService.findAllSupplyItemsByOrganizationApplicant(mainOrganization,organizationApplicantId);
 		return ResponseEntity.ok(supplyItems);
 	}
 }

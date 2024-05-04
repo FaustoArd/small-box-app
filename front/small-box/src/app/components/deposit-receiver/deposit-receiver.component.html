@@ -2,50 +2,107 @@
 
 <body>
     <div class="container-flex text-center">
-        <div id="titleRow" class="row">
-           
-            <div class="col-md-2 mt-3 ms-2">
-                <h1> Fecha</h1>
+        <div class="row">
+            <div class="col mt-2">
+                <div class="barofcolourRed mt-0">
+                    <h1 class="text-center">INBOX</h1>
+                </div>
+
+            </div>
+        </div>
+        <div id="titleRow" class="row mt-3">
+
+            <div class="col-md-2 mt-1 ms-2">
+                <div class="barofcolourColumn mt-0">
+                    <h2> Fecha</h2>
+                </div>
                 <hr class="my-4">
             </div>
             <div class="col-md-3 mt-3">
-                <h1> ORIGEN</h1>
+                <div class="barofcolourColumn mt-0">
+                    <h2>ORIGEN</h2>
+                </div>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-1 mt-3">
+                <div class="barofcolourColumn mt-0">
+                    <h2>ITEMS</h2>
+                </div>
                 <hr class="my-4">
             </div>
             <div class="col-md-3  mt-3">
-                <h1>Codigo de envio</h1>
+                <div class="barofcolourColumn mt-0">
+                    <h2>Codigo de envio</h2>
+                </div>
                 <hr class="my-4">
             </div>
             <div class="col-md-2  mt-3">
-                <h1>-</h1>
+                <div class="barofcolourColumn mt-0">
+                    <h2>-</h2>
+                </div>
                 <hr class="my-4">
             </div>
         </div>
         <div *ngFor="let receiver of depositReceiverDtos" class="row">
-          
+
 
             <div class="col-md-2 ms-2">
-                <h2>{{receiver.receptionDate}}</h2>
+                <h3>{{receiver.receptionDate}}</h3>
                 <hr class="my-4">
             </div>
             <div class="col-md-3">
-                <h2>{{receiver.fromOrganizationName}}</h2>
+                <h3>{{receiver.fromOrganizationName}}</h3>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-1">
+               <button (click)="openDialogDepositCreation(depositControlReceiversTemplate,receiver.id)" class="btn btn-sm">-</button>
                 <hr class="my-4">
             </div>
             <div class="col-md-3">
-                <h2>{{receiver.depositRequestCode}}</h2>
+                <h3>{{receiver.depositRequestCode}}</h3>
                 <hr class="my-4">
             </div>
             <div class="col-md-2">
                 <div *ngIf="!receiver.readed">
-                <button (click)="markAsReaded(receiver.id)" class="btn btn-lg">Marcar como leido</button>
-                <hr class="my-4">
-            </div>
-            <div *ngIf="receiver.readed">
-                <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/thumbs-up-regular.svg">
-             <hr class="my-4">
-            </div>
+                    <button (click)="markAsReaded(receiver.id)" class="btn btn-lg">Marcar como leido</button>
+                    <hr class="my-4">
+                </div>
+                <div *ngIf="receiver.readed">
+                    <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/thumbs-up-regular.svg">
+                    <hr class="my-4">
+                </div>
             </div>
         </div>
     </div>
 </body>
+<ng-template #depositControlReceiversTemplate>
+    <div class="row">
+        <h2>Enviado por: {{depositReceiverDataShow.fromOrganizationName}}</h2>
+    </div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-6">
+            <table class="table table-flex table-bordered h-75">
+                <thead>
+                    <tr>
+                        <th scope="col">CODIGO</th>
+                        <th scope="col">U.MEDIDA</th>
+                        <th scope="col">DESCRIPCION</th>
+                       <th scope="col">CANTIDAD</th>
+                       
+
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    <tr *ngFor="let controlReceivce of depositControlReceiverDtos">
+                        <td id="fullBlue_td">{{controlReceivce.itemCode}}</td>
+                        <td>{{controlReceivce.itemMeasureUnit}}</td>
+                        <td>{{controlReceivce.itemDescription}}</td>
+                        <td *ngIf="controlReceivce.itemQuantity>=10" class="text-success fw-bold">{{controlReceivce.itemQuantity}}</td>
+                        <td *ngIf="controlReceivce.itemQuantity<10" class="text-danger fw-bold">{{controlReceivce.itemQuantity}}</td>
+                        </tr>
+ </tbody>
+            </table>
+        </div>
+    </div>
+</ng-template>

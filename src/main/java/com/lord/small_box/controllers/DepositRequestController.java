@@ -44,9 +44,8 @@ public class DepositRequestController {
 	}
 	
 	@PostMapping(path="/send-request")
-	ResponseEntity<String> sendRequest(@RequestParam("depositRequestId")long depositRequestId
-			,@RequestParam("destinationOrganizationId")long destinationOrganizationId){
-		String requestCode = depositRequestService.sendRequest(depositRequestId, destinationOrganizationId);
+	ResponseEntity<String> sendRequest(@RequestParam("depositRequestId")long depositRequestId){
+		String requestCode = depositRequestService.sendRequest(depositRequestId);
 		return new ResponseEntity<String>(gson.toJson(requestCode),HttpStatus.CREATED);
 	}
 	@GetMapping(path="/find-requests")

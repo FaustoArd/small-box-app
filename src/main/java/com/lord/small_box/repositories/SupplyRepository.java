@@ -11,9 +11,11 @@ import com.lord.small_box.models.Supply;
 
 public interface SupplyRepository extends JpaRepository<Supply, Long>{
 
-	public List<Supply> findAllByOrganization(Organization organization,Sort sort);
+	public List<Supply> findAllByMainOrganization(Organization mainOrganization,Sort sort);
 	
-	public Optional<Supply> findBySupplyNumberAndOrganization(int orderNumber,Organization organization);
+	public List<Supply> findAllByMainOrganizationAndApplicantOrganization(Organization mainOrganization,Organization applicantOrgazanition);
 	
-	public List<Supply> findAllByOrganizationApplicant(Organization organizationApplicant);
+	public Optional<Supply> findBySupplyNumberAndMainOrganization(int orderNumber,Organization organization);
+	
+	public List<Supply> findAllByApplicantOrganization(Organization applicantOrganization);
 }

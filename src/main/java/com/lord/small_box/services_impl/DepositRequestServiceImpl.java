@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lord.small_box.dtos.DepositControlRequestDto;
@@ -55,18 +56,20 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 	@Autowired
 	private AppUserService appUserService;
 
-	private static final Logger log = LoggerFactory.getLogger(DepositControlRequestMapperImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(DepositRequestServiceImpl.class);
+	
+	private static final Sort depositRequestDateSort = Sort.by("requestDate").descending();
 
 	@Override
 	public DepositRequestDto createRequest(DepositRequestDto depositRequestDto) {
 		log.info("Destination organization id value:" + depositRequestDto.getDestinationOrganizationId());
 		log.info("Create deposit request");
-		Organization mainOrganization = organizationRepository.findById(depositRequestDto.getMainOrganizationId())
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
+		Organization mainOrganization = findOrgById(depositRequestDto.getMainOrganizationId());
+		Organization destinationOrganization = findOrgById(depositRequestDto.getDestinationOrganizationId());
 		DepositRequest request = DepositRequestMapper.INSTANCE.dtoToRequest(depositRequestDto);
 		request.setMainOrganization(mainOrganization);
 		request.setRequestDate(Calendar.getInstance());
-		request.setDestinationOrganization(null);
+		request.setDestinationOrganization(destinationOrganization);
 		DepositRequest savedDepositRequest = depositRequestRepository.save(request);
 		DepositRequestDto requestDto = DepositRequestMapper.INSTANCE.requestToDto(savedDepositRequest);
 		return requestDto;
@@ -74,11 +77,11 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 
 	@Override
 	public DepositRequestDto saveItemsToRequest(DepositRequestDto depositRequestDto) {
-		DepositRequest request = depositRequestRepository.findById(depositRequestDto.getId())
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el pedido de deposito"));
+		DepositRequest request = findRequestById(depositRequestDto.getId());
 		List<DepositControlRequest> controlRequests = mapDtoToDepositControlRequest(depositRequestDto, request);
 		List<DepositControlRequest> savedControlRequests = depositControlRequestRepository.saveAll(controlRequests);
-		List<DepositControlRequestDto> controlRequestDtos= DepositControlRequestMapper.INSTANCE.requestsToDtos(savedControlRequests);
+		List<DepositControlRequestDto> controlRequestDtos = DepositControlRequestMapper.INSTANCE
+				.requestsToDtos(savedControlRequests);
 		DepositRequestDto requestDto = DepositRequestMapper.INSTANCE.requestToDto(request);
 		requestDto.setDepositControlRequestDtos(controlRequestDtos);
 		return requestDto;
@@ -99,33 +102,26 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 				}).toList();
 
 		return controlRequests;
-		
+
 	}
 
 	@Transactional
 	@Override
-	public String sendRequest(long depositRequestId, long destinationOrganizationId) {
+	public String sendRequest(long depositRequestId) {
 		log.info("Send deposit request");
-		DepositRequest depositRequest = depositRequestRepository.findById(depositRequestId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el pedido de deposito"));
-
-		Organization destinationOrganization = organizationRepository.findById(destinationOrganizationId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
-
+		DepositRequest depositRequest = findRequestById(depositRequestId);
+		Organization destinationOrganization = findOrgById(depositRequest.getDestinationOrganization().getId());
 		DepositReceiver depositReceiver = mapDepositRequestToDepositReceiver(depositRequest, destinationOrganization);
 		List<DepositControlRequest> controlRequests = depositControlRequestRepository
 				.findAllByDepositRequest(depositRequest);
 		mapControlRequestToControlReceiver(controlRequests, depositReceiver);
-		String generatedRequestCode = generatedRequestCode(depositRequest.getMainOrganization().getId(), depositRequestId);
+		String generatedRequestCode = generatedRequestCode(depositRequest.getMainOrganization().getId(),
+				depositRequestId);
 		depositReceiver.setDepositRequestCode(generatedRequestCode);
-		
-		Organization fromOrganization = organizationRepository.findById(depositRequest.getMainOrganization().getId())
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
-		
+		Organization fromOrganization = findOrgById(depositRequest.getMainOrganization().getId());
 		depositReceiver.setFromOrganization(fromOrganization);
 		depositReceiverRepository.save(depositReceiver);
 		depositRequest.setRequestCode(generatedRequestCode);
-		depositRequest.setDestinationOrganization(destinationOrganization);
 		DepositRequest updatedDepositRequest = depositRequestRepository.save(depositRequest);
 		return updatedDepositRequest.getRequestCode();
 	}
@@ -166,17 +162,26 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 		log.info("Find all request by user organization assigned");
 		AppUser user = appUserService.findById(userId);
 		List<Organization> orgs = user.getOrganizations().stream().map(org -> org).toList();
-		List<DepositRequest> requests = depositRequestRepository.findAllRequestByMainOrganizationIn(orgs);
+		List<DepositRequest> requests = depositRequestRepository.findAllRequestByMainOrganizationIn(orgs,depositRequestDateSort);
 		return DepositRequestMapper.INSTANCE.requestToDtos(requests);
 	}
 
 	@Override
 	public List<DepositControlRequestDto> findAllRequestControlsByDepositRequest(long depositRequestId) {
 		log.info("Find all control requests by deposit request");
-		DepositRequest request = depositRequestRepository.findById(depositRequestId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el pedido de deposito"));
+		DepositRequest request = findRequestById(depositRequestId);
 		List<DepositControlRequest> controlRequests = depositControlRequestRepository.findAllByDepositRequest(request);
 		return DepositControlRequestMapper.INSTANCE.requestsToDtos(controlRequests);
+	}
+
+	private Organization findOrgById(long organizationId) {
+		return organizationRepository.findById(organizationId)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
+	}
+
+	private DepositRequest findRequestById(long requestId) {
+		return depositRequestRepository.findById(requestId)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el pedido de deposito"));
 	}
 
 }

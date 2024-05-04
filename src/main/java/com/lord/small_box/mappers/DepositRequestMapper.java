@@ -1,15 +1,12 @@
 package com.lord.small_box.mappers;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-
 import com.lord.small_box.dtos.DepositRequestDto;
 import com.lord.small_box.models.DepositRequest;
-import com.lord.small_box.models.Organization;
+
 
 @Mapper
 public interface DepositRequestMapper {

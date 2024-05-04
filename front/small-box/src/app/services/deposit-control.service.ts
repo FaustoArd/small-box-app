@@ -174,9 +174,9 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
     ,organizationDto,this.httpOptions).pipe(catchError(this.handleError));
    }
 
-   findAllSupplyItemsByOrganizationApplicant(organizationApplicantId:number):Observable<SupplyItemRequestDto[]>{
+   findAllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganization:number,organizationApplicantId:number):Observable<SupplyItemRequestDto[]>{
     return this.http.get<SupplyItemRequestDto[]>
-    (`${SUPPLY_BASE_URL}/find-all-supply-items-by-organization-applicant?organizationApplicantId=${organizationApplicantId}`
+    (`${SUPPLY_BASE_URL}/find-all-supply-items-by-organization-applicant?mainOrganization=${mainOrganization}&organizationApplicantId=${organizationApplicantId}`
     ,this.httpOptions).pipe(catchError(this.handleError));
    }
   }

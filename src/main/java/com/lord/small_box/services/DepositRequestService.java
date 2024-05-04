@@ -13,7 +13,7 @@ public interface DepositRequestService {
 	
 	public DepositRequestDto saveItemsToRequest(DepositRequestDto depositRequestDto);
 	
-	public String sendRequest(long depositRequestId,long destinationOrganizationId); 
+	public String sendRequest(long depositRequestId); 
 
 	public List<DepositRequestDto> findAllRequestbyOrganizationByUserId(long userId);
 	

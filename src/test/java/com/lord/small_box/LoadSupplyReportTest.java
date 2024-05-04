@@ -101,7 +101,7 @@ public class LoadSupplyReportTest {
 				.dependencyApplicant("Direccion de Inclusion")
 				.estimatedTotalCost(new BigDecimal(70500))
 				.jurisdiction("Desa")
-				.organization(org)
+				.mainOrganization(org)
 				.build();
 		Supply savedSupply = supplyRepository.save(supply);
 		supplyId = savedSupply.getId();
@@ -195,7 +195,7 @@ public class LoadSupplyReportTest {
 				.orElseThrow(()->new ItemNotFoundException("No se encontrol el suministro"));;
 		List<SupplyItem> supplyItems = supplyItemRepository.findAllBySupply(supply);
 		List<SupplyReportDto> reportDtos = createReport(supplyItems);
-		Organization org = organizationService.findById(supply.getOrganization().getId());
+		Organization org = organizationService.findById(supply.getMainOrganization().getId());
 		SupplyCorrectionNoteDto supplyCorrectionNote = new SupplyCorrectionNoteDto();
 		supplyCorrectionNote.setFrom(org.getOrganizationName());
 		supplyCorrectionNote.setTo(supply.getDependencyApplicant());

@@ -16,7 +16,7 @@ public interface SupplyService {
 
 	public SupplyCorrectionNoteDto createSupplyCorrectionNote(long supplyId, Long depositId);
 
-	public List<SupplyDto> findAllSuppliesByOrganizationId(long organizationId);
+	public List<SupplyDto> findAllSuppliesByMainOrganizationId(long organizationId);
 
 	public List<SupplyItemDto> findSupplyItems(long supplyId);
 
@@ -26,5 +26,5 @@ public interface SupplyService {
 	
 	public String setOrganizationApplicant(long supplyId,long organizationId);
 	
-	public List<SupplyItemRequestDto> findAllSupplyItemsByOrganizationApplicant(long organizationApplicantId);
+	public List<SupplyItemRequestDto> findAllSupplyItemsByOrganizationApplicant(long mainOrganization,long organizationApplicantId);
 }

@@ -33,8 +33,8 @@ public class Supply {
 	private Long id;
 	
 	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinColumn(name="organization_id",referencedColumnName = "id")
-	private Organization organization;
+	@JoinColumn(name="main_organization_id",referencedColumnName = "id")
+	private Organization mainOrganization;
 
 	private Calendar date;
 
@@ -48,7 +48,7 @@ public class Supply {
 	private String dependencyApplicant;
 	
 	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinColumn(name="organization_applicant_id",referencedColumnName = "id")
-	private Organization organizationApplicant;
+	@JoinColumn(name="applicant_organization_id",referencedColumnName = "id")
+	private Organization applicantOrganization;
 
 }

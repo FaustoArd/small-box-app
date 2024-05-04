@@ -67,7 +67,7 @@ public class SupplyServiceImpl implements SupplyService {
 		log.info("Collect supply from text");
 		SupplyDto supplyDto = textToSupply.textToSupply(text, organizationService);
 		Organization org = organizationService.findById(organizationId);
-		Optional<Supply> check = supplyRepository.findBySupplyNumberAndOrganization(supplyDto.getSupplyNumber(),org);
+		Optional<Supply> check = supplyRepository.findBySupplyNumberAndMainOrganization(supplyDto.getSupplyNumber(),org);
 		if (check.isPresent()) {
 			if(check.get().getDate().get(Calendar.YEAR)==supplyDto.getDate().get(Calendar.YEAR)) {
 				throw new DuplicateItemException("El suministro numero: " + check.get().getSupplyNumber() + "-"
@@ -76,7 +76,7 @@ public class SupplyServiceImpl implements SupplyService {
 		}
 		
 		Supply supply = SupplyMapper.INSTANCE.dtoToSupply(supplyDto);
-		supply.setOrganization(org);
+		supply.setMainOrganization(org);
 		Supply savedSupply = supplyRepository.save(supply);
 
 		List<SupplyItem> items = SupplyItemMapper.INSTANCE.dtoToItems(supplyDto.getSupplyItems());
@@ -155,10 +155,10 @@ public class SupplyServiceImpl implements SupplyService {
 
 
 	@Override
-	public List<SupplyDto> findAllSuppliesByOrganizationId(long organizationId) {
+	public List<SupplyDto> findAllSuppliesByMainOrganizationId(long organizationId) {
 		log.info("Find all supplies by organization id");
 		Organization organization = organizationService.findById(organizationId);
-		List<Supply> supplies = supplyRepository.findAllByOrganization(organization,supplyDatesort);
+		List<Supply> supplies = supplyRepository.findAllByMainOrganization(organization,supplyDatesort);
 		return SupplyMapper.INSTANCE.suppliesToDtos(supplies);
 	}
 
@@ -197,16 +197,17 @@ public class SupplyServiceImpl implements SupplyService {
 		log.info("Set organization Applicant id: " + organizationId);
 		Supply supply = supplyRepository.findById(supplyId).orElseThrow(()-> new ItemNotFoundException("No se encontro el suministro"));
 		Organization org = organizationService.findById(organizationId);
-		supply.setOrganizationApplicant(org);
+		supply.setApplicantOrganization(org);
 		supplyRepository.save(supply);
 		return org.getOrganizationName();
 	}
 
 	@Override
-	public List<SupplyItemRequestDto> findAllSupplyItemsByOrganizationApplicant(long organizationApplicantId) {
-		log.info("Find all supply items by organization Applicant id: " + organizationApplicantId);
-		Organization org = organizationService.findById(organizationApplicantId);
-		List<Supply> supplies =supplyRepository.findAllByOrganizationApplicant(org);
+	public List<SupplyItemRequestDto> findAllSupplyItemsByOrganizationApplicant(long mainOrganization,long organizationApplicantId) {
+		log.info("Find all supply items by main organization id: "+ mainOrganization + ". organization Applicant id: " + organizationApplicantId);
+		Organization mainOrg = organizationService.findById(mainOrganization);
+		Organization applicantOrganization = organizationService.findById(organizationApplicantId);
+		List<Supply> supplies = supplyRepository.findAllByMainOrganizationAndApplicantOrganization(mainOrg, applicantOrganization);
 		List<SupplyItemRequestDto> itemRequests = supplyItemRepository
 				.findAllBySupplyIn(supplies.stream().map(s -> s).toList())
 				.stream().map(this::mapSupplyItemsToSupplyItemRequestDto).toList();

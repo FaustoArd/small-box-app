@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { DepositControlReceiverDto } from 'src/app/models/depositControlReceiverDto';
 import { DepositReceiverDto } from 'src/app/models/depositReceiverDto';
 import { CookieStorageService } from 'src/app/services/cookie-storage.service';
 import { DepositControlService } from 'src/app/services/deposit-control.service';
@@ -7,6 +9,7 @@ import { DepositReceiverService } from 'src/app/services/deposit-receiver.servic
 import { DialogService } from 'src/app/services/dialog.service';
 import { OrganizationService } from 'src/app/services/organization.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
 
 @Component({
   selector: 'app-deposit-receiver',
@@ -54,6 +57,39 @@ export class DepositReceiverComponent implements OnInit {
       complete:()=>{
         this.getAllReceiversByOrganization();
       }
-    })
+    });
+  }
+  onCloseDepositCreationTemplate() {
+    this.deopsitControlReceivceTemplate.close();
+
+  }
+
+  private deopsitControlReceivceTemplate!: MatDialogRef<DialogTemplateComponent>;
+  openDialogDepositCreation(template: any,depositReceiverId:number) {
+    this.findAllDepositControlReceiversByReceiver(depositReceiverId);
+    this.getReceiverData(depositReceiverId);
+    this.deopsitControlReceivceTemplate = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.deopsitControlReceivceTemplate.afterClosed().subscribe();
+ }
+ depositReceiverDataShow!:DepositReceiverDto;
+ getReceiverData(depositReceiverId:number){
+  this.depositReceiverDtos.forEach(item =>{
+    if(item.id==depositReceiverId){
+      this.depositReceiverDataShow = item;
+    }
+  });
+ }
+  depositControlReceiverDtos:DepositControlReceiverDto[]=[];
+  findAllDepositControlReceiversByReceiver(depositReceiverId:number){
+    this.depositReceiverService.findAllControlReceiversByReceiver(depositReceiverId).subscribe({
+      next:(controlReceiverDatas)=>{
+        this.depositControlReceiverDtos = controlReceiverDatas;
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    });
   }
 }

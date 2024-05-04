@@ -34,9 +34,9 @@ export class DepositRequestService {
       return this.http.post<DepositRequestDto>(`${DEPOSIT_REQUEST_BASE_URL}/save-items-to-request`,depositRequestDto,this.httpOptions)
       .pipe(catchError(this.handleError));
     }
-    sendRequest(depositRequestId:number,destinationOrganizationId:number):Observable<string>{
+    sendRequest(depositRequestId:number):Observable<string>{
       return this.http.post<string>
-      (`${DEPOSIT_REQUEST_BASE_URL}/send-request?depositRequestId=${depositRequestId}&destinationOrganizationId=${destinationOrganizationId}`
+      (`${DEPOSIT_REQUEST_BASE_URL}/send-request?depositRequestId=${depositRequestId}`
       ,this.httpOptions).pipe(catchError(this.handleError));
     }
     findAllDepositRequestsByOrganizationByUserId(userId:number):Observable<DepositRequestDto[]>{

@@ -5,11 +5,18 @@ body{
 .container-flex{
    
 }
-.barofcolour{
+.barofcolourRed{
     margin-left: 1rem;
     margin-right: 1rem;
     background: linear-gradient(245.59deg, rgb(216, 13, 13)33.33%, rgb(202, 9, 19) 33.33%, #d61111 33.33%);
     height: 3rem;
+}
+.barofcolourOther{
+    padding-top: 0.1rem;
+    margin-left: 0;
+    margin-right: 0;
+    background: linear-gradient(245.59deg, rgb(184, 195, 219)30%, rgb(184, 179, 216) 50%, #bebad8 79%);
+    height: 2rem;
 }
 #btnSend{
     height: 2rem;
@@ -27,8 +34,9 @@ button:hover{
 }
 h1{
     font-family: "Anton", sans-serif;
-   
+    font-size: 2rem;
 }
+
 .h2{
     color: white;
     font-family: "Anton", sans-serif;
@@ -37,7 +45,7 @@ h1{
 h3{
     color:black;
     font-family: "Anton", sans-serif;
-    font-weight: bold;
+    
     font-size: 1.3rem;
 }
 label{

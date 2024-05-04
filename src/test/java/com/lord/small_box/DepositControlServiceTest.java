@@ -1336,7 +1336,7 @@ public class DepositControlServiceTest {
 	@Order(21)
 	void checkSupplyOrgId() {
 		Supply supply = supplyRepository.findById(purchaseOrder365Id).orElseThrow(()->new ItemNotFoundException("No se encontro el suministro"));
-		assertThat(supply.getOrganization().getId()).isGreaterThan(0l);
+		assertThat(supply.getMainOrganization().getId()).isGreaterThan(0l);
 		
 	}
 	@Test

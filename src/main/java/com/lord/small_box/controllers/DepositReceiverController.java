@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.lord.small_box.dtos.DepositControlReceiverDto;
 import com.lord.small_box.dtos.DepositReceiverDto;
 import com.lord.small_box.services.DepositRecevierService;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +36,11 @@ public class DepositReceiverController {
 	ResponseEntity<Long> countMessages(@RequestParam("organizationId")long organizationId){
 		long messageQuantity = depositRecevierService.countMessages(organizationId);
 		return ResponseEntity.ok(messageQuantity);
+	}
+	@GetMapping(path="/find-all-control-receivers-by-receiver")
+	ResponseEntity<List<DepositControlReceiverDto>> findAllControlReceiversByReceiver(
+			@RequestParam("depositReceiverId")long depositReceiverId){
+		List<DepositControlReceiverDto> receiverDtos = depositRecevierService.findAllByDepositReceiver(depositReceiverId);
+		return ResponseEntity.ok(receiverDtos);
 	}
 }

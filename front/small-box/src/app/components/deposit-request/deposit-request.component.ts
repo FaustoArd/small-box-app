@@ -32,52 +32,60 @@ export class DepositRequestComponent implements OnInit {
   }
 
   depositRequestFormBuilder = this.formBuilder.group({
-    mainOrganizationId: [0, Validators.required]
+    mainOrganizationId: [0, Validators.required],
+    destinationOrganizationId: [0, Validators.required]
   });
 
   get mainOrganizationId() {
     return this.depositRequestFormBuilder.controls.mainOrganizationId;
+  }
+  get destinationOrganizationId() {
+    return this.depositRequestFormBuilder.controls.destinationOrganizationId;
   }
 
   closeCreateRequestTemplate(): void {
 
     this.createRequestTemplateMatDialogRef.close();
   }
-//Update ticket Mat dialog template
-private createRequestTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+  //Update ticket Mat dialog template
+  private createRequestTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
 
-opencreateRequestTemplate( template: TemplateRef<any>) {
- this.getAllOrganizationsByUser();
-  this.createRequestTemplateMatDialogRef = this.dialogService.openDialogCreation({
-    template
-  })
+  opencreateRequestTemplate(template: TemplateRef<any>) {
+    this.getAllOrganizationsByUser();
+    this.getAllOrganizations();
+    this.createRequestTemplateMatDialogRef = this.dialogService.openDialogCreation({
+      template
+    })
 
-  this.createRequestTemplateMatDialogRef.afterClosed().subscribe({
-    complete:()=>{
-      this.depositRequestFormBuilder.reset();
-    }
-  });
- 
- }
+    this.createRequestTemplateMatDialogRef.afterClosed().subscribe({
+      complete: () => {
+        this.depositRequestFormBuilder.reset();
+      }
+    });
 
- private supplyItemRequestMatDialogRef!:MatDialogRef<DialogTemplateComponent>;
- @ViewChild('supplyItemRequestSelectionTemplate')supplyItemRequestSelectionTemplate!:TemplateRef<any>;
- openSupplyItemRequestSelectionTemplate(organizationApplicantId:number):void{
-  this.getllSupplyItemsByOrganizationApplicant(organizationApplicantId);
-  const template = this.supplyItemRequestSelectionTemplate;
-  this.supplyItemRequestMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
-    template
-  });
-  
- }
+  }
+
+  private supplyItemRequestMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
+  @ViewChild('supplyItemRequestSelectionTemplate') supplyItemRequestSelectionTemplate!: TemplateRef<any>;
+  openSupplyItemRequestSelectionTemplate(mainOrganization: number, organizationApplicantId: number): void {
+    /**WARNING */
+    //Read the info inside createRequest() method .
+    this.getllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganization, organizationApplicantId);
+    const template = this.supplyItemRequestSelectionTemplate;
+    this.supplyItemRequestMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+
+  }
 
   depositRequestDto!: DepositRequestDto;
   savedDepositRequestDto!: DepositRequestDto;
   createRequest() {
     if (this.depositRequestFormBuilder.valid) {
-     this.depositRequestDto = new DepositRequestDto();
+      this.depositRequestDto = new DepositRequestDto();
       this.depositRequestDto = Object.assign(this.depositRequestDto, this.depositRequestFormBuilder.value);
-      console.log("deposit request Dto!!!" + this.depositRequestDto.destinationOrganizationId)
+      console.log("deposit request Dto!!!Main org: " + this.depositRequestDto.mainOrganizationId)
+      console.log("deposit request Dto!!!destinationOrganization org: " + this.depositRequestDto.destinationOrganizationId)
       this.depositRequestService.createRequest(this.depositRequestDto).subscribe({
         next: (requestData) => {
           this.savedDepositRequestDto = requestData;
@@ -85,9 +93,19 @@ opencreateRequestTemplate( template: TemplateRef<any>) {
         error: (errorData) => {
           this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
         },
-        complete:()=>{
+        complete: () => {
           this.createRequestTemplateMatDialogRef.close();
-        this.openSupplyItemRequestSelectionTemplate(this.savedDepositRequestDto.mainOrganizationId)
+          /**WARNING!**/
+          /**This method recieves destination organization and main organization, but when 
+           * we have to find all supplies by main organization and applicant organization,
+           * destination organization becomes main organization and main organization
+           * becomes organization applicant. Because:**/
+          /*      DepositRequest(mainOrganization,destinationOrganization)
+            mainOrganization here is the deposit request "from", and destination organization is the request "to" */
+          /*    Supply(mainOrganization,applicantOrganization);
+               mainOrganization here is the supply main organization 
+                , and applicant organization is the supply organization applicant "from" */
+          this.openSupplyItemRequestSelectionTemplate(this.savedDepositRequestDto.destinationOrganizationId, this.savedDepositRequestDto.mainOrganizationId)
         }
       });
     }
@@ -107,120 +125,119 @@ opencreateRequestTemplate( template: TemplateRef<any>) {
     });
   }
 
-  organizationDtos:OrganizationDto[]=[];
-  getAllOrganizationsByUser(){
+  organizationDtos: OrganizationDto[] = [];
+  getAllOrganizationsByUser() {
     const userId = Number(this.cookieService.getCurrentUserId());
     this.organizationService.getAllOrganizationsByUser(userId).subscribe({
-      next:(orgDatas)=>{
-        this.organizationDtos = orgDatas; 
+      next: (orgDatas) => {
+        this.organizationDtos = orgDatas;
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
     });
   }
-  allOrganizationDtos:OrganizationDto[]=[];
-  getAllOrganizations(){
+  allOrganizationDtos: OrganizationDto[] = [];
+  getAllOrganizations() {
     this.organizationService.getAllOrganizations().subscribe({
-      next:(orgsData)=>{
+      next: (orgsData) => {
         this.allOrganizationDtos = orgsData;
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
     });
   }
-  supplyItemRequestDtos:SupplyItemRequestDto[]=[];
-  getllSupplyItemsByOrganizationApplicant(organizationApplicantId:number){
-    this.depositControlService.findAllSupplyItemsByOrganizationApplicant(organizationApplicantId).subscribe({
-      next:(supplyRequestDatas)=>{
+  supplyItemRequestDtos: SupplyItemRequestDto[] = [];
+  getllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganizationId: number, organizationApplicantId: number) {
+    this.depositControlService.findAllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganizationId, organizationApplicantId).subscribe({
+      next: (supplyRequestDatas) => {
         this.supplyItemRequestDtos = supplyRequestDatas;
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
     })
   }
-itemQuantityForm = this.formBuilder.group({
-  quantity:[[],Validators.required]
-});
-
-get quantity(){
-  return this.itemQuantityForm.controls.quantity;
-}
-
-selectedSupplyItemRequestDtos:DepositControlRequestDto[]=[];
-
-quantityControlRequest!:QuantityControlRequest;
-  selectedSupplyItemRequest(itemId:number):void{
-    
-    if(this.itemQuantityForm.valid){
-      this.quantityControlRequest = new QuantityControlRequest();
-      this.quantityControlRequest = Object.assign(this.quantityControlRequest,this.itemQuantityForm.value)
-
-    this.supplyItemRequestDtos.forEach(item=>{
-      if(item.itemId==itemId){
-        this.selectedSupplyItemRequestDtos.push
-        (new DepositControlRequestDto(item.code,item.measureUnit,item.itemDetail,this.quantityControlRequest.quantity));
-      }
-
-    });
-    
-    this.itemQuantityForm.reset();
-  }else{
-    this.snackBar.openSnackBar('Debe seleccionar una cantidad valida.','Cerrar',3000);
-  }
-  }
-
-  private savedDepositControlrequestMatDialogRef!:MatDialogRef<DialogTemplateComponent>;
- @ViewChild('savedDepositControlRequestTemplate')savedDepositControlRequestTemplate!:TemplateRef<any>;
- openSavedDepositControlRequestTemplate():void{
-  this.getAllOrganizations();
-   const template = this.savedDepositControlRequestTemplate;
-  this.savedDepositControlrequestMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
-    template
+  itemQuantityForm = this.formBuilder.group({
+    quantity: [[], Validators.required]
   });
-  this.savedDepositControlrequestMatDialogRef.afterClosed().subscribe();
- }
 
- destinationOrganizationForm = this.formBuilder.group({
-  destinationOrganizationId:[0,Validators.required]
- });
- get destinationOrganizationId(){
-  return this.destinationOrganizationForm.controls.destinationOrganizationId;
- }
+  get quantity() {
+    return this.itemQuantityForm.controls.quantity;
+  }
 
- toSendDepositRequestDto!:DepositRequestDto;
- objDestinationOrganizationId!:DestinationOrganization;
- sendDepositRequest(){
-  if(this.destinationOrganizationForm.valid){
-    this.objDestinationOrganizationId = new DestinationOrganization();
-    this.objDestinationOrganizationId = Object.assign(this.objDestinationOrganizationId,this.destinationOrganizationForm.value);
-    this.depositRequestService.sendRequest(this.toSendDepositRequestDto.id,this.objDestinationOrganizationId.destinationOrganizationId).subscribe({
-      next:(codeData)=>{
-        this.snackBar.openSnackBar('Se envio con exito pedido. numero envio: ' + codeData,'Cerrar',3000);
+  selectedSupplyItemRequestDtos: DepositControlRequestDto[] = [];
+
+  quantityControlRequest!: QuantityControlRequest;
+  selectedSupplyItemRequest(itemId: number): void {
+
+    if (this.itemQuantityForm.valid) {
+      this.quantityControlRequest = new QuantityControlRequest();
+      this.quantityControlRequest = Object.assign(this.quantityControlRequest, this.itemQuantityForm.value)
+
+      this.supplyItemRequestDtos.forEach(item => {
+        if (item.itemId == itemId) {
+          this.selectedSupplyItemRequestDtos.push
+            (new DepositControlRequestDto(item.code, item.measureUnit, item.itemDetail, this.quantityControlRequest.quantity));
+        }
+
+      });
+
+      this.itemQuantityForm.reset();
+    } else {
+      this.snackBar.openSnackBar('Debe seleccionar una cantidad valida.', 'Cerrar', 3000);
+    }
+  }
+
+  private savedDepositControlrequestMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
+  @ViewChild('savedDepositControlRequestTemplate') savedDepositControlRequestTemplate!: TemplateRef<any>;
+  openSavedDepositControlRequestTemplate(): void {
+    //this.getAllOrganizations();
+    const template = this.savedDepositControlRequestTemplate;
+    this.savedDepositControlrequestMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.savedDepositControlrequestMatDialogRef.afterClosed().subscribe();
+  }
+
+  //  destinationOrganizationForm = this.formBuilder.group({
+  //   destinationOrganizationId:[0,Validators.required]
+  //  });
+  //  get destinationOrganizationId(){
+  //   return this.destinationOrganizationForm.controls.destinationOrganizationId;
+  //  }
+
+  toSendDepositRequestDto!: DepositRequestDto;
+  //objDestinationOrganizationId!:DestinationOrganization;
+  sendDepositRequest() {
+    // this.objDestinationOrganizationId = new DestinationOrganization();
+    //   this.objDestinationOrganizationId = Object.assign(this.objDestinationOrganizationId,this.destinationOrganizationForm.value);
+    this.depositRequestService.sendRequest(this.toSendDepositRequestDto.id).subscribe({
+      next: (codeData) => {
+        this.snackBar.openSnackBar('Se envio con exito pedido. numero envio: ' + codeData, 'Cerrar', 3000);
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-      },complete:()=>{
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }, complete: () => {
         this.savedDepositControlrequestMatDialogRef.close();
         this.getAllDepositRequests();
       }
     })
-  }
- }
 
-  
-  saveControlRequestItems(){
+  }
+
+
+  saveControlRequestItems() {
     this.savedDepositRequestDto.depositControlRequestDtos = this.selectedSupplyItemRequestDtos;
     this.depositRequestService.saveItemsToRequest(this.savedDepositRequestDto).subscribe({
-      next:(requestData)=>{
+      next: (requestData) => {
         this.toSendDepositRequestDto = requestData;
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
-      complete:()=>{
+      complete: () => {
         this.supplyItemRequestMatDialogRef.close();
         this.openSavedDepositControlRequestTemplate();
       }

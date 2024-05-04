@@ -442,7 +442,7 @@
             <tr *ngFor="let supply of suppliesDto">
                 <td>{{supply.date |date: 'dd-MM-yyyy'}}</td>
                 <td id="fullBlue_td">{{supply.supplyNumber}}</td>
-                <td>{{supply.organizationApplicant}}</td>
+                <td>{{supply.applicantOrganization}}</td>
                 <td id="fullBlue_td">{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
                 <td class="text-center"><button (click)="openDialogSuppliesItemList(supplyItemsListTemplate,supply.id)"
                         class="btn btn-lg  text-danger"></button></td>
