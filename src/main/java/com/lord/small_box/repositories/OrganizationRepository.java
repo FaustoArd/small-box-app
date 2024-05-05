@@ -16,5 +16,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	public Optional<Organization> findByContainers(Container container);
 	
 	public List<Organization> findAllOrganizationsByUsers(AppUser user);
+	
+	
 
 }

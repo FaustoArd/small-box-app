@@ -62,17 +62,26 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 
 	@Override
 	public DepositRequestDto createRequest(DepositRequestDto depositRequestDto) {
-		log.info("Destination organization id value:" + depositRequestDto.getDestinationOrganizationId());
+		
 		log.info("Create deposit request");
 		Organization mainOrganization = findOrgById(depositRequestDto.getMainOrganizationId());
-		Organization destinationOrganization = findOrgById(depositRequestDto.getDestinationOrganizationId());
 		DepositRequest request = DepositRequestMapper.INSTANCE.dtoToRequest(depositRequestDto);
 		request.setMainOrganization(mainOrganization);
+		request.setDestinationOrganization(null);
 		request.setRequestDate(Calendar.getInstance());
-		request.setDestinationOrganization(destinationOrganization);
 		DepositRequest savedDepositRequest = depositRequestRepository.save(request);
 		DepositRequestDto requestDto = DepositRequestMapper.INSTANCE.requestToDto(savedDepositRequest);
 		return requestDto;
+	}
+	
+	@Override
+	public DepositRequestDto setDestinationOrganization(DepositRequestDto depositRequestDto) {
+		log.info("Set destination organization, id: " + depositRequestDto.getDestinationOrganizationId());
+		Organization destinationOrganization = findOrgById(depositRequestDto.getDestinationOrganizationId());
+		DepositRequest depositRequest = findRequestById(depositRequestDto.getId());
+		depositRequest.setDestinationOrganization(destinationOrganization);
+		DepositRequest savedDepositRequest = depositRequestRepository.save(depositRequest);
+		return DepositRequestMapper.INSTANCE.requestToDto(savedDepositRequest);
 	}
 
 	@Override
@@ -128,9 +137,10 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 
 	private String generatedRequestCode(long organizationRequestId, long depositRequestId) {
 		log.info("Generate request code");
-		return "DS-" + organizationRequestId + "-P-" + depositRequestId
-				+ randomCodeGeneratorUtil.generateRandomCode(12, true, true);
+		return "DS-" + organizationRequestId + "-P-" + depositRequestId+
+				"-"+ randomCodeGeneratorUtil.generateRandomCode(12, true, true);
 	}
+	
 
 	private DepositReceiver mapDepositRequestToDepositReceiver(DepositRequest depositRequest,
 			Organization destinationOrganization) {
@@ -183,5 +193,7 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 		return depositRequestRepository.findById(requestId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el pedido de deposito"));
 	}
+
+	
 
 }

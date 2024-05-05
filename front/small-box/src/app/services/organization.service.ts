@@ -4,6 +4,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { OrganizationDto } from '../models/organizationDto';
 import { OrganizationResponsibleDto} from '../models/organizationResponsibleDto'
 import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
+import { ParentOrganizationDto } from '../models/parentOrganization';
 
 const ORGANIZATION_BASE_URL = 'http://localhost:8080/api/v1/smallbox/organization';
 
@@ -26,15 +27,18 @@ export class OrganizationService {
   }
 
   getOrganizationById(id:number):Observable<OrganizationDto>{
-    return this.http.get<OrganizationDto>(`${ORGANIZATION_BASE_URL}/org/${id}`,this.httpOptions).pipe(catchError(this.handleError));
+    return this.http.get<OrganizationDto>
+    (`${ORGANIZATION_BASE_URL}/org/${id}`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
   getAllOrganizations():Observable<OrganizationDto[]>{
-    return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs`,this.httpOptions).pipe(catchError(this.handleError));
+    return this.http.get<OrganizationDto[]>
+    (`${ORGANIZATION_BASE_URL}/all-orgs`,this.httpOptions).pipe(catchError(this.handleError));
   }
 
   getAllOrganizationsById(organizationsId:Array<number>):Observable<OrganizationDto[]>{
-    return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs-by-id?organizationsId=${organizationsId}`,this.httpOptions)
+    return this.http.get<OrganizationDto[]>
+    (`${ORGANIZATION_BASE_URL}/all-orgs-by-id?organizationsId=${organizationsId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
   }
 
@@ -44,7 +48,9 @@ export class OrganizationService {
    }
 
    getAllOrganizationsByUser(userId:number):Observable<OrganizationDto[]>{
-    return this.http.get<OrganizationDto[]>(`${ORGANIZATION_BASE_URL}/all-orgs-by-user?userId=${userId}`,this.httpOptions).pipe(catchError(this.handleError));
+    return this.http.get<OrganizationDto[]>
+    (`${ORGANIZATION_BASE_URL}/all-orgs-by-user?userId=${userId}`,this.httpOptions)
+    .pipe(catchError(this.handleError));
    }
 
    newOrganization(organizationDto:OrganizationDto):Observable<OrganizationDto>{
@@ -82,6 +88,16 @@ export class OrganizationService {
 
    getMainUserOrganizationId(userId:number):Observable<number>{
     return this.http.get<number>(`${ORGANIZATION_BASE_URL}/get-user-organization?userId=${userId}`)
+    .pipe(catchError(this.handleError));
+   }
+
+   setParentOrganizations(parentOrganizationDto:ParentOrganizationDto):Observable<ParentOrganizationDto>{
+    return this.http.post<ParentOrganizationDto>(`${ORGANIZATION_BASE_URL}/set-parent-organizations`,parentOrganizationDto,this.httpOptions)
+    .pipe(catchError(this.handleError));
+   }
+   getParentOrganizationsByMainOrganization(mainOrganizationId:number):Observable<OrganizationDto[]>{
+    return this.http.get<OrganizationDto[]>
+    (`${ORGANIZATION_BASE_URL}/get-parent-organizations?mainOrganizationId=${mainOrganizationId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
    }
   

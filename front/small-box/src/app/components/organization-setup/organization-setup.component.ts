@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { OrganizationDto } from 'src/app/models/organizationDto';
@@ -7,6 +7,7 @@ import { OrganizationService } from 'src/app/services/organization.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
 import { DialogService } from 'src/app/services/dialog.service';
+import { ParentOrganizationDto } from 'src/app/models/parentOrganization';
 
 @Component({
   selector: 'app-organization-setup',
@@ -296,7 +297,94 @@ getResponsibles(){
     }
   })
 }
+selectedMainOrgId!:number;
+parentOrganizationForm = this.formBuilder.group({
+  mainOrganizationId:[this.selectedMainOrgId,Validators.required],
+})
+get mainOrganization(){
+  return this.parentOrganizationForm.controls.mainOrganizationId;
+}
+
+onCloseParentOrganizationTemplate(){
+ 
+  this.setParentOrganizationTemplateMatDialogRef.close();
+}
+ 
+ private setParentOrganizationTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+
+ openSetParentOrganizationTemplate(mainOrgId:number,template: TemplateRef<any>) {
+  this.selectedMainOrgId = mainOrgId;
+   this.setParentOrganizationTemplateMatDialogRef = this.dialogService.openDialogCreation({
+     template
+   });
+   this.setParentOrganizationTemplateMatDialogRef.afterClosed().subscribe();
+  }
+parentOrganizationDto!:ParentOrganizationDto;
+savedParentOrganization!:ParentOrganizationDto;
+setParentOrganization(){
+  console.log("main org Id: " + this.selectedMainOrgId)
+  this.parentOrganizationDto = new ParentOrganizationDto();
+  this.parentOrganizationDto.mainOrganizationId = this.selectedMainOrgId;
+  this.parentOrganizationDto.parentOrganizationIds = this.selectedParentOrganizationIds;
+  this.organizationService.setParentOrganizations(this.parentOrganizationDto).subscribe({
+    next:(parentData)=>{
+      this.savedParentOrganization = parentData;
+    },
+    error:(errorData)=>{
+      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+    },
+    complete:()=>{
+      this.onCloseParentOrganizationTemplate();
+      this.openSavedParentOrganizationTemplate();
+    }
+  });
 
 
+}
+
+selectedParentOrganizationIds:number[]=[];
+selectedParentOrganizationNames:OrganizationDto[]=[];
+onSelectParentOrganization(organizationId:number){
+  const checkParent = this.selectedParentOrganizationIds.findIndex(p => p==organizationId);
+  if(checkParent>-1){
+   const repeatedOrg = this.onFindOrg(organizationId);
+    this.snackBarService.openSnackBar("La organizacion: " + repeatedOrg.organizationName + " ya fue seleccionada.",'Cerrar',3000);
+  }else{
+    const selectedOrg = this.onFindOrg(organizationId);
+    this.selectedParentOrganizationIds.push(organizationId);
+    this.selectedParentOrganizationNames.push(selectedOrg);
+    this.snackBarService.openSnackBar("Selecciono la organizacion: " + selectedOrg.organizationName ,'Cerrar',3000);
+  }
+}
+onDeleteParentOrganization(organizationId:number){
+  this.selectedParentOrganizationIds.forEach((item,index)=>{
+    if(item==organizationId){
+      this.selectedParentOrganizationIds.splice(index,1);
+      this.selectedParentOrganizationNames.splice(index,1);
+    }
+    const deletedOrg = this.onFindOrg(organizationId);
+    this.snackBarService.openSnackBar("Se elimino la organizacion " + deletedOrg.organizationName,'Cerrar',3000);
+  });
+}
+
+private  onFindOrg(organizationId:number):OrganizationDto{
+  const orgIndex = this.organizationsDto.findIndex(org => org.id==organizationId);
+    return   this.organizationsDto[orgIndex];
+}
+
+onCloseSavedParentOrganizationTemplate(){
+ 
+  this.savedParentOrganizationTemplateMatDialogRef.close();
+}
+
+private savedParentOrganizationTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+@ViewChild('savedParentOrganizationTemplate') savedParentOrganizationTemplate!: TemplateRef<any>;
+openSavedParentOrganizationTemplate() {
+  const template = this.savedParentOrganizationTemplate;
+  this.savedParentOrganizationTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    template
+  });
+  this.savedParentOrganizationTemplateMatDialogRef.afterClosed().subscribe();
+ }
 
 }

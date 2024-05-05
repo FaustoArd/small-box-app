@@ -48,4 +48,13 @@ export class DialogService {
       data
     });
   }
+
+  openCreateRequestCreation(data:DialogTemplateData){
+    return this.matDialog.open(DialogTemplateComponent,{
+     
+      disableClose:true,
+      data
+     
+    });
+  }
 }

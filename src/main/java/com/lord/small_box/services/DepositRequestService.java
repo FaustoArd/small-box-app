@@ -11,6 +11,8 @@ public interface DepositRequestService {
 	
 	public DepositRequestDto createRequest(DepositRequestDto depositRequestDto);
 	
+	public DepositRequestDto setDestinationOrganization(DepositRequestDto depositRequestDto);
+	
 	public DepositRequestDto saveItemsToRequest(DepositRequestDto depositRequestDto);
 	
 	public String sendRequest(long depositRequestId); 

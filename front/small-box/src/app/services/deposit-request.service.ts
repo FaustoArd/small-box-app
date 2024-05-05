@@ -30,6 +30,12 @@ export class DepositRequestService {
       ,depositRequestDto,this.httpOptions).pipe(catchError(this.handleError))
     }
 
+    setDestinationOrganization(depositRequestDto:DepositRequestDto):Observable<DepositRequestDto>{
+      return this.http.put<DepositRequestDto>
+      (`${DEPOSIT_REQUEST_BASE_URL}/set-destination-organization`,depositRequestDto,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
+
     saveItemsToRequest(depositRequestDto:DepositRequestDto):Observable<DepositRequestDto>{
       return this.http.post<DepositRequestDto>(`${DEPOSIT_REQUEST_BASE_URL}/save-items-to-request`,depositRequestDto,this.httpOptions)
       .pipe(catchError(this.handleError));

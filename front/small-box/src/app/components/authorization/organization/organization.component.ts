@@ -35,7 +35,7 @@ export class OrganizationComponent implements OnInit {
         this.orgsSelected = [];
         this.userSelected = new AppUserDto();
       }
-    })
+    });
     this.getUsers();
     this.getOrganizations();
   }
@@ -75,13 +75,9 @@ getAllOrganizationsById(organizationsId:Array<number>):void{
     error:(errorData)=>{
       this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
     }
-  })
+  });
 }
-
-  
-
-
-  getUsers(): void {
+ getUsers(): void {
     this.appUserService.getUsers().subscribe({
       next: (usersData) => {
         this.usersDto = usersData;
@@ -89,7 +85,7 @@ getAllOrganizationsById(organizationsId:Array<number>):void{
       error: (errorData) => {
         this.snackBarService.openSnackBar(errorData, 'Cerrar',3000);
       }
-    })
+    });
   }
 
   getOrganizations(): void {
@@ -100,7 +96,7 @@ getAllOrganizationsById(organizationsId:Array<number>):void{
       error: (errorData) => {
         this.snackBarService.openSnackBar(errorData, 'Cerrar',3000);
       }
-    })
+    });
   }
 
   selectUser(userId:number){
@@ -117,7 +113,7 @@ getAllOrganizationsById(organizationsId:Array<number>):void{
       error:(errorData)=>{
         this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
       }
-    })
+    });
   }
 
   addOrganizationsToUser(){
@@ -135,8 +131,7 @@ getAllOrganizationsById(organizationsId:Array<number>):void{
     });
     
   }
-
-  getAllOrganizationsByUser(userId:number):void{
+getAllOrganizationsByUser(userId:number):void{
     this.organizationService.getAllOrganizationsByUser(userId).subscribe({
       next:(orgsData)=>{
         this.orgsSelected = orgsData;
@@ -144,6 +139,35 @@ getAllOrganizationsById(organizationsId:Array<number>):void{
       error:(errorData)=>{
         this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
       }
-    })
+    });
+  }
+
+  selectedParentOrganizations:number[]=[];
+  onSelectParentOrganization(organizationId:number){
+    const checkParent = this.selectedParentOrganizations.findIndex(p => p==organizationId);
+    if(checkParent>-1){
+     const repeatedOrg = this.onFindOrg(organizationId);
+      this.snackBarService.openSnackBar("La organizacion: " + repeatedOrg.organizationName + " ya fue seleccionada.",'Cerrar',3000);
+    }else{
+      const selectedOrg = this.onFindOrg(organizationId);
+      this.selectedParentOrganizations.push(organizationId);
+      this.snackBarService.openSnackBar("Selecciono la organizacion: " + selectedOrg.organizationName ,'Cerrar',3000);
+    }
+  }
+ onDeleteParentOrganization(organizationId:number){
+    this.selectedParentOrganizations.forEach((item,index)=>{
+      if(item==organizationId){
+        this.selectedParentOrganizations.splice(index,1);
+      }
+      const deletedOrg = this.onFindOrg(organizationId);
+      this.snackBarService.openSnackBar("Se elimino la organizacion " + deletedOrg.organizationName,'Cerrar',3000);
+    });
+  }
+
+  private  onFindOrg(organizationId:number):OrganizationDto{
+    const orgIndex = this.organizationsDto.findIndex(org => org.id==organizationId);
+      return   this.organizationsDto[orgIndex];
   }
 }
+
+

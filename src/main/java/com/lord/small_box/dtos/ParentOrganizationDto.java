@@ -1,0 +1,19 @@
+package com.lord.small_box.dtos;
+
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+public class ParentOrganizationDto {
+	
+	private Long id;
+	
+	private String mainOrganizationName;
+	private long mainOrganizationId;
+	
+	private List<String> parentOrganizationNames;
+	private List<Long> parentOrganizationIds;
+}

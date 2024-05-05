@@ -2,9 +2,14 @@ body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
    
 }
-.container-flex{
+#createRequestCol{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
    
 }
+#toSendContainer{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+
 .barofcolourRed{
     margin-left: 1rem;
     margin-right: 1rem;
@@ -19,42 +24,57 @@ body{
     height: 2rem;
 }
 #btnSend{
-    height: 2rem;
-    width: 5rem;
+    height: 1.6rem;
+    width: 4.6rem;
 }
 button{
     background: linear-gradient(245.59deg, rgb(111, 111, 199)33.33%, rgb(145, 124, 202) 33.33%, #6f5cae 33.33%);
     color:red;
     font-family: "Fira Code", monospace;
-    font-weight: bold;
+   
 }
 button:hover{
     background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
     color:rgb(215, 154, 41);
 }
 h1{
-    font-family: "Anton", sans-serif;
-    font-size: 2rem;
+    font-size: 1rem;
+    font-family: 'Noto Sans', sans-serif;
 }
 
-.h2{
-    color: white;
-    font-family: "Anton", sans-serif;
+h2{
+    color: rgb(56, 18, 195);
+    font-family: 'Noto Sans', sans-serif;
     font-weight: bold;
+    font-size: 1.2rem;
 }
 h3{
-    color:black;
-    font-family: "Anton", sans-serif;
+    font-family: 'Noto Sans', sans-serif;
+}
+h4{
+    font-family: 'Quattrocento', serif;
+    font-weight: 500;
+    font-size: 1rem;
     
-    font-size: 1.3rem;
+}
+
+h5{
+    color:#000002;
+    font-family: "Anton", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+    font-size: 2.1rem;
 }
 label{
-    font-family: "Anton", sans-serif;
+    font-family: 'Quattrocento', serif;
     font-weight: bold;
 }
 select{
     font-family: "Anton", sans-serif;
-    font-weight: bold;
+    font-weight: 100;
+}
+option{
+    font-weight: 100;
 }
 a{
     font-family: "Anton", sans-serif;
@@ -81,4 +101,34 @@ td{
     font-size: 0.9rem;
     font-family: 'Quattrocento', serif;
     font-weight: bold;
+}
+#supplyReportFullBlue{
+    color: #2a31b6;
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
+
+small{
+    color:rgb(180, 10, 10);
+    font-weight: bold;
+    font-family: 'Quattrocento', serif;
+    font-size: 1rem;
+}
+#closeButton{
+  position: absolute;
+  right: 0;
+ border-radius: 3px;
+ 
+}
+form{
+    font-weight: bold;
+    font-family: 'Quattrocento', serif;
+    font-size: 1rem; 
+}
+input{
+    font-weight: bold;
+}
+small{
+    font-size: 0.8rem;
 }

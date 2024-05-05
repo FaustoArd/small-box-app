@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.OrganizationResponsibleDto;
+import com.lord.small_box.dtos.ParentOrganizationDto;
 import com.lord.small_box.mappers.OrganizationMapper;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.services.OrganizationResponsibleService;
@@ -116,6 +117,17 @@ public class OrganizationController {
 	ResponseEntity<Long> getUserMainOrganization(@RequestParam("userId")long userId){
 		long orgId = organizationService.getUserMainOrganization(userId);
 		return ResponseEntity.ok(orgId);
+	}
+	
+	@PostMapping(path="/set-parent-organizations")
+	ResponseEntity<ParentOrganizationDto> setParentOrganizations(@RequestBody ParentOrganizationDto parentOrganizationDto){
+		ParentOrganizationDto parentOrganization = organizationService.setParentOrganization(parentOrganizationDto);
+		return new ResponseEntity<ParentOrganizationDto>(parentOrganization,HttpStatus.CREATED);
+	}
+	@GetMapping(path="/get-parent-organizations")
+	ResponseEntity<List<OrganizationDto>> getParentOrganizationsByMainOrganization(@RequestParam("mainOrganizationId")long mainOrganizationId){
+		List<OrganizationDto> organizationDtos = organizationService.getParentOrganizationsByMainOrganization(mainOrganizationId);
+		return ResponseEntity.ok(organizationDtos);
 	}
 	
 	

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,9 +33,16 @@ public class DepositRequestController {
 	
 	@PostMapping(path="/create-request")
 	ResponseEntity<DepositRequestDto> createRequest(@RequestBody DepositRequestDto depositRequestDto){
-		log.info("Deposit request controller, Destination organization id value: "+depositRequestDto.getDestinationOrganizationId());
+		
 		DepositRequestDto savedRequestDto = depositRequestService.createRequest(depositRequestDto);
 		return  new ResponseEntity<DepositRequestDto>(savedRequestDto,HttpStatus.CREATED);
+	}
+	
+	@PutMapping(path="/set-destination-organization")
+	ResponseEntity<DepositRequestDto> setDestinationOrganization(@RequestBody DepositRequestDto depositRequestDto){
+		log.info("Deposit request controller, Destination organization id value: "+depositRequestDto.getDestinationOrganizationId());
+		DepositRequestDto updatedDepositRequestDto = depositRequestService.setDestinationOrganization(depositRequestDto);
+		return new ResponseEntity<DepositRequestDto>(updatedDepositRequestDto,HttpStatus.OK);
 	}
 	
 	@PostMapping(path="/save-items-to-request")

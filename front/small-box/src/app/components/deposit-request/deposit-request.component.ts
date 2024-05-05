@@ -33,15 +33,16 @@ export class DepositRequestComponent implements OnInit {
 
   depositRequestFormBuilder = this.formBuilder.group({
     mainOrganizationId: [0, Validators.required],
-    destinationOrganizationId: [0, Validators.required]
+  
   });
+
+ 
 
   get mainOrganizationId() {
     return this.depositRequestFormBuilder.controls.mainOrganizationId;
   }
-  get destinationOrganizationId() {
-    return this.depositRequestFormBuilder.controls.destinationOrganizationId;
-  }
+
+  
 
   closeCreateRequestTemplate(): void {
 
@@ -50,20 +51,64 @@ export class DepositRequestComponent implements OnInit {
   //Update ticket Mat dialog template
   private createRequestTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
 
-  opencreateRequestTemplate(template: TemplateRef<any>) {
+  openCreateRequestTemplate(template: TemplateRef<any>) {
     this.getAllOrganizationsByUser();
-    this.getAllOrganizations();
-    this.createRequestTemplateMatDialogRef = this.dialogService.openDialogCreation({
+    this.createRequestTemplateMatDialogRef = this.dialogService.openCreateRequestCreation({
       template
-    })
+    });
 
     this.createRequestTemplateMatDialogRef.afterClosed().subscribe({
       complete: () => {
         this.depositRequestFormBuilder.reset();
       }
     });
+}
 
+setDestinationOrganizationForm = this.formBuilder.group({
+  destinationOrganizationId: [0, Validators.required]
+});
+get destinationOrganizationId() {
+  return this.setDestinationOrganizationForm.controls.destinationOrganizationId;
+}
+
+closeSetDestinationOrganization(): void {
+   this.setDestinationOrganizationTemplateMatDialogRef.close();
+}
+
+private setDestinationOrganizationTemplateMatDialogRef!:MatDialogRef<DialogTemplateComponent>
+@ViewChild('setDestinationOrganizationTemplate') setDestinationOrganizationTemplate!: TemplateRef<any>;
+openSetDestinationOrganizationTemplate( mainOrganizationId:number){
+  this.getParentOrganizations(mainOrganizationId);
+  const template = this.setDestinationOrganizationTemplate;
+  this.setDestinationOrganizationTemplateMatDialogRef = this.dialogService.openCreateRequestCreation({
+    template
+  });
+  this.setDestinationOrganizationTemplateMatDialogRef.afterClosed().subscribe;
+}
+
+destinationOrganizationRequestDto!:DepositRequestDto;
+udpatedDepositRequestDto!:DepositRequestDto;
+setDestinationOrganization(){
+  if(this.setDestinationOrganizationForm.valid){
+    this.destinationOrganizationRequestDto = new DepositRequestDto();
+    this.destinationOrganizationRequestDto = Object.assign
+    (this.destinationOrganizationRequestDto,this.setDestinationOrganizationForm.value);
+    this.destinationOrganizationRequestDto.id = this.savedDepositRequestDto.id;
+    this.depositRequestService.setDestinationOrganization(this.destinationOrganizationRequestDto).subscribe({
+      next:(requestData)=>{
+        this.udpatedDepositRequestDto = requestData;
+      },
+      error:(errorData)=>{
+
+      },
+      complete:()=>{
+        this.closeSetDestinationOrganization();
+         this.openSupplyItemRequestSelectionTemplate
+          (this.udpatedDepositRequestDto.destinationOrganizationId, this.udpatedDepositRequestDto.mainOrganizationId);
+      }
+    })
   }
+}
 
   private supplyItemRequestMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('supplyItemRequestSelectionTemplate') supplyItemRequestSelectionTemplate!: TemplateRef<any>;
@@ -72,7 +117,7 @@ export class DepositRequestComponent implements OnInit {
     //Read the info inside createRequest() method .
     this.getllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganization, organizationApplicantId);
     const template = this.supplyItemRequestSelectionTemplate;
-    this.supplyItemRequestMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    this.supplyItemRequestMatDialogRef = this.dialogService.openCreateRequestCreation({
       template
     });
 
@@ -99,17 +144,29 @@ export class DepositRequestComponent implements OnInit {
           /**This method recieves destination organization and main organization, but when 
            * we have to find all supplies by main organization and applicant organization,
            * destination organization becomes main organization and main organization
-           * becomes organization applicant. Because:**/
+           * becomes organization applicant. Becouse:**/
           /*      DepositRequest(mainOrganization,destinationOrganization)
-            mainOrganization here is the deposit request "from", and destination organization is the request "to" */
+            mainOrganization here is the deposit request "from", and destination organization is deposit request "to" */
           /*    Supply(mainOrganization,applicantOrganization);
                mainOrganization here is the supply main organization 
                 , and applicant organization is the supply organization applicant "from" */
-          this.openSupplyItemRequestSelectionTemplate(this.savedDepositRequestDto.destinationOrganizationId, this.savedDepositRequestDto.mainOrganizationId)
+this.openSetDestinationOrganizationTemplate( this.savedDepositRequestDto.mainOrganizationId)
+         
         }
       });
     }
 
+  }
+  parentOrganizationDtos:OrganizationDto[]=[];
+  getParentOrganizations(mainOrganizationId:number){
+    this.organizationService.getParentOrganizationsByMainOrganization(mainOrganizationId).subscribe({
+      next:(orgsData)=>{
+        this.parentOrganizationDtos = orgsData;
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    });
   }
 
   depositRequestDtos: DepositRequestDto[] = [];
@@ -137,17 +194,17 @@ export class DepositRequestComponent implements OnInit {
       }
     });
   }
-  allOrganizationDtos: OrganizationDto[] = [];
-  getAllOrganizations() {
-    this.organizationService.getAllOrganizations().subscribe({
-      next: (orgsData) => {
-        this.allOrganizationDtos = orgsData;
-      },
-      error: (errorData) => {
-        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
-      }
-    });
-  }
+  // allOrganizationDtos: OrganizationDto[] = [];
+  // getAllOrganizations() {
+  //   this.organizationService.getAllOrganizations().subscribe({
+  //     next: (orgsData) => {
+  //       this.allOrganizationDtos = orgsData;
+  //     },
+  //     error: (errorData) => {
+  //       this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+  //     }
+  //   });
+  // }
   supplyItemRequestDtos: SupplyItemRequestDto[] = [];
   getllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganizationId: number, organizationApplicantId: number) {
     this.depositControlService.findAllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganizationId, organizationApplicantId).subscribe({
@@ -160,7 +217,7 @@ export class DepositRequestComponent implements OnInit {
     })
   }
   itemQuantityForm = this.formBuilder.group({
-    quantity: [[], Validators.required]
+    quantity: [0, Validators.required]
   });
 
   get quantity() {
@@ -171,7 +228,23 @@ export class DepositRequestComponent implements OnInit {
 
   quantityControlRequest!: QuantityControlRequest;
   selectedSupplyItemRequest(itemId: number): void {
+    const code = this.getItemCode(itemId);
+    const itemIndex  = this.selectedSupplyItemRequestDtos.findIndex(item => item.itemCode==code);
+    if(itemIndex>-1){
+      const repeatedItem = this.selectedSupplyItemRequestDtos[itemIndex];
+      this.snackBar.openSnackBar("El item codigo: "+repeatedItem.itemCode + ", ya fue seleccionado...",'Cerrar',3000);
+    }else{
+      this.selectItemWithQuantity(itemId);
+    }
+   
+  }
+private getItemCode(itemId:number):string{
+  const itemIndex = this.supplyItemRequestDtos.findIndex(item => item.itemId==itemId);
+  const item = this.supplyItemRequestDtos[itemIndex];
+  return item.code;
+}
 
+  private selectItemWithQuantity(itemId:number){
     if (this.itemQuantityForm.valid) {
       this.quantityControlRequest = new QuantityControlRequest();
       this.quantityControlRequest = Object.assign(this.quantityControlRequest, this.itemQuantityForm.value)
@@ -190,12 +263,25 @@ export class DepositRequestComponent implements OnInit {
     }
   }
 
+  onDeleteSelectedSupplyItemRequest(itemId:number){
+    this.selectedSupplyItemRequestDtos.forEach((item,index)=>{
+      if(item.id==itemId){
+        this.selectedSupplyItemRequestDtos.splice(index,1);
+      }
+    });
+    const deletedItemIndex = this.selectedSupplyItemRequestDtos.findIndex(item => item.id==itemId);
+    const deletedItemCode = this.selectedSupplyItemRequestDtos[deletedItemIndex].itemCode;
+    this.snackBar.openSnackBar("Se elimino el item: " + deletedItemCode,'Cerrar',3000);
+  }
+
+  onCloseSavedDepositControlRequestTemplate(){
+    this.savedDepositControlrequestMatDialogRef.close();
+  }
   private savedDepositControlrequestMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('savedDepositControlRequestTemplate') savedDepositControlRequestTemplate!: TemplateRef<any>;
   openSavedDepositControlRequestTemplate(): void {
-    //this.getAllOrganizations();
     const template = this.savedDepositControlRequestTemplate;
-    this.savedDepositControlrequestMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    this.savedDepositControlrequestMatDialogRef = this.dialogService.openCreateRequestCreation({
       template
     });
     this.savedDepositControlrequestMatDialogRef.afterClosed().subscribe();
@@ -215,7 +301,7 @@ export class DepositRequestComponent implements OnInit {
     //   this.objDestinationOrganizationId = Object.assign(this.objDestinationOrganizationId,this.destinationOrganizationForm.value);
     this.depositRequestService.sendRequest(this.toSendDepositRequestDto.id).subscribe({
       next: (codeData) => {
-        this.snackBar.openSnackBar('Se envio con exito pedido. numero envio: ' + codeData, 'Cerrar', 3000);
+        this.snackBar.openSnackBar('Se envio con exito el pedido!. codigo:' + codeData, 'Cerrar', 3000);
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
