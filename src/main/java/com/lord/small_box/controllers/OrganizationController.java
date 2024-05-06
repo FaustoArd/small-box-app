@@ -136,6 +136,14 @@ public class OrganizationController {
 		return ResponseEntity.ok(organizationDtos);
 	}
 	
+	@GetMapping(path="/get-parent-organization-by-main-organization")
+	ResponseEntity<ParentOrganizationDto> findParentOrganizationByMainOrganizationId
+	(@RequestParam("mainOrganizationId")long mainOrganizationId){
+		ParentOrganizationDto parentOrganizationDto = organizationService.findParentOrganizationByMainOrganizationId(mainOrganizationId);
+		return ResponseEntity.ok(parentOrganizationDto);
+		
+	}
+	
 	
 	
 

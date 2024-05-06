@@ -163,16 +163,17 @@ public class OrganizationServiceImpl implements OrganizationService {
 		List<Organization> parentOrganizations = organizationRepository
 				.findAllById(parentOrganizationDto.getParentOrganizationIds());
 		ParentOrganization savedParentOrganization = parentOrganizationRepository
-				.save(mapToParentOrganization(mainOrganization, parentOrganizations));
+				.save(mapToParentOrganization(parentOrganizationDto,mainOrganization, parentOrganizations));
 		List<String> parentOrganizationNames =  organizationRepository
 				.findAllById(savedParentOrganization.getParentOrganizations().stream().map(p -> p.getId()).toList())
 				.stream().map(org -> org.getOrganizationName()).toList();
 		return mapParentOrganizationToDto(savedParentOrganization, mainOrganization,parentOrganizationNames);
 	}
 
-	private ParentOrganization mapToParentOrganization(Organization mainOrganization,
+	private ParentOrganization mapToParentOrganization(ParentOrganizationDto parentOrganizationDto,Organization mainOrganization,
 			List<Organization> parentOrganizations) {
 		ParentOrganization parentOrganization = new ParentOrganization();
+		parentOrganization.setId(parentOrganizationDto.getId());
 		parentOrganization.setMainOrganization(mainOrganization);
 		parentOrganization.setParentOrganizations(parentOrganizations);
 		return parentOrganization;
@@ -204,6 +205,17 @@ public class OrganizationServiceImpl implements OrganizationService {
 	}
 	
 	
+	
+
+	@Override
+	public ParentOrganizationDto findParentOrganizationByMainOrganizationId(long mainOrganizationId) {
+		Organization mainOrganization = findOrganizationById(mainOrganizationId);
+		ParentOrganization parentOrganization=  findParentOrganizationByMainOrganization(mainOrganization);
+		List<String>  parentOrganizationNames = organizationRepository
+				.findAllById(parentOrganization.getParentOrganizations().stream().map(org -> org.getId()).toList())
+				.stream().map(parentOrg -> parentOrg.getOrganizationName()).toList();
+		return mapParentOrganizationToDto(parentOrganization, mainOrganization, parentOrganizationNames);
+	}
 	private Organization findOrganizationById(long organizationId) {
 		return organizationRepository.findById(organizationId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
@@ -211,6 +223,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 	private OrganizationResponsible findOrganizationResposibleById(long organizationResponsibleId) {
 		return organizationResponsibleRepository.findById(organizationResponsibleId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro al responsable de la organizacion"));
+	}
+	private ParentOrganization findParentOrganizationByMainOrganization(Organization mainOrganization) {
+		return parentOrganizationRepository.findByMainOrganization(mainOrganization).orElseThrow(()-> new ItemNotFoundException("No se encontro la organizacion padre"));
 	}
 
 }

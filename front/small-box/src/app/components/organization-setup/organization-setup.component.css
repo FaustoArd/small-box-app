@@ -8,3 +8,9 @@ body{
 button{
     background: linear-gradient(245.59deg, rgb(45, 138, 188) 0%, rgb(67, 36, 204) 28.53%, #2009cf 75.52%);
 }
+#closeButton{
+    position: absolute;
+    right: 0;
+   border-radius: 3px;
+   
+  }

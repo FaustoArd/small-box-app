@@ -297,6 +297,7 @@
                 <div class="form-group">
                     <label for="id" class="form-label fs-7 ">DEPENDENCIA</label>
                     <select id="id" formControlName="id" class="form-select  border-dark">
+                        <option value="Seleccione la dependencia soliciante">Seleccione la dependencia soliciante</option>
                         <option type="number" class="form-control border-dark " *ngFor="let orgs of organizationsDto"
                             id="id" [value]="orgs.id">
                             {{orgs.organizationName}}</option>

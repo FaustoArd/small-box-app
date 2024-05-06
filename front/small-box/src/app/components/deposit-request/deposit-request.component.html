@@ -125,7 +125,7 @@
                 <label for="destinationOrganizationId" class="form-label fs-7 text-center">Seleccione el destino</label>
                 <select id="destinationOrganizationId" formControlName="destinationOrganizationId"
                     class="form-select  border-dark">
-                    <option value="Seleccione la dependencia de destino"></option>
+                    <option value="Seleccione la dependencia de destino">Seleccione la dependencia de destino</option>
                     <option type="number" class="form-control border-dark" *ngFor="let orgs of parentOrganizationDtos"
                         id="destinationOrganizationId" [value]="orgs.id">
                         {{orgs.organizationName}}</option>

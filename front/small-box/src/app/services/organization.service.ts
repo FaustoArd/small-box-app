@@ -95,10 +95,17 @@ export class OrganizationService {
     return this.http.post<ParentOrganizationDto>(`${ORGANIZATION_BASE_URL}/set-parent-organizations`,parentOrganizationDto,this.httpOptions)
     .pipe(catchError(this.handleError));
    }
-   getParentOrganizationsByMainOrganization(mainOrganizationId:number):Observable<OrganizationDto[]>{
+   getOrganizationsByMainOrganizationId(mainOrganizationId:number):Observable<OrganizationDto[]>{
     return this.http.get<OrganizationDto[]>
     (`${ORGANIZATION_BASE_URL}/get-parent-organizations?mainOrganizationId=${mainOrganizationId}`,this.httpOptions)
     .pipe(catchError(this.handleError));
+   }
+   getParentOrganizationByMainOrganizationId(mainOrganizationId:number):Observable<ParentOrganizationDto>{
+    return this.http.get<ParentOrganizationDto>
+    (`${ORGANIZATION_BASE_URL}/get-parent-organization-by-main-organization?mainOrganizationId=${mainOrganizationId}`
+    ,this.httpOptions).pipe(catchError(this.handleError));
+
+
    }
   
 }

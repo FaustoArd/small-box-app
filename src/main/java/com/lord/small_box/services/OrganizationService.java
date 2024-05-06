@@ -40,4 +40,6 @@ public interface OrganizationService {
 	
 	public List<OrganizationDto> findParentOrganizationsByMainOrganization(long mainOrganizationId);
 	
+	public ParentOrganizationDto findParentOrganizationByMainOrganizationId(long mainOrganizationId);
+	
 }

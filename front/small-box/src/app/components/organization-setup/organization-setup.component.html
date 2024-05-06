@@ -272,6 +272,7 @@
     </form>
   </ng-template>
   <ng-template #setParentOrganizationTemplate>
+    <button id="closeButton" (click)="onCloseParentOrganizationTemplate()" class="text-white">X</button>
     <div class="row">
       <div class="col-md-4">
         <h2 class="text-center">Selecionar dependencia</h2>
@@ -320,9 +321,8 @@
               <th scope="col">Dependencia</th>
               <th scope="col">Numero</th>
               <th scope="col">Responsable</th>
-              <th scope="col">Editar</th>
-              <th scope="col">Seleccionar</th>
-
+              <th scope="col">Eliminar</th>
+            
 
           </thead>
           <tbody>
@@ -352,7 +352,9 @@
       </div>
     </div>
   </ng-template>
+
   <ng-template #savedParentOrganizationTemplate>
+   
     <div class="row">
       <h2 class="text-center">Se guardaron las siguientes organizaciones:</h2>
     </div>
@@ -365,21 +367,29 @@
       </div> 
     </div> 
     <div class="row">
-      <div class="col-md-10">
+      <div class="col-md-10" >
+        <div *ngIf="savedParentOrganization.parentOrganizationNames.length>0">
      <table id="userTable" class="table table-sm table-bordered table-striped w-100">
           <thead>
             <tr>
               <th scope="col">Organizaciones padre guardadas:</th>
           </thead>
-          <tbody>
-            <tr *ngFor="let org of savedParentOrganization.parentOrganizationNames">
-             
-              <td>
-                {{org}}
-              </td>
-            </tr>
-          </tbody>
+        
+            <tbody>
+              <tr *ngFor="let org of savedParentOrganization.parentOrganizationNames">
+               
+                <td>
+                  {{org}}
+                </td>
+              </tr>
+            </tbody>
+         
+          
         </table>
+      </div>
+      <div *ngIf="savedParentOrganization.parentOrganizationNames.length<=0">
+      <h1>No tiene organizaciones padre asignadas.</h1>
+      </div>
         <button class="btn btn-sm mx-2" (click)="onCloseSavedParentOrganizationTemplate()">Cerrar</button>
       </div>
     </div>

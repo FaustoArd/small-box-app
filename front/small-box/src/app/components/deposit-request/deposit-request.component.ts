@@ -140,6 +140,7 @@ setDestinationOrganization(){
         },
         complete: () => {
           this.createRequestTemplateMatDialogRef.close();
+          this.depositRequestFormBuilder.reset();
           /**WARNING!**/
           /**This method recieves destination organization and main organization, but when 
            * we have to find all supplies by main organization and applicant organization,
@@ -159,7 +160,7 @@ this.openSetDestinationOrganizationTemplate( this.savedDepositRequestDto.mainOrg
   }
   parentOrganizationDtos:OrganizationDto[]=[];
   getParentOrganizations(mainOrganizationId:number){
-    this.organizationService.getParentOrganizationsByMainOrganization(mainOrganizationId).subscribe({
+    this.organizationService.getOrganizationsByMainOrganizationId(mainOrganizationId).subscribe({
       next:(orgsData)=>{
         this.parentOrganizationDtos = orgsData;
         console.log("PARENMT" +this.parentOrganizationDtos);
@@ -259,6 +260,7 @@ private getItemCode(itemId:number):string{
       });
 
       this.itemQuantityForm.reset();
+     
     } else {
       this.snackBar.openSnackBar('Debe seleccionar una cantidad valida.', 'Cerrar', 3000);
     }
@@ -296,11 +298,9 @@ private getItemCode(itemId:number):string{
   //  }
 
   toSendDepositRequestDto!: DepositRequestDto;
-  //objDestinationOrganizationId!:DestinationOrganization;
+
   sendDepositRequest() {
-    // this.objDestinationOrganizationId = new DestinationOrganization();
-    //   this.objDestinationOrganizationId = Object.assign(this.objDestinationOrganizationId,this.destinationOrganizationForm.value);
-    this.depositRequestService.sendRequest(this.toSendDepositRequestDto.id).subscribe({
+     this.depositRequestService.sendRequest(this.toSendDepositRequestDto.id).subscribe({
       next: (codeData) => {
         this.snackBar.openSnackBar('Se envio con exito el pedido!. codigo:' + codeData, 'Cerrar', 3000);
       },
@@ -308,9 +308,11 @@ private getItemCode(itemId:number):string{
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }, complete: () => {
         this.savedDepositControlrequestMatDialogRef.close();
+        this.setDestinationOrganizationForm.reset();
+        this.destinationOrganizationId
         this.getAllDepositRequests();
       }
-    })
+    });
 
   }
 

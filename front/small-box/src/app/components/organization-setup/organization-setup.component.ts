@@ -308,12 +308,16 @@ get mainOrganization(){
 onCloseParentOrganizationTemplate(){
  
   this.setParentOrganizationTemplateMatDialogRef.close();
+  this.selectedParentOrganizationIds =  [];
+this.selectedParentOrganizationNames = [];
 }
  
  private setParentOrganizationTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
 
  openSetParentOrganizationTemplate(mainOrgId:number,template: TemplateRef<any>) {
   this.selectedMainOrgId = mainOrgId;
+  this.getParentOrganizationByMainOrganizationId(this.selectedMainOrgId);
+  this.getOrganizatiosnByMainOrganizationId(this.selectedMainOrgId)
    this.setParentOrganizationTemplateMatDialogRef = this.dialogService.openDialogCreation({
      template
    });
@@ -321,11 +325,16 @@ onCloseParentOrganizationTemplate(){
   }
 parentOrganizationDto!:ParentOrganizationDto;
 savedParentOrganization!:ParentOrganizationDto;
+parentOrganizationId!:number;
 setParentOrganization(){
   console.log("main org Id: " + this.selectedMainOrgId)
+ 
   this.parentOrganizationDto = new ParentOrganizationDto();
   this.parentOrganizationDto.mainOrganizationId = this.selectedMainOrgId;
   this.parentOrganizationDto.parentOrganizationIds = this.selectedParentOrganizationIds;
+  
+  this.parentOrganizationDto.id = this.parentOrganizationId;
+  console.log("P ID: " +this.parentOrganizationId)
   this.organizationService.setParentOrganizations(this.parentOrganizationDto).subscribe({
     next:(parentData)=>{
       this.savedParentOrganization = parentData;
@@ -338,9 +347,36 @@ setParentOrganization(){
       this.openSavedParentOrganizationTemplate();
     }
   });
-
-
 }
+
+getParentOrganizationByMainOrganizationId(mainOrganizationId:number){
+  var result = 0;
+  this.organizationService.getParentOrganizationByMainOrganizationId(mainOrganizationId).subscribe({
+    next:(parentData)=>{
+     this.parentOrganizationId = parentData.id;
+     console.log("ID::::" +this.parentOrganizationId)
+    },
+    error:(errorData)=>{
+      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+    }
+  });
+ 
+}
+getOrganizatiosnByMainOrganizationId(mainOrganizationId:number){
+  this.organizationService.getOrganizationsByMainOrganizationId(mainOrganizationId).subscribe({
+    next:(orgDatas)=>{
+      orgDatas.forEach(org =>{
+        this.onSelectParentOrganization(org.id);
+        console.log(this.selectedParentOrganizationIds);
+        console.log(this.selectedParentOrganizationNames);
+      });
+    },
+    error:(errorData)=>{
+      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+    }
+  });
+ }
+ 
 
 selectedParentOrganizationIds:number[]=[];
 selectedParentOrganizationNames:OrganizationDto[]=[];
@@ -386,5 +422,7 @@ openSavedParentOrganizationTemplate() {
   });
   this.savedParentOrganizationTemplateMatDialogRef.afterClosed().subscribe();
  }
+
+
 
 }
