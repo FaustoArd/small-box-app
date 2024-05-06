@@ -137,3 +137,6 @@ input{
    
     font-size: 0.9rem;
 }
+.mat-toolbar{
+    background: linear-gradient(245.59deg, rgb(121, 13, 103)30%, rgb(200, 27, 165) 50%, #751f66 79%) !important;
+}

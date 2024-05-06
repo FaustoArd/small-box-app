@@ -19,6 +19,7 @@ import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.exceptions.TextFileInvalidException;
 import com.lord.small_box.services.OrganizationService;
 
 @Component
@@ -74,7 +75,11 @@ public class TextToSupply {
 		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 28))
 				.map(m -> m.replaceAll("[a-zA-Z\\D]", "")).collect(Collectors.joining(""));
 
-		return Integer.parseInt(number);
+		try {
+			return Integer.parseInt(number);
+		}catch(NumberFormatException ex) {
+			throw new TextFileInvalidException("El archivo no es compatible con un suministro.",ex);
+			}
 	}
 
 	private final String strDateV2 = "^(?=.*([0-9]{2})*([/]{1})){2}([0-9]{2,4})";

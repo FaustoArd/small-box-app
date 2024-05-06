@@ -13,6 +13,7 @@ export class SnackBarService {
       duration:duration,
       verticalPosition: 'bottom',
       horizontalPosition:'center',
+      panelClass: ['red-snackbar']
       
     });
   }

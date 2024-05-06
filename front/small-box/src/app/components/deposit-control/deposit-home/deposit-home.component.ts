@@ -67,7 +67,9 @@ export class DepositHomeComponent implements OnInit {
         this.purchaseOrderDto = purchaseOrderData;
       },
       error: (errorData) => {
-        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+        const errorEdited=String (errorData).replace('Error:','');
+        
+        this.snackBar.openSnackBar(errorEdited, 'Cerrar', 3000);
       },
       complete: () => {
         this.openPurchaseOrderTableTemplate(this.purchaseOrderDto.items);
@@ -243,7 +245,8 @@ export class DepositHomeComponent implements OnInit {
         this.supplyDto = supplyData;
       },
       error: (errorData) => {
-        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+        const errorEdited=String (errorData).replace('Error:','');
+        this.snackBar.openSnackBar(errorEdited, 'Cerrar', 3000);
       },
       complete: () => {
         this.openSupplyTableTemplate(this.supplyDto.supplyItems);

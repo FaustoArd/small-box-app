@@ -35,6 +35,7 @@ import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.SupplyDto;
 import com.lord.small_box.dtos.SupplyItemDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.exceptions.TextFileInvalidException;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.Supply;
@@ -169,7 +170,7 @@ public class PdfTextToSupplyTest {
 		organizationService.save(adMAyores);
 		organizationService.save(DDHPS);
 		organizationService.save(DDNI);
-		text = pdfToStringUtils.pdfToString("sum-671.pdf");
+		text = pdfToStringUtils.pdfToString("oc-609.pdf");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// supplyPdfList.forEach(e -> System.out.println(e));
@@ -220,7 +221,7 @@ public class PdfTextToSupplyTest {
 
 	
 	private String getApplicant(String[] arrText) {
-
+		
 		String applicant = Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst()
 				.map(m -> m.substring(m.indexOf("O") + 1, m.lastIndexOf("M") - 1).replace("Secretaría de", "")
 						.replace("Dirección de", "").replace("Subsecretaría de", "").trim())
@@ -230,7 +231,7 @@ public class PdfTextToSupplyTest {
 	}
 
 	private BigDecimal getEstimatedTotal(String[] arrText) {
-
+	
 		return new BigDecimal(Stream.of(arrText).filter(f -> f.toLowerCase().contains("total")).findFirst().get()
 				.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".")
 				.strip());
@@ -239,17 +240,24 @@ public class PdfTextToSupplyTest {
 	private final String supplyNumberTitleRegex = "(SOLICITUD DE PEDIDO Nº)";
 
 	private int getSupplyNumber(String[] arrText) {
+		
 
 		Pattern p = Pattern.compile(supplyNumberTitleRegex);
-		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 28))
+		String number = Stream.of(arrText).filter(f -> p.matcher(f).find())
+				.map(m -> m.substring(24, 28))
 				.map(m -> m.replaceAll("[a-zA-Z\\D]", "")).collect(Collectors.joining(""));
-
+	try {
 		return Integer.parseInt(number);
+	}catch(NumberFormatException ex) {
+		throw new TextFileInvalidException("El archivo no es compatible con un suministro.",ex);
+		}
 	}
+	
 
 	private final String strDateV2 = "^(?=.*([0-9]{2})*([/]{1})){2}([0-9]{2,4})";
 
 	private Calendar getDate(String text) {
+	
 
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -277,7 +285,7 @@ public class PdfTextToSupplyTest {
 	Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
 
 	private List<SupplyItemDto> getSupplyItemList(String[] arrText) {
-
+		
 		List<String> strItems = Stream.of(arrText).filter(f -> pCode.matcher(f).find()).collect(Collectors.toList());
 		return strItems.stream().map(item -> {
 			SupplyItemDto supplyItemDto = new SupplyItemDto();

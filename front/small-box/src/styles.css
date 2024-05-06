@@ -4,3 +4,24 @@ html, body { height: 100%; }
 body { margin: 0; padding: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
    
 }
+.green-snackbar {
+    background: rgb(65, 252, 134);
+    color: white;
+}
+.green-snackbar button {
+    background-color: rgb(65, 252, 134);
+    color: white;
+    
+}
+.red-snackbar {
+    background: linear-gradient(245.59deg, rgb(99, 99, 190)33.33%, rgb(118, 90, 194) 33.33%, #6a4dc9 33.33%); 
+    color: rgb(63, 20, 202)!important;
+    border: 1px solid white;
+    font-family: 'Noto Sans', sans-serif;
+}
+.red-snackbar button {
+    background: linear-gradient(245.59deg, rgb(99, 99, 190)33.33%, rgb(118, 90, 194) 33.33%, #6a4dc9 33.33%); 
+    color: white !important;
+    border: none;
+    font-family: 'Noto Sans', sans-serif;
+}

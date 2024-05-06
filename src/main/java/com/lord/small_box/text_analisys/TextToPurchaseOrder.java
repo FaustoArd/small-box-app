@@ -23,6 +23,7 @@ import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.exceptions.TextFileInvalidException;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
@@ -41,8 +42,8 @@ public class TextToPurchaseOrder {
 		String[] arrTextSplitN = text.split("\\n");
 
 		PurchaseOrderDto purchaseOrderDto = new PurchaseOrderDto();
+		purchaseOrderDto.setOrderNumber(getPurchaseOrderNumber(arrTextSplitN));
 		purchaseOrderDto.setDate(getDate(text));
-		purchaseOrderDto.setOrderNumber(Integer.parseInt(getPurchaseOrderNumber(arrTextSplitN)));
 		purchaseOrderDto.setFinancingSource(getFinancingSource(arrTextSplitN));
 		purchaseOrderDto.setItems(getItems(arrTextSplitN));
 		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
@@ -62,6 +63,16 @@ public class TextToPurchaseOrder {
 		 * arrTextSplitN)).build();
 		 */
 
+	}
+	private int getPurchaseOrderNumber(String[] arrText) {
+		log.info("Text to purchase order Get purchase order number");
+		String orderNumber =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get().replaceAll("[\\D]", "")
+				.strip();
+		try {
+			return Integer.parseInt(orderNumber);
+		}catch (NumberFormatException ex) {
+			throw new TextFileInvalidException("El archivo no es compatible con una orden de compra",ex);
+		}
 	}
 
 	private final String executerUnitRegex = "^(?=.*(unidad ejecutora))";
@@ -98,17 +109,16 @@ public class TextToPurchaseOrder {
 		return dependency;
 	}
 
-	private String getPurchaseOrderNumber(String[] arrText) {
-		log.info("Text to purchase order Get purchase order number");
-		return Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get().replaceAll("[\\D]", "")
-				.strip();
-	}
+	
 
 	private BigDecimal getPurchaseTotal(String[] arrText) {
 		log.info("Text to purchase order Get purchase total");
-		return new BigDecimal(Stream.of(arrText).filter(f -> f.toLowerCase().contains("total:")).findFirst().get()
-				.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".")
-				.strip());
+		
+		String purchaseTotal = Stream.of(arrText).filter(f -> f.toLowerCase().contains("total:")).findFirst()
+				.orElseThrow(()-> new TextFileInvalidException("No se encontro el total, El archivo no es compatible con una orden de compra"));
+		purchaseTotal = purchaseTotal.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".").strip();
+				
+		return new BigDecimal(purchaseTotal);
 	}
 
 	// REGEX to find items data.
@@ -159,8 +169,7 @@ public class TextToPurchaseOrder {
 		if(strQuantity.contains("."));
 		strQuantity = strQuantity.replace(".", "");
 		int quantity = Integer.parseInt(strQuantity);
-		System.out.println("Quantitry: " + quantity);
-		return quantity;
+	return quantity;
 		
 		/*return Integer.parseInt(Stream.of(arrItems).filter(f -> pItemQuantity.matcher(f).find())
 				.map(m -> m.substring(0, m.indexOf(","))).findFirst().get());*/
@@ -208,8 +217,11 @@ public class TextToPurchaseOrder {
 		Pattern pDate = Pattern.compile(strDateV2);
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		String date = Stream.of(text.split(" ")).filter(f -> pDate.matcher(f).find()).skip(1).findFirst().get()
-				.replaceAll("[a-zA-Z]", "").replace("/", "-").strip();
+		String date = Stream.of(text.split(" ")).filter(f -> pDate.matcher(f).find())
+				.skip(1)
+				.findFirst()
+				.orElseThrow(()-> new TextFileInvalidException("No se encontro la fecha, El archivo no es compatible con una orden de compra"));
+		date = date.replaceAll("[a-zA-Z]", "").replace("/", "-").strip();
 		try {
 			cal.setTime(sdf.parse(date));
 

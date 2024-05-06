@@ -31,6 +31,7 @@ import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.exceptions.TextFileInvalidException;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.repositories.OrganizationRepository;
@@ -125,7 +126,7 @@ public class PdfTextToPurchaseOrderTest {
 		organizationService.save(org3);
 		organizationService.save(org4);
 		organizationService.save(org5);
-		text = pdfToStringUtils.pdfToString("oc-429.pdf");
+		text = pdfToStringUtils.pdfToString("oc-760.pdf");
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		// Stream.of(arrTextSplitPageEnd).forEach(e -> System.out.println(e));
@@ -140,7 +141,7 @@ public class PdfTextToPurchaseOrderTest {
 
 		PurchaseOrderDto purchaseOrderDto = new PurchaseOrderDto();
 		purchaseOrderDto.setDate(getDate(text));
-		purchaseOrderDto.setOrderNumber(Integer.parseInt(getPurchaseOrderNumber(arrTextSplitN)));
+		purchaseOrderDto.setOrderNumber(getPurchaseOrderNumber(arrTextSplitN));
 		purchaseOrderDto.setFinancingSource(getFinancingSource(arrTextSplitN));
 		purchaseOrderDto.setItems(getItems(arrTextSplitN));
 		purchaseOrderDto.setPurchaseOrderTotal(getPurchaseTotal(arrTextSplitN));
@@ -195,10 +196,11 @@ public class PdfTextToPurchaseOrderTest {
 		return dependency;
 	}
 
-	private String getPurchaseOrderNumber(String[] arrText) {
+	private int getPurchaseOrderNumber(String[] arrText) {
 
-		return Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get().replaceAll("[\\D]", "")
+		String orderNumber =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get().replaceAll("[\\D]", "")
 				.strip();
+		return Integer.parseInt(orderNumber); 
 	}
 
 	private BigDecimal getPurchaseTotal(String[] arrText) {
@@ -309,8 +311,11 @@ public class PdfTextToPurchaseOrderTest {
 		Pattern pDate = Pattern.compile(strDateV2);
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		String date = Stream.of(text.split(" ")).filter(f -> pDate.matcher(f).find()).skip(1).findFirst().get()
-				.replaceAll("[a-zA-Z]", "").replace("/", "-").strip();
+		String date = Stream.of(text.split(" "))
+				.filter(f -> pDate.matcher(f).find())
+				.skip(1)
+				.findFirst().orElseThrow(()-> new TextFileInvalidException("El archivo no es compatible con una orden de compra"));
+				date = date.replaceAll("[a-zA-Z]", "").replace("/", "-").strip();
 		/*
 		 * .map(m -> m.substring(m.indexOf(":")+1,m.length()-1).replace("/",
 		 * "-").strip()).get();
@@ -325,8 +330,8 @@ public class PdfTextToPurchaseOrderTest {
 			cal.setTime(sdf.parse(date));
 
 			return cal;
-		} catch (ParseException e) {
-			throw new RuntimeException("Error al parsear la fecha");
+		} catch (ParseException ex) {
+			throw new TextFileInvalidException("Error al parsear la fecha.",ex);
 		}
 	}
 }
