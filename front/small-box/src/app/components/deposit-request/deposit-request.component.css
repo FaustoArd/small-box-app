@@ -14,7 +14,15 @@ body{
     margin-left: 1rem;
     margin-right: 1rem;
     background: linear-gradient(245.59deg, rgb(216, 13, 13)33.33%, rgb(202, 9, 19) 33.33%, #d61111 33.33%);
-    height: 3rem;
+    height: 2rem;
+}
+
+.barofcolourColumn{
+    padding-top: 0.1rem;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    background: linear-gradient(245.59deg, rgb(167, 179, 208)30%, rgb(174, 167, 213) 50%, #b5b0da 79%);
+    height: 2rem;
 }
 .barofcolourOther{
     padding-top: 0.1rem;

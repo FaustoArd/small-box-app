@@ -1,70 +1,68 @@
 <app-navbar></app-navbar>
 
 <body>
-
-
-    <div class="container-flex">
+    <div class="container-flex text-center">
         <div class="row">
-            <div class="col">
-                <div class="barofcolourOther mt-0"></div>
-            </div>
-        </div>
-        <div class="row">
-
-            <div class="col-md-8 ms-3">
-                <div class="jumbotron mt-3">
-                    <div>
-                        <h1 class="d-inline display-4">Nuevo</h1>
-                        <button (click)="openCreateRequestTemplate(createRequestTemplate)" id="btnSend"
-                            class="d-inline btn btn-primary btn-md ms-3 mb-2" role="button">-</button>
-                    </div>
-
+           <div class="col-md-1 mt-2">
+            <button (click)="openCreateRequestTemplate(createRequestTemplate)" id="btnSend"
+            class="d-inline btn btn-primary btn-sm ms-3 mb-2 text-white" role="button">NUEVO</button>
+           </div>
+            <div class="col-md-11 mt-2">
+                <div class="barofcolourRed mt-0">
+                    <h1 class="text-center">INBOX</h1>
                 </div>
+
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <div class="barofcolourRed mt-3">-</div>
-            </div>
+        <div class="row mt-2">
+            
         </div>
-        <div class="row text-center mt-2">
+        <div id="titleRow" class="row text-center mt-2">
 
-            <div class="col-md-2 ms-3">
-                <h2>FECHA</h2>
+            <div class="col-md-2 mt-3 ms-2">
+                <div class="barofcolourColumn mt-0">
+                    <h2>FECHA</h2>
+                </div>
                 <hr class="my-4">
             </div>
-            <div class="col-md-4">
-                <h2>ENVIADO A</h2>
+            <div class="col-md-3 mt-3">
+                <div class="barofcolourColumn mt-0">
+                    <h2>ENVIADO A</h2>
+                </div>
                 <hr class="my-4">
 
             </div>
-            <div class="col-md-2">
-                <h2>VER ITEMS</h2>
+            <div class="col-md-1 mt-3">
+                <div class="barofcolourColumn mt-0">
+                    <h2>ITEMS</h2>
+                </div>
                 <hr class="my-4">
 
             </div>
-            <div class="col-md-3">
-                <h2>CODIGO DE RECEPCION</h2>
+            <div class="col-md-3 mt-3">
+                <div class="barofcolourColumn mt-0">
+                    <h2>CODIGO DE ENVIO</h2>
+                </div>
                 <hr class="my-4">
             </div>
         </div>
         <div *ngIf="depositRequestDtos.length>0">
             <div class="row text-center" *ngFor="let request of depositRequestDtos">
 
-                <div class="col-md-2 ms-3">
+                <div class="col-md-2 ms-3 mt-3">
                     <h3 class="ms-1">{{request.requestDate}}</h3>
                     <hr class="my-4">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3 mt-3">
                     <h3>{{request.destinationOrganizationName}}</h3>
                     <hr class="my-4">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1 mt-3">
                     <button (click)="openDepositControlRequestsTemplate(depositControlRequestTemplate,request.id)"
                         class="btn btn-sm">-</button>
                     <hr class="my-4">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mt-3" >
                     <h3 class="ms-3">{{request.requestCode}}</h3>
                     <hr class="my-4">
                 </div>
@@ -298,7 +296,7 @@
             <h4 class="mt-1 ms-3">CODIGO:</h4>
         </div>
         <div class="col-md-6 ms-2">
-            <h3 >{{selectedDepositRequestDto.requestCode}}</h3>
+            <h3>{{selectedDepositRequestDto.requestCode}}</h3>
         </div>
     </div>
     <div class="row mt-1">
