@@ -63,7 +63,7 @@ public class DepositRequestController {
 	}
 	@GetMapping(path="/find-control-requests")
 	ResponseEntity<List<DepositControlRequestDto>> findAllControlRequestsByRequest(@RequestParam("depositRequestId")long depositRequestId){
-		List<DepositControlRequestDto> controlRequestsDto = depositRequestService.findAllRequestControlsByDepositRequest(depositRequestId);
+		List<DepositControlRequestDto> controlRequestsDto = depositRequestService.findAllControlRequestsByDepositRequest(depositRequestId);
 		return ResponseEntity.ok(controlRequestsDto);
 	}
 

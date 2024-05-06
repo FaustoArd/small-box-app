@@ -177,7 +177,7 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 	}
 
 	@Override
-	public List<DepositControlRequestDto> findAllRequestControlsByDepositRequest(long depositRequestId) {
+	public List<DepositControlRequestDto> findAllControlRequestsByDepositRequest(long depositRequestId) {
 		log.info("Find all control requests by deposit request");
 		DepositRequest request = findRequestById(depositRequestId);
 		List<DepositControlRequest> controlRequests = depositControlRequestRepository.findAllByDepositRequest(request);

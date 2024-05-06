@@ -1,6 +1,9 @@
 package com.lord.small_box.controllers;
 
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,7 @@ public class OrganizationController {
 	private final OrganizationResponsibleService organizationResponsibleService;
 	
 	private static final Gson gson = new Gson();
+	private final static Logger log = LoggerFactory.getLogger(OrganizationController.class);
 	
 	@GetMapping("/all-orgs")
 	ResponseEntity<List<OrganizationDto>> findAllOrganizations(){
@@ -125,8 +129,10 @@ public class OrganizationController {
 		return new ResponseEntity<ParentOrganizationDto>(parentOrganization,HttpStatus.CREATED);
 	}
 	@GetMapping(path="/get-parent-organizations")
-	ResponseEntity<List<OrganizationDto>> getParentOrganizationsByMainOrganization(@RequestParam("mainOrganizationId")long mainOrganizationId){
-		List<OrganizationDto> organizationDtos = organizationService.getParentOrganizationsByMainOrganization(mainOrganizationId);
+	ResponseEntity<List<OrganizationDto>> findParentOrganizationsByMainOrganization(@RequestParam("mainOrganizationId")long mainOrganizationId){
+		log.info("Get parent organizations by main organization id: " + mainOrganizationId);
+		List<OrganizationDto> organizationDtos = organizationService.findParentOrganizationsByMainOrganization(mainOrganizationId);
+		organizationDtos.forEach(e -> System.out.println("Parent:" + e.getOrganizationName()));
 		return ResponseEntity.ok(organizationDtos);
 	}
 	

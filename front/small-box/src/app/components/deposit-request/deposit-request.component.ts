@@ -162,6 +162,7 @@ this.openSetDestinationOrganizationTemplate( this.savedDepositRequestDto.mainOrg
     this.organizationService.getParentOrganizationsByMainOrganization(mainOrganizationId).subscribe({
       next:(orgsData)=>{
         this.parentOrganizationDtos = orgsData;
+        console.log("PARENMT" +this.parentOrganizationDtos);
       },
       error:(errorData)=>{
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);
@@ -328,5 +329,43 @@ private getItemCode(itemId:number):string{
         this.openSavedDepositControlRequestTemplate();
       }
     });
+  }
+
+
+  onCloseDepositControlRequestsTemplate(){
+    this.depositControlrequestsMatDialogRef.close();
+  }
+  private depositControlrequestsMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
+  
+  openDepositControlRequestsTemplate(template:TemplateRef<any>,depositRequestId:number): void {
+    this.getAllControlRequestsByRequestId(depositRequestId);
+    this.depositControlrequestsMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.depositControlrequestsMatDialogRef.afterClosed().subscribe();
+  }
+
+  depositControlRequestDtos:DepositControlRequestDto[]=[];
+  selectedDepositRequestDto!:DepositRequestDto;
+  getAllControlRequestsByRequestId(depositRequestId:number){
+    this.depositRequestService.findAllControlRequestsByRequest(depositRequestId).subscribe({
+      next:(controlRequestDatas)=>{
+        this.depositControlRequestDtos = controlRequestDatas;
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      },
+      complete:()=>{
+        this.selectedDepositRequestDto = this.getDepositRequestData(depositRequestId);
+      }
+    });
+  }
+
+  getDepositRequestData(depositRequestId:number):DepositRequestDto{
+    const requestInddex = this.depositRequestDtos.findIndex(request => request.id==depositRequestId);
+    if(requestInddex>-1){
+    return this.depositRequestDtos[requestInddex];
+    }
+    return new DepositRequestDto();
   }
 }

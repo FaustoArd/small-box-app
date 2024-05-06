@@ -19,5 +19,5 @@ public interface DepositRequestService {
 
 	public List<DepositRequestDto> findAllRequestbyOrganizationByUserId(long userId);
 	
-	public List<DepositControlRequestDto> findAllRequestControlsByDepositRequest(long depositRequestId);
+	public List<DepositControlRequestDto> findAllControlRequestsByDepositRequest(long depositRequestId);
 }

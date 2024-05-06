@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -32,8 +34,9 @@ public class ParentOrganization {
 	@JoinColumn(name="main_organization_id",referencedColumnName = "id")
 	private Organization mainOrganization;
 	
-	@OneToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinColumn(name="parent_organization_id",referencedColumnName = "id")
+	@ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinTable(name="parent_organization_junction",joinColumns = {@JoinColumn(name="parent_organization_id", referencedColumnName = "id")},
+	inverseJoinColumns = {@JoinColumn(name="organization_id", referencedColumnName = "id")})
 	private List<Organization> parentOrganizations;
 
 }

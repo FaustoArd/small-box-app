@@ -38,6 +38,6 @@ public interface OrganizationService {
 	
 	public ParentOrganizationDto setParentOrganization(ParentOrganizationDto parentOrganizationDto);
 	
-	public List<OrganizationDto> getParentOrganizationsByMainOrganization(long mainOrganizationId);
+	public List<OrganizationDto> findParentOrganizationsByMainOrganization(long mainOrganizationId);
 	
 }

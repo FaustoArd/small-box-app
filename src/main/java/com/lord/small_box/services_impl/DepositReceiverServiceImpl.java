@@ -69,4 +69,6 @@ public class DepositReceiverServiceImpl implements DepositRecevierService {
 		List<DepositControlReceiver> receivers = depositControlReceiverRepository.findAllByDepositReceiver(receiver);
 		return DepositControlReceiverMapper.INSTANCE.receiversToDtos(receivers);
 	}
+
+	
 }

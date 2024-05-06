@@ -94,17 +94,12 @@
             </div>
             <div class="col-md-1">
                 <div>
-                    <button mat-button [matMenuTriggerFor]="depositReceiverMenu" class="text-white">INBOX</button>
-                    <mat-menu #depositReceiverMenu yPosition="above">
-                        <button mat-menu-item routerLink="/deposit-receiver">Ver</button>
-
-                    </mat-menu>
-                    <img *ngIf="messageQuantity<=0" id="envelopeOff" class="ms-1 mt-1"
+                    <button mat-button routerLink="/deposit-receiver" class="text-white ms-2">INBOX</button>
+                    <img routerLink="/deposit-receiver" *ngIf="messageQuantity<=0" id="envelopeOff" class="ms-1 mt-1"
                         src="./assets/img/envelope-open-text-solid.svg">
-                    <img *ngIf="messageQuantity>0" id="envelopeOn" class="ms-1 mt-1"
+                    <img routerLink="/deposit-receiver" *ngIf="messageQuantity>0" id="envelopeOn" class="ms-1 mt-1"
                         src="./assets/img/envelope-open-text-solid.svg">
-                    <small *ngIf="messageQuantity<=0" class="text-white">{{messageQuantity}}</small>
-                    <small *ngIf="messageQuantity>0" class="text-danger">{{messageQuantity}}</small>
+                    <small *ngIf="messageQuantity>0" class="text-warning fw-bold">{{messageQuantity}}</small>
                 </div>
 
             </div>

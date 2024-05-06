@@ -191,7 +191,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 	}
 
 	@Override
-	public List<OrganizationDto> getParentOrganizationsByMainOrganization(long mainOrganizationId) {
+	public List<OrganizationDto> findParentOrganizationsByMainOrganization(long mainOrganizationId) {
+		log.info("find parent organizations by main organization id: " + mainOrganizationId);
 		Organization mainOrganization = findOrganizationById(mainOrganizationId);
 		Optional<ParentOrganization> parent = parentOrganizationRepository.findByMainOrganization(mainOrganization);
 		if (parent.isPresent()) {
