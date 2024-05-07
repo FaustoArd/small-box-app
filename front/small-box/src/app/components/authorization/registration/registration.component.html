@@ -1,42 +1,46 @@
 <app-navbar></app-navbar>
-<div class="container-fluid">
-<div class="row">
-  <div class="col-md-2"></div>
-  <div class="col-md-4 mt-5">
-    <!-- Register Form -->
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-4 mt-1">
+        <!-- Register Form -->
         <form class="form-group justify-center mt-3" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-            <div class="form-group">
-                <label for="username" class="form-label">Nombre: </label>
-                <input type="text" class="form-control" formControlName="name" id="name" placeholder="Ingresar nombre">
-                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
-                  <div *ngIf="name.errors?.['required']">
-                    nombre requerido
-                  </div>
-                  <div  class="mt-1" *ngIf="name.errors?.['name']">
-                    el username debe tener como minimo 4 letras
-                  </div>
-                </div>
+          <div class="form-group">
+            <label for="username" class="form-label">Nombre: </label>
+            <input type="text" class="form-control" formControlName="name" id="name" placeholder="Ingresar nombre">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
+              <div *ngIf="name.errors?.['required']">
+                nombre requerido
               </div>
-              <div class="form-group">
-                <label for="lastname" class="form-label">Apellido: </label>
-                <input type="text" class="form-control" formControlName="lastname" id="lastname" placeholder="Ingresar apellido">
-                <div *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)" class="text-danger">
-                  <div *ngIf="lastname.errors?.['required']">
-                    apellido requerido
-                  </div>
-                  <div  class="mt-1" *ngIf="name.errors?.['lastname']">
-                    el username debe tener como minimo 4 letras
-                  </div>
-                </div>
+              <div class="mt-1" *ngIf="name.errors?.['name']">
+                el username debe tener como minimo 4 letras
               </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lastname" class="form-label">Apellido: </label>
+            <input type="text" class="form-control" formControlName="lastname" id="lastname"
+              placeholder="Ingresar apellido">
+            <div *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)" class="text-danger">
+              <div *ngIf="lastname.errors?.['required']">
+                apellido requerido
+              </div>
+              <div class="mt-1" *ngIf="name.errors?.['lastname']">
+                el username debe tener como minimo 4 letras
+              </div>
+            </div>
+          </div>
           <div class="form-group">
             <label for="username" class="form-label">Username: </label>
-            <input type="text" class="form-control" formControlName="username" id="username" placeholder="Enter username">
+            <input type="text" class="form-control" formControlName="username" id="username"
+              placeholder="Enter username">
             <div *ngIf="username.invalid && (username.dirty || username.touched)" class="text-danger">
               <div *ngIf="username.errors?.['required']">
                 username requerido
               </div>
-              <div  class="mt-1" *ngIf="username.errors?.['email']">
+              <div class="mt-1" *ngIf="username.errors?.['email']">
                 password must be at least 6 characters long.
               </div>
             </div>
@@ -48,8 +52,8 @@
               <div *ngIf="email.errors?.['required']">
                 email requerido
               </div>
-              <div  class="mt-1" *ngIf="email.errors?.['email']">
-               email invalido!.
+              <div class="mt-1" *ngIf="email.errors?.['email']">
+                email invalido!.
               </div>
             </div>
           </div>
@@ -64,42 +68,233 @@
           </div>
           <div class="form-group">
             <label for="repeatedPassword" class="form-label">Repetir password</label>
-            <input type="password" class="form-control" formControlName="repeatedPassword" id="repeatedPassword" placeholder="repetir password">
-            <div *ngIf="repeatedPassword.invalid && (repeatedPassword.dirty || repeatedPassword.touched)" class="text-danger">
+            <input type="password" class="form-control" formControlName="repeatedPassword" id="repeatedPassword"
+              placeholder="repetir password">
+            <div *ngIf="repeatedPassword.invalid && (repeatedPassword.dirty || repeatedPassword.touched)"
+              class="text-danger">
               <div class="mt-1" *ngIf="repeatedPassword.errors?.['required']">
                 password requerido
               </div>
             </div>
           </div>
-           <div class="form-group" [formGroup]="authorityForm">
+          <div class="form-group" [formGroup]="authorityForm">
             <label for="employeeJob-id" class="form-label fs-7 ">Rol</label>
-        <select id="employeeJob-id"  formControlName="authority" class="form-select border-dark  mt-2">
-            <option value="">Seleccione un rol</option>
-             <option class="form-control" *ngFor="let authority of authorities" id="employeeJob-id" [value]="authority">
-          
-                {{authority}}</option>
-                <div *ngIf="authority.invalid && (authority.dirty || authority.touched)" class="text-danger">
-                    <div *ngIf="authority.errors?.['required']">
-                  Falta rol de trabajo
-                    </div>
-                  </div>
-        </select>
-    </div>
+            <select id="employeeJob-id" formControlName="authority" class="form-select border-dark  mt-2">
+              <option value="">Seleccione un rol</option>
+              <option class="form-control" *ngFor="let authority of authorities" id="employeeJob-id"
+                [value]="authority">
 
-          <button type="submit"  class="btn btn-primary btn-block mb-4">Guardar</button>
+                {{authority}}</option>
+              <div *ngIf="authority.invalid && (authority.dirty || authority.touched)" class="text-danger">
+                <div *ngIf="authority.errors?.['required']">
+                  Falta rol de trabajo
+                </div>
+              </div>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block mb-4">Guardar</button>
         </form>
       </div>
       <div class="col-md-1"></div>
       <div class="col-md-4 mt-5">
+        <div>
+          <div class="jumbotron ms-1">
+            <div id="orderItem" class="mt-1">
+              <p class="d-inline display-8">VER USUARIOS</p>
+              <a (click)="openUserListTemplate(usersListTemplate)" class="btn btn-sm ms-3" role="button">-</a>
+            </div>
+            <p class="lead">
+              <hr class="my-4">
+          </div>
+        </div>
+       
+            <div>
+              <h1 class="text-danger"> ATENCION: </h1>
+              <h3>Una vez Creado el usuario, si se debe actualizar(modificar) el mismo,
+                no podra modificar el username, y debera introducir un nuevo password.
+              </h3>
+            </div>
+       
         <div id="passReq" class="mt-5 text-center">
-        <h2>Requisitos del Password</h2>
-        <h5>Debe tener por lo menos un digito (0-9)</h5>
-        <h5>Debe tener por lo menos una letra en minuscula</h5>
-        <h5>Debe tener por lo menos una letra en mayuscula</h5>
-        <h5>Puede tener caracteres especiales, Caracteres admitidos:  @#$%^&+= </h5>
-        <h5>No se permiten espacios</h5>
-        <h5>Debe tener por lo menos una longitud de 8 caracteres</h5>
-      </div>
+          <h2>Requisitos del Password</h2>
+          <h5>Debe tener por lo menos un digito (0-9)</h5>
+          <h5>Debe tener por lo menos una letra en minuscula</h5>
+          <h5>Debe tener por lo menos una letra en mayuscula</h5>
+          <h5>Puede tener caracteres especiales, Caracteres admitidos: @#$%^&+= </h5>
+          <h5>No se permiten espacios</h5>
+          <h5>Debe tener por lo menos una longitud de 8 caracteres</h5>
+        </div>
       </div>
     </div>
-</div>
+    
+  </div>
+  <ng-template #usersListTemplate>
+   <div class="row">
+    <div class="col-md-11"></div>
+    <div class="col-md-1">
+      <button id="closeButton" (click)="onCloseUserListTemplate()" class="btn btn-sm text-white mt-0 ">X</button>
+    </div>
+   </div>
+    <div class="row">
+      <div class="col-4 ms-2">
+        <!-- User table Selection -->
+        <table id="userTable" class="table table-sm table-bordered table-striped  w-100">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">NOMBRE</th>
+              <th scope="col">APELLIDO</th>
+              <th scope="col">USERNAME</th>
+              <th scope="col">EMAIL</th>
+              <th scope="col">ROL</th>
+              <th scope="col">MODIFICAR</th>
+              <th scope="col">ELIMINAR</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Iterate over usersDto -->
+            <tr *ngFor="let user of appUserDtos">
+              <th scope="row">{{user.id}}</th>
+              <td>{{user.name}}</td>
+              <td>{{user.lastname}}</td>
+              <td>{{user.username}}</td>
+              <td>{{user.email}}</td>
+              <td>
+             {{user.authorities}}
+              </td>
+              <td class="mt-2">
+                <button (click)="openUpdateUserTemplate(udpateUserTemplate,user.id)" class="btn btn-sm mx-2 ">-</button>
+              </td>
+              <td class="mt-2">
+                <button (click)="deleteUserById(user.id)" class="btn btn-sm mx-2 ">-</button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #udpateUserTemplate>
+    <button id="closeButton" (click)="onCloseUpdateUserTemplate()" class="btn btn-sm text-white">X</button>
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-4 mt-1">
+        <!-- Register Form -->
+        <form class="form-group justify-center mt-3" [formGroup]="updateUserForm" (ngSubmit)="updateUser()">
+          <div class="form-group">
+            <label for="username" class="form-label">Nombre: </label>
+            <input type="text" class="form-control" formControlName="name" id="name" placeholder="Ingresar nombre">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
+              <div *ngIf="name.errors?.['required']">
+                nombre requerido
+              </div>
+              <div class="mt-1" *ngIf="name.errors?.['name']">
+                el username debe tener como minimo 4 letras
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lastname" class="form-label">Apellido: </label>
+            <input type="text" class="form-control" formControlName="lastname" id="lastname"
+              placeholder="Ingresar apellido">
+            <div *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)" class="text-danger">
+              <div *ngIf="lastname.errors?.['required']">
+                apellido requerido
+              </div>
+              <div class="mt-1" *ngIf="name.errors?.['lastname']">
+                el username debe tener como minimo 4 letras
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="username" class="form-label">Username: </label>
+            <input type="text" class="form-control" formControlName="username" id="username"
+              placeholder="Enter username" [readonly]="disableSelect">
+            <div *ngIf="username.invalid && (username.dirty || username.touched)" class="text-danger">
+              <div *ngIf="username.errors?.['required']">
+                username requerido
+              </div>
+              <div class="mt-1" *ngIf="username.errors?.['email']">
+                password must be at least 6 characters long.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">Email: </label>
+            <input type="email" class="form-control" formControlName="email" id="email" placeholder="Ingresar mail">
+            <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">
+              <div *ngIf="email.errors?.['required']">
+                email requerido
+              </div>
+              <div class="mt-1" *ngIf="email.errors?.['email']">
+                email invalido!.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" formControlName="password" id="password" placeholder="Password">
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger">
+              <div class="mt-1" *ngIf="password.errors?.['required']">
+                password requerido
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="repeatedPassword" class="form-label">Repetir password</label>
+            <input type="password" class="form-control" formControlName="repeatedPassword" id="repeatedPassword"
+              placeholder="repetir password">
+            <div *ngIf="repeatedPassword.invalid && (repeatedPassword.dirty || repeatedPassword.touched)"
+              class="text-danger">
+              <div class="mt-1" *ngIf="repeatedPassword.errors?.['required']">
+                password requerido
+              </div>
+            </div>
+          </div>
+          <div class="form-group" [formGroup]="updateAuthorityForm">
+            <label for="employeeJob-id" class="form-label fs-7 ">Rol</label>
+            <select id="employeeJob-id" formControlName="authority" class="form-select border-dark  mt-2">
+              <option value="">Seleccione un rol</option>
+              <option class="form-control" *ngFor="let authority of authorities" id="employeeJob-id"
+                [value]="authority">
+
+                {{authority}}</option>
+              <div *ngIf="authority.invalid && (authority.dirty || authority.touched)" class="text-danger">
+                <div *ngIf="authority.errors?.['required']">
+                  Falta rol de trabajo
+                </div>
+              </div>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block mb-4">Guardar</button>
+        </form>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-4 mt-5">
+       
+      <div id="passReq" class="mt-5 text-center">
+          <h2>Requisitos del Password</h2>
+          <h5>Debe tener por lo menos un digito (0-9)</h5>
+          <h5>Debe tener por lo menos una letra en minuscula</h5>
+          <h5>Debe tener por lo menos una letra en mayuscula</h5>
+          <h5>Puede tener caracteres especiales, Caracteres admitidos: @#$%^&+= </h5>
+          <h5>No se permiten espacios</h5>
+          <h5>Debe tener por lo menos una longitud de 8 caracteres</h5>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6"></div>
+      <div class="col-md-4">
+        <div>
+          <h1 class="text-danger"> <h2> ATENCION: EL USERNAME NO PUEDE SER EDITADO</h2></h1>
+        </div>
+      </div> 
+    </div>
+  </ng-template>
+</body>

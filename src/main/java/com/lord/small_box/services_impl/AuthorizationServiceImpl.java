@@ -3,7 +3,6 @@ package com.lord.small_box.services_impl;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
 import com.lord.small_box.dtos.AppUserLoginDto;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
+import com.lord.small_box.dtos.AppUserUpdatedDto;
 import com.lord.small_box.dtos.LoginResponseDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.exceptions.LoginException;
@@ -45,9 +44,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	private final AuthenticationManager authenticationManager;
 
 	@Autowired
-	private final JwtEncoder jwtEncoder;
-
-	@Autowired
 	private final AuthorityRepository authorityRepository;
 
 	@Autowired
@@ -67,8 +63,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			throw new PasswordInvalidException("Password invalido, lea los requisitos");
 		} else {
 			log.info("looking for role");
-			Authority role = authorityRepository.findByAuthority(AuthorityName.valueOf(authority))
-					.orElseThrow(() -> new ItemNotFoundException("No se encontro el rol"));
+			Authority role = findByAuthority(authority);
 			Set<Authority> roles = new HashSet<>();
 			roles.add(role);
 			log.info("saving user");
@@ -80,7 +75,25 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		}
 
 	}
+	@Override
+	public AppUserRegistrationDto updateUser(AppUserUpdatedDto appUserUpdatedDto, String authority) {
+		log.info("Update user");
+		if (!validatePassword(appUserUpdatedDto.getPassword())) {
+			log.warn("Invalid password");
+			throw new PasswordInvalidException("Password invalido, lea los requisitos");
+		} else {
+			log.info("looking for role");
+			Authority role = findByAuthority(authority);
+			Set<Authority> roles = new HashSet<>();
+			roles.add(role);
+			log.info("saving user");
+			AppUser updatedUser = appUserService.save(appUserService.mapUpdateDtoToUser(appUserUpdatedDto, roles, passwordEncoder));
 
+			return mapUserToDto(updatedUser);
+		}
+
+	}
+	
 	@Override
 	public LoginResponseDto login(AppUserLoginDto appUserLoginDto) throws AuthenticationException {
 		log.info("Login user");
@@ -118,5 +131,12 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	public boolean validatePassword(String password) {
 		return Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?![@#$%^&+=])(?=\\S+$).{8,}$", password);
 	}
+	
+	private Authority findByAuthority(String authority) {
+		return authorityRepository.findByAuthority(AuthorityName.valueOf(authority))
+		.orElseThrow(() -> new ItemNotFoundException("No se encontro el rol"));
+	} 
+
+	
 
 }

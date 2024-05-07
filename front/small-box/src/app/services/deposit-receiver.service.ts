@@ -43,4 +43,9 @@ export class DepositReceiverService {
       (`${DEPOSIT_RECEIVER_BASE_URL}/find-all-control-receivers-by-receiver?depositReceiverId=${depositReceiverId}`)
       .pipe(catchError(this.handleError));
     }
+
+    deleteDepositReceiverById(depositReceiverId:number):Observable<string>{
+      return this.http.delete<string>(`${DEPOSIT_RECEIVER_BASE_URL}/delete-deposit-receiver/${depositReceiverId}`,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
 }

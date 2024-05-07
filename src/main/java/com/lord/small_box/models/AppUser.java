@@ -1,9 +1,7 @@
 package com.lord.small_box.models;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,19 +32,19 @@ public class AppUser implements UserDetails {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="name")
+	@Column(name="name", nullable = false)
 	private String name;
 	
-	@Column(name="lastname")
+	@Column(name="lastname", nullable = false)
 	private String lastname;
 	
-	@Column(name="username", unique = true)
+	@Column(name="username", unique = true,nullable = false)
 	private String username;
 	
-	@Column(name="email",unique = false)
+	@Column(name="email",unique = false, nullable = false)
 	private String email;
 	
-	@Column(name="password")
+	@Column(name="password", nullable = false)
 	private String password;
 	
 	@Column(name="account_non_locked")
@@ -73,14 +71,6 @@ public class AppUser implements UserDetails {
 	
 	@Column(name="main_organization_id")
 	private long mainOrganizationId;
-	
-	/*@ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinTable(name = "user_organization_receiver_junction", joinColumns = { @JoinColumn(name="user_id", referencedColumnName = "id") },
-	inverseJoinColumns = { @JoinColumn(name="organization_id", referencedColumnName = "id") })
-	private List<Organization> organizationReceivers;*/
-	
-	
-	
 	
 	public AppUser() {
 		super();
@@ -174,13 +164,6 @@ public class AppUser implements UserDetails {
 	public void setOrganizations(List<Organization> organizations) {
 		this.organizations = organizations;
 	}
-	
-	/*public List<Organization> getOrganizationReceivers(){
-		return organizationReceivers;
-	}
-	public void setOrganizationReceivers(List<Organization> organizationReceivers) {
-		this.organizationReceivers = organizationReceivers;
-	}*/
 	
 	public Long getMainOrganizationId() {
 		return mainOrganizationId;

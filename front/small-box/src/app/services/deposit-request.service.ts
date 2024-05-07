@@ -53,4 +53,8 @@ export class DepositRequestService {
       return this.http.get<DepositControlRequestDto[]>
       (`${DEPOSIT_REQUEST_BASE_URL}/find-control-requests?depositRequestId=${depositRequestId}`).pipe(catchError(this.handleError))
     }
+    deleteDepositRequestById(depositRequestId:number):Observable<string>{
+      return this.http.delete<string>(`${DEPOSIT_REQUEST_BASE_URL}/delete-deposit-request/${depositRequestId}`,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
 }

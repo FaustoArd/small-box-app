@@ -184,6 +184,16 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 		return DepositControlRequestMapper.INSTANCE.requestsToDtos(controlRequests);
 	}
 
+	@Override
+	public String deleteDepositRequest(long depositRequestId) {
+		if(depositRequestRepository.existsById(depositRequestId)) {
+			String deletedRequestCode = findRequestById(depositRequestId).getRequestCode();
+			depositRequestRepository.deleteById(depositRequestId);
+			return deletedRequestCode;
+		}
+		throw new ItemNotFoundException("No se encontro el pedido de deposito");
+	}
+	
 	private Organization findOrgById(long organizationId) {
 		return organizationRepository.findById(organizationId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
@@ -193,6 +203,7 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 		return depositRequestRepository.findById(requestId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el pedido de deposito"));
 	}
+
 
 	
 

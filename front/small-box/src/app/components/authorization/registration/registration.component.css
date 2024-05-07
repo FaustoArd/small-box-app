@@ -1,6 +1,23 @@
+body{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+umbotron{
+    background-color: aliceblue;
+}
+button,a{
+    background: linear-gradient(245.59deg, rgb(99, 99, 190)33.33%, rgb(118, 90, 194) 33.33%, #6a4dc9 33.33%); 
+    color:red;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
+}
+button:hover{
+    background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
+    color:rgb(215, 154, 41);
+}
 form{
     text-align: center;
 }
+
 
 .form-group{
     margin-top: 0.6rem;
@@ -28,7 +45,15 @@ select{
 #passReq{
     border: 1px solid black;
 }
+h1{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
 h2{
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
+h3{
     font-family: 'Quattrocento', serif;
     font-weight: bold;
 }
@@ -36,3 +61,14 @@ h5{
     font-family: 'Quattrocento', serif;
     font-weight: bold;  
 }
+p{
+    color: #361e96;
+    font-size: 0.9rem;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
+}
+#closeButton{
+    position: relative;
+    right: 0;
+   
+  }

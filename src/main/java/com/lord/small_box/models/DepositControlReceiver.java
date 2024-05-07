@@ -1,7 +1,7 @@
 package com.lord.small_box.models;
 
-import java.util.Calendar;
-
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,6 +34,7 @@ public class DepositControlReceiver {
 	
 	private String itemDescription;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="deposit_receiver_id",referencedColumnName = "id")
 	private DepositReceiver depositReceiver;

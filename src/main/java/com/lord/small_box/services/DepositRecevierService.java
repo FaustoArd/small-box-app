@@ -17,6 +17,6 @@ public interface DepositRecevierService {
 	
 	public List<DepositControlReceiverDto> findAllByDepositReceiver(long depositReceiverId);
 	
-
+	public String deleteDepositReceiver(long depositReceiverId);
 
 }

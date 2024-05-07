@@ -1,17 +1,23 @@
 package com.lord.small_box.services_impl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.lord.small_box.dtos.AppUserDto;
+import com.lord.small_box.dtos.AppUserUpdatedDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.AppUserMapper;
 import com.lord.small_box.models.AppUser;
+import com.lord.small_box.models.Authority;
 import com.lord.small_box.repositories.AppUserRepository;
 import com.lord.small_box.services.AppUserService;
 
@@ -58,6 +64,31 @@ public class AppUserServiceImpl implements AppUserService,UserDetailsService {
 		log.info("Checking existing username");
 		return appUserRepository.findByUsername(username).isPresent();
 	}
+	
+	@Override
+	public boolean checkUsernameUpdated(String username,long userId) {
+		log.info("Checking existing username updated");
+		AppUser check = findById(userId);
+		long usernameFound =  countExistingUsernames(username);
+		if(check.getUsername().equalsIgnoreCase(username)) {
+			if(usernameFound>2l) {
+				return true;
+			}
+			
+		}else {
+			if(usernameFound>1l) {
+				return true;
+			}
+		}
+		
+		return false;
+		
+		
+	}
+	
+	private long countExistingUsernames(String username) {
+		return appUserRepository.findAll().stream().filter(user -> user.getUsername().equalsIgnoreCase(username)).count();
+	}
 
 	@Override
 	public List<AppUserDto> findAll() {
@@ -65,7 +96,59 @@ public class AppUserServiceImpl implements AppUserService,UserDetailsService {
 		List<AppUser> users = appUserRepository.findAll();
 		return AppUserMapper.INSTANCE.toUsersDto(users);
 	}
+
+	@Override
+	public List<AppUserDto> findAllWithAuthorities() {
+		log.info("Find all users with authorities");
+		List<AppUser> users= appUserRepository.findAll();
+		List<AppUserDto> userDtos  =  mapUserToDtoWithAutorities(users);
+		return userDtos;
+	}
+	
+	private List<AppUserDto> mapUserToDtoWithAutorities(List<AppUser> users){
+		
+		List<AppUserDto> userDtos = users.stream().map(user -> {
+			AppUserDto userDto = AppUserMapper.INSTANCE.toUserDto(user);
+			userDto.setAuthorities(user.getAuthorities().stream().map(auth -> auth.getAuthority()).toList());
+			return userDto;
+		}).toList();
+		return userDtos;
+	}
+
+	@Override
+	public AppUser mapUpdateDtoToUser(AppUserUpdatedDto appUserUpdatedDto, Set<Authority> roles,PasswordEncoder passwordEncoder) {
+		return appUserRepository.findById(appUserUpdatedDto.getId()).map(user ->{
+			user.setName(appUserUpdatedDto.getName());
+			user.setLastname(appUserUpdatedDto.getLastname());
+			user.setEmail(appUserUpdatedDto.getEmail());
+			user.setPassword(passwordEncoder.encode(appUserUpdatedDto.getPassword()));
+			user.setAccountNonExpired(true);
+			user.setAccountNonLocked(true);
+			user.setCredentialsNonExpired(true);
+			user.setEnabled(true);
+			user.setAuhtorities(roles);
+			return user;
+		}).get();
+	}
+
+	@Override
+	public String deleteUserById(long userId) {
+		if(appUserRepository.existsById(userId)) {
+			AppUser deletedUser = findById(userId);
+			appUserRepository.deleteById(userId);
+			return deletedUser.getName() + " " + deletedUser.getLastname();
+		}
+		throw new ItemNotFoundException(userNotFound);
+	}
+
+	
+		
+		 
+		
+	}
+	
+	
 	
 	
 
-}
+

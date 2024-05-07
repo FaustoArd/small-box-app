@@ -4,4 +4,5 @@ export class AppUserDto{
     lastname!:string;
     username!:string;
     email!:string;
+    authorities!:string[];
    }

@@ -14,6 +14,7 @@ import { SupplyItemRequestDto } from 'src/app/models/supplyItemRequestDto';
 import { DepositControlRequestDto } from 'src/app/models/depositControlRequestDto';
 import { QuantityControlRequest } from 'src/app/models/quantityControlRequest';
 import { DestinationOrganization } from 'src/app/models/destinationOrganization';
+import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-deposit-request',
@@ -25,6 +26,7 @@ export class DepositRequestComponent implements OnInit {
   constructor(private depositRequestService: DepositRequestService, private snackBar: SnackBarService
     , private organizationService: OrganizationService, private depositControlService: DepositControlService
     , private formBuilder: FormBuilder, private cookieService: CookieStorageService, private dialogService: DialogService
+    ,private confirmDialogService:ConfirmDialogService
   ) { }
 
   ngOnInit(): void {
@@ -369,5 +371,31 @@ private getItemCode(itemId:number):string{
     return this.depositRequestDtos[requestInddex];
     }
     return new DepositRequestDto();
+  }
+
+  requestConfirmData!: boolean;
+  confirmDeleteDepositRequest(depositRequestId: number) {
+    var confirmText = "Desea eliminar el pedido de deposito?";
+    this.confirmDialogService.confirmDialog(confirmText).subscribe({
+      next: (confirmData) => {
+        this.requestConfirmData = confirmData;
+        if (this.requestConfirmData) {
+          this.deleteDepositRequestById(depositRequestId);
+        } else {
+          this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
+        }
+      }
+
+    });
+  }
+
+  deleteDepositRequestById(depositRequestId:number){
+    this.depositRequestService.deleteDepositRequestById(depositRequestId).subscribe({
+      next:(deletedCodeData)=>{
+        this.snackBar.openSnackBar('Se elimino el pedido de deposito: ' + deletedCodeData,'Cerrar',3000);
+      },error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    })
   }
 }

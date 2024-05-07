@@ -30,15 +30,21 @@
                 </div>
                 <hr class="my-4">
             </div>
-            <div class="col-md-3  mt-3">
+            <div class="col-md-3 mt-3">
                 <div class="barofcolourColumn mt-0">
                     <h2>CODIGO DE ENVIO</h2>
                 </div>
                 <hr class="my-4">
             </div>
-            <div class="col-md-2  mt-3">
+            <div class="col-md-1 mt-3">
                 <div class="barofcolourColumn mt-0">
-                    <h2>-</h2>
+                    <h2>LEÍDO!</h2>
+                </div>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-1  mt-3">
+                <div class="barofcolourColumn mt-0">
+                    <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/trash-solid.svg">
                 </div>
                 <hr class="my-4">
             </div>
@@ -62,15 +68,19 @@
                 <h3>{{receiver.depositRequestCode}}</h3>
                 <hr class="my-4">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <div *ngIf="!receiver.readed">
-                    <button (click)="markAsReaded(receiver.id)" class="btn btn-lg">Marcar como leido</button>
+                    <button (click)="markAsReaded(receiver.id)" class="btn btn-sm">-</button>
                     <hr class="my-4">
                 </div>
                 <div *ngIf="receiver.readed">
                     <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/thumbs-up-regular.svg">
                     <hr class="my-4">
                 </div>
+            </div>
+            <div class="col-md-1">
+                <button (click)="deleteDepositReceiverById(receiver.id)" class="btn btn-sm">-</button>
+                <hr class="my-4">
             </div>
         </div>
     </div>

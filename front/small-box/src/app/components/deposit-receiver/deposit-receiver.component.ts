@@ -10,6 +10,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { OrganizationService } from 'src/app/services/organization.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
+import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-deposit-receiver',
@@ -20,7 +21,8 @@ export class DepositReceiverComponent implements OnInit {
 
   constructor(private depositReceiverService: DepositReceiverService, private snackBar: SnackBarService
     , private organizationService: OrganizationService, private depositControlService: DepositControlService
-    , private formBuilder: FormBuilder, private cookieService: CookieStorageService, private dialogService: DialogService
+    , private formBuilder: FormBuilder, private cookieService: CookieStorageService, private dialogService: DialogService,
+    private confirmDialogService:ConfirmDialogService
   ) { }
 
   ngOnInit(): void {
@@ -92,4 +94,31 @@ export class DepositReceiverComponent implements OnInit {
       }
     });
   }
+  receiverConfirmData!: boolean;
+  confirmDeleteDepositReceiver(depositReceiverId: number) {
+    var confirmText = "Desea eliminar el pedido de deposito?";
+    this.confirmDialogService.confirmDialog(confirmText).subscribe({
+      next: (confirmData) => {
+        this.receiverConfirmData = confirmData;
+        if (this.receiverConfirmData) {
+          this.deleteDepositReceiverById(depositReceiverId);
+        } else {
+          this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
+        }
+      }
+
+    });
+  }
+
+  deleteDepositReceiverById(depositReceiverId:number){
+  this.depositReceiverService.deleteDepositReceiverById(depositReceiverId).subscribe({
+    next:(deleteCodeData)=>{
+      this.snackBar.openSnackBar('Se elimino el pedido: ' + deleteCodeData,'Cerrar',3000);
+    },
+    error:(errorData)=>{
+      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+    }
+  });
+  }
+
 }

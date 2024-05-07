@@ -20,4 +20,6 @@ public interface DepositRequestService {
 	public List<DepositRequestDto> findAllRequestbyOrganizationByUserId(long userId);
 	
 	public List<DepositControlRequestDto> findAllControlRequestsByDepositRequest(long depositRequestId);
+	
+	public String deleteDepositRequest(long depositRequestId);
 }

@@ -21,10 +21,12 @@ public class AppUserDto {
 	
 	private String email;
 	
-	private List<Organization> organizations;
+	//private List<Organization> organizations;
 	
 	private long mainOrganizationId;
 	
-	private long currentDepositId;
+	//private long currentDepositId;
+	
+	private List<String> authorities;
 
 }

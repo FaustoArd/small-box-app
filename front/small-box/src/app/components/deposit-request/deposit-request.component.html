@@ -45,6 +45,14 @@
                 </div>
                 <hr class="my-4">
             </div>
+            <div class="col-md-1 mt-3 ms-1">
+                <div class="barofcolourColumn">
+                    
+                    <img  id="deleteIcon" class="ms-1" src="./assets/img/trash-solid.svg">
+                
+                </div>
+                <hr class="my-4">
+            </div>
         </div>
         <div *ngIf="depositRequestDtos.length>0">
             <div class="row text-center" *ngFor="let request of depositRequestDtos">
@@ -64,6 +72,11 @@
                 </div>
                 <div class="col-md-3 mt-3" >
                     <h3 class="ms-3">{{request.requestCode}}</h3>
+                    <hr class="my-4">
+                </div>
+                <div class="col-md-1 mt-3" >
+                    <button (click)="deleteDepositRequestById(request.id)"
+                    class="btn btn-sm text-center">-</button>
                     <hr class="my-4">
                 </div>
             </div>

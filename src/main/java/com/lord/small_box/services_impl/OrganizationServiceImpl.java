@@ -137,26 +137,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 		}
 	}
 
-	/*@Override
-	public List<String> addOganizationReceiversToUser(long userId, List<Long> organizationReceiverIds) {
-		List<Organization> organizations = organizationRepository.findAllById(organizationReceiverIds);
-		AppUser user = appUserService.findById(userId);
-		user.setOrganizationReceivers(organizations);
-		appUserService.save(user);
-
-		return organizations.stream().map(org -> {
-			return org.getOrganizationName();
-		}).toList();
-	}*/
-
-	/*@Override
-	public List<OrganizationDto> findAllDestinationOrganizations(long userId) {
-		AppUser user = appUserService.findById(userId);
-		List<Long> organizationIds = user.getOrganizationReceivers().stream().map(org -> org.getId()).toList();
-		List<Organization> organizations = organizationRepository.findAllById(organizationIds);
-		return OrganizationMapper.INSTANCE.toOrganizationsDto(organizations);
-	}*/
-
 	@Override
 	public ParentOrganizationDto setParentOrganization(ParentOrganizationDto parentOrganizationDto) {
 		Organization mainOrganization = findOrganizationById(parentOrganizationDto.getMainOrganizationId());
@@ -204,9 +184,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 		throw new ItemNotFoundException("No se encontro la organizacion padre");
 	}
 	
-	
-	
-
 	@Override
 	public ParentOrganizationDto findParentOrganizationByMainOrganizationId(long mainOrganizationId) {
 		Organization mainOrganization = findOrganizationById(mainOrganizationId);

@@ -70,5 +70,20 @@ public class DepositReceiverServiceImpl implements DepositRecevierService {
 		return DepositControlReceiverMapper.INSTANCE.receiversToDtos(receivers);
 	}
 
+	@Override
+	public String deleteDepositReceiver(long depositReceiverId) {
+		if(depositReceiverRepository.existsById(depositReceiverId)) {
+			String deletedReceiverCode  = findDepositReceiverById(depositReceiverId).getDepositRequestCode();
+			depositReceiverRepository.deleteById(depositReceiverId);
+			return deletedReceiverCode;
+		}
+		throw new ItemNotFoundException("No se encontro la recepcion de pedido");
+	}
+	
+	private DepositReceiver findDepositReceiverById(long depositReceiverId) {
+		return depositReceiverRepository.findById(depositReceiverId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro la recepcion de pedido")); 
+	}
+
 	
 }

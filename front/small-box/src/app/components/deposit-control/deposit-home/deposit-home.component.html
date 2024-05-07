@@ -87,16 +87,16 @@
 
                 <div class="jumbotron ms-1">
                     <div id="import_excel">
-                    <p class="d-inline display-4">VER STOCK</p>
-                    <a (click)="openDepositControlListTemplate(depositControlListTemplate)" class="btn btn-sm ms-3 "
-                        role="button">-</a>
+                        <p class="d-inline display-4">VER STOCK</p>
+                        <a (click)="openDepositControlListTemplate(depositControlListTemplate)" class="btn btn-sm ms-3 "
+                            role="button">-</a>
                     </div>
-                <div  class="mt-1">
-                    <p class="d-inline display-4">IMPORTAR EXCEL</p>
-                    <a routerLink="/deposit-comparator" class="btn btn-sm ms-2 " role="button">-</a>
-                </div>
-                <p class="lead">
-                    <hr class="my-4">
+                    <div class="mt-1">
+                        <p class="d-inline display-4">IMPORTAR EXCEL</p>
+                        <a routerLink="/deposit-comparator" class="btn btn-sm ms-2 " role="button">-</a>
+                    </div>
+                    <p class="lead">
+                        <hr class="my-4">
                 </div>
             </div>
         </div>
@@ -104,12 +104,15 @@
     </div>
 </body>
 <ng-template #depositControlListTemplate>
+    <body >
+        <div id="orderListTemplate" class="container-flex">
+   
     <button id="closeButton" (click)="onCloseDepositControlListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-6 ms-2">
             <!-- Deposit control table -->
-            <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline">{{selectedDepositStr}}</h2>
+            <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline text-danger">{{selectedDepositStr}}</h2>
             </h3>
             <p class="lead">
                 <hr class="my-4">
@@ -147,6 +150,8 @@
 
         </div>
     </div>
+    </div>
+</body>
 </ng-template>
 <ng-template #purchaseOrderTableTemplate>
     <button id="closeButton" (click)="onClosePurchaseOrderTableTemplate()" class="btn btn-sm text-white">X</button>
@@ -248,8 +253,31 @@
 
         <div class="row">
             <div class="col-md-1"></div>
-            <div class="col-md-10">
+            <div class="col-md-6">
                 <h3>DEPENDENCIA SOLICITANTE: {{supplyDto.dependencyApplicant}}</h3>
+            </div>
+            <div class="col-md-4">
+                <form [formGroup]="supplyOrganizationApplicantForm"
+                    class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+                    <div class="form-group">
+                        <label for="id" class="form-label fs-7 ">DEPENDENCIA</label>
+                        <select id="id" formControlName="id" class="form-select  border-dark">
+                            <option value="Seleccione la dependencia soliciante">Seleccione la dependencia soliciante
+                            </option>
+                            <option type="number" class="form-control border-dark "
+                                *ngFor="let orgs of organizationsDto" id="id" [value]="orgs.id">
+                                {{orgs.organizationName}}</option>
+                        </select>
+                        <div *ngIf="id.invalid && (id.dirty || id.touched)" class="text-danger">
+                            <div *ngIf="id.errors?.['required']">
+                                Debe seleccionar una organizacion
+                            </div>
+                        </div>
+                        <button (click)="setSupplyOrganizationApplicant(supplyDto.id)"
+                            class="btn btn-sm mt-1">APLICAR</button>
+                    </div>
+
+                </form>
             </div>
         </div>
         <div class="row">
@@ -272,7 +300,7 @@
                             <th scope="col">DESCRIPCION</th>
                             <th scope="col">P.UNITARIO</th>
                             <th scope="col">TOTAL</th>
-                           </tr>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of supplyItemDtos">
@@ -283,7 +311,7 @@
                             <td>{{item.itemDetail}}</td>
                             <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
                             <td id="fullBlue_td">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
-                           </tr>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -291,27 +319,7 @@
         </div>
         <div class="row">
             <div class="col-md-3"></div>
-            <div class="col-md-4">
-                <form [formGroup]="supplyOrganizationApplicantForm"
-                class="row g-6 form-group justifty-center text-center fw-bold ms-1">
-                <div class="form-group">
-                    <label for="id" class="form-label fs-7 ">DEPENDENCIA</label>
-                    <select id="id" formControlName="id" class="form-select  border-dark">
-                        <option value="Seleccione la dependencia soliciante">Seleccione la dependencia soliciante</option>
-                        <option type="number" class="form-control border-dark " *ngFor="let orgs of organizationsDto"
-                            id="id" [value]="orgs.id">
-                            {{orgs.organizationName}}</option>
-                        </select>
-                        <div *ngIf="id.invalid && (id.dirty || id.touched)"
-                        class="text-danger">
-                        <div *ngIf="id.errors?.['required']">
-                            Debe seleccionar una organizacion
-                        </div>
-                    </div>
-                </div>
-                <button (click)="setSupplyOrganizationApplicant(supplyDto.id)" class="btn btn-sm">APLICAR</button>
-            </form>
-            </div> 
+
         </div>
     </div>
 </ng-template>
@@ -332,7 +340,7 @@
             <div class="row">
                 <div class="col-md-4"></div>
                 <div class="col-md-4">
-                    <h2 class="text-center">ORDENES DE COMPRA</h2>
+                    <h2 class="text-center text-white">ORDENES DE COMPRA</h2>
                     <p class="lead">
                         <hr class="my-4">
                 </div>
@@ -386,11 +394,71 @@
         </div>
     </body>
 </ng-template>
+
+<ng-template #supplyListTemplate>
+
+    <body id="orderListTemplate">
+        <div class="container">
+            <button id="closeButton" (click)="onCloseSupplyListTemplate()" class="btn btn-sm text-white">X</button>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <h2 class="text-center text-white">SUMINISTROS</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <table class="table table-flex table-bordered table-striped h-75">
+                        <thead>
+                            <tr>
+                                <th scope="col">FECHA</th>
+                                <th scope="col">NUMERO</th>
+                                <th scope="col">SOLICITANTE(encontrado)</th>
+                                <th scope="col">SOLICITANTE(real)</th>
+                                <th scope="col">COSTO TOTAL ESTIMADO</th>
+                                <th scope="col">VER ITEMS</th>
+                                <th scope="col">COMPARAR</th>
+                                <th scope="col">DEPENDENCIA</th>
+                                <th scope="col">ELIMINAR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let supply of suppliesDto">
+                                <td>{{supply.date |date: 'dd-MM-yyyy'}}</td>
+                                <td id="fullBlue_td">{{supply.supplyNumber}}</td>
+                                <td>{{supply.dependencyApplicant}}</td>
+                                <td>{{supply.applicantOrganization}}</td>
+                                <td id="fullBlue_td">{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
+                                <td class="text-center"><button
+                                        (click)="openDialogSuppliesItemList(supplyItemsListTemplate,supply.id)"
+                                        class="btn btn-lg  text-danger"></button></td>
+                                <td class="text-center">
+                                    <button
+                                        (click)="openSupplyCorrectionNoteDialog(supplyCorrectionNoteTemplate,supply.id)"
+                                        class="btn btn-lg text-danger"></button>
+                                </td>
+                                <td class="text-center">
+                                    <button (click)="openUpdateSupplyOrganizationApplicantTemplate
+                            (updateSuplyOrganizationApplicantTemplate,supply.id)"
+                                        class="btn btn-lg text-danger"></button>
+                                </td>
+                                <td class="text-center"><button (click)="confirmDeleteSupply(supply.id)"
+                                        class="btn btn-lg text-danger"></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</ng-template>
+
 <ng-template #purchaseOrderItemsListTemplate>
     <button id="closeButton" (click)="onClosepurchaseOrderItemListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="mt-1 ms-1">
         <h1 class="d-inline">O.C NUMERO:</h1>
-        <h2 class="d-inline"> {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.date.toString().substring(2,4)}}</h2>
+        <h2 class="d-inline"> {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.date.toString().substring(2,4)}}
+        </h2>
     </div>
     <table class="table-sm table-bordered h-75">
         <thead>
@@ -424,42 +492,7 @@
 
 </ng-template>
 
-<ng-template #supplyListTemplate>
-    <button id="closeButton" (click)="onCloseSupplyListTemplate()" class="btn btn-sm text-white">X</button>
-    <h2 class="text-center">SUMINISTROS</h2>
-    <table class="table-sm table-bordered h-75">
-        <thead>
-            <tr>
-                <th scope="col">FECHA</th>
-                <th scope="col">NUMERO</th>
-                <th scope="col">SOLICITANTE</th>
-                <th scope="col">COSTO TOTAL ESTIMADO</th>
-                <th scope="col">VER ITEMS</th>
-                <th scope="col">COMPARAR</th>
-                <th scope="col">ELIMINAR</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let supply of suppliesDto">
-                <td>{{supply.date |date: 'dd-MM-yyyy'}}</td>
-                <td id="fullBlue_td">{{supply.supplyNumber}}</td>
-                <td>{{supply.applicantOrganization}}</td>
-                <td id="fullBlue_td">{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
-                <td class="text-center"><button (click)="openDialogSuppliesItemList(supplyItemsListTemplate,supply.id)"
-                        class="btn btn-lg  text-danger"></button></td>
-                <td class="text-center"><button
-                        (click)="openSupplyCorrectionNoteDialog(supplyCorrectionNoteTemplate,supply.id)"
-                        class="btn btn-lg text-danger"></button></td>
-                <td class="text-center"><button (click)="confirmDeleteSupply(supply.id)"
-                        class="btn btn-lg text-danger"></button></td>
 
-            </tr>
-
-        </tbody>
-
-
-    </table>
-</ng-template>
 <ng-template #supplyItemsListTemplate>
     <button id="closeButton" (click)="onCloseSupplyItemListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="mt-1">
@@ -709,7 +742,8 @@
                     <tbody>
                         <tr class="text-center" *ngFor="let deposit of depositDtos">
                             <td class="text-primary">{{deposit.name}}</td>
-                            <td ><button  (click)="setCurrentDeposit(deposit.id)" class="btn btn-sm text-primary">-</button></td>
+                            <td><button (click)="setCurrentDeposit(deposit.id)"
+                                    class="btn btn-sm text-primary">-</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -766,25 +800,25 @@
 
                 <div class="col-md-3">
                     <div class="ms-5 mt-2">
-                    <div *ngIf="disableSelect">
-                        <div class="d-inline mt-3">
-                            <div id="label-disable-select">HABILITAR EDICION</div>
+                        <div *ngIf="disableSelect">
+                            <div class="d-inline mt-3">
+                                <div id="label-disable-select">HABILITAR EDICION</div>
+                            </div>
+                            <div class="d-inlin">
+                                <div id="btnDisableSelect" (click)="editAllDepositControlfields(false)"
+                                    class="btn btn-sm text-white ms-5 btn-danger border-dark"></div>
+                            </div>
                         </div>
-                        <div class="d-inlin">
-                            <div id="btnDisableSelect" (click)="editAllDepositControlfields(false)"
-                                class="btn btn-sm text-white ms-5 btn-danger border-dark"></div>
+                        <div *ngIf="!disableSelect">
+                            <div class="d-inline mt-3">
+                                <div id="label-disable-select">DESHABILITAR EDICION</div>
+                            </div>
+                            <div class="d-inlin">
+                                <div id="btnDisableSelect" (click)="editAllDepositControlfields(true)"
+                                    class="btn btn-sm text-white ms-5 btn-warning border-dark"></div>
+                            </div>
                         </div>
                     </div>
-                    <div *ngIf="!disableSelect">
-                        <div class="d-inline mt-3">
-                            <div id="label-disable-select">DESHABILITAR EDICION</div>
-                        </div>
-                        <div class="d-inlin">
-                            <div id="btnDisableSelect" (click)="editAllDepositControlfields(true)"
-                                class="btn btn-sm text-white ms-5 btn-warning border-dark"></div>
-                        </div>
-                    </div>
-                </div>
                 </div>
             </div>
             <div class="row mt-1">
@@ -800,4 +834,32 @@
             </div>
         </div>
     </body>
+</ng-template>
+
+<ng-template #updateSuplyOrganizationApplicantTemplate>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-4">
+            <form [formGroup]="supplyOrganizationApplicantForm"
+                class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+                <div class="form-group">
+                    <label for="id" class="form-label fs-7 ">DEPENDENCIA</label>
+                    <select id="id" formControlName="id" class="form-select  border-dark">
+                        <option value="Seleccione la dependencia soliciante">Seleccione la dependencia soliciante
+                        </option>
+                        <option type="number" class="form-control border-dark " *ngFor="let orgs of organizationsDto"
+                            id="id" [value]="orgs.id">
+                            {{orgs.organizationName}}</option>
+                    </select>
+                    <div *ngIf="id.invalid && (id.dirty || id.touched)" class="text-danger">
+                        <div *ngIf="id.errors?.['required']">
+                            Debe seleccionar una organizacion
+                        </div>
+                    </div>
+                </div>
+                <button (click)="setUpdateSupplyOrganizationApplicant(findedSupplyId)"
+                    class="btn btn-sm">APLICAR</button>
+            </form>
+        </div>
+    </div>
 </ng-template>

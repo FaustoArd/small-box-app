@@ -14,10 +14,11 @@ public interface AppUserMapper {
 	
 	public static AppUserMapper INSTANCE = Mappers.getMapper(AppUserMapper.class);
 	
-	@Mapping(target = "organizations", ignore = true)
+	//@Mapping(target = "organizations", ignore = true)
+	@Mapping(target = "authorities",ignore=true)
 	public AppUserDto toUserDto(AppUser user);
 	
-	@Mapping(target="organizations", ignore = true)
+	//@Mapping(target="organizations", ignore = true)
 	List<AppUserDto> toUsersDto(List<AppUser> users);
 
 }
