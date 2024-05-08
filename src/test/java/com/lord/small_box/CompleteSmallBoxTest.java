@@ -168,7 +168,7 @@ public class CompleteSmallBoxTest {
 	@Order(3)
 	void addAllTicketTotals() {
 		smallBoxService.addAllTicketTotals(containerId);
-		Container container = containerService.findById(containerId);
+		Container container = containerService.findContainerByIdWithResponsible(containerId);
 		assertEquals(container.getTotal().doubleValue(), 31218.20);
 	}
 	
