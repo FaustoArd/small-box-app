@@ -2,6 +2,11 @@ body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
 
+
+#orderListTemplate{
+    background: linear-gradient(245.59deg, rgb(70, 54, 194)30%, rgb(146, 129, 223) 50%, #6247c7 79%);
+}
+
 .barofcolourRed{
     margin-left: 1rem;
     margin-right: 1rem;

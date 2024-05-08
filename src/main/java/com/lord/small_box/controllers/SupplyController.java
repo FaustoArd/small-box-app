@@ -59,12 +59,12 @@ public class SupplyController {
 		return new ResponseEntity<SupplyDto>(supplyDto, HttpStatus.CREATED);
 	}
 	
-	@GetMapping(path = "/create-supply-report")
+	/*@GetMapping(path = "/create-supply-report")
 	ResponseEntity<List<SupplyReportDto>> createSupplyResport
 	(@RequestParam("supplyId")long supplyId,@RequestParam("depositId")long depositId){
 		List<SupplyReportDto> report = supplyService.createSupplyReport(supplyId,depositId);
 		return ResponseEntity.ok(report);
-	}
+	}*/
 	
 	@GetMapping(path = "/create-supply-correction-note")
 	ResponseEntity<SupplyCorrectionNoteDto> createSupplyCorrectionNote

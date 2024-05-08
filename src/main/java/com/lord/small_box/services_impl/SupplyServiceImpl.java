@@ -90,14 +90,14 @@ public class SupplyServiceImpl implements SupplyService {
 
 	}
 
-	@Override
+	/*@Override
 	public List<SupplyReportDto> createSupplyReport(long supplyId, long depositId) {
 		log.info("Create supply report");
 		Supply supply = supplyRepository.findById(supplyId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el suministro"));
 		List<SupplyItem> supplyItems = supplyItemRepository.findAllBySupply(supply);
 		return getSupplyReport(supplyItems, depositId);
-	}
+	}*/
 
 	@Override
 	public SupplyCorrectionNoteDto createSupplyCorrectionNote(long supplyId, Long depositId) {
@@ -106,12 +106,13 @@ public class SupplyServiceImpl implements SupplyService {
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el suministro"));
 		List<SupplyItem> supplyItems = supplyItemRepository.findAllBySupply(supply);
 		List<SupplyReportDto> reportDtos = getSupplyReport(supplyItems, depositId);
-		Organization org = organizationService.findById(1L);
-		String to = supply.getDependencyApplicant();
+		Organization org = organizationService.findById(supply.getMainOrganization().getId());
+		String organizationApplicantName = organizationService.findById(supply.getApplicantOrganization().getId()).getOrganizationName();
 		SupplyCorrectionNoteDto supplyCorrectionNote = new SupplyCorrectionNoteDto();
+		supplyCorrectionNote.setSupplyDate(supply.getDate());
 		supplyCorrectionNote.setSupplyNumber(supply.getSupplyNumber());
 		supplyCorrectionNote.setFrom(org.getOrganizationName());
-		supplyCorrectionNote.setTo(to);
+		supplyCorrectionNote.setTo(organizationApplicantName);
 		supplyCorrectionNote.setSupplyReport(reportDtos);
 		supplyCorrectionNote.setDepositName(depositRepository.findById(depositId).get().getName());
 		return supplyCorrectionNote;

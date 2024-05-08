@@ -17,5 +17,7 @@ public interface DepositControlRepository extends JpaRepository<DepositControl, 
 	
 	
 	
+	
+	
 
 }

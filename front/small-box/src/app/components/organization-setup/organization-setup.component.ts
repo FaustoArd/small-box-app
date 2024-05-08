@@ -196,8 +196,6 @@ updateOrganizationForm = this.formBuilder.group({
     if (this.responsibleForm.valid) {
       this.responsibleDto = new OrganizationResponsibleDto();
       this.responsibleDto = Object.assign(this.responsibleDto, this.responsibleForm.value);
-
-      console.log("hola " + this.responsibleDto)
       //Organization Service POST method
       this.organizationService.newResponsible(this.responsibleDto).subscribe({
         next: (respData) => {
@@ -287,13 +285,16 @@ getResponsibles(){
   this.organizationService.getAllResponsibles().subscribe({
     next:(responsiblesData)=>{
       this.responsiblesDto = responsiblesData;
-      responsiblesData.map(res =>{
-        res.name = res.name + ' ' + res.lastname;
-      });
       this.responsiblesOrgs = responsiblesData;
     },
     error:(errorData)=>{
       this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+    },
+    complete:()=>{
+       this.responsiblesOrgs.map(res =>{
+         res.name = res.name + ' ' + res.lastname;
+       });
+      
     }
   })
 }
@@ -423,6 +424,28 @@ openSavedParentOrganizationTemplate() {
   this.savedParentOrganizationTemplateMatDialogRef.afterClosed().subscribe();
  }
 
+ onCloseOrganizationListTemplate(){
+  this.organizationListTemplateMatDialogRef.close();
+ }
 
+ private organizationListTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+ openOrganizationListTemplate(template:TemplateRef<any>){
+  this.organizationListTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    template
+  });
+  this.organizationListTemplateMatDialogRef.afterClosed().subscribe();
+ }
+
+ onCloseResponsibleListTemplate(){
+  this.responsibleListTemplateMatDialogRef.close();
+ }
+
+ private responsibleListTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+ openResponsibleListTemplate(template:TemplateRef<any>){
+  this.responsibleListTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    template
+  });
+  this.responsibleListTemplateMatDialogRef.afterClosed().subscribe();
+ }
 
 }

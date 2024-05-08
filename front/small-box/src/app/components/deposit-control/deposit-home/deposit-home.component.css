@@ -5,7 +5,7 @@ body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
 #orderListTemplate{
-    background: linear-gradient(245.59deg, rgb(70, 54, 194)30%, rgb(208, 206, 217) 50%, #6247c7 79%);
+    background: linear-gradient(245.59deg, rgb(70, 54, 194)30%, rgb(146, 129, 223) 50%, #6247c7 79%);
 }
 jumbotron{
     background-color: aliceblue;
@@ -28,7 +28,12 @@ button:hover{
     background: linear-gradient(245.59deg, rgb(138, 42, 122)33.33%, rgb(170, 43, 187) 33.33%, #954dcd 33.33%); 
    color:rgb(230, 229, 221)
 }
-
+#table-div{
+    height: 42rem;
+   
+   
+   
+}
 
 h1{
     font-size: 1rem;

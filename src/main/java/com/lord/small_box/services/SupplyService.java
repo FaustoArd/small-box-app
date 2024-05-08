@@ -12,7 +12,7 @@ public interface SupplyService {
 	
 	public SupplyDto collectSupplyFromText(String text, long organizationId);
 
-	public List<SupplyReportDto> createSupplyReport(long supplyId, long depositId);
+	//public List<SupplyReportDto> createSupplyReport(long supplyId, long depositId);
 
 	public SupplyCorrectionNoteDto createSupplyCorrectionNote(long supplyId, Long depositId);
 

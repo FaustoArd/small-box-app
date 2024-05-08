@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DepositControlReceiverDto } from 'src/app/models/depositControlReceiverDto';
@@ -11,6 +11,7 @@ import { OrganizationService } from 'src/app/services/organization.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { DialogTemplateComponent } from '../dialog/dialog-template/dialog-template.component';
 import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
+import { RequestComparationNoteDto } from 'src/app/models/requestComparationNoteDto';
 
 @Component({
   selector: 'app-deposit-receiver',
@@ -28,6 +29,7 @@ export class DepositReceiverComponent implements OnInit {
   ngOnInit(): void {
     
       this.getAllReceiversByOrganization();
+      this.getCurrentDeposit();
   }
 
   depositReceiverDtos:DepositReceiverDto[]=[];
@@ -62,18 +64,18 @@ export class DepositReceiverComponent implements OnInit {
     });
   }
   onCloseDepositCreationTemplate() {
-    this.deopsitControlReceivceTemplate.close();
+    this.depositControlReceivceTemplate.close();
 
   }
 
-  private deopsitControlReceivceTemplate!: MatDialogRef<DialogTemplateComponent>;
+  private depositControlReceivceTemplate!: MatDialogRef<DialogTemplateComponent>;
   openDialogDepositCreation(template: any,depositReceiverId:number) {
     this.findAllDepositControlReceiversByReceiver(depositReceiverId);
     this.getReceiverData(depositReceiverId);
-    this.deopsitControlReceivceTemplate = this.dialogService.openSupplyCorrectionNoteCreation({
+    this.depositControlReceivceTemplate = this.dialogService.openSupplyCorrectionNoteCreation({
       template
     });
-    this.deopsitControlReceivceTemplate.afterClosed().subscribe();
+    this.depositControlReceivceTemplate.afterClosed().subscribe();
  }
  depositReceiverDataShow!:DepositReceiverDto;
  getReceiverData(depositReceiverId:number){
@@ -119,6 +121,52 @@ export class DepositReceiverComponent implements OnInit {
       this.snackBar.openSnackBar(errorData,'Cerrar',3000);
     }
   });
+  }
+
+  onCloseRequestComparatorNoteTemplate(){
+    this.requestComparatorNoteTemplateRef.close();
+  }
+
+  requestComparatorNoteTemplateRef!:MatDialogRef<DialogTemplateComponent>;
+  openRequestComparatorNoteTemplate(template:TemplateRef<any>,depositReceiverId:number){
+    this.getItemsComparator(depositReceiverId);
+    this.requestComparatorNoteTemplateRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.requestComparatorNoteTemplateRef.afterClosed().subscribe();
+
+  }
+
+  comparatorDto!:RequestComparationNoteDto;
+  getItemsComparator(depositReceiverId:number){
+    const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
+    console.log("DEPOSIT ID:" +depositId)
+    this.depositReceiverService.getItemsComparationNote(depositReceiverId,depositId).subscribe({
+      next:(comparatorData)=>{
+  this.comparatorDto = comparatorData;  
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      }
+    })
+  }
+
+  getCurrentDeposit() {
+    const userId = Number(this.cookieService.getCurrentUserId());
+    const organizationId = Number(this.cookieService.getUserMainOrganizationId());
+    this.depositControlService.getCurrentDeposit(userId, organizationId).subscribe({
+      next: (depositIdData) => {
+        if (depositIdData.id === null || undefined || depositIdData.id === 0) {
+         this.snackBar.openSnackBar('No hay ningun deposito asignado', 'Cerrar', 3000);
+        } else {
+           this.cookieService.setCurrentDepositSelectedId(JSON.stringify(depositIdData.id));
+       
+        }
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
   }
 
 }

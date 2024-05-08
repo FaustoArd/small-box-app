@@ -1,6 +1,9 @@
 package com.lord.small_box.controllers;
 
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lord.small_box.dtos.DepositControlReceiverDto;
 import com.lord.small_box.dtos.DepositReceiverDto;
+import com.lord.small_box.dtos.RequestComparationNoteDto;
 import com.lord.small_box.services.DepositRecevierService;
 import lombok.RequiredArgsConstructor;
 
@@ -19,10 +23,11 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/smallbox/deposit-receiver")
 @RequiredArgsConstructor
 public class DepositReceiverController {
+	
 	@Autowired
 	private final DepositRecevierService depositRecevierService;
 	
-
+	private static final Logger log = LoggerFactory.getLogger(DepositReceiverController.class);
 	
 	@GetMapping(path="/find-receivers-by-organization")
 	ResponseEntity<List<DepositReceiverDto>> findAllReceiversByOrganization(@RequestParam("organizationId")long organizationId){
@@ -49,5 +54,14 @@ public class DepositReceiverController {
 	ResponseEntity<String> deleteControlRequestbyId(@PathVariable("depositReceiverId")long depositReceiverId){
 		String deletedReceiverCode = depositRecevierService.deleteDepositReceiver(depositReceiverId);
 		return ResponseEntity.ok(deletedReceiverCode);
+	}
+	
+	@GetMapping(path = "/get-comparator-note")
+	ResponseEntity<RequestComparationNoteDto> getComparatorNote
+	(@RequestParam("depositReceiverId")long depositReceiverId,@RequestParam("depositId")long depositId){
+		log.info("Get Request Comparation note");
+		RequestComparationNoteDto comparationNote = depositRecevierService
+				.createRequestComparationNote(depositReceiverId, depositId);
+		return ResponseEntity.ok(comparationNote);
 	}
 }

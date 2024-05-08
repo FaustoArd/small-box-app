@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { DepositReceiverDto } from '../models/depositReceiverDto';
 import { DepositControlReceiverDto } from '../models/depositControlReceiverDto';
+import { RequestComparationNoteDto } from '../models/requestComparationNoteDto';
 
 const DEPOSIT_RECEIVER_BASE_URL = 'http://localhost:8080/api/v1/smallbox/deposit-receiver'
 
@@ -47,5 +48,11 @@ export class DepositReceiverService {
     deleteDepositReceiverById(depositReceiverId:number):Observable<string>{
       return this.http.delete<string>(`${DEPOSIT_RECEIVER_BASE_URL}/delete-deposit-receiver/${depositReceiverId}`,this.httpOptions)
       .pipe(catchError(this.handleError));
+    }
+
+    getItemsComparationNote(depositReceiverId:number,depositId:number):Observable<RequestComparationNoteDto>{
+      return this.http.get<RequestComparationNoteDto>
+      (`${DEPOSIT_RECEIVER_BASE_URL}/get-comparator-note?depositReceiverId=${depositReceiverId}&depositId=${depositId}`
+      ,this.httpOptions).pipe(catchError(this.handleError));
     }
 }
