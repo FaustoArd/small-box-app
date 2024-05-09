@@ -166,7 +166,7 @@ public class TextToSupply {
 
 	private String getItemDetails(String[] arrItems) {
 		return Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1).map(m -> m.replaceAll("[0-9\\W]", ""))
-				.collect(Collectors.joining("-"));
+				.collect(Collectors.joining(" "));
 	}
 
 	private BigDecimal getItemUnitCost(String[] arrItems) {

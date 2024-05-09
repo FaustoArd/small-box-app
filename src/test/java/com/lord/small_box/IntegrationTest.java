@@ -45,11 +45,13 @@ import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
+import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.repositories.AppUserRepository;
 import com.lord.small_box.repositories.AuthorityRepository;
+import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
@@ -78,6 +80,9 @@ public class IntegrationTest {
 
 	@Autowired
 	private AppUserRepository appUserRepository;
+	
+	@Autowired
+	private DepositRepository depositRepository;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -760,4 +765,74 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.supplyItems[1].unitCost", is( 600.00)))
 				.andExpect(jsonPath("$.supplyItems[1].totalEstimatedCost", is(3000000.00)));
 	}
+	@Test
+	@Order(39)
+	void uploadSupply1043_WithUserMiguel248()throws Exception{
+		MockMultipartFile file = new MockMultipartFile("file", "sum-1043.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-1043.pdf").getContentAsByteArray());
+		mockMvc.perform(
+				multipart("http://localhost:8080/api/v1/smallbox/supply/collect-supply-pdf").file(file)
+						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.supplyNumber", is(1043)))
+				.andExpect(jsonPath("$.date").value("2023-03-08"))
+				.andExpect(jsonPath("$.estimatedTotalCost", is(5500000.00)))
+				.andExpect(jsonPath("$.supplyItems[0].code", is("5.1.4.07776.0001")))
+				.andExpect(jsonPath("$.supplyItems[0].programaticCat", is("32.06.00")))
+				.andExpect(jsonPath("$.supplyItems[0].quantity", is(5000)))
+				.andExpect(jsonPath("$.supplyItems[0].measureUnit", is("UNIDAD")))
+				.andExpect(jsonPath("$.supplyItems[0].itemDetail").value(containsString("BOLSON DE VEDURAS")))
+				.andExpect(jsonPath("$.supplyItems[0].unitCost", is(1100.00)))
+				.andExpect(jsonPath("$.supplyItems[0].totalEstimatedCost", is( 5500000.00)));
+			
+	}
+	
+	@Test
+	@Order(40)
+	void createDepositAvellaneda_WithUserMiguel248()throws Exception{
+		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/create-deposit")
+				.content("{\"name\":\"AVELLANEDA\",\"streetName\":\"Avellaneda\",\"houseNumber\":\"5432\",\"organizationId\":3}")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+		.andExpect(jsonPath("$").value("AVELLANEDA"));
+	}
+	
+	@Test
+	@Order(41)
+	void checkCreatedDepositAvellanedaValues()throws Exception{
+		Deposit deposit = depositRepository.findById(1L).orElseThrow(()-> new ItemNotFoundException("Deposit not found"));
+		assertThat(deposit.getId()).isGreaterThan(0l);
+		assertThat(deposit.getName()).isEqualTo("AVELLANEDA");
+		assertThat(deposit.getStreetName()).isEqualTo("Avellaneda");
+		assertThat(deposit.getHouseNumber()).isEqualTo("5432");
+		assertThat(deposit.getOrganization().getId()).isEqualTo(3L);
+	}
+	
+	@Test
+	@Order(42)
+	void setCurrentDepositToUserMiguel248_OrganizationSecDesSocial()throws Exception{
+		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/deposit-control/set-current-deposit")
+				.content("1")
+				.param("userId", "3").param("organizationId", "3")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+		.andExpect(jsonPath("$.id", is(1)))
+		.andExpect(jsonPath("$.name", is("AVELLANEDA")));
+	}
+	
+	@Test
+	@Order(43)
+	void getCurrentUserOrganization_DepositId()throws Exception{
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-control/get-current-deposit")
+				.param("userId", "3").param("organizationId", "3")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+		.andExpect(jsonPath("$.id", is(1)))
+		.andExpect(jsonPath("$.name",is("AVELLANEDA")));
+	}
+	
+	@Test
+	@Order(44)
+	void loadPurchaseOrderToDeposit()throws Exception{
+		
+		}
 }
