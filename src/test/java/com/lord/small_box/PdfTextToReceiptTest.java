@@ -24,6 +24,9 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockMultipartFile;
+
 import com.lord.small_box.text_analisys.TextToReceipt;
 import com.lord.small_box.utils.PdfToStringUtils;
 
@@ -54,7 +57,9 @@ public class PdfTextToReceiptTest {
 
 	@BeforeAll
 	void setup() throws Exception {
-		text = pdfToStringUtils.pdfToString("2FACTURA-4");
+		MockMultipartFile file = new MockMultipartFile("file", "2FACTURA-4.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\2FACTURA-4.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		arrTextSplitLine = text.split("\\n");
 	}
 	

@@ -54,7 +54,7 @@ public class SupplyController {
 	@PostMapping(path = "/collect-supply-pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<SupplyDto> collectSupplyFromText(@RequestPart("file") MultipartFile file,
 			@RequestParam("organizationId") long organizationId) throws Exception {
-		String text = pdfToStringUtils.pdfToString(file.getOriginalFilename());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		SupplyDto supplyDto = supplyService.collectSupplyFromText(text,organizationId);
 		return new ResponseEntity<SupplyDto>(supplyDto, HttpStatus.CREATED);
 	}

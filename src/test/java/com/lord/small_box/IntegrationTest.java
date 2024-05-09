@@ -14,6 +14,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -682,7 +684,7 @@ public class IntegrationTest {
 	@Order(36)
 	void uploadPurchaseOrderWithSuperUserMiguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "oc-365.pdf", "application/pdf",
-				new ClassPathResource("oc-365.pdf").getInputStream());
+				new ClassPathResource("\\pdf-test\\oc-365.pdf").getContentAsByteArray());
 		mockMvc.perform(
 				multipart("http://localhost:8080/api/v1/smallbox/purchase-order/collect-purchase-order-pdf").file(file)
 						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))

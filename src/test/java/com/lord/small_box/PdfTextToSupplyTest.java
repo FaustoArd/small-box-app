@@ -31,6 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockMultipartFile;
 
 import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.SupplyDto;
@@ -171,17 +173,17 @@ public class PdfTextToSupplyTest {
 		organizationService.save(adMAyores);
 		organizationService.save(DDHPS);
 		organizationService.save(DDNI);
-		text = pdfToStringUtils.pdfToString("oc-365.pdf");
-		arrTextSplitPageEnd = text.split("PageEnd");
-		arrTextSplitN = text.split("\\n");
-		// supplyPdfList.forEach(e -> System.out.println(e));
-		for (String s : arrTextSplitN) {
-			System.out.println(s);
-		}
+		
+		
 	}
 
 	@Test
 	void mustReturnSupplyDto() throws Exception {
+		MockMultipartFile file = new MockMultipartFile("file", "sum-551.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-551.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
+		arrTextSplitPageEnd = text.split("PageEnd");
+		arrTextSplitN = text.split("\\n");
 		SupplyDto supplyDto = new SupplyDto();
 		supplyDto.setSupplyNumber(getSupplyNumber(arrTextSplitN));
 		supplyDto.setDate(getDate(text));

@@ -23,9 +23,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
+import org.springframework.mock.web.MockMultipartFile;
 
 import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
@@ -126,19 +128,19 @@ public class PdfTextToPurchaseOrderTest {
 		organizationService.save(org3);
 		organizationService.save(org4);
 		organizationService.save(org5);
-		text = pdfToStringUtils.pdfToString("oc-760.pdf");
-		arrTextSplitPageEnd = text.split("PageEnd");
-		arrTextSplitN = text.split("\\n");
+		
 		// Stream.of(arrTextSplitPageEnd).forEach(e -> System.out.println(e));
 		// supplyPdfList.forEach(e -> System.out.println(e));
-		for (String s : arrTextSplitN) {
-			System.out.println(s);
-		}
+	
 	}
 
 	@Test
 	void mustReturnPurchaseOrder() throws Exception {
-
+		MockMultipartFile file = new MockMultipartFile("file", "oc-760.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-760.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
+		arrTextSplitPageEnd = text.split("PageEnd");
+		arrTextSplitN = text.split("\\n");
 		PurchaseOrderDto purchaseOrderDto = new PurchaseOrderDto();
 		purchaseOrderDto.setDate(getDate(text));
 		purchaseOrderDto.setOrderNumber(getPurchaseOrderNumber(arrTextSplitN));

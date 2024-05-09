@@ -53,6 +53,7 @@ export class DepositHomeComponent implements OnInit {
   file!: File;
   fileDetails!: FileDetails;
   fileUris: Array<string> = [];
+
   selectFile(event: any) {
     console.log("select file: " + event.target.files.item(0))
     this.file = event.target.files.item(0);
@@ -68,7 +69,7 @@ export class DepositHomeComponent implements OnInit {
       error: (errorData) => {
         const errorEdited=String (errorData).replace('Error:','');
         
-        this.snackBar.openSnackBar(errorEdited, 'Cerrar', 3000);
+        this.snackBar.openSnackBar(errorEdited, 'Cerrar', 4000);
       },
       complete: () => {
         this.openPurchaseOrderTableTemplate(this.purchaseOrderDto.items);
@@ -256,7 +257,7 @@ export class DepositHomeComponent implements OnInit {
       },
       error: (errorData) => {
         const errorEdited=String (errorData).replace('Error:','');
-        this.snackBar.openSnackBar(errorEdited, 'Cerrar', 3000);
+        this.snackBar.openSnackBar(errorEdited, 'Cerrar', 4000);
       },
       complete: () => {
         this.openSupplyTableTemplate(this.supplyDto.supplyItems);
@@ -301,7 +302,7 @@ export class DepositHomeComponent implements OnInit {
         error:(errorData)=>{
           this.snackBar.openSnackBar(errorData,'Cerrar',3000);
         },complete:()=>{
-        
+          this.supplyOrganizationApplicantForm.reset();
          this.onCloseSupplyTableTemplate();
            }
        

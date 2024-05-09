@@ -120,11 +120,12 @@ public class DepositControlController {
 		DepositControlDto updatedDepositControlDto = depositControlService.updateDepositControl(depositControlDto,depositId);
 		return new ResponseEntity<DepositControlDto>(updatedDepositControlDto,HttpStatus.OK);
 	}
-
+	
+	
 	@PostMapping(path="/excel-order-comparator",consumes =MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<List<DepositItemComparatorDto>> generateExcelToOrderComparator(@RequestPart("file")MultipartFile file,
 			@RequestParam("organizationId")long organizationId) throws Exception{
-		List<ExcelItemDto> excelItems = excelToListUtils.excelDataToDeposit(file.getOriginalFilename(),organizationId);
+		List<ExcelItemDto> excelItems = excelToListUtils.excelDataToDeposit(file,organizationId);
 		List<DepositItemComparatorDto> comparatorsDto = depositControlService.getExcelToPuchaseOrderComparator(excelItems, organizationId);
 		return new ResponseEntity<List<DepositItemComparatorDto>>(comparatorsDto,HttpStatus.CREATED);
 	}

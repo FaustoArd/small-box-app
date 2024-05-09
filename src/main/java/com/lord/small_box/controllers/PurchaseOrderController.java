@@ -55,7 +55,7 @@ public class PurchaseOrderController {
 		@PostMapping(path="/collect-purchase-order-pdf",consumes =MediaType.MULTIPART_FORM_DATA_VALUE)
 		ResponseEntity<PurchaseOrderDto> collectPurchaseOrderFromText(@RequestPart("file")MultipartFile file,
 				@RequestParam("organizationId")long OrganizationId) throws Exception{
-			String text = pdfToStringUtils.pdfToString(file.getOriginalFilename());
+			String text = pdfToStringUtils.pdfToString(file.getBytes());
 			PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, OrganizationId);
 			return new ResponseEntity<PurchaseOrderDto>(purchaseOrderDto,HttpStatus.CREATED);
 		}

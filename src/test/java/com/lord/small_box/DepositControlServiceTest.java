@@ -28,6 +28,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockMultipartFile;
 
 import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.BigBagItemDto;
@@ -208,7 +210,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 365_24")
 	@Order(1)
 	void pdfToPurchaseOrder365_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("oc-365.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "oc-365.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-365.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, 2L);
 		purchaseOrder365Id = purchaseOrderDto.getId();
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
@@ -262,7 +266,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 340_24")
 	@Order(2)
 	void pdfToPurchaseOrder340_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("oc-340.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "oc-340.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-340.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, 2L);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0091");
 		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 350);
@@ -320,7 +326,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 429_24")
 	@Order(3)
 	void pdfToPurchaseOrder429_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("oc-429.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "oc-429.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-429.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, 2L);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.02610.0001");
 		assertEquals(purchaseOrderDto.getItems().get(0).getQuantity(), 32);
@@ -402,7 +410,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 454_24")
 	@Order(4)
 	void pdfToPurchaseOrder454_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("oc-454.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "oc-454.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-454.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 454);
@@ -568,8 +578,10 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 493_24")
 	@Order(5)
 	void pdfToPurchaseOrder493_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("oc-493.pdf");
-		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
+		MockMultipartFile file = new MockMultipartFile("file", "oc-493.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-493.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
+	PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 493);
 
@@ -723,7 +735,10 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 619_24")
 	@Order(6)
 	void pdfToPurchaseOrder619_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("oc-619.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "oc-619.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-619.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
+		
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 		assertEquals(purchaseOrderDto.getOrderNumber(), 619);
 
@@ -835,6 +850,7 @@ public class DepositControlServiceTest {
 	@DisplayName("ENCONTRAR ORDEN DE COMPRA N 365_24 CON ITEMS")
 	@Order(7)
 	void findFullPurchaseOrder365_24() throws Exception {
+		
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.findFullPurchaseOrder(purchaseOrder365Id);
 		assertEquals(purchaseOrderDto.getItems().get(0).getCode(), "2.1.1.00788.0013");
 		assertEquals(purchaseOrderDto.getItems().get(1).getCode(), "2.1.1.00705.0035");
@@ -874,7 +890,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR SUMINISTRO N 551_24")
 	@Order(9)
 	void loadSupply551_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("sum-551.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "sum-551.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-551.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -943,7 +961,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR SUMINISTRO N 223_23")
 	@Order(10)
 	void loadSupply223_23() throws Exception {
-		String text = pdfToStringUtils.pdfToString("sum-223.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "sum-223.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-223.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -983,7 +1003,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR SUMINISTRO N 177_24")
 	@Order(11)
 	void loadSupply177_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("sum-177.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "sum-177.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-177.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		supply177Id = dto.getId();
 		Calendar cal = Calendar.getInstance();
@@ -1067,7 +1089,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR SUMINISTRO N 1043_23")
 	@Order(12)
 	void loadSupply1043_23() throws Exception {
-		String text = pdfToStringUtils.pdfToString("sum-1043.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "sum-1043.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-1043.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -1099,7 +1123,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR SUMINISTRO N 100_24")
 	@Order(13)
 	void loadSupply100_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("sum-100.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "sum-100.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-100.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -1134,7 +1160,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR SUMINISTRO N 525_24")
 	@Order(14)
 	void loadSupply525_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("sum-525.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "sum-525.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-525.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		SupplyDto dto = supplyService.collectSupplyFromText(text, 2L);
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -1187,6 +1215,7 @@ public class DepositControlServiceTest {
 	@DisplayName("CREAR BOLSON NAVIDAD")
 	@Order(15)
 	void createBigbagNavidad() throws Exception {
+		
 		Deposit deposit = depositRepository.findById(depositAvellanedaId).get();
 		List<DepositControl> depositItems = depositControlRepository.findAllByDeposit(deposit).stream().map(m -> {
 			if (m.getItemCode().equals("2.1.1.00705.0035")) {
@@ -1220,8 +1249,10 @@ public class DepositControlServiceTest {
 	@DisplayName("GENERAR LISTA DE COMPARACION: EXCEL ITEM <-> ITEM DE ORDEN DE COMPRA")
 	@Order(16)
 	void excelToDepositControl() throws Exception {
-		String fileLocation = "control_excel3.xls";
-		List<ExcelItemDto> excelCandidates = excelToListUtils.excelDataToDeposit(fileLocation,admYDespachoId);
+		MockMultipartFile file = new MockMultipartFile("file", "control_excel3-v3-test.xls", "application/pdf",
+				new ClassPathResource("\\pdf-test\\control_excel3-v3-test.xls").getContentAsByteArray());
+		
+		List<ExcelItemDto> excelCandidates = excelToListUtils.excelDataToDeposit(file,admYDespachoId);
 		
 		  excelCandidates.forEach(e -> System.out.println("[" + e.getExcelItemId() +
 		 "] " + "[" + e.getItemDescription() + "] " + "[" + e.getItemMeasureUnit() +
@@ -1243,7 +1274,9 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 360_24")
 	@Order(17)
 	void pdfToPurchaseOrder360_24() throws Exception {
-		String text = pdfToStringUtils.pdfToString("oc-360.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "oc-360.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-360.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 360);
@@ -1278,7 +1311,10 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 572_24")
 	@Order(18)
 	void pdfToPurchaseOrder572_24()throws Exception{
-		String text = pdfToStringUtils.pdfToString("oc-572.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "oc-572.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-572.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
+		
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 572);

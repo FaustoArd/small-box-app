@@ -32,12 +32,13 @@ public class PdfToStringUtils {
 	
 	
 	
-	public String pdfToString(String filename)throws Exception{
-		String filePath = "D:\\filetest\\" + filename;
-		File file = new File(filePath);
-		FileInputStream fis = new FileInputStream(file);
+	public String pdfToString(byte[] bFile)throws Exception{
+		//String filePath = "D:\\filetest\\" + filename;
+		//File file = new File(filePath);
+		//FileInputStream fis = new FileInputStream(file);
+		
 		try {
-			PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
+			PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(bFile));
 			PDFTextStripper pdfTextStripper = new PDFTextStripper();
 			pdfTextStripper.setStartPage(1);
 			//pdfTextStripper.setSpacingTolerance(20);
@@ -48,7 +49,7 @@ public class PdfToStringUtils {
 			//pdfTextStripper.setDropThreshold(9);
 			String documentText = pdfTextStripper.getText(pdfDocument);
 			pdfDocument.close();
-			fis.close();
+			
 			return documentText;
 		} catch (IOException ex) {
 			throw new InvalidFileException("Archivo no compatible", ex.getCause());

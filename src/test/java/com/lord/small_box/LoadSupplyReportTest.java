@@ -17,7 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockMultipartFile;
 
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.SupplyCorrectionNoteDto;
@@ -89,7 +90,9 @@ public class LoadSupplyReportTest {
 	@BeforeAll
 	void setup()throws Exception {
 		loadTestData.loadData();
-		String strPurchaseOrder365= pdfToStringUtils.pdfToString("oc-365.pdf");
+		MockMultipartFile file = new MockMultipartFile("file", "oc-365.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-365.pdf").getContentAsByteArray());
+		String strPurchaseOrder365 = pdfToStringUtils.pdfToString(file.getBytes());
 		purchaseOrderDto365 = purchaseOrderService.collectPurchaseOrderFromText(strPurchaseOrder365,2L);
 		purchaseOrderService.loadPurchaseOrderToDepositControl(purchaseOrderDto365.getId(),1L);
 		assertThat(purchaseOrderDto365.getOrderNumber()).isEqualTo(365);
