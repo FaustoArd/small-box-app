@@ -1,6 +1,7 @@
 package com.lord.small_box;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.internal.matchers.GreaterThan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -684,7 +686,21 @@ public class IntegrationTest {
 		mockMvc.perform(
 				multipart("http://localhost:8080/api/v1/smallbox/purchase-order/collect-purchase-order-pdf").file(file)
 						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
-				.andExpect(status().isCreated()).andExpect(jsonPath("$.orderNumber", is(365)));
-				
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.orderNumber", is(365)))
+				.andExpect(jsonPath("$.purchaseOrderTotal", is(295600.00)))
+				.andExpect(jsonPath("$.items[0].code", is("2.1.1.00788.0013")))
+				.andExpect(jsonPath("$.items[0].quantity", is(15)))
+				.andExpect(jsonPath("$.items[0].measureUnit", is("PAQUETE")))
+				.andExpect(jsonPath("$.items[0].itemDetail").value(containsString("GALLETITAS")))
+				.andExpect(jsonPath("$.items[0].programaticCat", is("39.00.00")))
+				.andExpect(jsonPath("$.items[0].unitCost", is(3100.00000)))
+				.andExpect(jsonPath("$.items[0].totalEstimatedCost", is(46500.00)))
+				.andExpect(jsonPath("$.items[1].code", is("2.1.1.00705.0035")))
+				.andExpect(jsonPath("$.items[1].quantity", is(8)))
+				.andExpect(jsonPath("$.items[1].measureUnit", is("PAQUETE")))
+				.andExpect(jsonPath("$.items[1].itemDetail").value(containsString("LECHE")))
+				.andExpect(jsonPath("$.items[1].programaticCat", is("39.00.00")))
+				.andExpect(jsonPath("$.items[1].unitCost", is(5000.00000)))
+				.andExpect(jsonPath("$.items[1].totalEstimatedCost", is(40000.00)));
 	}
 }
