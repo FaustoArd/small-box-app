@@ -1324,7 +1324,7 @@ public class DepositControlServiceTest {
 	}
 	
 	@Test
-	@DisplayName("TESTEAR ORGANIZATION ID EN ORDEN DE COMPRA")
+	@DisplayName("TESTEAR ORGANIZACION ID EN ORDEN DE COMPRA")
 	@Order(20)
 	void checkPurchaseOrderOrgId() {
 		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrder365Id).orElseThrow(()->new ItemNotFoundException("No se encontro la orden"));
@@ -1332,7 +1332,7 @@ public class DepositControlServiceTest {
 		
 	}
 	@Test
-	@DisplayName("TESTEAR ORGANIZATION ID EN SUMINISTRO")
+	@DisplayName("TESTEAR ORGANIZACION ID EN SUMINISTRO")
 	@Order(21)
 	void checkSupplyOrgId() {
 		Supply supply = supplyRepository.findById(purchaseOrder365Id).orElseThrow(()->new ItemNotFoundException("No se encontro el suministro"));
@@ -1340,7 +1340,7 @@ public class DepositControlServiceTest {
 		
 	}
 	@Test
-	@DisplayName("TESTEAR ORGANIZATION ID EN DEPOSITO")
+	@DisplayName("TESTEAR ORGANIZACION ID EN DEPOSITO")
 	@Order(22)
 	void checkDepositOrgId() {
 		Deposit deposit = depositRepository.findById(depositAvellanedaId).orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
