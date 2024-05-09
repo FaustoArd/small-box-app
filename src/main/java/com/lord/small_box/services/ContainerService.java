@@ -13,7 +13,7 @@ public interface ContainerService {
 	
 	public Container createContainer(Container container);
 	
-	public Container findById(Long id);
+	public Container findContainerByIdWithResponsible(Long id);
 	
 	public void deleteById(Long id);
 	

@@ -2,7 +2,7 @@ package com.lord.small_box.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-
+import java.io.IOException;
 import java.util.Arrays;
 
 import java.util.List;
@@ -22,6 +22,8 @@ import org.junit.platform.commons.logging.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import com.lord.small_box.exceptions.InvalidFileException;
+
 
 
 @Component
@@ -34,34 +36,43 @@ public class PdfToStringUtils {
 		String filePath = "D:\\filetest\\" + filename;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
-		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
+		try {
+			PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
+			PDFTextStripper pdfTextStripper = new PDFTextStripper();
+			pdfTextStripper.setStartPage(1);
+			//pdfTextStripper.setSpacingTolerance(20);
+			//pdfTextStripper.setIndentThreshold(-20);
+			//pdfTextStripper.setLineSeparator("@@");
+			pdfTextStripper.setSortByPosition(true);
+			pdfTextStripper.setPageEnd("PageEnd");
+			//pdfTextStripper.setDropThreshold(9);
+			String documentText = pdfTextStripper.getText(pdfDocument);
+			pdfDocument.close();
+			fis.close();
+			return documentText;
+		} catch (IOException ex) {
+			throw new InvalidFileException("Archivo no compatible", ex.getCause());
+		}
 		
-		PDFTextStripper pdfTextStripper = new PDFTextStripper();
-		pdfTextStripper.setStartPage(1);
-		//pdfTextStripper.setSpacingTolerance(20);
-		//pdfTextStripper.setIndentThreshold(-20);
-		//pdfTextStripper.setLineSeparator("@@");
-		pdfTextStripper.setSortByPosition(true);
-		pdfTextStripper.setPageEnd("PageEnd");
-		//pdfTextStripper.setDropThreshold(9);
-		String documentText = pdfTextStripper.getText(pdfDocument);
-		pdfDocument.close();
-		fis.close();
-		return documentText;
 	}
 	
 	public List<String> pdfToDispatch(String fileName) throws Exception {
 		String filePath = "D:\\filetest\\" + fileName  ;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
-		PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
-		PDFTextStripper pdfTextStripper = new PDFTextStripper();
-		pdfTextStripper.setStartPage(1);
-		String documentText = pdfTextStripper.getText(pdfDocument);
-		List<String> result = Arrays.asList(documentText.split("\n"));
-		pdfDocument.close();
-		fis.close();
-		return result;
+		try {
+			PDDocument pdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(fis));
+			PDFTextStripper pdfTextStripper = new PDFTextStripper();
+			pdfTextStripper.setStartPage(1);
+			String documentText = pdfTextStripper.getText(pdfDocument);
+			List<String> result = Arrays.asList(documentText.split("\n"));
+			pdfDocument.close();
+			fis.close();
+			return result;
+		} catch (IOException ex) {
+			throw new InvalidFileException("Archivo no compatible", ex.getCause());
+		}
+		
 	}
 	
 	/*public String pdfParserTest(String filename)throws Exception {

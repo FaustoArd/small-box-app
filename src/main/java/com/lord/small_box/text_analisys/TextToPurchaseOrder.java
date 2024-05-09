@@ -71,7 +71,7 @@ public class TextToPurchaseOrder {
 		try {
 			return Integer.parseInt(orderNumber);
 		}catch (NumberFormatException ex) {
-			throw new TextFileInvalidException("El archivo no es compatible con una orden de compra",ex);
+			throw new TextFileInvalidException("No se encontro el numero de orden, Aparentemente estas intentando cargar un suministro...",ex.getCause());
 		}
 	}
 
@@ -220,7 +220,7 @@ public class TextToPurchaseOrder {
 		String date = Stream.of(text.split(" ")).filter(f -> pDate.matcher(f).find())
 				.skip(1)
 				.findFirst()
-				.orElseThrow(()-> new TextFileInvalidException("No se encontro la fecha, El archivo no es compatible con una orden de compra"));
+				.orElseThrow(()-> new TextFileInvalidException("No se encontro la fecha, Aparentemente estas intentando cargar un suministro..."));
 		date = date.replaceAll("[a-zA-Z]", "").replace("/", "-").strip();
 		try {
 			cal.setTime(sdf.parse(date));

@@ -130,8 +130,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 			log.info("User current deposit not found , returning DepositResponse(null,\"Sin Asignar\")");
 			return new DepositResponseDto(null, "Sin Asignar");
 		} else {
-			Deposit depo = depositRepository.findById(depositOrganizationSelect.get().getDepositId())
-					.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
+			Deposit depo = findDepositById(depositOrganizationSelect.get().getDepositId());
 			log.info("User current deposit found, deposit ID: " + depo.getId());
 			return new DepositResponseDto(depo.getId(), depo.getName());
 		}
@@ -180,11 +179,9 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Override
 	public int getTotalBigBagQuantityAvailable(long bigBagId, long depositId) {
 		log.info("Get total bigBag quantity available");
-		Deposit deposit = depositRepository.findById(depositId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito."));
+		Deposit deposit = findDepositById(depositId);
 
-		BigBag bigBag = bigBagRepository.findById(bigBagId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el bolson."));
+		BigBag bigBag = findBigBagById(bigBagId);
 
 		List<String> bigBagItemCodes = bigBagItemRepository.findByBigBag(bigBag).stream().map(m -> m.getCode())
 				.collect(Collectors.toList());
@@ -218,8 +215,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Override
 	public BigBagItemDto updateBigBagItemQuantity(long bigBagItemId, int quantity) {
 		log.info("Update bigBag item quantity ");
-		BigBagItem item = bigBagItemRepository.findById(bigBagItemId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el item del bolson."));
+		BigBagItem item = findBigBagItemById(bigBagItemId);
 		item.setQuantity(quantity);
 		BigBagItem updatedItem = bigBagItemRepository.save(item);
 		return BigBagItemMapper.INSTANCE.itemToDto(updatedItem);
@@ -228,8 +224,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Override
 	public List<BigBagItemDto> findAllBigBagItems(long bigBagId) {
 		log.info("Find All bigBag items by bigBag id.");
-		BigBag bigBag = bigBagRepository.findById(bigBagId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el bolson."));
+		BigBag bigBag = findBigBagById(bigBagId);
 		List<BigBagItem> items = bigBagItemRepository.findByBigBag(bigBag);
 		return BigBagItemMapper.INSTANCE.itemstoDtos(items);
 	}
@@ -264,7 +259,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		return comparators;
 	}
 
-	private DepositItemComparatorDto mapExcelAndDepositItemToComparatorDto(
+	private static DepositItemComparatorDto mapExcelAndDepositItemToComparatorDto(
 			Optional<PurchaseOrderItemCandidateDto> orderItemCandidateCheck, ExcelItemDto createdExcelItemDto,
 			DepositItemComparatorDto comparatorDto, ExcelItemDto xlsItemDto,
 			List<PurchaseOrderItemCandidateDto> orderItemCandidates) {
@@ -326,8 +321,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	public List<DepositControlDto> saveExcelItemsToDepositControls(long organizationId, long depositId,
 			List<ExcelItemDto> excelItemDtos) {
 		log.info("Save excel item to deposit");
-		Deposit deposit = depositRepository.findById(depositId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
+		Deposit deposit = findDepositById(depositId);
 
 		List<DepositControl> depositControlItems = purchaseOrderItemRepository
 				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderId()).toList()).stream()
@@ -356,7 +350,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		return depositControl;
 	}
 
-	private DepositControl updateDepositControlQuantity(DepositControl control, ExcelItemDto excelItemDto,
+	private static DepositControl updateDepositControlQuantity(DepositControl control, ExcelItemDto excelItemDto,
 			Deposit deposit) {
 		log.info("item exist. updating quantity");
 		control.setQuantity(control.getQuantity() + excelItemDto.getItemQuantity());
@@ -364,7 +358,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		return control;
 	}
 
-	private DepositControl excelItemToDepositControl(ExcelItemDto excelItemDto, PurchaseOrderItem orderItem,
+	private static DepositControl excelItemToDepositControl(ExcelItemDto excelItemDto, PurchaseOrderItem orderItem,
 			Deposit deposit) {
 		log.info("creating new deposit item");
 		DepositControl control = new DepositControl();
@@ -381,8 +375,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	@Override
 	public List<DepositControlDto> findDepositControlsByDeposit(long depositId) {
 		log.info("Find deposit controls by deposit");
-		Deposit deposit = depositRepository.findById(depositId)
-				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
+		Deposit deposit = findDepositById(depositId);
 		List<DepositControl> controls = depositControlRepository.findAllByDeposit(deposit);
 
 		return DepositControlMapper.INSTANCE.depositControlsToDtos(controls);
@@ -414,6 +407,21 @@ public class DepositControlServiceImpl implements DepositControlService {
 		depositControl.setDeposit(deposit);
 		DepositControl savedControl = depositControlRepository.save(depositControl);
 		return DepositControlMapper.INSTANCE.depositControlToDto(savedControl);
+	}
+	
+	private Deposit findDepositById(long depositId) {
+		return depositRepository.findById(depositId)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
+	}
+	
+	private BigBag findBigBagById(long bigBagId) {
+		return bigBagRepository.findById(bigBagId)
+		.orElseThrow(() -> new ItemNotFoundException("No se encontro el bolson."));
+	}
+	
+	private BigBagItem findBigBagItemById(long bigBagItemId) {
+		return bigBagItemRepository.findById(bigBagItemId)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el item del bolson."));
 	}
 
 }

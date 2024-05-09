@@ -62,11 +62,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			log.warn("Invalid password");
 			throw new PasswordInvalidException("Password invalido, lea los requisitos");
 		} else {
-			log.info("looking for role");
+			log.info("Find user role");
 			Authority role = findByAuthority(authority);
 			Set<Authority> roles = new HashSet<>();
 			roles.add(role);
-			log.info("saving user");
+			log.info("Saving user");
 			AppUser user = new AppUser(userDto.getName(), userDto.getLastname(), userDto.getUsername(),
 					userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), true, true, true, true, roles);
 			AppUser registeredUser = appUserService.save(user);
@@ -82,11 +82,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			log.warn("Invalid password");
 			throw new PasswordInvalidException("Password invalido, lea los requisitos");
 		} else {
-			log.info("looking for role");
+			log.info("Find user role");
 			Authority role = findByAuthority(authority);
 			Set<Authority> roles = new HashSet<>();
 			roles.add(role);
-			log.info("saving user");
+			log.info("Saving user");
 			AppUser updatedUser = appUserService.save(appUserService.mapUpdateDtoToUser(appUserUpdatedDto, roles, passwordEncoder));
 
 			return mapUserToDto(updatedUser);
@@ -113,7 +113,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		}
 	}
 
-	//This method map user registered name and last name values to AppUserRegistrationDto to show in frontEnd
+	//This method map user registered name and last name values to show in frontEnd
 	private static AppUserRegistrationDto mapUserToDto(AppUser user) {
 		if (user == null) {
 			return null;

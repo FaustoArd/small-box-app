@@ -21,8 +21,6 @@ public interface AppUserService {
 	
 	public boolean checkUsername(String username);
 	
-	public boolean checkUsernameUpdated(String username,long userId);
-	
 	public List<AppUserDto> findAll();
 	
 	public List<AppUserDto> findAllWithAuthorities();

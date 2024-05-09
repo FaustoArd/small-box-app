@@ -1,15 +1,19 @@
 package com.lord.small_box;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -23,17 +27,25 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
+import com.lord.small_box.exceptions.ItemNotFoundException;
+import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
 import com.lord.small_box.models.Input;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.SmallBoxType;
+import com.lord.small_box.repositories.AppUserRepository;
 import com.lord.small_box.repositories.AuthorityRepository;
 import com.lord.small_box.repositories.InputRepository;
+import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.AuthorizationService;
 
@@ -48,12 +60,18 @@ public class IntegrationTest {
 
 	@Autowired
 	private AuthorizationService authorizationService;
-	
+
+	@Autowired
+	private OrganizationRepository organizationRepository;
+
 	@Autowired
 	private SmallBoxTypeRepository smallBoxTypeRepository;
-	
+
 	@Autowired
 	private InputRepository inputRepository;
+
+	@Autowired
+	private AppUserRepository appUserRepository;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -61,18 +79,30 @@ public class IntegrationTest {
 	private MvcResult mvcResult;
 
 	private String jwtToken;
-	
+
 	private String userPedrojwtToken;
-	
+
+	private String superUserMiguel248JwtToken;
+
+	private long userPedro29Id;
+
 	private Long lagunasId;
 
 	private Long yanezId;
 
+	private long hemerdingerId;
+
 	private Long sitCalleId;
-	
+
 	private String container1Id;
-	
+
 	private String smallBoxRow3Id;
+
+	private String adminCarPassword;
+
+	private Organization oldSitDeCalleOrg;
+
+	private AppUser oldUserPedro29;
 
 	@BeforeAll
 	void setup() {
@@ -94,15 +124,13 @@ public class IntegrationTest {
 		userDto.setUsername("car");
 		userDto.setPassword("Dvf8650123");
 		authorizationService.register(userDto, "ADMIN");
-		
-		SmallBoxType chica = SmallBoxType.builder()
-				.smallBoxType("CHICA").build();
-				SmallBoxType savedCHica =  smallBoxTypeRepository.save(chica);
-		
-		SmallBoxType especial = SmallBoxType.builder().smallBoxType("ESPECIAL")
-				.build();
+
+		SmallBoxType chica = SmallBoxType.builder().smallBoxType("CHICA").build();
+		SmallBoxType savedCHica = smallBoxTypeRepository.save(chica);
+
+		SmallBoxType especial = SmallBoxType.builder().smallBoxType("ESPECIAL").build();
 		SmallBoxType savedEspecial = smallBoxTypeRepository.save(especial);
-		
+
 		Input i211 = Input.builder().description("Alimento para personas").inputNumber("211").build();
 		Input i212 = Input.builder().description("Alimento para animales").inputNumber("212").build();
 		Input i213 = Input.builder().description("Productos pecuarios").inputNumber("213").build();
@@ -131,7 +159,8 @@ public class IntegrationTest {
 
 		mvcResult = mockMvc
 				.perform(post("http://localhost:8080/api/v1/smallbox/authorization/login")
-						.content("{\"username\":\"car\",\"password\":\"Dvf8650123\"}").contentType(MediaType.APPLICATION_JSON))
+						.content("{\"username\":\"car\",\"password\":\"Dvf8650123\"}")
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.userId", is(notNullValue()))).andExpect(jsonPath("$.token", is(notNullValue())))
 				.andReturn();
@@ -147,13 +176,12 @@ public class IntegrationTest {
 
 	@Test
 	@Order(2)
-	void registerUser() throws Exception {
+	void registerUserPedro29() throws Exception {
 		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/registration/register").content(
 				"{\"name\":\"Pedro\",\"lastname\":\"Mozart\",\"username\":\"pedro29\",\"email\":\"car_moz@gmail.com\",\"password\":\"Xta2929341\"}")
 				.header("Authorization", "Bearer " + jwtToken).param("authority", "USER")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-				.andExpect(jsonPath(("$.name"), is("Pedro")))
-				.andExpect(jsonPath("$.password", is(nullValue())));
+				.andExpect(jsonPath(("$.name"), is("Pedro"))).andExpect(jsonPath("$.password", is(nullValue())));
 
 	}
 
@@ -175,20 +203,38 @@ public class IntegrationTest {
 
 	@Test
 	@Order(4)
+	void createAnotherResponsible() throws Exception {
+		mvcResult = this.mockMvc
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-responsible")
+						.content("{\"name\":\"Carlos\",\"lastname\":\"Heimerdinger\"}")
+						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.name", is("Carlos")))
+				.andExpect(jsonPath("$.lastname", is("Heimerdinger"))).andReturn();
+		String[] list = mvcResult.getResponse().getContentAsString().split("\"");
+		String s = Character.toString(list[2].charAt(1));
+		hemerdingerId = Long.parseLong(s);
+
+	}
+
+	@Test
+	@Order(5)
 	void createOrganization() throws Exception {
 		mvcResult = this.mockMvc
 				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
-						"{\"organizationName\":\"Dir  de personas en situacion de calle\",\"organizationNumber\":5,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
+						"{\"organizationName\":\"Dir  de personas en situacion de calle\",\"organizationNumber\":1,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
 						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.id", is(notNullValue())))
 				.andExpect(jsonPath("$.organizationName", is("Dir  de personas en situacion de calle")))
 				.andExpect(jsonPath("$.maxRotation", is(12))).andExpect(jsonPath("$.maxAmount", is(45000)))
 				.andExpect(jsonPath("$.responsible", is("Analia Lagunas"))).andReturn();
+		oldSitDeCalleOrg = organizationRepository.findById(1L)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro la organizacion"));
 	}
 
 	@Test
-	@Order(5)
+	@Order(6)
 	void createNewResponsible() throws Exception {
 		mvcResult = this.mockMvc
 				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-responsible")
@@ -203,11 +249,11 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(6)
+	@Order(7)
 	void createNewOrganization() throws Exception {
 		mvcResult = this.mockMvc
 				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
-						"{\"organizationName\":\"Dir  de Logistica\",\"organizationNumber\":5,\"responsibleId\":2,\"maxRotation\":12,\"maxAmount\":45000}")
+						"{\"organizationName\":\"Dir  de Logistica\",\"organizationNumber\":2,\"responsibleId\":3,\"maxRotation\":12,\"maxAmount\":45000}")
 						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.id", is(notNullValue())))
@@ -217,59 +263,47 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(7)
+	@Order(8)
 	void addOrganizationToUserPedro() throws Exception {
 
 		mvcResult = this.mockMvc
-				.perform(put("http://localhost:8080/api/v1/smallbox/organization/add-organization")
-						.param("userId", "2").param("organizationsId", "1,2")
-						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
+				.perform(put("http://localhost:8080/api/v1/smallbox/organization/add-organization").param("userId", "2")
+						.param("organizationsId", "1").header("Authorization", "Bearer " + jwtToken)
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
 		String stringResult = mvcResult.getResponse().getContentAsString();
 		boolean doesContain = stringResult
 				.contains("El usuario: Pedro Mozart Tiene asignada las siguientes dependencias:"
-						+ " Dir  de personas en situacion de calle, Dir  de Logistica");
+						+ " Dir  de personas en situacion de calle");
 		assertTrue(doesContain);
 
 	}
+
 	@Test
-	@Order(8)
-	void findAllOrganizationsByUser()throws Exception{
-		
-		mvcResult = this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/organization/all-orgs-by-user")
-				.param("userId", "2")
-				.header("Authorization", "Bearer " + jwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
+	@Order(9)
+	void findAllOrganizationsByUser() throws Exception {
+
+		mvcResult = this.mockMvc
+				.perform(get("http://localhost:8080/api/v1/smallbox/organization/all-orgs-by-user").param("userId", "2")
+						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
-				.andExpect(jsonPath("$[0].id", is(notNullValue())))
-				.andExpect(jsonPath("$[0].id", is(not(0))))
-				.andExpect(jsonPath("$[0].organizationName",is("Dir  de personas en situacion de calle")))
+				.andExpect(jsonPath("$[0].id", is(notNullValue()))).andExpect(jsonPath("$[0].id", is(not(0))))
+				.andExpect(jsonPath("$[0].organizationName", is("Dir  de personas en situacion de calle")))
 				.andExpect(jsonPath("$[0].responsible", is("Analia Lagunas")))
 				.andExpect(jsonPath("$[0].responsibleId", is(notNullValue())))
 				.andExpect(jsonPath("$[0].responsibleId", is(not(0))))
-				.andExpect(jsonPath("$[0].currentRotation", is(0)))
-				.andExpect(jsonPath("$[0].maxRotation", is(12)))
-				.andExpect(jsonPath("$[0].maxAmount", is(45000.0)))
-				.andExpect(jsonPath("$[1].id", is(notNullValue())))
-				.andExpect(jsonPath("$[1].id", is(not(0))))
-				.andExpect(jsonPath("$[1].organizationName",is("Dir  de Logistica")))
-				.andExpect(jsonPath("$[1].responsible", is("Fabian Yanez")))
-				.andExpect(jsonPath("$[1].responsibleId",is(notNullValue())))
-				.andExpect(jsonPath("$[1].responsibleId", is(not(0))))
-				.andExpect(jsonPath("$[1].currentRotation", is(0)))
-				.andExpect(jsonPath("$[1].maxRotation", is(12)))
-				.andExpect(jsonPath("$[1].maxAmount", is(45000.0)))
-				.andReturn();
-		
-		
+				.andExpect(jsonPath("$[0].currentRotation", is(0))).andExpect(jsonPath("$[0].maxRotation", is(12)))
+				.andExpect(jsonPath("$[0].maxAmount", is(45000.0))).andReturn();
+
 	}
-	
+
 	@Test
-	@Order(9)
-	void loginAsUserPedro()throws Exception{
+	@Order(10)
+	void loginAsUserPedro() throws Exception {
 		mvcResult = mockMvc
 				.perform(post("http://localhost:8080/api/v1/smallbox/authorization/login")
-						.content("{\"username\":\"pedro29\",\"password\":\"Xta2929341\"}").contentType(MediaType.APPLICATION_JSON))
+						.content("{\"username\":\"pedro29\",\"password\":\"Xta2929341\"}")
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.userId", is(notNullValue()))).andExpect(jsonPath("$.token", is(notNullValue())))
 				.andReturn();
@@ -281,246 +315,376 @@ public class IntegrationTest {
 			}
 		}
 	}
-	
+
 	@Test
-	@Order(10)
-	void whenTryToCreateResponsibleWithUserPedroMustReturn403Forbidden()throws Exception{
-		 this.mockMvc
+	@Order(11)
+	void whenTryToCreateResponsibleWithUserPedroMustReturn403Forbidden() throws Exception {
+		this.mockMvc
 				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-responsible")
 						.content("{\"name\":\"Alfonso\",\"lastname\":\"Gomez\"}")
 						.header("Authorization", "Bearer " + userPedrojwtToken).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is(403))
-				.andReturn();
-			
-		
+				.andExpect(status().is(403)).andReturn();
 	}
-	@Test
-	@Order(11)
-	void whenTryToCreateOrganizationWithUserPedroMustReturn403Forbidden()throws Exception{
-		 this.mockMvc
-				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
-						"{\"organizationName\":\"Dir. de Presuspuesto\",\"organizationNumber\":14,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
-						.header("Authorization", "Bearer " + userPedrojwtToken)
-						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is(403));
-				
-			}
-	
+
 	@Test
 	@Order(12)
-	void whenTryToRegisterUserWithUserPedroMustReturn403Forbidden()throws Exception{
+	void whenTryToCreateOrganizationWithUserPedroMustReturn403Forbidden() throws Exception {
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
+				"{\"organizationName\":\"Dir. de Presuspuesto\",\"organizationNumber\":14,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
+				.header("Authorization", "Bearer " + userPedrojwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(403));
+
+	}
+
+	@Test
+	@Order(13)
+	void whenTryToRegisterUserWithUserPedroMustReturn403Forbidden() throws Exception {
 		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/registration/register").content(
 				"{\"name\":\"Mariano\",\"lastname\":\"Pergamino\",\"username\":\"marper\",\"email\":\"mar@gmail.com\",\"password\":\"123\"}")
 				.header("Authorization", "Bearer " + userPedrojwtToken).param("authority", "ADMIN")
-				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().is(403));
-			
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(403));
+
 	}
-	
-	@Test
-	@Order(13)
-	void createContainerWithUserPedro()throws Exception{
-		Calendar now = Calendar.getInstance();
-		mvcResult =  this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/containers/")
-			 .content("{\"smallBoxType\":\"CHICA\",\"organizationId\":2}")
-			 .header("Authorization", "Bearer " + userPedrojwtToken)
-			 .contentType(MediaType.APPLICATION_JSON))
-			 .andExpect(status().is(201)).andDo(MockMvcResultHandlers.print())
-			 .andExpect(jsonPath("$.id", is(notNullValue())))
-			 .andExpect(jsonPath("$.id", is(not(0))))
-			 .andExpect(jsonPath("$.smallBoxType", is("CHICA")))
-			 .andExpect(jsonPath("$.organization", is("Dir  de Logistica")))
-			 .andExpect(jsonPath("$.responsible", is("Fabian Yanez")))
-			 .andReturn();
-		
-		
-		String[] list = mvcResult.getResponse().getContentAsString().split("\"");
-		container1Id = Character.toString(list[2].charAt(1));
-		
-		
-	}
-	
+
 	@Test
 	@Order(14)
-	void createSmallBoxRow1WithUserPedro()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
-				.content("{\"date\":\"2023-02-10\",\"ticketNumber\":\"0001-2423\",\"provider\":\"Disalar\",\"inputId\":2,\"ticketTotal\":4000}")
-				.param("containerId", container1Id)
-				.header("Authorization", "Bearer " + userPedrojwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().is(201))
-			.andExpect(jsonPath("$.id", is(notNullValue())))	
-			.andExpect(jsonPath("$.id", is(not(0))))
-			.andExpect(jsonPath("$.date", is("2023-02-10")))
-			.andExpect(jsonPath("$.ticketNumber", is("0001-2423")))
-			.andExpect(jsonPath("$.provider", is("Disalar")))
-			.andExpect(jsonPath("$.description", is("Alimento para animales")))
-			.andExpect(jsonPath("$.ticketTotal", is(4000)))
-			.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id))));
-		
+	void createContainerWithUserPedro() throws Exception {
+		Calendar now = Calendar.getInstance();
+		mvcResult = this.mockMvc
+				.perform(post("http://localhost:8080/api/v1/smallbox/containers/")
+						.content("{\"smallBoxType\":\"CHICA\",\"organizationId\":1}")
+						.header("Authorization", "Bearer " + userPedrojwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(201)).andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.id", is(not(0))))
+				.andExpect(jsonPath("$.smallBoxType", is("CHICA")))
+				.andExpect(jsonPath("$.organization", is("Dir  de personas en situacion de calle")))
+				.andExpect(jsonPath("$.responsible", is("Analia Lagunas"))).andReturn();
+
+		String[] list = mvcResult.getResponse().getContentAsString().split("\"");
+		container1Id = Character.toString(list[2].charAt(1));
+
 	}
+
 	@Test
 	@Order(15)
-	void createSmallBoxRow2WithUserPedro()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
-				.content("{\"date\":\"2023-04-15\",\"ticketNumber\":\"0002-2223\",\"provider\":\"La Roma\",\"inputId\":1,\"ticketTotal\":3000}")
-				.param("containerId", container1Id)
-				.header("Authorization", "Bearer " + userPedrojwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().is(201))
-			.andExpect(jsonPath("$.id", is(notNullValue())))	
-			.andExpect(jsonPath("$.id", is(not(0))))
-			.andExpect(jsonPath("$.date", is("2023-04-15")))
-			.andExpect(jsonPath("$.ticketNumber", is("0002-2223")))
-			.andExpect(jsonPath("$.provider", is("La Roma")))
-			.andExpect(jsonPath("$.description", is("Alimento para personas")))
-			.andExpect(jsonPath("$.ticketTotal", is(3000)))
-			.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id))));
-		
+	void createSmallBoxRow1WithUserPedro() throws Exception {
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new").content(
+				"{\"date\":\"2023-02-10\",\"ticketNumber\":\"0001-2423\",\"provider\":\"Disalar\",\"inputId\":2,\"ticketTotal\":4000}")
+				.param("containerId", container1Id).header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.id", is(not(0))))
+				.andExpect(jsonPath("$.date", is("2023-02-10"))).andExpect(jsonPath("$.ticketNumber", is("0001-2423")))
+				.andExpect(jsonPath("$.provider", is("Disalar")))
+				.andExpect(jsonPath("$.description", is("Alimento para animales")))
+				.andExpect(jsonPath("$.ticketTotal", is(4000)))
+				.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id))));
+
 	}
-	
+
 	@Test
 	@Order(16)
-	void createSmallBoxRow3WithUserPedro()throws Exception{
-		mvcResult =  this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
-				.content("{\"date\":\"2024-05-11\",\"ticketNumber\":\"00001-23223\",\"provider\":\"Bengala\",\"inputId\":2,\"ticketTotal\":2500.50}")
-				.param("containerId", container1Id)
-				.header("Authorization", "Bearer " + userPedrojwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().is(201)).andDo(MockMvcResultHandlers.print())
-			.andExpect(jsonPath("$.id", is(notNullValue())))	
-			.andExpect(jsonPath("$.id", is(not(0))))
-			.andExpect(jsonPath("$.date", is("2024-05-11")))
-			.andExpect(jsonPath("$.ticketNumber", is("00001-23223")))
-			.andExpect(jsonPath("$.provider", is("Bengala")))
-			.andExpect(jsonPath("$.description", is("Alimento para animales")))
-			.andExpect(jsonPath("$.ticketTotal", is(2500.50)))
-			.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id)))).andReturn();
-		
+	void createSmallBoxRow2WithUserPedro() throws Exception {
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new").content(
+				"{\"date\":\"2023-04-15\",\"ticketNumber\":\"0002-2223\",\"provider\":\"La Roma\",\"inputId\":1,\"ticketTotal\":3000}")
+				.param("containerId", container1Id).header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.id", is(not(0))))
+				.andExpect(jsonPath("$.date", is("2023-04-15"))).andExpect(jsonPath("$.ticketNumber", is("0002-2223")))
+				.andExpect(jsonPath("$.provider", is("La Roma")))
+				.andExpect(jsonPath("$.description", is("Alimento para personas")))
+				.andExpect(jsonPath("$.ticketTotal", is(3000)))
+				.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id))));
+
+	}
+
+	@Test
+	@Order(17)
+	void createSmallBoxRow3WithUserPedro() throws Exception {
+		mvcResult = this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new").content(
+				"{\"date\":\"2024-05-11\",\"ticketNumber\":\"00001-23223\",\"provider\":\"Bengala\",\"inputId\":2,\"ticketTotal\":2500.50}")
+				.param("containerId", container1Id).header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+				.andDo(MockMvcResultHandlers.print()).andExpect(jsonPath("$.id", is(notNullValue())))
+				.andExpect(jsonPath("$.id", is(not(0)))).andExpect(jsonPath("$.date", is("2024-05-11")))
+				.andExpect(jsonPath("$.ticketNumber", is("00001-23223")))
+				.andExpect(jsonPath("$.provider", is("Bengala")))
+				.andExpect(jsonPath("$.description", is("Alimento para animales")))
+				.andExpect(jsonPath("$.ticketTotal", is(2500.50)))
+				.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id)))).andReturn();
+
 		String[] list = mvcResult.getResponse().getContentAsString().split("\"");
 		smallBoxRow3Id = Character.toString(list[2].charAt(1));
 		System.err.println(smallBoxRow3Id);
-		
+
 	}
-	@Test
-	@Order(17)
-	void createSmallBoxRow4WithUserPedro()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
-				.content("{\"date\":\"2024-05-10\",\"ticketNumber\":\"00001-25223\",\"provider\":\"La Comarca S.R.L\",\"inputId\":6,\"ticketTotal\":3000.50}")
-				.param("containerId", container1Id)
-				.header("Authorization", "Bearer " + userPedrojwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().is(201))
-			.andExpect(jsonPath("$.id", is(notNullValue())))	
-			.andExpect(jsonPath("$.id", is(not(0))))
-			.andExpect(jsonPath("$.date", is("2024-05-10")))
-			.andExpect(jsonPath("$.ticketNumber", is("00001-25223")))
-			.andExpect(jsonPath("$.provider", is("La Comarca S.R.L")))
-			.andExpect(jsonPath("$.description", is("Otros")))
-			.andExpect(jsonPath("$.ticketTotal", is(3000.50)))
-			.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id))));
-		
-	}
+
 	@Test
 	@Order(18)
-	void createSmallBoxRow5WithUserPedro()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new")
-				.content("{\"date\":\"2022-05-10\",\"ticketNumber\":\"00001-25228\",\"provider\":\"Alimentos Carlos\",\"inputId\":1,\"ticketTotal\":6000}")
-				.param("containerId", container1Id)
-				.header("Authorization", "Bearer " + userPedrojwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().is(201))
-			.andExpect(jsonPath("$.id", is(notNullValue())))	
-			.andExpect(jsonPath("$.id", is(not(0))))
-			.andExpect(jsonPath("$.date", is("2022-05-10")))
-			.andExpect(jsonPath("$.ticketNumber", is("00001-25228")))
-			.andExpect(jsonPath("$.provider", is("Alimentos Carlos")))
-			.andExpect(jsonPath("$.description", is("Alimento para personas")))
-			.andExpect(jsonPath("$.ticketTotal", is(6000)))
-			.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id))));
-		}
-	
+	void createSmallBoxRow4WithUserPedro() throws Exception {
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new").content(
+				"{\"date\":\"2024-05-10\",\"ticketNumber\":\"00001-25223\",\"provider\":\"La Comarca S.R.L\",\"inputId\":6,\"ticketTotal\":3000.50}")
+				.param("containerId", container1Id).header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.id", is(not(0))))
+				.andExpect(jsonPath("$.date", is("2024-05-10")))
+				.andExpect(jsonPath("$.ticketNumber", is("00001-25223")))
+				.andExpect(jsonPath("$.provider", is("La Comarca S.R.L")))
+				.andExpect(jsonPath("$.description", is("Otros"))).andExpect(jsonPath("$.ticketTotal", is(3000.50)))
+				.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id))));
+
+	}
+
 	@Test
 	@Order(19)
-	void editSmallBoxRow3WithUserPedro()throws Exception{
-		mvcResult =  this.mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/smallboxes/smallBox-update")
-				.content("{\"id\":3,\"date\":\"2024-05-11\",\"ticketNumber\":\"00001-23226\",\"provider\":\"Bengala\",\"containerId\":1,\"description\":\"Alimento para animales\",\"ticketTotal\":2500.50}")
-				.header("Authorization", "Bearer " + userPedrojwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().is(200)).andDo(MockMvcResultHandlers.print()).andReturn();
-		
-			String stringResult = mvcResult.getResponse().getContentAsString();
-		boolean doesContain = stringResult
-				.contains("Se actualizo el comprobante Numero: " + "00001-23226");
-		assertTrue(doesContain);
+	void createSmallBoxRow5WithUserPedro() throws Exception {
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/smallboxes/new").content(
+				"{\"date\":\"2022-05-10\",\"ticketNumber\":\"00001-25228\",\"provider\":\"Alimentos Carlos\",\"inputId\":1,\"ticketTotal\":6000}")
+				.param("containerId", container1Id).header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.id", is(not(0))))
+				.andExpect(jsonPath("$.date", is("2022-05-10")))
+				.andExpect(jsonPath("$.ticketNumber", is("00001-25228")))
+				.andExpect(jsonPath("$.provider", is("Alimentos Carlos")))
+				.andExpect(jsonPath("$.description", is("Alimento para personas")))
+				.andExpect(jsonPath("$.ticketTotal", is(6000)))
+				.andExpect(jsonPath("$.containerId", is(Integer.parseInt(container1Id))));
 	}
-	
+
 	@Test
 	@Order(20)
-	void completeSmallBoxWithUserPedro()throws Exception{
-		mvcResult = this.mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/smallboxes/complete")
-				.param("containerId", container1Id)
-				.header("Authorization", "Bearer " + userPedrojwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is(200)).andDo(MockMvcResultHandlers.print())
-				.andExpect(jsonPath("$[0].id", is(not(0))))
-				.andExpect(jsonPath("$[0].id", is(notNullValue())))
-				.andExpect(jsonPath("$[0].date", is("2023-04-15")))
-				.andExpect(jsonPath("$[0].ticketNumber", is("0002-2223")))
-				.andExpect(jsonPath("$[0].provider", is("La Roma")))
-				.andExpect(jsonPath("$[0].inputNumber", is("211")))
-				.andExpect(jsonPath("$[0].ticketTotal", is(3000.0)))
-				.andExpect(jsonPath("$[1].id", is(not(0))))
-				.andExpect(jsonPath("$[1].id", is(notNullValue())))
-				.andExpect(jsonPath("$[1].date", is("2022-05-10")))
-				.andExpect(jsonPath("$[1].ticketNumber", is("00001-25228")))
-				.andExpect(jsonPath("$[1].provider", is("Alimentos Carlos")))
-				.andExpect(jsonPath("$[1].inputNumber", is("211")))
-				.andExpect(jsonPath("$[1].ticketTotal", is(6000.0)))
-				.andExpect(jsonPath("$[2].id", is(not(0))))
-				.andExpect(jsonPath("$[2].id", is(notNullValue())))
-				.andExpect(jsonPath("$[2].subtotal", is(9000)))
-				.andExpect(jsonPath("$[2].subtotalTitle", is("SubTotal")))
-				.andExpect(jsonPath("$[3].id", is(not(0))))
-				.andExpect(jsonPath("$[3].id", is(notNullValue())))
-				.andExpect(jsonPath("$[3].date", is("2023-02-10")))
-				.andExpect(jsonPath("$[3].ticketNumber", is("0001-2423")))
-				.andExpect(jsonPath("$[3].provider", is("Disalar")))
-				.andExpect(jsonPath("$[3].inputNumber", is("212")))
-				.andExpect(jsonPath("$[3].ticketTotal", is(4000.0)))
-				.andExpect(jsonPath("$[4].id", is(not(0))))
-				.andExpect(jsonPath("$[4].id", is(notNullValue())))
-				.andExpect(jsonPath("$[4].date", is("2024-05-11")))
-				.andExpect(jsonPath("$[4].ticketNumber", is("00001-23226")))
-				.andExpect(jsonPath("$[4].provider", is("Bengala")))
-				.andExpect(jsonPath("$[4].inputNumber", is("212")))
-				.andExpect(jsonPath("$[4].ticketTotal", is(2500.50)))
-				.andExpect(jsonPath("$[5].id", is(not(0))))
-				.andExpect(jsonPath("$[5].id", is(notNullValue())))
-				.andExpect(jsonPath("$[5].subtotal", is(6500.5)))
-				.andExpect(jsonPath("$[5].subtotalTitle", is("SubTotal")))
-				.andExpect(jsonPath("$[6].id", is(not(0))))
-				.andExpect(jsonPath("$[6].id", is(notNullValue())))
-				.andExpect(jsonPath("$[6].date", is("2024-05-10")))
-				.andExpect(jsonPath("$[6].ticketNumber", is("00001-25223")))
-				.andExpect(jsonPath("$[6].provider", is("La Comarca S.R.L")))
-				.andExpect(jsonPath("$[6].inputNumber", is("219")))
-				.andExpect(jsonPath("$[6].ticketTotal", is(3000.50)))
-				.andExpect(jsonPath("$[7].id", is(not(0))))
-				.andExpect(jsonPath("$[7].id", is(notNullValue())))
-				.andExpect(jsonPath("$[7].subtotal", is(3000.5)))
-				.andExpect(jsonPath("$[7].subtotalTitle", is("SubTotal"))).andReturn();
-				}
-	
+	void editSmallBoxRow3WithUserPedro() throws Exception {
+		mvcResult = this.mockMvc
+				.perform(put("http://localhost:8080/api/v1/smallbox/smallboxes/smallBox-update").content(
+						"{\"id\":3,\"date\":\"2024-05-11\",\"ticketNumber\":\"00001-23226\",\"provider\":\"Bengala\",\"containerId\":1,\"description\":\"Alimento para animales\",\"ticketTotal\":2500.50}")
+						.header("Authorization", "Bearer " + userPedrojwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200)).andDo(MockMvcResultHandlers.print()).andReturn();
+
+		String stringResult = mvcResult.getResponse().getContentAsString();
+		boolean doesContain = stringResult.contains("Se actualizo el comprobante Numero: " + "00001-23226");
+		assertTrue(doesContain);
+	}
+
 	@Test
 	@Order(21)
-	void getSmallBoxTotalWithUserPedro()throws Exception{
-		this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/containers/{containerId}", container1Id)
-				.header("Authorization", "Bearer " + userPedrojwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is(200))
-				.andExpect(jsonPath("$.total", is(18501.0)));
+	void completeSmallBoxWithUserPedro() throws Exception {
+		mvcResult = this.mockMvc
+				.perform(put("http://localhost:8080/api/v1/smallbox/smallboxes/complete")
+						.param("containerId", container1Id).header("Authorization", "Bearer " + userPedrojwtToken)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200)).andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$[0].id", is(not(0)))).andExpect(jsonPath("$[0].id", is(notNullValue())))
+				.andExpect(jsonPath("$[0].date", is("2023-04-15")))
+				.andExpect(jsonPath("$[0].ticketNumber", is("0002-2223")))
+				.andExpect(jsonPath("$[0].provider", is("La Roma"))).andExpect(jsonPath("$[0].inputNumber", is("211")))
+				.andExpect(jsonPath("$[0].ticketTotal", is(3000.0))).andExpect(jsonPath("$[1].id", is(not(0))))
+				.andExpect(jsonPath("$[1].id", is(notNullValue()))).andExpect(jsonPath("$[1].date", is("2022-05-10")))
+				.andExpect(jsonPath("$[1].ticketNumber", is("00001-25228")))
+				.andExpect(jsonPath("$[1].provider", is("Alimentos Carlos")))
+				.andExpect(jsonPath("$[1].inputNumber", is("211"))).andExpect(jsonPath("$[1].ticketTotal", is(6000.0)))
+				.andExpect(jsonPath("$[2].id", is(not(0)))).andExpect(jsonPath("$[2].id", is(notNullValue())))
+				.andExpect(jsonPath("$[2].subtotal", is(9000)))
+				.andExpect(jsonPath("$[2].subtotalTitle", is("SubTotal"))).andExpect(jsonPath("$[3].id", is(not(0))))
+				.andExpect(jsonPath("$[3].id", is(notNullValue()))).andExpect(jsonPath("$[3].date", is("2023-02-10")))
+				.andExpect(jsonPath("$[3].ticketNumber", is("0001-2423")))
+				.andExpect(jsonPath("$[3].provider", is("Disalar"))).andExpect(jsonPath("$[3].inputNumber", is("212")))
+				.andExpect(jsonPath("$[3].ticketTotal", is(4000.0))).andExpect(jsonPath("$[4].id", is(not(0))))
+				.andExpect(jsonPath("$[4].id", is(notNullValue()))).andExpect(jsonPath("$[4].date", is("2024-05-11")))
+				.andExpect(jsonPath("$[4].ticketNumber", is("00001-23226")))
+				.andExpect(jsonPath("$[4].provider", is("Bengala"))).andExpect(jsonPath("$[4].inputNumber", is("212")))
+				.andExpect(jsonPath("$[4].ticketTotal", is(2500.50))).andExpect(jsonPath("$[5].id", is(not(0))))
+				.andExpect(jsonPath("$[5].id", is(notNullValue()))).andExpect(jsonPath("$[5].subtotal", is(6500.5)))
+				.andExpect(jsonPath("$[5].subtotalTitle", is("SubTotal"))).andExpect(jsonPath("$[6].id", is(not(0))))
+				.andExpect(jsonPath("$[6].id", is(notNullValue()))).andExpect(jsonPath("$[6].date", is("2024-05-10")))
+				.andExpect(jsonPath("$[6].ticketNumber", is("00001-25223")))
+				.andExpect(jsonPath("$[6].provider", is("La Comarca S.R.L")))
+				.andExpect(jsonPath("$[6].inputNumber", is("219"))).andExpect(jsonPath("$[6].ticketTotal", is(3000.50)))
+				.andExpect(jsonPath("$[7].id", is(not(0)))).andExpect(jsonPath("$[7].id", is(notNullValue())))
+				.andExpect(jsonPath("$[7].subtotal", is(3000.5)))
+				.andExpect(jsonPath("$[7].subtotalTitle", is("SubTotal"))).andReturn();
 	}
-	
-	
+
+	@Test
+	@Order(22)
+	void getSmallBoxTotalWithUserPedro() throws Exception {
+		this.mockMvc
+				.perform(get("http://localhost:8080/api/v1/smallbox/containers/{containerId}", container1Id)
+						.header("Authorization", "Bearer " + userPedrojwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200)).andExpect(jsonPath("$.total", is(18501.0)));
+	}
+
+	@Test
+	@Order(23)
+	void updateOrganizationDirSitDeCalle() throws Exception {
+		mvcResult = this.mockMvc
+				.perform(put("http://localhost:8080/api/v1/smallbox/organization/update-organization").content(
+						"{\"id\":1,\"organizationName\":\"Dir. de personas en situacion de calle\",\"organizationNumber\":5,\"responsibleId\":2,\"maxRotation\":9,\"maxAmount\":60000}")
+						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.id", is(notNullValue())))
+				.andExpect(jsonPath("$.organizationName", is("Dir. de personas en situacion de calle")))
+				.andExpect(jsonPath("$.maxRotation", is(9))).andExpect(jsonPath("$.maxAmount", is(60000)))
+				.andExpect(jsonPath("$.responsible", is("Carlos Heimerdinger"))).andReturn();
+		assertThat(oldSitDeCalleOrg.getOrganizationName()).isNotEqualTo("Dir. de personas en situacion de calle");
+		assertThat(oldSitDeCalleOrg.getResponsible().getId()).isNotEqualTo(hemerdingerId);
+		assertThat(oldSitDeCalleOrg.getMaxAmount()).isLessThan(new BigDecimal(60000));
+		assertThat(oldSitDeCalleOrg.getMaxRotation()).isGreaterThan(9);
+	}
+
+	@Test
+	@Order(24)
+	void updateUserPedro29Email() throws Exception {
+		this.mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/registration/update").content(
+				"{\"id\":2,\"name\":\"Pedro\",\"lastname\":\"Mozart\",\"username\":\"pedro29\",\"email\":\"car_moz@hotmail.com\",\"password\":\"Xta2929341\"}")
+				.header("Authorization", "Bearer " + jwtToken).param("authority", "USER")
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath(("$.name"), is("Pedro"))).andExpect(jsonPath("$.password", is(nullValue())));
+
+	}
+
+	@Test
+	@Order(25)
+	void checkUserPedro29EmailValue() throws Exception {
+		AppUser userPedro29 = appUserRepository.findByUsername("pedro29")
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el usuario"));
+		assertThat(userPedro29.getId()).isGreaterThan(0);
+		assertThat(userPedro29.getAuthorities().stream().findFirst().get().getAuthority()).isEqualTo("USER");
+		assertThat(userPedro29.getUsername()).isEqualTo("pedro29");
+		assertThat(userPedro29.getName()).isEqualTo("Pedro");
+		assertThat(userPedro29.getLastname()).isEqualTo("Mozart");
+		assertThat(userPedro29.getEmail()).isEqualTo("car_moz@hotmail.com");
+	}
+
+	@Test
+	@Order(26)
+	void createResponsiblePierpaoli() throws Exception {
+		mvcResult = this.mockMvc
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-responsible")
+						.content("{\"name\":\"Roxana\",\"lastname\":\"Pierpaoli\"}")
+						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.name", is("Roxana")))
+				.andExpect(jsonPath("$.lastname", is("Pierpaoli"))).andReturn();
+	}
+
+	@Test
+	@Order(27)
+	void addOrganizationSecDesSocial() throws Exception {
+		mvcResult = this.mockMvc
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
+						"{\"organizationName\":\"Secretaria de desarrollo social\",\"organizationNumber\":3,\"responsibleId\":4,\"maxRotation\":12,\"maxAmount\":100000}")
+						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.id", is(notNullValue())))
+				.andExpect(jsonPath("$.organizationName", is("Secretaria de desarrollo social")))
+				.andExpect(jsonPath("$.maxRotation", is(12))).andExpect(jsonPath("$.maxAmount", is(100000)))
+				.andExpect(jsonPath("$.responsible", is("Roxana Pierpaoli"))).andReturn();
+	}
+
+	@Test
+	@Order(28)
+	void assignParentOrganiationToDirSitDeCalle() throws Exception {
+		this.mockMvc
+				.perform(post("http://localhost:8080/api/v1/smallbox/organization/set-parent-organizations")
+						.content("{\"mainOrganizationId\":1,\"parentOrganizationIds\":[3]}")
+						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.mainOrganizationName", is("Dir. de personas en situacion de calle")))
+				.andExpect(jsonPath("$.parentOrganizationNames", is(List.of("Secretaria de desarrollo social"))));
+	}
+
+	@Test
+	@Order(29)
+	void createSuperUserMiguel248() throws Exception {
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/registration/register").content(
+				"{\"name\":\"Miguel\",\"lastname\":\"Fernandez\",\"username\":\"miguel248\",\"email\":\"miguelCapo@gmail.com\",\"password\":\"Lsm4234ib\"}")
+				.header("Authorization", "Bearer " + jwtToken).param("authority", "SUPERUSER")
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
+				.andExpect(jsonPath(("$.name"), is("Miguel"))).andExpect(jsonPath("$.password", is(nullValue())));
+	}
+
+	@Test
+	@Order(30)
+	void assignSecDesSocialToMiguel248() throws Exception {
+		AppUser userMiguel248 = appUserRepository.findByUsername("miguel248").get();
+		mvcResult = this.mockMvc
+				.perform(put("http://localhost:8080/api/v1/smallbox/organization/add-organization")
+						.param("userId", Long.toString(userMiguel248.getId())).param("organizationsId", "3")
+						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+		String stringResult = mvcResult.getResponse().getContentAsString();
+		boolean doesContain = stringResult
+				.contains("El usuario: Miguel Fernandez Tiene asignada las siguientes dependencias:"
+						+ " Secretaria de desarrollo social");
+		assertTrue(doesContain);
+	}
+
+	@Test
+	@Order(31)
+	void loginWithSuperUserMiguel248() throws Exception {
+		mvcResult = mockMvc
+				.perform(post("http://localhost:8080/api/v1/smallbox/authorization/login")
+						.content("{\"username\":\"miguel248\",\"password\":\"Lsm4234ib\"}")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.userId", is(notNullValue()))).andExpect(jsonPath("$.token", is(notNullValue())))
+				.andReturn();
+
+		String[] list = mvcResult.getResponse().getContentAsString().split("\"");
+		for (String str : list) {
+			if (str.length() > 200) {
+				superUserMiguel248JwtToken = str;
+			}
+		}
+
+	}
+
+	@Test
+	@Order(32)
+	void selectSuperUserMiguel248MainOrganization() throws Exception {
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/organization/set-user-organization")
+				.param("organizationId", "3").param("userId", "3")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$", is(3)));
+	}
+
+	@Test
+	@Order(33)
+	void whenTryToCreateResponsibleWithSuperUserMiguel248_Return403Forbidden() throws Exception {
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-responsible")
+				.content("{\"name\":\"Alfonso\",\"lastname\":\"Gomez\"}")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(403)).andReturn();
+	}
+
+	@Test
+	@Order(34)
+	void whenTryToCreateOrganizationWithSuperUserMiguel248_Return403Forbidden() throws Exception {
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
+				"{\"organizationName\":\"Dir. de Presuspuesto\",\"organizationNumber\":14,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(403));
+
+	}
+
+	@Test
+	@Order(35)
+	void whenTryToRegisterUserWithSuperUserMiguel248_Return403Forbidden() throws Exception {
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/registration/register").content(
+				"{\"name\":\"Mariano\",\"lastname\":\"Pergamino\",\"username\":\"marper\",\"email\":\"mar@gmail.com\",\"password\":\"123\"}")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken).param("authority", "ADMIN")
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(403));
+
+	}
+
+	@Test
+	@Order(36)
+	void uploadPurchaseOrderWithSuperUserMiguel248() throws Exception {
+		MockMultipartFile file = new MockMultipartFile("file", "oc-365.pdf", "application/pdf",
+				new ClassPathResource("oc-365.pdf").getInputStream());
+		mockMvc.perform(
+				multipart("http://localhost:8080/api/v1/smallbox/purchase-order/collect-purchase-order-pdf").file(file)
+						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.orderNumber", is(365)));
+				
+	}
 }

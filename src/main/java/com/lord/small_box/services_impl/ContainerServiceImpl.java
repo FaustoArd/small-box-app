@@ -60,25 +60,17 @@ public class ContainerServiceImpl implements ContainerService {
 	@Override
 	public Container createContainer(Container container) throws MaxRotationExceededException {
 		log.info("Save container");
-		SmallBoxType smallBoxType = smallBoxTypeRepository
-				.findBySmallBoxType(container.getSmallBoxType().getSmallBoxType())
-				.orElseThrow(() -> new ItemNotFoundException("SmallBoxType not found"));
-		
-		Organization organization = organizationRepository.findById(container.getOrganization().getId())
-				.orElseThrow(() -> new ItemNotFoundException("Organization not found"));
-		
+		SmallBoxType smallBoxType = findSmallBoxType(container.getSmallBoxType().getSmallBoxType());
+		Organization organization = findByOrganizationId(container.getOrganization().getId());
 		if (smallBoxType.getSmallBoxType().equals("CHICA")) {
 			if (organization.getCurrentRotation() + 1 > organization.getMaxRotation()) {
-				throw new MaxRotationExceededException("Ya se supero la rotacion maxima de rendiciones de caja chica");
+				throw new MaxRotationExceededException("Ya supero la rotacion maxima de rendiciones de caja chica");
 			}
 			organization.setCurrentRotation(organization.getCurrentRotation() + 1);
-			
 		}
-		Organization savedOrganization =  organizationRepository.save(organization);
-		OrganizationResponsible organizationResponsible = organizationResponsibleRepository
-				.findById(organization.getResponsible().getId())
-				.orElseThrow(() -> new ItemNotFoundException("Responsible not found"));
-		
+		Organization savedOrganization = organizationRepository.save(organization);
+		OrganizationResponsible organizationResponsible = findOrganizationResponsibleById(
+				organization.getResponsible().getId());
 		container.setResponsible(organizationResponsible);
 		container.setOrganization(savedOrganization);
 		container.setSmallBoxDate(now);
@@ -86,12 +78,11 @@ public class ContainerServiceImpl implements ContainerService {
 		return containerRepository.save(container);
 
 	}
-	
+
 	@Override
 	public Container update(Container container) {
 		log.info("Update container");
-		Container updatedContainer = containerRepository.findById(container.getId())
-				.orElseThrow(()-> new ItemNotFoundException(containerNotFound));
+		Container updatedContainer =  findContainerById(container.getId());
 		Organization organization = organizationRepository.findById(container.getOrganization().getId())
 				.orElseThrow(() -> new ItemNotFoundException("Organization not found"));
 		SmallBoxType smallBoxType = smallBoxTypeRepository
@@ -108,14 +99,11 @@ public class ContainerServiceImpl implements ContainerService {
 	}
 
 	@Override
-	public Container findById(Long id) {
+	public Container findContainerByIdWithResponsible(Long containerId) {
 		log.info("Find container by id");
-		Container container = containerRepository.findById(id)
-				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
-		OrganizationResponsible organizationResponsible = organizationResponsibleRepository
-				.findById(container.getResponsible().getId())
-				.orElseThrow(() -> new ItemNotFoundException("Responsible not found"));
-		container.setResponsible(organizationResponsible);
+		Container container = findContainerById(containerId);
+		OrganizationResponsible organizationResponsible = findOrganizationResponsibleById(container.getResponsible().getId());
+			container.setResponsible(organizationResponsible);
 		return container;
 	}
 
@@ -139,8 +127,7 @@ public class ContainerServiceImpl implements ContainerService {
 	@Override
 	public String setContainerTotalWrite(Long containerId, String totalWrite) {
 		log.info("Setting container total write");
-		Container container = containerRepository.findById(containerId)
-				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
+		Container container = findContainerById(containerId);
 		container.setTotalWrite(totalWrite);
 		return containerRepository.save(container).getTotalWrite();
 
@@ -156,13 +143,13 @@ public class ContainerServiceImpl implements ContainerService {
 					return mapContainerToDto(container);
 				}).toList();
 	}
-	
+
 	private ContainerDto mapContainerToDto(Container container) {
 		ContainerDto containerDto = new ContainerDto();
 		containerDto.setId(container.getId());
 		containerDto.setOrganization(container.getOrganization().getOrganizationName());
-		containerDto.setResponsible(
-				container.getResponsible().getName() + " " + container.getResponsible().getLastname());
+		containerDto
+				.setResponsible(container.getResponsible().getName() + " " + container.getResponsible().getLastname());
 		containerDto.setSmallBoxDate(container.getSmallBoxDate());
 		containerDto.setSmallBoxType(container.getSmallBoxType().getSmallBoxType());
 		containerDto.setTotal(container.getTotal());
@@ -172,12 +159,29 @@ public class ContainerServiceImpl implements ContainerService {
 
 	@Override
 	public BigDecimal getSmallBoxMaxAmount(Long containerId) {
-		long orgId = containerRepository.findById(containerId)
-				.map(m -> m.getOrganization()
-						.getId())
-				.orElseThrow(()-> new ItemNotFoundException("No se encontro el container"));
+		long orgId = containerRepository.findById(containerId).map(m -> m.getOrganization().getId())
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el container"));
 		return organizationRepository.findById(orgId).map(m -> m.getMaxAmount()).get();
 	}
-
 	
+	private Container findContainerById(long containerId) {
+		return containerRepository.findById(containerId)
+				.orElseThrow(() -> new ItemNotFoundException(containerNotFound));
+	}
+
+	private SmallBoxType findSmallBoxType(String smallBoxType) {
+		return smallBoxTypeRepository.findBySmallBoxType(smallBoxType)
+				.orElseThrow(() -> new ItemNotFoundException("SmallBoxType not found"));
+	}
+
+	private Organization findByOrganizationId(long organizationId) {
+		return organizationRepository.findById(organizationId)
+				.orElseThrow(() -> new ItemNotFoundException("Organization not found"));
+	}
+
+	private OrganizationResponsible findOrganizationResponsibleById(long responsibleId) {
+		return organizationResponsibleRepository.findById(responsibleId)
+				.orElseThrow(() -> new ItemNotFoundException("Responsible not found"));
+	}
+
 }

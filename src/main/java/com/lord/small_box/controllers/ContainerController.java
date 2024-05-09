@@ -80,7 +80,7 @@ public class ContainerController {
 	@GetMapping("/{id}")
 	ResponseEntity<ContainerDto> findContainerById(@PathVariable("id") Long id) {
 		log.info("Find container by id");
-		Container container = containerService.findById(id);
+		Container container = containerService.findContainerByIdWithResponsible(id);
 		ContainerDto containerDto = ContainerMapper.INSTANCE.toContainerDto(container);
 		return new ResponseEntity<ContainerDto>(containerDto, HttpStatus.OK);
 	}

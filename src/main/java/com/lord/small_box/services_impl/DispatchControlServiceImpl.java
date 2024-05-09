@@ -22,7 +22,6 @@ import com.lord.small_box.models.DispatchControl;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.WorkTemplate;
 import com.lord.small_box.repositories.DispatchControlRepository;
-import com.lord.small_box.repositories.WorkTemplateDestinationRepository;
 import com.lord.small_box.repositories.WorkTemplateRepository;
 import com.lord.small_box.services.DispatchControlService;
 import com.lord.small_box.services.OrganizationService;
@@ -40,9 +39,6 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 
 	@Autowired
 	private final WorkTemplateRepository workTemplateRepository;
-
-	@Autowired
-	private final WorkTemplateDestinationRepository workTemplateDestinationRepository;
 
 	private static final Logger log = LoggerFactory.getLogger(DispatchControlServiceImpl.class);
 
@@ -93,7 +89,7 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 		log.info("Find all distpatch controls by organization");
 		Organization org = organizationService.findById(organizationId);
 		Sort sort = Sort.by("date").descending();
-		return (List<DispatchControl>) dispatchControlRepository.findAllDistpachControlsByOrganization(org,sort);
+		return (List<DispatchControl>) dispatchControlRepository.findAllDistpachControlsByOrganization(org, sort);
 	}
 
 	@Override
@@ -136,7 +132,8 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 	@Override
 	public List<DispatchControl> findAllDispatchControlByOrgByExamplePagingAndSorting(Long organizationId,
 			String strExample, Integer pageNo, Integer pageSize, String sortBy) {
-		strExample = strExample.replace("\"", "").replace("example", "").replace(":", "").replace("{", "").replace("}", "");
+		strExample = strExample.replace("\"", "").replace("example", "").replace(":", "").replace("{", "").replace("}",
+				"");
 		log.info("Looking dispatchs by organizacion and example. Paging and sorting. Example: " + strExample);
 
 		StringMatcher match = StringMatcher.CONTAINING;
@@ -150,6 +147,7 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 		return responsePage.getContent();
 
 	}
+
 	private final String patternDateDash = "^(([0-9]{2})*(-){1}){2}([0-9]{4})";
 	private final String patternDateNoDash = "^(([0-9]{2})*){2}([0-9]{4})";
 	private final String patternType = "(MEMO)*(EXP)*(SUM)*(CORR EXP)*(CORR. EXP)*(CORR MEMO)*(COMP)*(MOD PRESUP)*(NOTA)*";
@@ -162,7 +160,6 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 		System.out.println("Example: " + example);
 		String patternToDependency = dispatchControlRepository.findAll().stream()
 				.map(e -> "(" + e.getToDependency() + ")*").distinct().collect(Collectors.joining(""));
-		
 
 		if (Pattern.matches(patternDateDash, example) || Pattern.matches(patternDateNoDash, example)) {
 			Calendar cal = Calendar.getInstance();
@@ -186,23 +183,22 @@ public class DispatchControlServiceImpl implements DispatchControlService {
 
 	}
 
-	private static DispatchControl mapToDispatchControl(String example) {
-		log.info("Mapping String example to DispatchControl");
-		Calendar cal = Calendar.getInstance();
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-
-		// cal.setTime(sdf.parse(example));
-		DispatchControl dispatchControl = DispatchControl.builder().description(example).build();
-		log.info("Map generated: " + example);
-		return dispatchControl;
-
-	}
+	/*
+	 * private static DispatchControl mapToDispatchControl(String example) {
+	 * log.info("Mapping String example to DispatchControl"); Calendar cal =
+	 * Calendar.getInstance(); SimpleDateFormat sdf = new
+	 * SimpleDateFormat("dd-MM-yyyy"); // cal.setTime(sdf.parse(example));
+	 * DispatchControl dispatchControl =
+	 * DispatchControl.builder().description(example).build();
+	 * log.info("Map generated: " + example); return dispatchControl;
+	 * 
+	 * }
+	 */
 
 	@Override
-	public List<DispatchControl> saveAllDispatchs(List<DispatchControl> dispatchControls,Long organizationId) {
+	public List<DispatchControl> saveAllDispatchs(List<DispatchControl> dispatchControls, Long organizationId) {
 		Organization org = organizationService.findById(organizationId);
-		List<DispatchControl> updatedDispatchs = dispatchControls.stream().map(m ->{
+		List<DispatchControl> updatedDispatchs = dispatchControls.stream().map(m -> {
 			m.setOrganization(org);
 			return m;
 		}).toList();

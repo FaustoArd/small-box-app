@@ -65,31 +65,7 @@ public class AppUserServiceImpl implements AppUserService,UserDetailsService {
 		return appUserRepository.findByUsername(username).isPresent();
 	}
 	
-	@Override
-	public boolean checkUsernameUpdated(String username,long userId) {
-		log.info("Checking existing username updated");
-		AppUser check = findById(userId);
-		long usernameFound =  countExistingUsernames(username);
-		if(check.getUsername().equalsIgnoreCase(username)) {
-			if(usernameFound>2l) {
-				return true;
-			}
-			
-		}else {
-			if(usernameFound>1l) {
-				return true;
-			}
-		}
-		
-		return false;
-		
-		
-	}
 	
-	private long countExistingUsernames(String username) {
-		return appUserRepository.findAll().stream().filter(user -> user.getUsername().equalsIgnoreCase(username)).count();
-	}
-
 	@Override
 	public List<AppUserDto> findAll() {
 		log.info("Find all users");
@@ -105,7 +81,7 @@ public class AppUserServiceImpl implements AppUserService,UserDetailsService {
 		return userDtos;
 	}
 	
-	private List<AppUserDto> mapUserToDtoWithAutorities(List<AppUser> users){
+	private static List<AppUserDto> mapUserToDtoWithAutorities(List<AppUser> users){
 		
 		List<AppUserDto> userDtos = users.stream().map(user -> {
 			AppUserDto userDto = AppUserMapper.INSTANCE.toUserDto(user);
