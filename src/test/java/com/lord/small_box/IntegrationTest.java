@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import org.hibernate.internal.util.compare.CalendarComparator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -682,13 +684,14 @@ public class IntegrationTest {
 
 	@Test
 	@Order(36)
-	void uploadPurchaseOrderWithSuperUserMiguel248() throws Exception {
+	void uploadPurchaseOrder365WithSuperUserMiguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "oc-365.pdf", "application/pdf",
 				new ClassPathResource("\\pdf-test\\oc-365.pdf").getContentAsByteArray());
 		mockMvc.perform(
 				multipart("http://localhost:8080/api/v1/smallbox/purchase-order/collect-purchase-order-pdf").file(file)
 						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.orderNumber", is(365)))
+				.andExpect(jsonPath("$.date").value("2024-02-19"))
 				.andExpect(jsonPath("$.purchaseOrderTotal", is(295600.00)))
 				.andExpect(jsonPath("$.items[0].code", is("2.1.1.00788.0013")))
 				.andExpect(jsonPath("$.items[0].quantity", is(15)))
@@ -704,5 +707,57 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.items[1].programaticCat", is("39.00.00")))
 				.andExpect(jsonPath("$.items[1].unitCost", is(5000.00000)))
 				.andExpect(jsonPath("$.items[1].totalEstimatedCost", is(40000.00)));
+	}
+	@Test
+	@Order(37)
+	void uploadPurchaseOrder340WithSuperUserMiguel248() throws Exception {
+		MockMultipartFile file = new MockMultipartFile("file", "oc-340.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-340.pdf").getContentAsByteArray());
+		mockMvc.perform(
+				multipart("http://localhost:8080/api/v1/smallbox/purchase-order/collect-purchase-order-pdf").file(file)
+						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.orderNumber", is(340)))
+				.andExpect(jsonPath("$.date").value("2024-02-16"))
+				.andExpect(jsonPath("$.purchaseOrderTotal", is(905700.00)))
+				.andExpect(jsonPath("$.items[0].code", is("2.1.1.00788.0091")))
+				.andExpect(jsonPath("$.items[0].quantity", is(350)))
+				.andExpect(jsonPath("$.items[0].measureUnit", is("UNIDAD")))
+				.andExpect(jsonPath("$.items[0].itemDetail").value(containsString("GALLETITAS")))
+				.andExpect(jsonPath("$.items[0].programaticCat", is("38.01.00")))
+				.andExpect(jsonPath("$.items[0].unitCost", is(1580.00000)))
+				.andExpect(jsonPath("$.items[0].totalEstimatedCost", is(553000.00)))
+				.andExpect(jsonPath("$.items[1].code", is("2.1.1.00439.0001")))
+				.andExpect(jsonPath("$.items[1].quantity", is(50)))
+				.andExpect(jsonPath("$.items[1].measureUnit", is("UNIDAD")))
+				.andExpect(jsonPath("$.items[1].itemDetail").value(containsString("ACEITE")))
+				.andExpect(jsonPath("$.items[1].programaticCat", is("38.01.00")))
+				.andExpect(jsonPath("$.items[1].unitCost", is(4500.00)))
+				.andExpect(jsonPath("$.items[1].totalEstimatedCost", is(225000.00)));
+	}
+	@Test
+	@Order(38)
+	void uploadSupply551WithUserMiguel248()throws Exception{
+		MockMultipartFile file = new MockMultipartFile("file", "sum-551.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-551.pdf").getContentAsByteArray());
+		mockMvc.perform(
+				multipart("http://localhost:8080/api/v1/smallbox/supply/collect-supply-pdf").file(file)
+						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.supplyNumber", is(551)))
+				.andExpect(jsonPath("$.date").value("2024-02-06"))
+				.andExpect(jsonPath("$.estimatedTotalCost", is(43697001.00)))
+				.andExpect(jsonPath("$.supplyItems[0].code", is("5.1.4.03451.0001")))
+				.andExpect(jsonPath("$.supplyItems[0].programaticCat", is("01.10.00")))
+				.andExpect(jsonPath("$.supplyItems[0].quantity", is(5500)))
+				.andExpect(jsonPath("$.supplyItems[0].measureUnit", is("KILOGRAMO")))
+				.andExpect(jsonPath("$.supplyItems[0].itemDetail").value(containsString("AZUCAR")))
+				.andExpect(jsonPath("$.supplyItems[0].unitCost", is(1280.01000)))
+				.andExpect(jsonPath("$.supplyItems[0].totalEstimatedCost", is( 7040055.00)))
+				.andExpect(jsonPath("$.supplyItems[1].code", is("5.1.4.03503.0003")))
+				.andExpect(jsonPath("$.supplyItems[1].programaticCat", is("01.10.00")))
+				.andExpect(jsonPath("$.supplyItems[1].quantity", is(5000)))
+				.andExpect(jsonPath("$.supplyItems[1].measureUnit", is("CADA-UNO")))
+				.andExpect(jsonPath("$.supplyItems[1].itemDetail").value(containsString("FLAN")))
+				.andExpect(jsonPath("$.supplyItems[1].unitCost", is( 600.00)))
+				.andExpect(jsonPath("$.supplyItems[1].totalEstimatedCost", is(3000000.00)));
 	}
 }
