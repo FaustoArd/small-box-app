@@ -80,7 +80,7 @@ public class IntegrationTest {
 
 	@Autowired
 	private AppUserRepository appUserRepository;
-	
+
 	@Autowired
 	private DepositRepository depositRepository;
 
@@ -713,6 +713,7 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.items[1].unitCost", is(5000.00000)))
 				.andExpect(jsonPath("$.items[1].totalEstimatedCost", is(40000.00)));
 	}
+
 	@Test
 	@Order(37)
 	void uploadPurchaseOrder340WithSuperUserMiguel248() throws Exception {
@@ -739,14 +740,14 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.items[1].unitCost", is(4500.00)))
 				.andExpect(jsonPath("$.items[1].totalEstimatedCost", is(225000.00)));
 	}
+
 	@Test
 	@Order(38)
-	void uploadSupply551WithUserMiguel248()throws Exception{
+	void uploadSupply551WithUserMiguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "sum-551.pdf", "application/pdf",
 				new ClassPathResource("\\pdf-test\\sum-551.pdf").getContentAsByteArray());
-		mockMvc.perform(
-				multipart("http://localhost:8080/api/v1/smallbox/supply/collect-supply-pdf").file(file)
-						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+		mockMvc.perform(multipart("http://localhost:8080/api/v1/smallbox/supply/collect-supply-pdf").file(file)
+				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.supplyNumber", is(551)))
 				.andExpect(jsonPath("$.date").value("2024-02-06"))
 				.andExpect(jsonPath("$.estimatedTotalCost", is(43697001.00)))
@@ -756,23 +757,23 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.supplyItems[0].measureUnit", is("KILOGRAMO")))
 				.andExpect(jsonPath("$.supplyItems[0].itemDetail").value(containsString("AZUCAR")))
 				.andExpect(jsonPath("$.supplyItems[0].unitCost", is(1280.01000)))
-				.andExpect(jsonPath("$.supplyItems[0].totalEstimatedCost", is( 7040055.00)))
+				.andExpect(jsonPath("$.supplyItems[0].totalEstimatedCost", is(7040055.00)))
 				.andExpect(jsonPath("$.supplyItems[1].code", is("5.1.4.03503.0003")))
 				.andExpect(jsonPath("$.supplyItems[1].programaticCat", is("01.10.00")))
 				.andExpect(jsonPath("$.supplyItems[1].quantity", is(5000)))
 				.andExpect(jsonPath("$.supplyItems[1].measureUnit", is("CADA-UNO")))
 				.andExpect(jsonPath("$.supplyItems[1].itemDetail").value(containsString("FLAN")))
-				.andExpect(jsonPath("$.supplyItems[1].unitCost", is( 600.00)))
+				.andExpect(jsonPath("$.supplyItems[1].unitCost", is(600.00)))
 				.andExpect(jsonPath("$.supplyItems[1].totalEstimatedCost", is(3000000.00)));
 	}
+
 	@Test
 	@Order(39)
-	void uploadSupply1043_WithUserMiguel248()throws Exception{
+	void uploadSupply1043_WithUserMiguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "sum-1043.pdf", "application/pdf",
 				new ClassPathResource("\\pdf-test\\sum-1043.pdf").getContentAsByteArray());
-		mockMvc.perform(
-				multipart("http://localhost:8080/api/v1/smallbox/supply/collect-supply-pdf").file(file)
-						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+		mockMvc.perform(multipart("http://localhost:8080/api/v1/smallbox/supply/collect-supply-pdf").file(file)
+				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.supplyNumber", is(1043)))
 				.andExpect(jsonPath("$.date").value("2023-03-08"))
 				.andExpect(jsonPath("$.estimatedTotalCost", is(5500000.00)))
@@ -782,57 +783,138 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.supplyItems[0].measureUnit", is("UNIDAD")))
 				.andExpect(jsonPath("$.supplyItems[0].itemDetail").value(containsString("BOLSON DE VEDURAS")))
 				.andExpect(jsonPath("$.supplyItems[0].unitCost", is(1100.00)))
-				.andExpect(jsonPath("$.supplyItems[0].totalEstimatedCost", is( 5500000.00)));
-			
+				.andExpect(jsonPath("$.supplyItems[0].totalEstimatedCost", is(5500000.00)));
+
 	}
-	
+
 	@Test
 	@Order(40)
-	void createDepositAvellaneda_WithUserMiguel248()throws Exception{
-		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/create-deposit")
-				.content("{\"name\":\"AVELLANEDA\",\"streetName\":\"Avellaneda\",\"houseNumber\":\"5432\",\"organizationId\":3}")
+	void createDepositAvellaneda_WithUserMiguel248() throws Exception {
+		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/create-deposit").content(
+				"{\"name\":\"AVELLANEDA\",\"streetName\":\"Avellaneda\",\"houseNumber\":\"5432\",\"organizationId\":3}")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
-		.andExpect(jsonPath("$").value("AVELLANEDA"));
+				.andExpect(jsonPath("$").value("AVELLANEDA"));
 	}
-	
+
 	@Test
 	@Order(41)
-	void checkCreatedDepositAvellanedaValues()throws Exception{
-		Deposit deposit = depositRepository.findById(1L).orElseThrow(()-> new ItemNotFoundException("Deposit not found"));
+	void checkCreatedDepositAvellanedaValues() throws Exception {
+		Deposit deposit = depositRepository.findById(1L)
+				.orElseThrow(() -> new ItemNotFoundException("Deposit not found"));
 		assertThat(deposit.getId()).isGreaterThan(0l);
 		assertThat(deposit.getName()).isEqualTo("AVELLANEDA");
 		assertThat(deposit.getStreetName()).isEqualTo("Avellaneda");
 		assertThat(deposit.getHouseNumber()).isEqualTo("5432");
 		assertThat(deposit.getOrganization().getId()).isEqualTo(3L);
 	}
-	
+
 	@Test
 	@Order(42)
-	void setCurrentDepositToUserMiguel248_OrganizationSecDesSocial()throws Exception{
-		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/deposit-control/set-current-deposit")
-				.content("1")
+	void setCurrentDepositToUserMiguel248_OrganizationSecDesSocial() throws Exception {
+		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/deposit-control/set-current-deposit").content("1")
 				.param("userId", "3").param("organizationId", "3")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
-		.andExpect(jsonPath("$.id", is(1)))
-		.andExpect(jsonPath("$.name", is("AVELLANEDA")));
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200)).andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.name", is("AVELLANEDA")));
 	}
-	
+
 	@Test
 	@Order(43)
-	void getCurrentUserOrganization_DepositId()throws Exception{
-		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-control/get-current-deposit")
-				.param("userId", "3").param("organizationId", "3")
-				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
-		.andExpect(jsonPath("$.id", is(1)))
-		.andExpect(jsonPath("$.name",is("AVELLANEDA")));
+	void getCurrentUserMiguel248Organization_DepositId() throws Exception {
+		mockMvc.perform(
+				get("http://localhost:8080/api/v1/smallbox/deposit-control/get-current-deposit").param("userId", "3")
+						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200)).andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.name", is("AVELLANEDA")));
 	}
-	
+
 	@Test
 	@Order(44)
-	void loadPurchaseOrderToDeposit()throws Exception{
-		
-		}
+	void loadPurchaseOrder365ToDeposit() throws Exception {
+		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/purchase-order/load-order-to-deposit").content("1")
+				.param("depositId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+				.andExpect(jsonPath("$.[0].depositItemCode", is("2.1.1.00788.0013")))
+				.andExpect(jsonPath("$.[0].depositItemDescription").value(containsString("GALLETITAS TIPO VAINILLA")))
+				.andExpect(jsonPath("$.[0].depositItemQuantity", is(15)))
+				.andExpect(jsonPath("$.[0].depositItemMeasureUnit", is("PAQUETE")))
+				.andExpect(jsonPath("$.[0].depositItemStatus", is("NUEVO")))
+				.andExpect(jsonPath("$.[1].depositItemCode", is("2.1.1.00705.0035")))
+				.andExpect(
+						jsonPath("$.[1].depositItemDescription").value(containsString("LECHE ESTADO EN POLVO ENTERA")))
+				.andExpect(jsonPath("$.[1].depositItemQuantity", is(8)))
+				.andExpect(jsonPath("$.[1].depositItemMeasureUnit", is("PAQUETE")))
+				.andExpect(jsonPath("$.[1].depositItemStatus", is("NUEVO")))
+				.andExpect(jsonPath("$.[2].depositItemCode", is("2.1.1.00592.0001")))
+				.andExpect(jsonPath("$.[2].depositItemDescription").value(containsString("LENTEJAS ESTADO NATURA")))
+				.andExpect(jsonPath("$.[2].depositItemQuantity", is(15)))
+				.andExpect(jsonPath("$.[2].depositItemMeasureUnit", is("PAQUETE")))
+				.andExpect(jsonPath("$.[2].depositItemStatus", is("NUEVO")))
+				.andExpect(jsonPath("$.[3].depositItemCode", is("2.1.1.00591.0002")))
+				.andExpect(jsonPath("$.[3].depositItemDescription").value(containsString("POROTOS TIPO ALUBIA ESTADO")))
+				.andExpect(jsonPath("$.[3].depositItemQuantity", is(20)))
+				.andExpect(jsonPath("$.[3].depositItemMeasureUnit", is("PAQUETE")))
+				.andExpect(jsonPath("$.[3].depositItemStatus", is("NUEVO")))
+				.andExpect(jsonPath("$.[4].depositItemCode", is("2.1.1.00705.0036")))
+				.andExpect(jsonPath("$.[4].depositItemDescription").value(containsString("LECHE ESTADO POLVO TIPO")))
+				.andExpect(jsonPath("$.[4].depositItemQuantity", is(10)))
+				.andExpect(jsonPath("$.[4].depositItemMeasureUnit", is("CAJA")))
+				.andExpect(jsonPath("$.[4].depositItemStatus", is("NUEVO")))
+				.andExpect(jsonPath("$.[5].depositItemCode", is("2.1.1.00511.0008")))
+				.andExpect(jsonPath("$.[5].depositItemDescription").value(containsString("TE PRESENTACION CAJA")))
+				.andExpect(jsonPath("$.[5].depositItemQuantity", is(10)))
+				.andExpect(jsonPath("$.[5].depositItemMeasureUnit", is("CAJA")))
+				.andExpect(jsonPath("$.[5].depositItemStatus", is("NUEVO")))
+				.andExpect(jsonPath("$.[6].depositItemCode", is("2.1.1.00705.0012")))
+				.andExpect(
+						jsonPath("$.[6].depositItemDescription").value(containsString("LECHE ESTADO EN POLVO ENTERA")))
+				.andExpect(jsonPath("$.[6].depositItemQuantity", is(8)))
+				.andExpect(jsonPath("$.[6].depositItemMeasureUnit", is("CADA-UNO")))
+				.andExpect(jsonPath("$.[6].depositItemStatus", is("NUEVO")))
+				.andExpect(jsonPath("$.[7].depositItemCode", is("2.1.1.02113.0002")))
+				.andExpect(jsonPath("$.[7].depositItemDescription").value(containsString("DULCE TIPO DE MEMBRILLO")))
+				.andExpect(jsonPath("$.[7].depositItemQuantity", is(1)))
+				.andExpect(jsonPath("$.[7].depositItemMeasureUnit", is("CADA-UNO")))
+				.andExpect(jsonPath("$.[7].depositItemStatus", is("NUEVO")));
+
+	}
+
+	@Test
+	@Order(45)
+	void loadPurchaseOrder454WithUserMiguel248() throws Exception {
+		MockMultipartFile file = new MockMultipartFile("file", "oc-454.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-454.pdf").getContentAsByteArray());
+		mockMvc.perform(
+				multipart("http://localhost:8080/api/v1/smallbox/purchase-order/collect-purchase-order-pdf").file(file)
+						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.orderNumber", is(454)))
+				.andExpect(jsonPath("$.date").value("2024-02-23"))
+				.andExpect(jsonPath("$.items[0].totalEstimatedCost", is(414558.60)))
+				.andExpect(jsonPath("$.items[1].totalEstimatedCost", is(473932.80)));
+	}
+
+	@Test
+	@Order(46)
+	void loadPurchaseOrder454ToDepositControl() throws Exception {
+		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/purchase-order/load-order-to-deposit").content("3")
+				.param("depositId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+				.andExpect(jsonPath("$.[0].depositItemCode", is("2.1.1.03311.0003")))
+				.andExpect(jsonPath("$.[0].depositItemDescription").value(containsString("JUGO TIPO JUGO DE FRUTA")))
+				.andExpect(jsonPath("$.[0].depositItemQuantity", is(60)))
+				.andExpect(jsonPath("$.[0].depositItemMeasureUnit", is("CAJA")))
+				.andExpect(jsonPath("$.[0].depositItemStatus", is("NUEVO")))
+				.andExpect(jsonPath("$.[1].depositItemCode", is("2.1.1.00704.0008")))
+				.andExpect(jsonPath("$.[1].depositItemDescription").value(containsString("ALFAJOR RELLENO DULCE DE LECHE")))
+				.andExpect(jsonPath("$.[1].depositItemQuantity", is(60)))
+				.andExpect(jsonPath("$.[1].depositItemMeasureUnit", is("CAJA")))
+				.andExpect(jsonPath("$.[1].depositItemStatus", is("NUEVO")))
+				.andExpect(jsonPath("$.[8].depositItemCode", is("2.1.1.02113.0002")))
+				.andExpect(jsonPath("$.[8].depositItemDescription").value(containsString("DULCE TIPO DE MEMBRILLO")))
+				.andExpect(jsonPath("$.[8].depositItemQuantity", is(4)))
+				.andExpect(jsonPath("$.[8].depositItemMeasureUnit", is("CADA-UNO")))
+				.andExpect(jsonPath("$.[8].depositItemStatus", is("ACTUALIZADO")));
+	}
 }

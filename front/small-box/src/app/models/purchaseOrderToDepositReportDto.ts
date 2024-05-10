@@ -1,7 +1,7 @@
 export class PurchaseOrderToDepositReportDto {
     
     depositItemCode!:string;
-    depositItemName!: string;
+    depositItemDescription!: string;
     depositItemQuantity!: number;
     depositItemMeasureUnit!: string;
     depositItemStatus!: string;
