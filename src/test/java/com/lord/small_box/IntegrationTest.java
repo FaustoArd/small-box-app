@@ -360,8 +360,7 @@ public class IntegrationTest {
 	@Test
 	@Order(14)
 	void createContainerWithUserPedro() throws Exception {
-		Calendar now = Calendar.getInstance();
-		mvcResult = this.mockMvc
+	mvcResult = this.mockMvc
 				.perform(post("http://localhost:8080/api/v1/smallbox/containers/")
 						.content("{\"smallBoxType\":\"CHICA\",\"organizationId\":1}")
 						.header("Authorization", "Bearer " + userPedrojwtToken).contentType(MediaType.APPLICATION_JSON))
@@ -917,4 +916,41 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.[8].depositItemMeasureUnit", is("CADA-UNO")))
 				.andExpect(jsonPath("$.[8].depositItemStatus", is("ACTUALIZADO")));
 	}
+	
+	@Test
+	@Order(47)
+	void FindSecDesSocialPurchaseOrderList()throws Exception{
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-all-orders-by-org")
+				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+		.andExpect(jsonPath("$.[0].id", is(notNullValue())))
+		.andExpect(jsonPath("$.[0].orderNumber", is(454)))
+		.andExpect(jsonPath("$.[0].date", is("2024-02-23")))
+		.andExpect(jsonPath("$.[0].dependency", is("Coordinación de Protección de Niñez")))
+		.andExpect(jsonPath("$.[0].purchaseOrderTotal", is( 1351918.75)))
+		.andExpect(jsonPath("$.[0].loadedToDeposit", is(true)))
+		.andExpect(jsonPath("$.[1].id", is(notNullValue())))
+		.andExpect(jsonPath("$.[1].orderNumber", is(365)))
+		.andExpect(jsonPath("$.[1].date", is("2024-02-19")))
+		.andExpect(jsonPath("$.[1].dependency", is("Dirección de Reinserción Social")))
+		.andExpect(jsonPath("$.[1].purchaseOrderTotal", is( 295600.00)))
+		.andExpect(jsonPath("$.[1].loadedToDeposit", is(true)))
+		.andExpect(jsonPath("$.[2].id", is(notNullValue())))
+		.andExpect(jsonPath("$.[2].orderNumber", is(340)))
+		.andExpect(jsonPath("$.[2].date", is("2024-02-16")))
+		.andExpect(jsonPath("$.[2].dependency", is("Coordinación de Promoción de Niñez")))
+		.andExpect(jsonPath("$.[2].purchaseOrderTotal", is( 905700.00)))
+		.andExpect(jsonPath("$.[2].loadedToDeposit", is(false)));
+	}
+	
+	@Test
+	@Order(48)
+	void findPurchaseOrder340Items()throws Exception{
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-order-items")
+				.param("purchaseOrderId", "2").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+		.andExpect(jsonPath("$.[0].id", is(notNullValue())))
+		.andExpect(jsonPath("$.[0].code", is("2.1.1.00788.0091")));
+	}
 }
+
