@@ -7,6 +7,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -950,7 +951,65 @@ public class IntegrationTest {
 				.param("purchaseOrderId", "2").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
 		.andExpect(jsonPath("$.[0].id", is(notNullValue())))
-		.andExpect(jsonPath("$.[0].code", is("2.1.1.00788.0091")));
+		.andExpect(jsonPath("$.[0].code", is("2.1.1.00788.0091")))
+		.andExpect(jsonPath("$.[0].quantity", is(350)))
+		.andExpect(jsonPath("$.[1].id", is(notNullValue())))
+		.andExpect(jsonPath("$.[1].code", is("2.1.1.00439.0001")))
+		.andExpect(jsonPath("$.[1].quantity", is(50)));
+	}
+	@Test
+	@Order(49)
+	void findSupply551Items()throws Exception{
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply//find-supply-items")
+				.param("supplyId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+		.andExpect(jsonPath("$.[0].id", is(notNullValue())))
+		.andExpect(jsonPath("$.[0].code", is("5.1.4.03451.0001")))
+		.andExpect(jsonPath("$.[0].quantity", is(5500)))
+		.andExpect(jsonPath("$.[1].id", is(notNullValue())))
+		.andExpect(jsonPath("$.[1].code", is("5.1.4.03503.0003")))
+		.andExpect(jsonPath("$.[1].quantity", is(5000)));
+	}
+	
+	@Test
+	@Order(50)
+	void deletePurchaseOrder340()throws Exception{
+		mockMvc.perform(delete("http://localhost:8080/api/v1/smallbox/purchase-order/delete-purchase-order/{orderId}",2)
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+		.andExpect(jsonPath("$", is(340)));
+	}
+	@Test
+	@Order(51)
+	void whenTryToFindPurchaseOrder340Items_mustReturn417ExpectationFailed()throws Exception{
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-order-items")
+				.param("purchaseOrderId", "2").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(417));
+		
+	}
+	
+	@Test
+	@Order(52)
+	void deleteSupply551()throws Exception{
+		mockMvc.perform(delete("http://localhost:8080/api/v1/smallbox/supply/delete-supply/{supplyId}",1)
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+		.andExpect(jsonPath("$", is(551)));
+	}
+	
+	@Test
+	@Order(53)
+	void whenTryToFindSupply551Items_mustReturn417ExpectationFailed()throws Exception{
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply/find-supply-items")
+				.param("supplyId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(417));
+	
+	}
+	
+	@Test
+	@Order(54)
+	void ImportExcelItemsToDeposit()throws Exception{
+		
 	}
 }
 
