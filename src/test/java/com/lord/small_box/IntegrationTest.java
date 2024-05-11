@@ -47,12 +47,16 @@ import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
 import com.lord.small_box.models.Deposit;
+import com.lord.small_box.models.ExcelItem;
+import com.lord.small_box.models.ExcelItemContainer;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.repositories.AppUserRepository;
 import com.lord.small_box.repositories.AuthorityRepository;
 import com.lord.small_box.repositories.DepositRepository;
+import com.lord.small_box.repositories.ExcelItemContainerRepository;
+import com.lord.small_box.repositories.ExcelItemRepository;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
@@ -84,6 +88,12 @@ public class IntegrationTest {
 
 	@Autowired
 	private DepositRepository depositRepository;
+	
+	@Autowired
+	private ExcelItemRepository excelItemRepository;
+	
+	@Autowired
+	private ExcelItemContainerRepository excelItemContainerRepository;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -897,7 +907,7 @@ public class IntegrationTest {
 
 	@Test
 	@Order(46)
-	void loadPurchaseOrder454ToDepositControl() throws Exception {
+	void loadPurchaseOrder454ToDepositControl_Miguel248() throws Exception {
 		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/purchase-order/load-order-to-deposit").content("3")
 				.param("depositId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -920,7 +930,7 @@ public class IntegrationTest {
 	
 	@Test
 	@Order(47)
-	void FindSecDesSocialPurchaseOrderList()throws Exception{
+	void FindSecDesSocialPurchaseOrderList_Miguel248()throws Exception{
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-all-orders-by-org")
 				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -946,7 +956,7 @@ public class IntegrationTest {
 	
 	@Test
 	@Order(48)
-	void findPurchaseOrder340Items()throws Exception{
+	void findPurchaseOrder340Items_Miguel248()throws Exception{
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-order-items")
 				.param("purchaseOrderId", "2").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -959,7 +969,7 @@ public class IntegrationTest {
 	}
 	@Test
 	@Order(49)
-	void findSupply551Items()throws Exception{
+	void findSupply551Items_Miguel248()throws Exception{
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply//find-supply-items")
 				.param("supplyId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -973,7 +983,7 @@ public class IntegrationTest {
 	
 	@Test
 	@Order(50)
-	void deletePurchaseOrder340()throws Exception{
+	void deletePurchaseOrder340_Miguel248()throws Exception{
 		mockMvc.perform(delete("http://localhost:8080/api/v1/smallbox/purchase-order/delete-purchase-order/{orderId}",2)
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -981,7 +991,7 @@ public class IntegrationTest {
 	}
 	@Test
 	@Order(51)
-	void whenTryToFindPurchaseOrder340Items_mustReturn417ExpectationFailed()throws Exception{
+	void whenTryToFindPurchaseOrder340Items_mustReturn417ExpectationFailed_Miguel248()throws Exception{
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-order-items")
 				.param("purchaseOrderId", "2").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(417));
@@ -990,7 +1000,7 @@ public class IntegrationTest {
 	
 	@Test
 	@Order(52)
-	void deleteSupply551()throws Exception{
+	void deleteSupply551_Miguel248()throws Exception{
 		mockMvc.perform(delete("http://localhost:8080/api/v1/smallbox/supply/delete-supply/{supplyId}",1)
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -999,7 +1009,7 @@ public class IntegrationTest {
 	
 	@Test
 	@Order(53)
-	void whenTryToFindSupply551Items_mustReturn417ExpectationFailed()throws Exception{
+	void whenTryToFindSupply551Items_mustReturn417ExpectationFailed_Miguel248()throws Exception{
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply/find-supply-items")
 				.param("supplyId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(417));
@@ -1008,8 +1018,44 @@ public class IntegrationTest {
 	
 	@Test
 	@Order(54)
-	void ImportExcelItemsToDeposit()throws Exception{
-		
+	void loadPurchaseOrder534_Miguel248()throws Exception{
+		MockMultipartFile file = new MockMultipartFile("file", "oc-534.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-534.pdf").getContentAsByteArray());
+		mockMvc.perform(
+				multipart("http://localhost:8080/api/v1/smallbox/purchase-order/collect-purchase-order-pdf").file(file)
+						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.orderNumber", is(534)))
+				.andExpect(jsonPath("$.date").value("2024-02-29"))
+				.andExpect(jsonPath("$.items[0].totalEstimatedCost", is(427500.00)))
+				.andExpect(jsonPath("$.items[1].totalEstimatedCost", is(511800.00)))
+				.andExpect(jsonPath("$.purchaseOrderTotal", is(939300.00)));
+	}
+	
+	
+	@Test
+	@Order(55)
+	void ImportExcelItemsToDeposit_Miguel248()throws Exception{
+		MockMultipartFile file = new MockMultipartFile("file", "control_excel3-v3-test.xls", "application/xls",
+				new ClassPathResource("\\pdf-test\\control_excel3-v3-test.xls").getContentAsByteArray());
+		mockMvc.perform(
+				multipart("http://localhost:8080/api/v1/smallbox/deposit-control/excel-order-comparator").file(file)
+						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.[0].excelItemDto.itemDescription").value(containsString("PAÑALES BEBE TALLE XG POR 44 UNI")))
+				.andExpect(jsonPath("$.[0].excelItemDto.itemMeasureUnit", is("PAQUETE")))
+				.andExpect(jsonPath("$.[0].excelItemDto.itemQuantity", is(9285)))
+				.andExpect(jsonPath("$.[0].purchaseOrderItemCandidateDtos[0].itemDetail", is("No encontrado")))
+				.andExpect(jsonPath("$.[1].excelItemDto.itemDescription").value(containsString("PAÑALES BEBE TALLE XG POR 28 UNI")))
+				.andExpect(jsonPath("$.[1].excelItemDto.itemMeasureUnit", is("PAQUETE")))
+				.andExpect(jsonPath("$.[1].excelItemDto.itemQuantity", is(16)))
+				.andExpect(jsonPath("$.[70].excelItemDto.itemDescription").value(containsString("ZAPATILLA TALLE 45")))
+				.andExpect(jsonPath("$.[70].excelItemDto.itemMeasureUnit", is("UNIDAD")))
+				.andExpect(jsonPath("$.[70].excelItemDto.itemQuantity", is(30)))
+				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[0].code",is("2.2.2.00828.0102")))
+				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[0].itemDetail").value(containsString("ZAPATILLAS USO UNISEX")))
+				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[1].code",is("2.2.2.00828.0101")))
+				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[1].itemDetail").value(containsString("ZAPATILLAS USO UNISEX")));
+	
 	}
 }
 
