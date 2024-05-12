@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ import { PurchaseOrderItemCandidateDto } from 'src/app/models/purchaseOrderItemC
   templateUrl: './deposit-comparator.component.html',
   styleUrls: ['./deposit-comparator.component.css']
 })
-export class DepositComparatorComponent {
+export class DepositComparatorComponent implements OnInit {
 
   constructor(private dialogService: DialogService,
     private fileUploadService: FileUploadService, private snackBar: SnackBarService
@@ -29,6 +29,10 @@ export class DepositComparatorComponent {
     private confirmDialogService: ConfirmDialogService, private formBuilder: FormBuilder
     , private router: Router
   ) { }
+
+ngOnInit(): void {
+ 
+}
 
   file!: File;
   fileDetails!: FileDetails;
@@ -69,7 +73,7 @@ export class DepositComparatorComponent {
         this.selectedExcelItemDtos[index].itemQuantity =this.selectedExcelItemDtos[index].itemQuantity + Number(excelItemQuantity);
       }else{
         this.selectedExcelItemDtos.push(
-          new ExcelItemDto(itemPO.excelItemDtoId,itemPO.orderId,itemPO.code,Number(excelItemQuantity),itemPO.measureUnit,itemPO.itemDetail));
+          new ExcelItemDto(itemPO.excelItemDtoId,itemPO.orderItemId,itemPO.code,Number(excelItemQuantity),itemPO.measureUnit,itemPO.itemDetail));
       }
       this.depositComparators.map(m => m).map((item, index) => {
         if (item.excelItemDto.excelItemId == itemPO.excelItemDtoId) {
@@ -105,7 +109,14 @@ export class DepositComparatorComponent {
 
   onCloseDepositControlistTemplate() {
     this.depositControlListMatDialogRef.close();
+    this.reloadPage();
   }
+async reloadPage(){
+  const currentUrl = this.router.url;
+  await this.router.navigate(['home']);
+  await this.router.navigate([currentUrl])
+}
+
   @ViewChild('depositControlTemplate') depositControlTemplateTemplateRef !: TemplateRef<any>
   private depositControlListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogPurchaseOrderItemsList() {

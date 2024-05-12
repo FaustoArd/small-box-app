@@ -5,8 +5,22 @@ body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
 #orderListTemplate{
-    background: linear-gradient(245.59deg, rgb(70, 54, 194)30%, rgb(146, 129, 223) 50%, #6247c7 79%);
+   background: linear-gradient(245.59deg, rgb(70, 54, 194)30%, rgb(146, 129, 223) 50%, #6247c7 79%);
 }
+#purchaseOrders{
+    height: 40rem;
+    text-align: center;
+    border: 1px solid black;
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+   
+}
+#purchaseOrdersTable{
+    width: 64.7rem;
+}
+
+.float { float:left; width:100px; height:100px }
+
+
 jumbotron{
     background-color: aliceblue;
 }
@@ -28,12 +42,7 @@ button:hover{
     background: linear-gradient(245.59deg, rgb(138, 42, 122)33.33%, rgb(170, 43, 187) 33.33%, #954dcd 33.33%); 
    color:rgb(230, 229, 221)
 }
-#table-div{
-    height: 42rem;
-   
-   
-   
-}
+
 
 h1{
     font-size: 1rem;
@@ -80,9 +89,12 @@ p{
  color: #1b4f4f;
 }
 th{
+    
+    border: 1px solid black;
     font-size: 0.6rem;
 }
 td{
+    border: 1px solid rgb(129, 81, 220);
     font-size: 0.9rem;
     font-family: 'Quattrocento', serif;
     font-weight: bold;
@@ -144,4 +156,17 @@ input{
 }
 .mat-toolbar{
     background: linear-gradient(245.59deg, rgb(121, 13, 103)30%, rgb(200, 27, 165) 50%, #751f66 79%) !important;
+}
+#selectedDeposit{
+    font-family: "Fira Code", monospace;
+    border: 2px solid rgb(41, 18, 219);
+    color: #6565c7;
+    
+    padding: 3px;
+}
+#factory_icon{
+  
+    width: 2.5rem;
+    height: 2.0rem;
+    margin-bottom: 0.5rem;
 }

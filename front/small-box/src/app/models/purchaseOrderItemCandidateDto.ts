@@ -1,5 +1,5 @@
 export class PurchaseOrderItemCandidateDto{
-    orderId!:number;
+    orderItemId!:number;
     excelItemDtoId!:number;
     code!:string;
     programaticCategory!:string;

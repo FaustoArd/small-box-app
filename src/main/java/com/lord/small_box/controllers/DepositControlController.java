@@ -25,7 +25,11 @@ import com.lord.small_box.dtos.DepositDto;
 import com.lord.small_box.dtos.DepositItemComparatorDto;
 import com.lord.small_box.dtos.DepositResponseDto;
 import com.lord.small_box.dtos.ExcelItemDto;
+import com.lord.small_box.models.ExcelItemContainer;
+import com.lord.small_box.models.Organization;
 import com.lord.small_box.services.DepositControlService;
+import com.lord.small_box.services.ExcelItemService;
+import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.utils.ExcelToListUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -40,6 +44,12 @@ public class DepositControlController {
 	
 	@Autowired
 	private final ExcelToListUtils excelToListUtils;
+	
+	@Autowired
+	private final ExcelItemService excelItemService;
+	
+	@Autowired
+	private final OrganizationService organizationService;
 	
 	private static final Gson gson = new Gson();
 	
@@ -97,13 +107,7 @@ public class DepositControlController {
 		int result = depositControlService.getTotalBigBagQuantityAvailable(bigBagId, depositId);
 		return ResponseEntity.ok(result);
 	}
-	@PostMapping(path="/save-excel-items-to-deposit")
-	ResponseEntity<List<DepositControlDto>> saveExcelItemsToDeposit(@RequestParam("organizationId")long organizationId
-			,@RequestParam("depositId")long depositId,@RequestBody List<ExcelItemDto> excelItemDtos){
-		List<DepositControlDto> depositControlDtos = depositControlService
-				.saveExcelItemsToDepositControls(organizationId, depositId, excelItemDtos);
-		return new ResponseEntity<List<DepositControlDto>>(depositControlDtos,HttpStatus.CREATED);
-	}
+	
 	@DeleteMapping(path="/delete-deposit-control/{depositControlId}")
 	ResponseEntity<String> deleteDepositControlById(@PathVariable("depositControlId")long depositControlId){
 		String deletedControlCode = depositControlService.deleteDepositControlById(depositControlId);
@@ -125,13 +129,21 @@ public class DepositControlController {
 	@PostMapping(path="/excel-order-comparator",consumes =MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<List<DepositItemComparatorDto>> generateExcelToOrderComparator(@RequestPart("file")MultipartFile file,
 			@RequestParam("organizationId")long organizationId) throws Exception{
-		List<ExcelItemDto> excelItems = excelToListUtils.excelDataToDeposit(file,organizationId);
-		List<DepositItemComparatorDto> comparatorsDto = depositControlService.getExcelToPuchaseOrderComparator(excelItems, organizationId);
+		List<ExcelItemDto> excelItemDtos = excelToListUtils.excelDataToDeposit(file);
+		Organization org = organizationService.findById(organizationId);
+		ExcelItemContainer excelItemContainer = excelItemService.saveExcelItemContainer(org);
+		List<ExcelItemDto> savedExcelItemDtos = excelItemService.saveExcelItems(excelItemDtos, excelItemContainer);
+		List<DepositItemComparatorDto> comparatorsDto = depositControlService.getExcelToPuchaseOrderComparator(savedExcelItemDtos, organizationId);
 		return new ResponseEntity<List<DepositItemComparatorDto>>(comparatorsDto,HttpStatus.CREATED);
 	}
 	
-	
-	
+	@PostMapping(path="/save-excel-items-to-deposit")
+	ResponseEntity<List<DepositControlDto>> saveExcelItemsToDeposit(@RequestParam("organizationId")long organizationId
+			,@RequestParam("depositId")long depositId,@RequestBody List<ExcelItemDto> excelItemDtos){
+		List<DepositControlDto> depositControlDtos = depositControlService
+				.saveExcelItemsToDepositControls(organizationId, depositId, excelItemDtos);
+		return new ResponseEntity<List<DepositControlDto>>(depositControlDtos,HttpStatus.CREATED);
+	}
 	
 	
 }

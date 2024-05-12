@@ -36,6 +36,9 @@ export class DepositHomeComponent implements OnInit {
   selectedDepositBol: boolean = false;
   selectedDepositStr: string = "";
   disableSelect:boolean=true;
+  totalPurchaseOrders!:number;
+ 
+
 
   constructor(private dialogService: DialogService,
     private fileUploadService: FileUploadService, private snackBar: SnackBarService
@@ -77,12 +80,12 @@ export class DepositHomeComponent implements OnInit {
     });
   }
 
-
-
+  onClosePurchaseOrderTableTemplate(): void {
+    this.purchaseOrderTableMatDialogRef.close();
+  }
   private purchaseOrderTableMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('purchaseOrderTableTemplate') purchaseOrderTableTemplate !: TemplateRef<any>
-
-  openPurchaseOrderTableTemplate(purchaseOrderItems: PurchaseOrderItemDto[]): void {
+   openPurchaseOrderTableTemplate(purchaseOrderItems: PurchaseOrderItemDto[]): void {
     this.purchaseOrderItemDtos = purchaseOrderItems;
     const template = this.purchaseOrderTableTemplate;
     this.purchaseOrderTableMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
@@ -90,21 +93,21 @@ export class DepositHomeComponent implements OnInit {
     });
     this.purchaseOrderTableMatDialogRef.afterClosed().subscribe();
   }
-  onClosePurchaseOrderTableTemplate(): void {
-    this.purchaseOrderTableMatDialogRef.close();
-  }
+ 
   onClosepurchaseOrderListTemplate() {
     this.purchaseOrderTemplateRef.close();
   }
-
-  private purchaseOrderTemplateRef!: MatDialogRef<DialogTemplateComponent>;
+ private purchaseOrderTemplateRef!: MatDialogRef<DialogTemplateComponent>;
   purchaseOrderDtos: PurchaseOrderDto[] = [];
   openDialogPurchaseOrderList(template: any) {
     const orgId = Number(this.cookieService.getUserMainOrganizationId());
     this.getAllPurchaseOrders(orgId);
-    this.purchaseOrderTemplateRef = this.dialogService.openDialogCreation({
-      template
-    });
+    this.purchaseOrderTemplateRef = this.dialogService.openCustomDialogCreation({
+      
+      template,
+      
+    },'80%',
+    '85%',true,false);
     this.purchaseOrderTemplateRef.afterClosed().subscribe();
   }
   private confirmData!: boolean;
@@ -156,6 +159,17 @@ export class DepositHomeComponent implements OnInit {
     this.getAllPurchaseOrders(orgId);
 
   }
+  getAllPurchaseOrders(organizationId: number) {
+    this.depositControlService.findAllPurchaseOrdersByOrganization(organizationId).subscribe({
+      next: (orgsData) => {
+        this.purchaseOrderDtos = orgsData;
+        this.totalPurchaseOrders = orgsData.length;
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+  }
 
   onClosepurchaseOrderItemListTemplate() {
     this.purchaseOrderItemListMatDialogRef.close();
@@ -182,16 +196,7 @@ export class DepositHomeComponent implements OnInit {
     });
   }
 
-  getAllPurchaseOrders(organizationId: number) {
-    this.depositControlService.findAllPurchaseOrdersByOrganization(organizationId).subscribe({
-      next: (orgsData) => {
-        this.purchaseOrderDtos = orgsData;
-      },
-      error: (errorData) => {
-        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
-      }
-    })
-  }
+  
 
   purchaseOrderItemDtosListShow: PurchaseOrderItemDto[] = [];
   getPurchaseOrderItems(purchaseOrderId: number) {
@@ -230,6 +235,7 @@ export class DepositHomeComponent implements OnInit {
         this.purchaseOrderDtos.forEach((item,index)=>{
           if(item.id==orderId){
             this.purchaseOrderDtos.splice(index,1);
+            this.totalPurchaseOrders = this.purchaseOrderDtos.length;
           }
         })
       }
@@ -368,9 +374,12 @@ export class DepositHomeComponent implements OnInit {
   openDialogSupplyList(template: any) {
     const orgId = Number(this.cookieService.getUserMainOrganizationId());
     this.getAllSupplies(orgId);
-    this.supplyListMatDialogRef = this.dialogService.openDialogCreation({
-      template
-    });
+    this.supplyListMatDialogRef = this.dialogService.openCustomDialogCreation({
+      
+      template,
+      
+    },'80%',
+    '85%',true,false);
     this.supplyListMatDialogRef.afterClosed().subscribe();
 
   }
@@ -756,6 +765,7 @@ export class DepositHomeComponent implements OnInit {
         this.depositControlDtos.forEach((item,index)=>{
           if(item.id==depositControlId){
             this.depositControlDtos.splice(index,1);
+           
           }
         })
       }

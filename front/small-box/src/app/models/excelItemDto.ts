@@ -1,15 +1,15 @@
 export class ExcelItemDto{
     excelItemId!:number;
-    purchaseOrderId!:number;
+    purchaseOrderItemId!:number;
    itemDescription!:string;
     itemMeasureUnit!:string;
     itemQuantity!:number;
     itemCode!:string;
 
 
-    constructor(excelItemId:number,purchaseOrderId:number,itemCode:string,itemQuantity:number,itemMeasureUnit:string,itemDescription:string){
+    constructor(excelItemId:number,purchaseOrderItemId:number,itemCode:string,itemQuantity:number,itemMeasureUnit:string,itemDescription:string){
        this.excelItemId = excelItemId;
-        this.purchaseOrderId = purchaseOrderId;
+        this.purchaseOrderItemId = purchaseOrderItemId;
         this.itemCode= itemCode;
         this.itemQuantity = itemQuantity;
         this.itemMeasureUnit = itemMeasureUnit;

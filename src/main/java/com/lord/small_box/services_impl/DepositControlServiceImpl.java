@@ -307,7 +307,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 			return null;
 		}
 		PurchaseOrderItemCandidateDto dto = new PurchaseOrderItemCandidateDto();
-		dto.setOrderId(purchaseOrderItem.getId());
+		dto.setOrderItemId(purchaseOrderItem.getId());
 		dto.setExcelItemDtoId(xlsItemId);
 		dto.setCode(purchaseOrderItem.getCode());
 		dto.setProgramaticCategory(purchaseOrderItem.getProgramaticCat());
@@ -324,7 +324,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 		Deposit deposit = findDepositById(depositId);
 
 		List<DepositControl> depositControlItems = purchaseOrderItemRepository
-				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderId()).toList()).stream()
+				.findAllByIdIn(excelItemDtos.stream().map(m -> m.getPurchaseOrderItemId()).toList()).stream()
 				.map(orderItem -> {
 					return mapExcelItemToDeposit(excelItemDtos, orderItem, deposit);
 				}).toList();
@@ -338,7 +338,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 			Deposit deposit) {
 		log.info("Map excel items to deposit");
 		DepositControl depositControl = excelItemDtos.stream()
-				.filter(excelItemDto -> excelItemDto.getPurchaseOrderId() == orderItem.getId()).map(excelItemDto -> {
+				.filter(excelItemDto -> excelItemDto.getPurchaseOrderItemId() == orderItem.getId()).map(excelItemDto -> {
 					Optional<DepositControl> checkRepeated = depositControlRepository
 							.findByItemCodeAndDeposit(orderItem.getCode(), deposit);
 					if (checkRepeated.isPresent()) {

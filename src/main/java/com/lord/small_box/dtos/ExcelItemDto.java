@@ -9,7 +9,7 @@ public class ExcelItemDto {
 
 	private long excelItemId;
 	
-	private long purchaseOrderId;
+	private long purchaseOrderItemId;
 	
 	private String itemDescription;
 	

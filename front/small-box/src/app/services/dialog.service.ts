@@ -33,6 +33,16 @@ export class DialogService {
     });
   }
 
+openCustomDialogCreation(data:DialogTemplateData,width:string,height:string,autoFocus:boolean,disableClose:boolean){
+  return this.matDialog.open(DialogTemplateComponent,{
+    width: width,
+    height:height,
+    autoFocus:autoFocus,
+    disableClose:disableClose,
+    data
+  });
+}
+
   openSupplyCorrectionNoteCreation(data:DialogTemplateData){
     return this.matDialog.open(DialogTemplateComponent,{
       width:'100%',

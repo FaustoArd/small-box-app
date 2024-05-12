@@ -8,7 +8,7 @@ import lombok.Setter;
 public class PurchaseOrderItemCandidateDto {
 
 	
-	private long orderId;
+	private long orderItemId;
 	
 	private long excelItemDtoId;
 	

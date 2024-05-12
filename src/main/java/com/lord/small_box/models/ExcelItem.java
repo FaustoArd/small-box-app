@@ -36,9 +36,7 @@ public class ExcelItem {
 	
 	//private int excelItemDtoId;
 	
-	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-	@JoinColumn(name="organization_id",referencedColumnName = "id")
-	private Organization organization;
+	
 	
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="excel_item_container_id",referencedColumnName = "id")

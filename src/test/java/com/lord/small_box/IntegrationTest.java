@@ -7,6 +7,8 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.DynamicTest.stream;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -14,15 +16,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-
-import org.hibernate.internal.util.compare.CalendarComparator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -30,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.mockito.internal.matchers.GreaterThan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,26 +34,32 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
+import com.google.gson.Gson;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
+import com.lord.small_box.dtos.ExcelItemDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
 import com.lord.small_box.models.Deposit;
-import com.lord.small_box.models.ExcelItem;
+import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.ExcelItemContainer;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.Organization;
+import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.repositories.AppUserRepository;
 import com.lord.small_box.repositories.AuthorityRepository;
+import com.lord.small_box.repositories.DepositControlRepository;
 import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.ExcelItemContainerRepository;
 import com.lord.small_box.repositories.ExcelItemRepository;
 import com.lord.small_box.repositories.InputRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
+import com.lord.small_box.repositories.PurchaseOrderItemRepository;
+import com.lord.small_box.repositories.PurchaseOrderRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
 import com.lord.small_box.services.AuthorizationService;
 
@@ -79,6 +80,12 @@ public class IntegrationTest {
 
 	@Autowired
 	private SmallBoxTypeRepository smallBoxTypeRepository;
+	
+	@Autowired
+	private PurchaseOrderRepository purchaseOrderRepository;
+	
+	@Autowired
+	private PurchaseOrderItemRepository purchaseOrderItemRepository;
 
 	@Autowired
 	private InputRepository inputRepository;
@@ -88,6 +95,9 @@ public class IntegrationTest {
 
 	@Autowired
 	private DepositRepository depositRepository;
+	
+	@Autowired
+	private DepositControlRepository depositControlRepository;
 	
 	@Autowired
 	private ExcelItemRepository excelItemRepository;
@@ -828,6 +838,8 @@ public class IntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200)).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("AVELLANEDA")));
 	}
+	
+	
 
 	@Test
 	@Order(43)
@@ -1031,6 +1043,8 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.purchaseOrderTotal", is(939300.00)));
 	}
 	
+	private long oldDepositCount;
+	private DepositControl oldDepositItemSelected;
 	
 	@Test
 	@Order(55)
@@ -1055,7 +1069,44 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[0].itemDetail").value(containsString("ZAPATILLAS USO UNISEX")))
 				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[1].code",is("2.2.2.00828.0101")))
 				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[1].itemDetail").value(containsString("ZAPATILLAS USO UNISEX")));
-	
+		
+		Deposit avellanedaDepo = depositRepository.findById(1l).get();
+		oldDepositItemSelected = depositControlRepository.findByItemCodeAndDeposit("2.1.1.00482.0014", avellanedaDepo).get();
+			
+		
+	}
+
+	private List<ExcelItemDto> excelSelectedItems;
+	@Test
+	@Order(56)
+	void createExcelItemsSelectedList() {
+		excelSelectedItems = new ArrayList<ExcelItemDto>();
+		ExcelItemDto item1 = new ExcelItemDto();
+		item1.setExcelItemId(71);
+		item1.setItemQuantity(30);
+		item1.setPurchaseOrderItemId(30);
+		ExcelItemDto item2 = new ExcelItemDto();
+		item2.setExcelItemId(92);
+		item2.setItemQuantity(50);
+		item2.setPurchaseOrderItemId(21);
+		excelSelectedItems.add(item1);
+		excelSelectedItems.add(item2);
+	}
+	private Gson gson = new Gson();
+	@Test
+	@Order(57)
+	void createOrUpdateExcelItemsToDepositControl()throws Exception{
+		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/save-excel-items-to-deposit")
+				.content(gson.toJson(excelSelectedItems)).param("organizationId","3").param("depositId", "1")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+		.andExpect(jsonPath("$.[0].itemCode", is("2.1.1.00482.0014")))
+		.andExpect(jsonPath("$.[0].quantity", is(110)))
+		.andExpect(jsonPath("$.[0].id").value(oldDepositItemSelected.getId()))
+		.andExpect(jsonPath("$.[1].itemCode", is("2.2.2.00828.0102")))
+		.andExpect(jsonPath("$.[1].quantity", is(30)));
+		
+				
 	}
 }
 
