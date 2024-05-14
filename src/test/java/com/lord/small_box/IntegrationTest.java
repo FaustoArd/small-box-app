@@ -86,10 +86,10 @@ public class IntegrationTest {
 
 	@Autowired
 	private SmallBoxTypeRepository smallBoxTypeRepository;
-	
+
 	@Autowired
 	private PurchaseOrderRepository purchaseOrderRepository;
-	
+
 	@Autowired
 	private PurchaseOrderItemRepository purchaseOrderItemRepository;
 
@@ -101,13 +101,13 @@ public class IntegrationTest {
 
 	@Autowired
 	private DepositRepository depositRepository;
-	
+
 	@Autowired
 	private DepositControlRepository depositControlRepository;
-	
+
 	@Autowired
 	private ExcelItemRepository excelItemRepository;
-	
+
 	@Autowired
 	private ExcelItemContainerRepository excelItemContainerRepository;
 
@@ -387,7 +387,7 @@ public class IntegrationTest {
 	@Test
 	@Order(14)
 	void createContainerWithUserPedro() throws Exception {
-	mvcResult = this.mockMvc
+		mvcResult = this.mockMvc
 				.perform(post("http://localhost:8080/api/v1/smallbox/containers/")
 						.content("{\"smallBoxType\":\"CHICA\",\"organizationId\":1}")
 						.header("Authorization", "Bearer " + userPedrojwtToken).contentType(MediaType.APPLICATION_JSON))
@@ -844,8 +844,6 @@ public class IntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200)).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("AVELLANEDA")));
 	}
-	
-	
 
 	@Test
 	@Order(43)
@@ -935,7 +933,8 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.[0].depositItemMeasureUnit", is("CAJA")))
 				.andExpect(jsonPath("$.[0].depositItemStatus", is("NUEVO")))
 				.andExpect(jsonPath("$.[1].depositItemCode", is("2.1.1.00704.0008")))
-				.andExpect(jsonPath("$.[1].depositItemDescription").value(containsString("ALFAJOR RELLENO DULCE DE LECHE")))
+				.andExpect(jsonPath("$.[1].depositItemDescription")
+						.value(containsString("ALFAJOR RELLENO DULCE DE LECHE")))
 				.andExpect(jsonPath("$.[1].depositItemQuantity", is(60)))
 				.andExpect(jsonPath("$.[1].depositItemMeasureUnit", is("CAJA")))
 				.andExpect(jsonPath("$.[1].depositItemStatus", is("NUEVO")))
@@ -945,98 +944,95 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.[8].depositItemMeasureUnit", is("CADA-UNO")))
 				.andExpect(jsonPath("$.[8].depositItemStatus", is("ACTUALIZADO")));
 	}
-	
+
 	@Test
 	@Order(47)
-	void FindSecDesSocialPurchaseOrderList_Miguel248()throws Exception{
+	void FindSecDesSocialPurchaseOrderList_Miguel248() throws Exception {
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-all-orders-by-org")
 				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
-		.andExpect(jsonPath("$.[0].id", is(notNullValue())))
-		.andExpect(jsonPath("$.[0].orderNumber", is(454)))
-		.andExpect(jsonPath("$.[0].date", is("2024-02-23")))
-		.andExpect(jsonPath("$.[0].dependency", is("Coordinación de Protección de Niñez")))
-		.andExpect(jsonPath("$.[0].purchaseOrderTotal", is( 1351918.75)))
-		.andExpect(jsonPath("$.[0].loadedToDeposit", is(true)))
-		.andExpect(jsonPath("$.[1].id", is(notNullValue())))
-		.andExpect(jsonPath("$.[1].orderNumber", is(365)))
-		.andExpect(jsonPath("$.[1].date", is("2024-02-19")))
-		.andExpect(jsonPath("$.[1].dependency", is("Dirección de Reinserción Social")))
-		.andExpect(jsonPath("$.[1].purchaseOrderTotal", is( 295600.00)))
-		.andExpect(jsonPath("$.[1].loadedToDeposit", is(true)))
-		.andExpect(jsonPath("$.[2].id", is(notNullValue())))
-		.andExpect(jsonPath("$.[2].orderNumber", is(340)))
-		.andExpect(jsonPath("$.[2].date", is("2024-02-16")))
-		.andExpect(jsonPath("$.[2].dependency", is("Coordinación de Promoción de Niñez")))
-		.andExpect(jsonPath("$.[2].purchaseOrderTotal", is( 905700.00)))
-		.andExpect(jsonPath("$.[2].loadedToDeposit", is(false)));
+				.andExpect(jsonPath("$.[0].id", is(notNullValue()))).andExpect(jsonPath("$.[0].orderNumber", is(454)))
+				.andExpect(jsonPath("$.[0].date", is("2024-02-23")))
+				.andExpect(jsonPath("$.[0].dependency", is("Coordinación de Protección de Niñez")))
+				.andExpect(jsonPath("$.[0].purchaseOrderTotal", is(1351918.75)))
+				.andExpect(jsonPath("$.[0].loadedToDeposit", is(true)))
+				.andExpect(jsonPath("$.[1].id", is(notNullValue()))).andExpect(jsonPath("$.[1].orderNumber", is(365)))
+				.andExpect(jsonPath("$.[1].date", is("2024-02-19")))
+				.andExpect(jsonPath("$.[1].dependency", is("Dirección de Reinserción Social")))
+				.andExpect(jsonPath("$.[1].purchaseOrderTotal", is(295600.00)))
+				.andExpect(jsonPath("$.[1].loadedToDeposit", is(true)))
+				.andExpect(jsonPath("$.[2].id", is(notNullValue()))).andExpect(jsonPath("$.[2].orderNumber", is(340)))
+				.andExpect(jsonPath("$.[2].date", is("2024-02-16")))
+				.andExpect(jsonPath("$.[2].dependency", is("Coordinación de Promoción de Niñez")))
+				.andExpect(jsonPath("$.[2].purchaseOrderTotal", is(905700.00)))
+				.andExpect(jsonPath("$.[2].loadedToDeposit", is(false)));
 	}
-	
+
 	@Test
 	@Order(48)
-	void findPurchaseOrder340Items_Miguel248()throws Exception{
+	void findPurchaseOrder340Items_Miguel248() throws Exception {
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-order-items")
 				.param("purchaseOrderId", "2").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
-		.andExpect(jsonPath("$.[0].id", is(notNullValue())))
-		.andExpect(jsonPath("$.[0].code", is("2.1.1.00788.0091")))
-		.andExpect(jsonPath("$.[0].quantity", is(350)))
-		.andExpect(jsonPath("$.[1].id", is(notNullValue())))
-		.andExpect(jsonPath("$.[1].code", is("2.1.1.00439.0001")))
-		.andExpect(jsonPath("$.[1].quantity", is(50)));
+				.andExpect(jsonPath("$.[0].id", is(notNullValue())))
+				.andExpect(jsonPath("$.[0].code", is("2.1.1.00788.0091")))
+				.andExpect(jsonPath("$.[0].quantity", is(350))).andExpect(jsonPath("$.[1].id", is(notNullValue())))
+				.andExpect(jsonPath("$.[1].code", is("2.1.1.00439.0001")))
+				.andExpect(jsonPath("$.[1].quantity", is(50)));
 	}
+
 	@Test
 	@Order(49)
-	void findSupply551Items_Miguel248()throws Exception{
-		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply//find-supply-items")
-				.param("supplyId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
-		.andExpect(jsonPath("$.[0].id", is(notNullValue())))
-		.andExpect(jsonPath("$.[0].code", is("5.1.4.03451.0001")))
-		.andExpect(jsonPath("$.[0].quantity", is(5500)))
-		.andExpect(jsonPath("$.[1].id", is(notNullValue())))
-		.andExpect(jsonPath("$.[1].code", is("5.1.4.03503.0003")))
-		.andExpect(jsonPath("$.[1].quantity", is(5000)));
-	}
-	
-	@Test
-	@Order(50)
-	void deletePurchaseOrder340_Miguel248()throws Exception{
-		mockMvc.perform(delete("http://localhost:8080/api/v1/smallbox/purchase-order/delete-purchase-order/{orderId}",2)
+	void findSupply551Items_Miguel248() throws Exception {
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply//find-supply-items").param("supplyId", "1")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
-		.andExpect(jsonPath("$", is(340)));
+				.andExpect(jsonPath("$.[0].id", is(notNullValue())))
+				.andExpect(jsonPath("$.[0].code", is("5.1.4.03451.0001")))
+				.andExpect(jsonPath("$.[0].quantity", is(5500))).andExpect(jsonPath("$.[1].id", is(notNullValue())))
+				.andExpect(jsonPath("$.[1].code", is("5.1.4.03503.0003")))
+				.andExpect(jsonPath("$.[1].quantity", is(5000)));
 	}
+
+	@Test
+	@Order(50)
+	void deletePurchaseOrder340_Miguel248() throws Exception {
+		mockMvc.perform(
+				delete("http://localhost:8080/api/v1/smallbox/purchase-order/delete-purchase-order/{orderId}", 2)
+						.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200)).andExpect(jsonPath("$", is(340)));
+	}
+
 	@Test
 	@Order(51)
-	void whenTryToFindPurchaseOrder340Items_mustReturn417ExpectationFailed_Miguel248()throws Exception{
+	void whenTryToFindPurchaseOrder340Items_mustReturn417ExpectationFailed_Miguel248() throws Exception {
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-order-items")
 				.param("purchaseOrderId", "2").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(417));
-		
+
 	}
-	
+
 	@Test
 	@Order(52)
-	void deleteSupply551_Miguel248()throws Exception{
-		mockMvc.perform(delete("http://localhost:8080/api/v1/smallbox/supply/delete-supply/{supplyId}",1)
+	void deleteSupply551_Miguel248() throws Exception {
+		mockMvc.perform(delete("http://localhost:8080/api/v1/smallbox/supply/delete-supply/{supplyId}", 1)
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
-		.andExpect(jsonPath("$", is(551)));
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200)).andExpect(jsonPath("$", is(551)));
 	}
-	
+
 	@Test
 	@Order(53)
-	void whenTryToFindSupply551Items_mustReturn417ExpectationFailed_Miguel248()throws Exception{
-		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply/find-supply-items")
-				.param("supplyId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+	void whenTryToFindSupply551Items_mustReturn417ExpectationFailed_Miguel248() throws Exception {
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply/find-supply-items").param("supplyId", "1")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(417));
-	
+
 	}
-	
+
 	@Test
 	@Order(54)
-	void loadPurchaseOrder534_Miguel248()throws Exception{
+	void loadPurchaseOrder534_Miguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "oc-534.pdf", "application/pdf",
 				new ClassPathResource("\\pdf-test\\oc-534.pdf").getContentAsByteArray());
 		mockMvc.perform(
@@ -1048,41 +1044,46 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.items[1].totalEstimatedCost", is(511800.00)))
 				.andExpect(jsonPath("$.purchaseOrderTotal", is(939300.00)));
 	}
-	
+
 	private long oldDepositCount;
 	private DepositControl oldDepositItemSelected;
-	
+
 	@Test
 	@Order(55)
-	void ImportExcelItemsToDeposit_Miguel248()throws Exception{
+	void ImportExcelItemsToDeposit_Miguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "control_excel3-v3-test.xls", "application/xls",
 				new ClassPathResource("\\pdf-test\\control_excel3-v3-test.xls").getContentAsByteArray());
 		mockMvc.perform(
 				multipart("http://localhost:8080/api/v1/smallbox/deposit-control/excel-order-comparator").file(file)
 						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.[0].excelItemDto.itemDescription").value(containsString("PAÑALES BEBE TALLE XG POR 44 UNI")))
+				.andExpect(jsonPath("$.[0].excelItemDto.itemDescription")
+						.value(containsString("PAÑALES BEBE TALLE XG POR 44 UNI")))
 				.andExpect(jsonPath("$.[0].excelItemDto.itemMeasureUnit", is("PAQUETE")))
 				.andExpect(jsonPath("$.[0].excelItemDto.itemQuantity", is(9285)))
 				.andExpect(jsonPath("$.[0].purchaseOrderItemCandidateDtos[0].itemDetail", is("No encontrado")))
-				.andExpect(jsonPath("$.[1].excelItemDto.itemDescription").value(containsString("PAÑALES BEBE TALLE XG POR 28 UNI")))
+				.andExpect(jsonPath("$.[1].excelItemDto.itemDescription")
+						.value(containsString("PAÑALES BEBE TALLE XG POR 28 UNI")))
 				.andExpect(jsonPath("$.[1].excelItemDto.itemMeasureUnit", is("PAQUETE")))
 				.andExpect(jsonPath("$.[1].excelItemDto.itemQuantity", is(16)))
 				.andExpect(jsonPath("$.[70].excelItemDto.itemDescription").value(containsString("ZAPATILLA TALLE 45")))
 				.andExpect(jsonPath("$.[70].excelItemDto.itemMeasureUnit", is("UNIDAD")))
 				.andExpect(jsonPath("$.[70].excelItemDto.itemQuantity", is(30)))
-				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[0].code",is("2.2.2.00828.0102")))
-				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[0].itemDetail").value(containsString("ZAPATILLAS USO UNISEX")))
-				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[1].code",is("2.2.2.00828.0101")))
-				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[1].itemDetail").value(containsString("ZAPATILLAS USO UNISEX")));
-		
+				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[0].code", is("2.2.2.00828.0102")))
+				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[0].itemDetail")
+						.value(containsString("ZAPATILLAS USO UNISEX")))
+				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[1].code", is("2.2.2.00828.0101")))
+				.andExpect(jsonPath("$.[70].purchaseOrderItemCandidateDtos[1].itemDetail")
+						.value(containsString("ZAPATILLAS USO UNISEX")));
+
 		Deposit avellanedaDepo = depositRepository.findById(1l).get();
-		oldDepositItemSelected = depositControlRepository.findByItemCodeAndDeposit("2.1.1.00482.0014", avellanedaDepo).get();
-			
-		
+		oldDepositItemSelected = depositControlRepository.findByItemCodeAndDeposit("2.1.1.00482.0014", avellanedaDepo)
+				.get();
+
 	}
 
 	private List<ExcelItemDto> excelSelectedItems;
+
 	@Test
 	@Order(56)
 	void createExcelItemsSelectedList() {
@@ -1098,31 +1099,35 @@ public class IntegrationTest {
 		excelSelectedItems.add(item1);
 		excelSelectedItems.add(item2);
 	}
+
 	private Gson gson = new Gson();
+
 	@Test
 	@Order(57)
-	void createOrUpdateExcelItemsToDepositControl()throws Exception{
+	void createOrUpdateExcelItemsToDepositControl() throws Exception {
 		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/save-excel-items-to-deposit")
-				.content(gson.toJson(excelSelectedItems)).param("organizationId","3").param("depositId", "1")
+				.content(gson.toJson(excelSelectedItems)).param("organizationId", "3").param("depositId", "1")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
-		.andExpect(jsonPath("$.[0].itemCode", is("2.1.1.00482.0014")))
-		.andExpect(jsonPath("$.[0].quantity", is(110)))
-		.andExpect(jsonPath("$.[0].id").value(oldDepositItemSelected.getId()))
-		.andExpect(jsonPath("$.[1].itemCode", is("2.2.2.00828.0102")))
-		.andExpect(jsonPath("$.[1].quantity", is(30)));
-		
-				
+				.andExpect(jsonPath("$.[0].itemCode", is("2.1.1.00482.0014")))
+				.andExpect(jsonPath("$.[0].quantity", is(110)))
+				.andExpect(jsonPath("$.[0].id").value(oldDepositItemSelected.getId()))
+				.andExpect(jsonPath("$.[1].itemCode", is("2.2.2.00828.0102")))
+				.andExpect(jsonPath("$.[1].quantity", is(30)));
+
 	}
-	private List<BigBagItemDto> bigBagItemDtos;
+
+	private List<BigBagItemDto> bigBagNavidadItemDtos;
+
 	@Test
 	@Order(58)
-	void addBigBagList()throws Exception{
-		Deposit deposit = depositRepository.findById(1l).orElseThrow(()-> new ItemNotFoundException("No se encontro el depo."));
-		bigBagItemDtos = depositControlRepository
-				.findAllByItemCodeInAndDeposit(List.of("2.1.1.03311.0003","2.1.1.00704.0008","2.1.1.02113.0002"),deposit)
-				.stream()
-				.map(depoItem ->{
+	void addBigBagList() throws Exception {
+		Deposit deposit = depositRepository.findById(1l)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
+		bigBagNavidadItemDtos = depositControlRepository
+				.findAllByItemCodeInAndDeposit(List.of("2.1.1.03311.0003", "2.1.1.00704.0008", "2.1.1.02113.0002"),
+						deposit)
+				.stream().map(depoItem -> {
 					BigBagItemDto itemDto = new BigBagItemDto();
 					itemDto.setCode(depoItem.getItemCode());
 					itemDto.setMeasureUnit(depoItem.getMeasureUnit());
@@ -1130,42 +1135,127 @@ public class IntegrationTest {
 					itemDto.setDepositControlId(depoItem.getId());
 					return itemDto;
 				}).toList();
-		
 
 	}
+
 	@Test
 	@Order(59)
-	void createBigBagNavidad()throws Exception{
+	void createBigBagNavidad() throws Exception {
 		BigBagDto bigBagDto = new BigBagDto();
 		bigBagDto.setName("Navidad");
-		bigBagDto.setItems(bigBagItemDtos);
-		
+		bigBagDto.setItems(bigBagNavidadItemDtos);
+
 		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/create-big-bag")
 				.content(gson.toJson(bigBagDto)).param("organizationId", "3")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
-		.andExpect(jsonPath("$.id", is(notNullValue())))
-		.andExpect(jsonPath("$.name", is("Navidad")))
-		.andExpect(jsonPath("$.creationDate").isNotEmpty())
-		.andExpect(jsonPath("$.items[0].id", is(notNullValue())))
-		.andExpect(jsonPath("$.items[1].id", is(notNullValue())))
-		.andExpect(jsonPath("$.items[2].id", is(notNullValue())));
-		
-		
-		
+				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.name", is("Navidad")))
+				.andExpect(jsonPath("$.creationDate").isNotEmpty())
+				.andExpect(jsonPath("$.items[0].id", is(notNullValue())))
+				.andExpect(jsonPath("$.items[1].id", is(notNullValue())))
+				.andExpect(jsonPath("$.items[2].id", is(notNullValue())));
+
 	}
+
+	private int minorQuantityDepositItemNavidad;
+
 	@Test
 	@Order(60)
-	void calculateTotalBigBagQuantityAvailable()throws Exception{
-		Deposit deposit = depositRepository.findById(1l).orElseThrow(()-> new ItemNotFoundException("No se encontro el depo."));
-		int minorQuantityDepositItem = depositControlRepository
-				.findAllByItemCodeInAndDeposit(List.of("2.1.1.03311.0003","2.1.1.00704.0008","2.1.1.02113.0002"), deposit)
+	void calculateTotalBigBagNavidadQuantityAvailable() throws Exception {
+		Deposit deposit = depositRepository.findById(1l)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
+		minorQuantityDepositItemNavidad = depositControlRepository
+				.findAllByItemCodeInAndDeposit(List.of("2.1.1.03311.0003", "2.1.1.00704.0008", "2.1.1.02113.0002"),
+						deposit)
 				.stream().map(item -> item.getQuantity()).min(Integer::compareTo).get();
-		System.err.println("MINOR:" + minorQuantityDepositItem);
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-control/calculate-big-bag-total-quantity")
-				.param("bigBagId", "1").param("depositId","1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.param("bigBagId", "1").param("depositId", "1")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
-		.andExpect(jsonPath("$", is(minorQuantityDepositItem)));
+				.andExpect(jsonPath("$", is(minorQuantityDepositItemNavidad)));
+	}
+
+	private List<BigBagItemDto> bigBagAñoNuevoItemDtos;
+
+	@Test
+	@Order(61)
+	void addBigBagAñoNuevo() throws Exception {
+		Deposit deposit = depositRepository.findById(1l)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
+		bigBagAñoNuevoItemDtos = depositControlRepository
+				.findAllByItemCodeInAndDeposit(List.of("2.1.1.00705.0035", "2.1.1.00592.0001", "2.1.1.00591.0002"),
+						deposit)
+				.stream().map(depoItem -> {
+					BigBagItemDto itemDto = new BigBagItemDto();
+					itemDto.setCode(depoItem.getItemCode());
+					itemDto.setMeasureUnit(depoItem.getMeasureUnit());
+					itemDto.setDescription(depoItem.getItemDescription());
+					itemDto.setDepositControlId(depoItem.getId());
+					return itemDto;
+				}).toList();
+	}
+
+	@Test
+	@Order(62)
+	void createBigBagAñoNuevo() throws Exception {
+		BigBagDto bigBagDto = new BigBagDto();
+		bigBagDto.setName("Año nuevo");
+		bigBagDto.setItems(bigBagAñoNuevoItemDtos);
+
+		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/create-big-bag")
+				.content(gson.toJson(bigBagDto)).param("organizationId", "3")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.name", is("Año nuevo")))
+				.andExpect(jsonPath("$.creationDate").isNotEmpty())
+				.andExpect(jsonPath("$.items[0].id", is(notNullValue())))
+				.andExpect(jsonPath("$.items[1].id", is(notNullValue())))
+				.andExpect(jsonPath("$.items[2].id", is(notNullValue())));
+
+	}
+
+	private int minorQuantityDepositItemAñoNuevo;
+
+	@Test
+	@Order(63)
+	void calculateTotalBigBagAñoNuevoQuantityAvailable() throws Exception {
+		Deposit deposit = depositRepository.findById(1l)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
+		minorQuantityDepositItemAñoNuevo = depositControlRepository
+				.findAllByItemCodeInAndDeposit(List.of("2.1.1.00705.0035", "2.1.1.00592.0001", "2.1.1.00591.0002"),
+						deposit)
+				.stream().map(item -> item.getQuantity()).min(Integer::compareTo).get();
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-control/calculate-big-bag-total-quantity")
+				.param("bigBagId", "2").param("depositId", "1")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+				.andExpect(jsonPath("$", is(minorQuantityDepositItemAñoNuevo)));
+	}
+
+	@Test
+	@Order(64)
+	void updateBigBagItemQuantity() throws Exception {
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-control/update-big-bag-item-quantity")
+				.param("bigBagItemId", "5").param("quantity", "3")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200)).andExpect(jsonPath("$.id", is(5)))
+				.andExpect(jsonPath("$.quantity", is(3)));
+	}
+
+	@Test
+	@Order(65)
+	void calculateTotalBigBagAñoNuevoQuantityAvailableWithModifiedItemQuantity() throws Exception {
+		Deposit deposit = depositRepository.findById(1l)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
+		minorQuantityDepositItemAñoNuevo = depositControlRepository
+				.findAllByItemCodeInAndDeposit(List.of("2.1.1.00705.0035", "2.1.1.00592.0001", "2.1.1.00591.0002"),
+						deposit)
+				.stream().map(item -> item.getQuantity()).min(Integer::compareTo).get();
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-control/calculate-big-bag-total-quantity")
+				.param("bigBagId", "2").param("depositId", "1")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+				.andExpect(jsonPath("$", is(minorQuantityDepositItemAñoNuevo / 3)));
+
 	}
 }
-

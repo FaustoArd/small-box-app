@@ -32,7 +32,6 @@ import { MemoSingleShowComponent } from './components/show-work-template/memo-si
 import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
 import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
-import { LocationContractComponent } from './components/contract/location-contract/location-contract.component';
 import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog/confirm-dialog.component';
 import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
@@ -40,7 +39,6 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel/admin-panel.component';
 import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component';
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
-import { RouterModule } from '@angular/router';
 import { BigBagComponent } from './components/big-bag/big-bag.component';
 import { DepositComparatorComponent } from './components/deposit-comparator/deposit-comparator.component';
 import { DepositRequestComponent } from './components/deposit-request/deposit-request.component';
@@ -71,8 +69,7 @@ import { DepositReceiverComponent } from './components/deposit-receiver/deposit-
     WorkTemplateListComponent,
     ManualReferComponent,
     MemoSingleEditComponent,
-    LocationContractComponent,
-    DispatchMainComponent,
+   DispatchMainComponent,
     ConfirmDialogComponent,
     DispatchMatComponent,
     AdminPanelComponent,
