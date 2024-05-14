@@ -66,12 +66,12 @@ public class TextToPurchaseOrder {
 	}
 	private int getPurchaseOrderNumber(String[] arrText) {
 		log.info("Text to purchase order Get purchase order number");
-		String orderNumber =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get().replaceAll("[\\D]", "")
-				.strip();
+		String orderNumber =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().orElseThrow(()-> new TextFileInvalidException("No se encontro el numero de orden, archivo no compatible."));
+		orderNumber = orderNumber.replaceAll("[\\D]", "").strip();
 		try {
 			return Integer.parseInt(orderNumber);
 		}catch (NumberFormatException ex) {
-			throw new TextFileInvalidException("No se encontro el numero de orden, Aparentemente estas intentando cargar un suministro...",ex.getCause());
+			throw new TextFileInvalidException("No se encontro el numero de orden, archivo no compatible.",ex.getCause());
 		}
 	}
 
@@ -115,7 +115,7 @@ public class TextToPurchaseOrder {
 		log.info("Text to purchase order Get purchase total");
 		
 		String purchaseTotal = Stream.of(arrText).filter(f -> f.toLowerCase().contains("total:")).findFirst()
-				.orElseThrow(()-> new TextFileInvalidException("No se encontro el total, El archivo no es compatible con una orden de compra"));
+				.orElseThrow(()-> new TextFileInvalidException("No se encontro el total, archivo no compatible."));
 		purchaseTotal = purchaseTotal.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".").strip();
 				
 		return new BigDecimal(purchaseTotal);
@@ -220,7 +220,7 @@ public class TextToPurchaseOrder {
 		String date = Stream.of(text.split(" ")).filter(f -> pDate.matcher(f).find())
 				.skip(1)
 				.findFirst()
-				.orElseThrow(()-> new TextFileInvalidException("No se encontro la fecha, Aparentemente estas intentando cargar un suministro..."));
+				.orElseThrow(()-> new TextFileInvalidException("No se encontro la fecha, archivo no compatible."));
 		date = date.replaceAll("[a-zA-Z]", "").replace("/", "-").strip();
 		try {
 			cal.setTime(sdf.parse(date));

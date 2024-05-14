@@ -1,12 +1,12 @@
 <app-navbar></app-navbar>
 
 <body>
-    <div class="container-flex text-center">
+    <div id="createRequestCol" class="container-flex text-center">
         <div class="row">
-           <div class="col-md-1 mt-2">
-            <button (click)="openCreateRequestTemplate(createRequestTemplate)" id="btnSend"
-            class="d-inline btn btn-primary btn-sm ms-3 mb-2 text-white" role="button">NUEVO</button>
-           </div>
+            <div class="col-md-1 mt-2">
+                <button (click)="openCreateRequestTemplate(createRequestTemplate)" id="btnSend"
+                    class="d-inline btn btn-primary btn-sm ms-3 mb-2 text-white" role="button">NUEVO</button>
+            </div>
             <div class="col-md-11 mt-2">
                 <div class="barofcolourRed mt-0">
                     <h1 class="text-center">INBOX</h1>
@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="row mt-2">
-            
+
         </div>
         <div id="titleRow" class="row text-center mt-2">
 
@@ -47,9 +47,9 @@
             </div>
             <div class="col-md-1 mt-3 ms-1">
                 <div class="barofcolourColumn">
-                    
-                    <img  id="deleteIcon" class="ms-1" src="./assets/img/trash-solid.svg">
-                
+
+                    <img id="deleteIcon" class="ms-1" src="./assets/img/trash-solid.svg">
+
                 </div>
                 <hr class="my-4">
             </div>
@@ -70,13 +70,12 @@
                         class="btn btn-sm">-</button>
                     <hr class="my-4">
                 </div>
-                <div class="col-md-3 mt-3" >
+                <div class="col-md-3 mt-3">
                     <h3 class="ms-3">{{request.requestCode}}</h3>
                     <hr class="my-4">
                 </div>
-                <div class="col-md-1 mt-3" >
-                    <button (click)="deleteDepositRequestById(request.id)"
-                    class="btn btn-sm text-center">-</button>
+                <div class="col-md-1 mt-3">
+                    <button (click)="confirmDeleteDepositRequest(request.id)" class="btn btn-sm text-center">-</button>
                     <hr class="my-4">
                 </div>
             </div>
@@ -98,148 +97,173 @@
 </body>
 <ng-template #createRequestTemplate>
     <button id="closeButton" (click)="closeCreateRequestTemplate()" class="text-white">X</button>
-    <div id="createRequestCol" class="col">
+
+    <body id="createRequestCol">
+        <div id="createRequestCol" class="col">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <form [formGroup]="depositRequestFormBuilder">
+
+                        <div class="form-group text-center">
+                            <label for="mainOrganizationId" class="form-label ">Seleccione la dependencia de
+                                origen</label>
+                            <select id="mainOrganizationId" formControlName="mainOrganizationId"
+                                class="form-select  border-dark w-75 ms-5">
+                                <option value="Seleccione la dependencia de origen"></option>
+                                <option type="number" class="form-control border-dark "
+                                    *ngFor="let orgs of organizationDtos" id="mainOrganizationId" [value]="orgs.id">
+                                    {{orgs.organizationName}}</option>
+                            </select>
+                            <div *ngIf="mainOrganizationId.invalid && (mainOrganizationId.dirty || mainOrganizationId.touched)"
+                                class="text-danger">
+                                <div *ngIf="mainOrganizationId.errors?.['required']">
+                                    Debe seleccionar una organizacion
+                                </div>
+                            </div>
+                            <button (click)="createRequest()"
+                                class="btn btn-sm mt-2 text-white text-center">CONTINUAR</button>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </body>
+</ng-template>
+<ng-template #setDestinationOrganizationTemplate>
+
+    <body id="createRequestCol">
+
+
         <div class="row">
             <div class="col-md-1"></div>
-            <div class="col-md-10">
-                <form [formGroup]="depositRequestFormBuilder">
-
+            <div id="createRequestCol" class="col-md-10">
+                <form [formGroup]="setDestinationOrganizationForm">
                     <div class="form-group text-center">
-                        <label for="mainOrganizationId" class="form-label ">Seleccione la dependencia de origen</label>
-                        <select id="mainOrganizationId" formControlName="mainOrganizationId"
-                            class="form-select  border-dark w-75 ms-5">
-                            <option value="Seleccione la dependencia de origen"></option>
-                            <option type="number" class="form-control border-dark "
-                                *ngFor="let orgs of organizationDtos" id="mainOrganizationId" [value]="orgs.id">
+                        <label for="destinationOrganizationId" class="form-label fs-7 text-center">Seleccione el
+                            destino</label>
+                        <select id="destinationOrganizationId" formControlName="destinationOrganizationId"
+                            class="form-select  border-dark">
+                            <option value="Seleccione la dependencia de destino">Seleccione la dependencia de destino
+                            </option>
+                            <option type="number" class="form-control border-dark"
+                                *ngFor="let orgs of parentOrganizationDtos" id="destinationOrganizationId"
+                                [value]="orgs.id">
                                 {{orgs.organizationName}}</option>
                         </select>
-                        <div *ngIf="mainOrganizationId.invalid && (mainOrganizationId.dirty || mainOrganizationId.touched)"
+                        <div *ngIf="destinationOrganizationId.invalid && (destinationOrganizationId.dirty || destinationOrganizationId.touched)"
                             class="text-danger">
-                            <div *ngIf="mainOrganizationId.errors?.['required']">
+                            <div *ngIf="destinationOrganizationId.errors?.['required']">
                                 Debe seleccionar una organizacion
                             </div>
                         </div>
-                        <button (click)="createRequest()"
+                        <button (click)="setDestinationOrganization()"
                             class="btn btn-sm mt-2 text-white text-center">CONTINUAR</button>
                     </div>
-
                 </form>
             </div>
             <div class="col-md-1"></div>
         </div>
-    </div>
-</ng-template>
-<ng-template #setDestinationOrganizationTemplate>
-    <div id="createRequestCol" class="col">
-        <form [formGroup]="setDestinationOrganizationForm">
-            <div class="form-group text-center">
-                <label for="destinationOrganizationId" class="form-label fs-7 text-center">Seleccione el destino</label>
-                <select id="destinationOrganizationId" formControlName="destinationOrganizationId"
-                    class="form-select  border-dark">
-                    <option value="Seleccione la dependencia de destino">Seleccione la dependencia de destino</option>
-                    <option type="number" class="form-control border-dark" *ngFor="let orgs of parentOrganizationDtos"
-                        id="destinationOrganizationId" [value]="orgs.id">
-                        {{orgs.organizationName}}</option>
-                </select>
-                <div *ngIf="destinationOrganizationId.invalid && (destinationOrganizationId.dirty || destinationOrganizationId.touched)"
-                    class="text-danger">
-                    <div *ngIf="destinationOrganizationId.errors?.['required']">
-                        Debe seleccionar una organizacion
-                    </div>
-                </div>
-                <button (click)="setDestinationOrganization()"
-                    class="btn btn-sm mt-2 text-white text-center">CONTINUAR</button>
-            </div>
-        </form>
-    </div>
+    </body>
 </ng-template>
 
 <ng-template #supplyItemRequestSelectionTemplate>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="d-inline">
-                    <h3 class="text-center">Seleccionar items</h3>
-                </div>
-                <table class="table table-flex table-bordered h-75 text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col">CODIGO</th>
-                            <th scope="col">U.MEDIDA</th>
-                            <th scope="col">DESCRIPCION</th>
-                            <th scope="col">CANTIDAD</th>
-                            <th scope="col">APLICAR</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-center">
-                        <tr *ngFor="let item of supplyItemRequestDtos">
-                            <td id="fullBlue_td">{{item.code}}</td>
-                            <td>{{item.measureUnit}}</td>
-                            <td>{{item.itemDetail}}</td>
-                            <td>
-                                <form [formGroup]="itemQuantityForm" clasS="form-group">
-                                    <div class="form-group">
-                                        <input class="form-control border-dark" type="number" name="quantity"
-                                            id="quantity" formControlName="quantity">
-                                        <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)"
-                                            class="text-danger">
-                                            <div *ngIf="quantity.errors?.['required']">
 
+    <body id="item_selection_table">
+        <div id="orderListTemplate" class="container-flex">
+            <div class="row">
+                <div class="col-md-5 ms-2">
+                     <div class="d-inline">
+                        <h3 class="text-center">Seleccionar items</h3>
+                    </div>
+                
+                    <p class="lead">
+                        <hr class="my-4">
+                        <small>Ingrese una cantidad y presione aplicar.</small>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">CODIGO</th>
+                                <th scope="col">U.MEDIDA</th>
+                                <th scope="col">DESCRIPCION</th>
+                                <th scope="col">CANTIDAD</th>
+                                <th scope="col">APLICAR</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr *ngFor="let item of supplyItemRequestDtos">
+                                <td id="fullBlue_td">{{item.code}}</td>
+                                <td>{{item.measureUnit}}</td>
+                                <td>{{item.itemDetail}}</td>
+                                <td>
+                                    <form [formGroup]="itemQuantityForm" clasS="form-group">
+                                        <div class="form-group">
+                                            <input class="form-control border-dark" type="number" name="quantity"
+                                                id="quantity" formControlName="quantity">
+                                            <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)"
+                                                class="text-danger">
+                                                <div *ngIf="quantity.errors?.['required']">
+
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
-                            </td>
-                            <td><button (click)="selectedSupplyItemRequest(item.itemId)" class="btn btn-sm">-</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-4 ms-4">
-                <div class="d-inline">
-                    <h3 class="text-center">Items seleccionados</h3>
+                                    </form>
+                                </td>
+                                <td><button (click)="selectedSupplyItemRequest(item.itemId)"
+                                        class="btn btn-sm">-</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <table class="table table-flex table-bordered h-75">
-                    <thead>
-                        <tr>
-                            <th scope="col">CODIGO</th>
-                            <th scope="col">U.MEDIDA</th>
-                            <th scope="col">DESCRIPCION</th>
-                            <th scope="col">CANTIDAD</th>
-                            <th></th>
-
-                        </tr>
-                    </thead>
-                    <tbody class="text-center">
-                        <tr *ngFor="let item of selectedSupplyItemRequestDtos">
-                            <td id="fullBlue_td">{{item.itemCode}}</td>
-                            <td>{{item.itemMeasureUnit}}</td>
-                            <td>{{item.itemDescription}}</td>
-                            <td id="quantityShow">{{item.itemQuantity}}</td>
-                            <td><button (click)="onDeleteSelectedSupplyItemRequest(item.id)"
-                                    class="btn btn-sm">-</button>
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-                </table>
+                <div  class="col-md-5">
+                    <div class="d-inline">
+                        <h3 class="text-center">Items seleccionados</h3>
+                    </div>
+                 
+                    <p class="lead">
+                        <hr class="my-4">
+                    <table  *ngIf="selectedSupplyItemRequestDtos.length>0">
+                        <thead>
+                            <tr>
+                                <th scope="col">CODIGO</th>
+                                <th scope="col">U.MEDIDA</th>
+                                <th scope="col">DESCRIPCION</th>
+                                <th scope="col">CANTIDAD</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr *ngFor="let item of selectedSupplyItemRequestDtos">
+                                <td id="fullBlue_td">{{item.itemCode}}</td>
+                                <td>{{item.itemMeasureUnit}}</td>
+                                <td>{{item.itemDescription}}</td>
+                                <td id="quantityShow">{{item.itemQuantity}}</td>
+                                <td><button (click)="onDeleteSelectedSupplyItemRequest(item.id)"
+                                        class="btn btn-sm">-</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+               <div class="col-md-1 mt-3">
+                <div class="text-success">
+                    <button (click)="saveControlRequestItems()" class="text-white">FINALIZAR</button>
+                </div>
+               </div>
             </div>
-            <div class="col-md-1 mt-3 ms-5">
-                <button (click)="saveControlRequestItems()" class="text-white">APLICAR</button>
-            </div>
-
         </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col"></div>
-        </div>
-    </div>
+    </body>
 </ng-template>
 <ng-template #savedDepositControlRequestTemplate>
+    <body id="orderListTemplate"> 
+        
+   
     <button id="closeButton" (click)="onCloseSavedDepositControlRequestTemplate()"
         class="btn btn-sm text-white">X</button>
+        <div id="orderListTemplate" class="container-flex">
     <div class="row mt-1">
 
         <div class="col-md-4 ms-3">
@@ -264,7 +288,6 @@
         <div class="col-md-6 ms-4">
             <h3>{{toSendDepositRequestDto.destinationOrganizationName}}</h3>
         </div>
-
     </div>
     <div class="row">
         <div class="col-md-1"></div>
@@ -275,7 +298,7 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <table class="table table-flex table-bordered">
+            <table class="table table-hover table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">CODIGO</th>
@@ -290,14 +313,20 @@
                         <td>{{item.itemDescription}}</td>
                         <td>{{item.itemQuantity}}</td>
                     </tr>
-
                 </tbody>
             </table>
         </div>
     </div>
+</div>
+</body>
 </ng-template>
 <ng-template #depositControlRequestTemplate>
+    <body id="showItems">
+        
+   
     <button id="closeButton" (click)="onCloseDepositControlRequestsTemplate()" class="btn btn-sm text-white">X</button>
+    <div id="showItems" class="container-flex">
+
     <div class="row">
         <div class="col">
             <div class="barofcolourRed mt-3">-</div>
@@ -325,11 +354,8 @@
             <small class="fw-bold text-dark">{{selectedDepositRequestDto.requestDate|date: 'dd-MM-yyyy'}}</small>
         </div>
     </div>
-
     <div class="row">
         <div class="col-md-1"></div>
-
-
     </div>
     <div class="row">
         <div class="col-md-1"></div>
@@ -340,7 +366,7 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <table class="table table-flex table-bordered">
+            <table>
                 <thead>
                     <tr>
                         <th scope="col">CODIGO</th>
@@ -349,19 +375,19 @@
                         <th scope="col">CANTIDAD</th>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let controlReceivce of depositControlRequestDtos">
-                        <td id="fullBlue_td">{{controlReceivce.itemCode}}</td>
-                        <td>{{controlReceivce.itemMeasureUnit}}</td>
-                        <td>{{controlReceivce.itemDescription}}</td>
-                        <td *ngIf="controlReceivce.itemQuantity>=10" class="text-success fw-bold">
-                            {{controlReceivce.itemQuantity}}</td>
-                        <td *ngIf="controlReceivce.itemQuantity<10" class="text-danger fw-bold">
-                            {{controlReceivce.itemQuantity}}</td>
+                    <tr *ngFor="let controlReceive of depositControlRequestDtos">
+                        <td id="fullBlue_td">{{controlReceive.itemCode}}</td>
+                        <td>{{controlReceive.itemMeasureUnit}}</td>
+                        <td>{{controlReceive.itemDescription}}</td>
+                        <td *ngIf="controlReceive.itemQuantity>=10" class="text-success fw-bold">
+                            {{controlReceive.itemQuantity}}</td>
+                        <td *ngIf="controlReceive.itemQuantity<10" class="text-danger fw-bold">
+                            {{controlReceive.itemQuantity}}</td>
                     </tr>
-
-
                 </tbody>
             </table>
         </div>
     </div>
+</div>
+</body>
 </ng-template>

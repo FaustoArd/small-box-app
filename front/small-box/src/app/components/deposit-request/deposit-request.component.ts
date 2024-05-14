@@ -15,6 +15,7 @@ import { DepositControlRequestDto } from 'src/app/models/depositControlRequestDt
 import { QuantityControlRequest } from 'src/app/models/quantityControlRequest';
 import { DestinationOrganization } from 'src/app/models/destinationOrganization';
 import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-deposit-request',
@@ -26,7 +27,7 @@ export class DepositRequestComponent implements OnInit {
   constructor(private depositRequestService: DepositRequestService, private snackBar: SnackBarService
     , private organizationService: OrganizationService, private depositControlService: DepositControlService
     , private formBuilder: FormBuilder, private cookieService: CookieStorageService, private dialogService: DialogService
-    ,private confirmDialogService:ConfirmDialogService
+    ,private confirmDialogService:ConfirmDialogService,private router:Router
   ) { }
 
   ngOnInit(): void {
@@ -55,9 +56,9 @@ export class DepositRequestComponent implements OnInit {
 
   openCreateRequestTemplate(template: TemplateRef<any>) {
     this.getAllOrganizationsByUser();
-    this.createRequestTemplateMatDialogRef = this.dialogService.openCreateRequestCreation({
+    this.createRequestTemplateMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'35%','20%',true,true);
 
     this.createRequestTemplateMatDialogRef.afterClosed().subscribe({
       complete: () => {
@@ -119,9 +120,9 @@ setDestinationOrganization(){
     //Read the info inside createRequest() method .
     this.getllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganization, organizationApplicantId);
     const template = this.supplyItemRequestSelectionTemplate;
-    this.supplyItemRequestMatDialogRef = this.dialogService.openCreateRequestCreation({
+    this.supplyItemRequestMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'90%','80%',true,true);
 
   }
 
@@ -313,6 +314,7 @@ private getItemCode(itemId:number):string{
         this.setDestinationOrganizationForm.reset();
         this.destinationOrganizationId
         this.getAllDepositRequests();
+        this.selectedSupplyItemRequestDtos = [];
       }
     });
 
@@ -343,9 +345,9 @@ private getItemCode(itemId:number):string{
   
   openDepositControlRequestsTemplate(template:TemplateRef<any>,depositRequestId:number): void {
     this.getAllControlRequestsByRequestId(depositRequestId);
-    this.depositControlrequestsMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    this.depositControlrequestsMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'60%','50%',true,true);
     this.depositControlrequestsMatDialogRef.afterClosed().subscribe();
   }
 
@@ -384,9 +386,21 @@ private getItemCode(itemId:number):string{
         } else {
           this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
         }
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      },
+      complete:()=>{
+        this.reloadPage();
       }
 
     });
+  }
+
+  async reloadPage() {
+    const currentUrl = this.router.url;
+    await this.router.navigate(['home']);
+    await this.router.navigate([currentUrl])
   }
 
   deleteDepositRequestById(depositRequestId:number){
@@ -396,6 +410,6 @@ private getItemCode(itemId:number):string{
       },error:(errorData)=>{
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);
       }
-    })
+    });
   }
 }

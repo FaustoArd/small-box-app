@@ -37,7 +37,7 @@ export class DepositControlService {
   }
   
     handleError(error:HttpErrorResponse){
-      return throwError(()=> new Error(error.error));
+      return throwError(()=> error.error);
      
     }
 

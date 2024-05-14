@@ -22,11 +22,16 @@ superUserAuth!:boolean;
 currentUsername!:string;
 destinationsList!:Array<string>
 messageQuantity!:number;
+time!:string;
+dayName!:string;
+dayNumber!:number;
+
 constructor(private cookieService:CookieStorageService,private router:Router,private organizationService:OrganizationService
   ,private snackBarService:SnackBarService,private depositReceiverService:DepositReceiverService){}
 
 
 ngOnInit(): void {
+
   this.decodeToken();
     /*this.adminAuth = this.decodeAdminToken();
     this.superUserAuth = this.decodeSuperUserToken();
@@ -37,6 +42,8 @@ ngOnInit(): void {
    
     }
 }
+
+
 onLogout(){
     this.cookieService.deleteToken();
     this.cookieService.deleteCurrentContainerId();

@@ -35,22 +35,26 @@ export class DepositHomeComponent implements OnInit {
   supplyDto!: SupplyDto;
   selectedDepositBol: boolean = false;
   selectedDepositStr: string = "";
-  disableSelect:boolean=true;
-  totalPurchaseOrders!:number;
- 
+  disableSelect: boolean = true;
+
+  totalPurchaseOrders!: number;
+  now!: Date;
+
 
 
   constructor(private dialogService: DialogService,
     private fileUploadService: FileUploadService, private snackBar: SnackBarService
     , private depositControlService: DepositControlService, private cookieService: CookieStorageService,
     private confirmDialogService: ConfirmDialogService, private formBuilder: FormBuilder
-    , private router: Router,private organizationService:OrganizationService
+    , private router: Router, private organizationService: OrganizationService
   ) { }
 
   ngOnInit(): void {
     this.getCurrentDeposit();
-   
+
   }
+
+
   currentRouter = this.router.url;
 
   file!: File;
@@ -65,13 +69,13 @@ export class DepositHomeComponent implements OnInit {
   /**PURCHASE ORDER*/
   uploadPurchaseOrderFile() {
     const orgId = this.cookieService.getUserMainOrganizationId();
-   this.fileUploadService.sendPurchaseOrderPdfToBackEnd(this.file, Number(orgId)).subscribe({
+    this.fileUploadService.sendPurchaseOrderPdfToBackEnd(this.file, Number(orgId)).subscribe({
       next: (purchaseOrderData) => {
         this.purchaseOrderDto = purchaseOrderData;
       },
       error: (errorData) => {
-        const errorEdited=String (errorData).replace('Error:','');
-        
+        const errorEdited = String(errorData).replace('Error:', '');
+
         this.snackBar.openSnackBar(errorEdited, 'Cerrar', 4000);
       },
       complete: () => {
@@ -85,7 +89,7 @@ export class DepositHomeComponent implements OnInit {
   }
   private purchaseOrderTableMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('purchaseOrderTableTemplate') purchaseOrderTableTemplate !: TemplateRef<any>
-   openPurchaseOrderTableTemplate(purchaseOrderItems: PurchaseOrderItemDto[]): void {
+  openPurchaseOrderTableTemplate(purchaseOrderItems: PurchaseOrderItemDto[]): void {
     this.purchaseOrderItemDtos = purchaseOrderItems;
     const template = this.purchaseOrderTableTemplate;
     this.purchaseOrderTableMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
@@ -93,21 +97,21 @@ export class DepositHomeComponent implements OnInit {
     });
     this.purchaseOrderTableMatDialogRef.afterClosed().subscribe();
   }
- 
+
   onClosepurchaseOrderListTemplate() {
     this.purchaseOrderTemplateRef.close();
   }
- private purchaseOrderTemplateRef!: MatDialogRef<DialogTemplateComponent>;
+  private purchaseOrderTemplateRef!: MatDialogRef<DialogTemplateComponent>;
   purchaseOrderDtos: PurchaseOrderDto[] = [];
   openDialogPurchaseOrderList(template: any) {
     const orgId = Number(this.cookieService.getUserMainOrganizationId());
     this.getAllPurchaseOrders(orgId);
     this.purchaseOrderTemplateRef = this.dialogService.openCustomDialogCreation({
-      
+
       template,
-      
-    },'80%',
-    '85%',true,false);
+
+    }, '80%',
+      '85%', true, false);
     this.purchaseOrderTemplateRef.afterClosed().subscribe();
   }
   private confirmData!: boolean;
@@ -126,6 +130,31 @@ export class DepositHomeComponent implements OnInit {
       this.loadPurchaseOrderToDepositControl(purchaseOrderId);
     }
   }
+  purchaseOrderToDepositConfirmData!: boolean;
+  confirmLoadPurchaseOrderToDeposit(purchaseOrderId: number, orderDate: Date, loadedToDeposit: boolean) {
+    const orderIndex = this.purchaseOrderDtos.findIndex(item => item.id == purchaseOrderId);
+    const orderNumber = this.purchaseOrderDtos[orderIndex].orderNumber;
+    if (loadedToDeposit) {
+      this.snackBar.openSnackBar('La orden de compra: ' + orderNumber + 'Ya fue cargada.', 'Cerrar', 3000);
+    } else {
+      const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
+      var confirmText = 'Desea cargar al deposito: ' + this.selectedDepositStr + ', la orden de compra numero: ' + orderNumber +
+        '/' + orderDate.toString().substring(2, 4) + '?, Todos los items que ya existan en el deposito se actualizaran.';
+      this.confirmDialogService.confirmDialog(confirmText).subscribe({
+        next: (confirmData) => {
+          this.purchaseOrderToDepositConfirmData = confirmData;
+          if (this.purchaseOrderToDepositConfirmData) {
+            this.loadPurchaseOrderToDepositControl(purchaseOrderId);
+          } else {
+            this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
+          }
+        },
+        error: (errorData) => {
+          this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+        }
+      });
+    }
+  }
 
   depositReport: PurchaseOrderToDepositReportDto[] = [];
   loadPurchaseOrderToDepositControl(purchaseOrderId: number) {
@@ -142,6 +171,7 @@ export class DepositHomeComponent implements OnInit {
       }
     });
   }
+
 
   onCloseOrderToDepositTemplate() {
     this.orderToDepositMatDialogRef.close();
@@ -196,7 +226,7 @@ export class DepositHomeComponent implements OnInit {
     });
   }
 
-  
+
 
   purchaseOrderItemDtosListShow: PurchaseOrderItemDto[] = [];
   getPurchaseOrderItems(purchaseOrderId: number) {
@@ -231,10 +261,10 @@ export class DepositHomeComponent implements OnInit {
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
-      complete:()=>{
-        this.purchaseOrderDtos.forEach((item,index)=>{
-          if(item.id==orderId){
-            this.purchaseOrderDtos.splice(index,1);
+      complete: () => {
+        this.purchaseOrderDtos.forEach((item, index) => {
+          if (item.id == orderId) {
+            this.purchaseOrderDtos.splice(index, 1);
             this.totalPurchaseOrders = this.purchaseOrderDtos.length;
           }
         })
@@ -247,9 +277,13 @@ export class DepositHomeComponent implements OnInit {
     this.supplyItemDtos = supplyItems;
     const template = this.supplyTableTemplate;
     this.getAllOrganizations();
-    this.supplyTableTemplateRef = this.dialogService.openCreateRequestCreation({
-      template
-    });
+    this.supplyTableTemplateRef = this.dialogService.openCustomDialogCreation({
+      template,
+
+    }, '70%',
+      '80%',
+      true,
+      false);
     this.supplyTableTemplateRef.afterClosed().subscribe();
 
   }
@@ -262,7 +296,7 @@ export class DepositHomeComponent implements OnInit {
         this.supplyDto = supplyData;
       },
       error: (errorData) => {
-        const errorEdited=String (errorData).replace('Error:','');
+        const errorEdited = String(errorData).replace('Error:', '');
         this.snackBar.openSnackBar(errorEdited, 'Cerrar', 4000);
       },
       complete: () => {
@@ -277,95 +311,120 @@ export class DepositHomeComponent implements OnInit {
   }
 
   supplyOrganizationApplicantForm = this.formBuilder.group({
-    id:[0,Validators.required]
+    id: [0, Validators.required]
   });
-  get id(){
+  get id() {
     return this.supplyOrganizationApplicantForm.controls.id;
   }
 
 
-  organizationsDto:OrganizationDto[]=[];
-  getAllOrganizations(){
+  organizationsDto: OrganizationDto[] = [];
+  getAllOrganizations() {
     this.organizationService.getAllOrganizations().subscribe({
-      next:(orgsData)=>{
+      next: (orgsData) => {
         this.organizationsDto = orgsData;
       },
-      error:(errorData)=>{
-        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
     });
   }
-  selectedApplicantDto!:OrganizationDto;
-  setSupplyOrganizationApplicant(supplyId:number){
-  if(this.supplyOrganizationApplicantForm.valid){
+  selectedApplicantDto!: OrganizationDto;
+  setSupplyOrganizationApplicant(supplyId: number) {
+    if (this.supplyOrganizationApplicantForm.valid) {
       this.selectedApplicantDto = new OrganizationDto();
       this.selectedApplicantDto = Object.assign
-      (this.selectedApplicantDto,this.supplyOrganizationApplicantForm.value);
-      this.depositControlService.setSupplyOrganizationApplicant(this.selectedApplicantDto,supplyId).subscribe({
-        next:(orgNameData)=>{
-          this.snackBar.openSnackBar('Se guardo la organizacion: ' + orgNameData + '. ','Cerrar',3000);
+        (this.selectedApplicantDto, this.supplyOrganizationApplicantForm.value);
+      this.depositControlService.setSupplyOrganizationApplicant(this.selectedApplicantDto, supplyId).subscribe({
+        next: (orgNameData) => {
+          this.snackBar.openSnackBar('Se guardo la organizacion: ' + orgNameData + '. ', 'Cerrar', 3000);
         },
-        error:(errorData)=>{
-          this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-        },complete:()=>{
+        error: (errorData) => {
+          this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+        }, complete: () => {
           this.supplyOrganizationApplicantForm.reset();
-         this.onCloseSupplyTableTemplate();
-           }
-       
+          this.onCloseSupplyTableTemplate();
+        }
+
       });
     }
   }
-  
-  setUpdateSupplyOrganizationApplicant(supplyId:number){
-    if(this.supplyOrganizationApplicantForm.valid){
+
+  setUpdateSupplyOrganizationApplicant(supplyId: number) {
+    if (this.supplyOrganizationApplicantForm.valid) {
       this.selectedApplicantDto = new OrganizationDto();
       this.selectedApplicantDto = Object.assign
-      (this.selectedApplicantDto,this.supplyOrganizationApplicantForm.value);
-      this.depositControlService.setSupplyOrganizationApplicant(this.selectedApplicantDto,supplyId).subscribe({
-        next:(orgNameData)=>{
-          this.snackBar.openSnackBar('Se guardo la organizacion: ' + orgNameData + '. ','Cerrar',3000);
+        (this.selectedApplicantDto, this.supplyOrganizationApplicantForm.value);
+      this.depositControlService.setSupplyOrganizationApplicant(this.selectedApplicantDto, supplyId).subscribe({
+        next: (orgNameData) => {
+          this.snackBar.openSnackBar('Se guardo la organizacion: ' + orgNameData + '. ', 'Cerrar', 3000);
         },
-        error:(errorData)=>{
-          this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-        },complete:()=>{
+        error: (errorData) => {
+          this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+        }, complete: () => {
           const orgId = Number(this.cookieService.getUserMainOrganizationId());
           this.getAllSupplies(orgId);
-         this.onCloseUpdateSupplyOrganizationApplicantTemplate();
-           }
-       
+          this.onCloseUpdateSupplyOrganizationApplicantTemplate();
+        }
+
       });
     }
   }
 
 
-  updateSupplyOrganizationApplicantShow(){
+  updateSupplyOrganizationApplicantShow() {
     var check = this.findedSupply?.dependecyApplicantOrganizationId;
-    if(typeof check !== 'undefined'){
-    this.supplyOrganizationApplicantForm.patchValue({
-      id:this.findedSupply.dependecyApplicantOrganizationId
-    });
+    if (typeof check !== 'undefined') {
+      this.supplyOrganizationApplicantForm.patchValue({
+        id: this.findedSupply.dependecyApplicantOrganizationId
+      });
+    }
   }
-  }
-  onCloseUpdateSupplyOrganizationApplicantTemplate(){
+  onCloseUpdateSupplyOrganizationApplicantTemplate() {
     this.updateSuplyOrganizationApplicantTemplateRef.close();
   }
+
+  confirmUpdateOrganizationApplicant(template:TemplateRef<any>, supplyId:number){
+   const supplyIndex = this.suppliesDto.findIndex(supply => supply.id==supplyId);
+   const oldDependencyName = this.suppliesDto[supplyIndex].applicantOrganization;
+   if(oldDependencyName==null){
+    this.openUpdateSupplyOrganizationApplicantTemplate(template,supplyId);
+   }else{
+    this.confirmUpdateOrgApplicant(template,supplyId,oldDependencyName);
+  }
+  }
   
-  findedSupplyId!:number;
-  private updateSuplyOrganizationApplicantTemplateRef!:MatDialogRef<DialogTemplateComponent>
-  openUpdateSupplyOrganizationApplicantTemplate(template:TemplateRef<any>,supplyId:number){
-   this.getSupplybyId(supplyId);
-   this.updateSupplyOrganizationApplicantShow();
-   this.getAllOrganizations();
-   this.findedSupplyId = supplyId;
-   this.updateSuplyOrganizationApplicantTemplateRef = this.dialogService.openDialogCreation({
-    template
-   });
-   this.updateSuplyOrganizationApplicantTemplateRef.afterClosed().subscribe();
+  private confirmUpdateOrgApplicant(template:TemplateRef<any>,supplyId:number,oldDependencyName:string){
+    var confirmText = "Desea modificar la dependencia: " + oldDependencyName + "?";
+    this.confirmDialogService.confirmDialog(confirmText).subscribe({
+      next: (confirmData) => {
+        this.depositControlConfirmData = confirmData;
+        if (this.depositControlConfirmData) {
+          this.openUpdateSupplyOrganizationApplicantTemplate(template,supplyId);
+        } else {
+          this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
+        }
+      }
+
+    });
+  }
+
+  findedSupplyId!: number;
+  private updateSuplyOrganizationApplicantTemplateRef!: MatDialogRef<DialogTemplateComponent>
+  openUpdateSupplyOrganizationApplicantTemplate(template: TemplateRef<any>, supplyId: number) {
+    this.getSupplybyId(supplyId);
+    this.updateSupplyOrganizationApplicantShow();
+    this.getAllOrganizations();
+    this.findedSupplyId = supplyId;
+    this.updateSuplyOrganizationApplicantTemplateRef = this.dialogService.openDialogCreation({
+      template
+    });
+    this.updateSuplyOrganizationApplicantTemplateRef.afterClosed().subscribe();
   }
 
   private supplyTableTemplateRef!: MatDialogRef<DialogTemplateComponent>;
 
- 
+
   onCloseSupplyListTemplate() {
     this.supplyListMatDialogRef.close();
   }
@@ -375,11 +434,11 @@ export class DepositHomeComponent implements OnInit {
     const orgId = Number(this.cookieService.getUserMainOrganizationId());
     this.getAllSupplies(orgId);
     this.supplyListMatDialogRef = this.dialogService.openCustomDialogCreation({
-      
+
       template,
-      
-    },'80%',
-    '85%',true,false);
+
+    }, '80%',
+      '85%', true, false);
     this.supplyListMatDialogRef.afterClosed().subscribe();
 
   }
@@ -438,7 +497,7 @@ export class DepositHomeComponent implements OnInit {
     this.supplyCorrectionNoteMatDialogRef.close();
   }
   private supplyCorrectionNoteMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
-  now!: Date;
+
   openSupplyCorrectionNoteDialog(template: any, supplyId: number) {
     this.now = new Date();
     this.now.getTime();
@@ -448,7 +507,7 @@ export class DepositHomeComponent implements OnInit {
     });
     this.supplyCorrectionNoteMatDialogRef.afterClosed().subscribe();
   }
-  
+
 
   supplyCorrectionNote!: SupplyCorrectionNote;
   getSupplyCorrectionNote(supplyId: number) {
@@ -465,7 +524,10 @@ export class DepositHomeComponent implements OnInit {
 
   supplyConfirmData!: boolean;
   confirmDeleteSupply(supplyId: number) {
-    var confirmText = "Desea eliminar el suministro?";
+    const supplyIndex = this.suppliesDto.findIndex(supply => supply.id==supplyId);
+    const supply = this.suppliesDto[supplyIndex];
+    
+    var confirmText = "Desea eliminar el suministro: " + supply.supplyNumber +'/'+ supply.date.toString().substring(2,4) + " ?";
     this.confirmDialogService.confirmDialog(confirmText).subscribe({
       next: (confirmData) => {
         this.supplyConfirmData = confirmData;
@@ -486,10 +548,10 @@ export class DepositHomeComponent implements OnInit {
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
-      complete:()=>{
-        this.suppliesDto.forEach((item,index)=>{
-          if(item.id==supplyId){
-            this.suppliesDto.splice(index,1);
+      complete: () => {
+        this.suppliesDto.forEach((item, index) => {
+          if (item.id == supplyId) {
+            this.suppliesDto.splice(index, 1);
           }
         });
       }
@@ -553,8 +615,8 @@ export class DepositHomeComponent implements OnInit {
       this.depositDto = new DepositDto();
       this.depositDto = Object.assign(this.depositDto, this.depositFormbuilder.value);
       const organizationId = Number(this.cookieService.getUserMainOrganizationId());
-       this.depositDto.organizationId = organizationId;
-     this.depositControlService.createDeposit(this.depositDto).subscribe({
+      this.depositDto.organizationId = organizationId;
+      this.depositControlService.createDeposit(this.depositDto).subscribe({
         next: (depositNameData) => {
           this.snackBar.openSnackBar('Se creo el deposito: ' + depositNameData, 'Cerrar', 3000);
         },
@@ -645,15 +707,17 @@ export class DepositHomeComponent implements OnInit {
   }
 
 
-  deopsitControlConfirmData!: boolean;
+
+
+  depositControlConfirmData!: boolean;
   confirmDeleteDepositControl(depositControlId: number) {
     const controlIndex = this.depositControlDtos.findIndex(item => item.id == depositControlId);
     const controlCode = this.depositControlDtos[controlIndex].itemCode;
     var confirmText = "Desea eliminar el item de deposito numero: " + controlCode;
     this.confirmDialogService.confirmDialog(confirmText).subscribe({
       next: (confirmData) => {
-        this.deopsitControlConfirmData = confirmData;
-        if (this.deopsitControlConfirmData) {
+        this.depositControlConfirmData = confirmData;
+        if (this.depositControlConfirmData) {
           this.deleteDepositControlById(depositControlId);
         } else {
           this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
@@ -683,7 +747,7 @@ export class DepositHomeComponent implements OnInit {
     this.depositControlUpdateForm.patchValue({
       id: this.findedDepositControlDto.id,
       supplyNumber: this.findedDepositControlDto.supplyNumber,
-      itemCode:this.findedDepositControlDto.itemCode,
+      itemCode: this.findedDepositControlDto.itemCode,
       itemDescription: this.findedDepositControlDto.itemDescription,
       quantity: this.findedDepositControlDto.quantity,
       expirationDate: JSON.stringify(this.findedDepositControlDto.expirationDate),
@@ -702,7 +766,7 @@ export class DepositHomeComponent implements OnInit {
   private updateDepositControlMatDialogRef!: MatDialogRef<DialogTemplateComponent>
 
   openDialogDepositControlUpdate(depositControlId: number, template: TemplateRef<any>) {
-    
+
     this.getDepositControlById(depositControlId);
     this.updateDepositControlMatDialogRef = this.dialogService.openDialogCreation({
       template
@@ -713,7 +777,7 @@ export class DepositHomeComponent implements OnInit {
   updatedDepositControl!: DepositControlDto;
   updateDepositControl() {
     if (this.depositControlUpdateForm.valid) {
-     
+
       this.findedDepositControlDto = Object.assign(this.findedDepositControlDto, this.depositControlUpdateForm.value);
       const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
       this.depositControlService.updateDepositControl(this.findedDepositControlDto, depositId).subscribe({
@@ -723,7 +787,7 @@ export class DepositHomeComponent implements OnInit {
         error: (errorData) => {
           this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
         },
-        complete:()=>{
+        complete: () => {
           this.onCloseUpdateDepositControlTemplate();
           this.getDepositControlsByDeposit()
         }
@@ -731,11 +795,9 @@ export class DepositHomeComponent implements OnInit {
     }
   }
 
-  editAllDepositControlfields(disableSelect:boolean):void{
-    this.disableSelect=disableSelect;
+  editAllDepositControlfields(disableSelect: boolean): void {
+    this.disableSelect = disableSelect;
   }
-
-
   getDepositControlById(depositControlId: number) {
     this.depositControlService.findDepositControlbyId(depositControlId).subscribe({
       next: (controlData) => {
@@ -745,14 +807,11 @@ export class DepositHomeComponent implements OnInit {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
       complete: () => {
-        console.log("Item code"+this.findedDepositControlDto.itemCode)
+        console.log("Item code" + this.findedDepositControlDto.itemCode)
         this.updateDepositControlShow(this.findedDepositControlDto);
       }
     });
   }
-
-
-
   deleteDepositControlById(depositControlId: number) {
     this.depositControlService.deleteDepositControlById(depositControlId).subscribe({
       next: (deletedData) => {
@@ -761,19 +820,16 @@ export class DepositHomeComponent implements OnInit {
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
-      complete:()=>{
-        this.depositControlDtos.forEach((item,index)=>{
-          if(item.id==depositControlId){
-            this.depositControlDtos.splice(index,1);
-           
+      complete: () => {
+        this.depositControlDtos.forEach((item, index) => {
+          if (item.id == depositControlId) {
+            this.depositControlDtos.splice(index, 1);
+
           }
         })
       }
     });
   }
-
-
-
 
   get name() {
     return this.depositFormbuilder.controls.name;

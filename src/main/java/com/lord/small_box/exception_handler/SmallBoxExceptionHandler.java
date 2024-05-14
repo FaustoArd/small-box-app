@@ -47,7 +47,7 @@ public class SmallBoxExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(TextFileInvalidException.class)
 	ResponseEntity<String> handleTextFileInvalid(TextFileInvalidException ex) {
-		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.valueOf(422));
 	}
 
 }

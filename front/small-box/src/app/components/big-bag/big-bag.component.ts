@@ -117,6 +117,11 @@ export class BigBagComponent implements OnInit {
     });
   }
   }
+  async reloadPage(){
+    const currentUrl = this.router.url;
+    await this.router.navigate(['home']);
+    await this.router.navigate([currentUrl])
+  }
 
   currentDepositName!: string;
   getCurrentDeposit() {
@@ -153,9 +158,9 @@ export class BigBagComponent implements OnInit {
   private bigBagListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogSupplyList(template: any) {
     this.getAllBigBagsByOrg();
-    this.bigBagListMatDialogRef = this.dialogService.openDialogCreation({
+    this.bigBagListMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'50%','60%',true,false);
     this.bigBagListMatDialogRef.afterClosed().subscribe();
 
   }
@@ -181,9 +186,9 @@ export class BigBagComponent implements OnInit {
   openDialogBigBagItemsList(bigBagId:number):void{
    this.getAllBigBagItems(bigBagId);
    const template = this.bigBagItemsTableTemplate;
-    this.bigBagItemsListMatDialogRef = this.dialogService.openDialogCreation({
+    this.bigBagItemsListMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'60%','60%',true,true);
     this.bigBagItemsListMatDialogRef.afterClosed().subscribe();
 
   }

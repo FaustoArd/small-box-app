@@ -72,7 +72,7 @@ public class DepositRequestController {
 	@DeleteMapping(path="/delete-deposit-request/{depositRequestId}")
 	ResponseEntity<String> deleteControlRequestbyId(@PathVariable("depositRequestId")long depositRequestId){
 		String deletedRequestCode = depositRequestService.deleteDepositRequest(depositRequestId);
-		return ResponseEntity.ok(deletedRequestCode);
+		return ResponseEntity.ok(gson.toJson(deletedRequestCode));
 	}
 
 }

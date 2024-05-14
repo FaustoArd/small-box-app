@@ -3,21 +3,26 @@
     <div class="container-flex">
         <div class="row">
             <div class="col-md-3">
-                <button routerLink="/big-bag" id="bigBag" class="btn btn-md  ms-5 mt-1">Bolsones</button>
+                <button routerLink="/big-bag" id="bigBag" class="btn btn-md  ms-5 mt-1 text-center">
+                    <img id="bag_icon" class="ms-1 mt-1" src="./assets/img/bag-shopping-solid.svg">
+                </button>
             </div>
-            <div class="col-md-5">
+             <div class="col-md-2"></div>
 
+            <div class="col-md-3">
+              
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div> <img id="factory_icon" class="ms-1 mt-1" src="./assets/img/building-solid.svg">
-                    <small class="text-danger" *ngIf="!selectedDepositBol">Ninguno</small>
+                    <small class="text-danger" *ngIf="!selectedDepositBol">-</small>
                     <small id="selectedDeposit" *ngIf="selectedDepositBol">{{selectedDepositStr}}</small>
-                    <button (click)="openDialogDepositSelection(depositSelectionTemplate)"
-                        class="btn btn-sm mt-1 ms-3 text-white">Seleccionar</button>
+                    <div id="createDepositBtn" (click)="openDialogDepositSelection(depositSelectionTemplate)"
+                        class="btn btn-sm mt-0 ms-3 text-white">Seleccionar</div>
                     <!-- <button (click)="deleteCurrentDepositSelected()"
                     class="btn btn-sm mt-1 ms-3 text-white">Delete</button> -->
                 </div>
             </div>
+           
         </div>
 
         <div class="row">
@@ -28,19 +33,22 @@
         </div>
         <div class="row mt-5 ms-3">
             <div class="col-md-3">
-                <h5>ORDEN DE COMPRA</h5>
+                <h5 class="d-inline">ORDEN DE COMPRA</h5>
+               
                 <hr class="my-4">
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-3">
-                <h5>SUMINISTRO</h5>
+                <h5 class="d-inline">SUMINISTRO</h5>
+              
                 <hr class="my-4">
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-3">
                 <h5 class="d-inline">DEPOSITO</h5>
+                <img id="bag_icon" class="ms-1 mt-1" src="./assets/img/table-cells-solid.svg">
                 <div id="createDepositBtn" (click)="openDialogDepositCreation(createDepositTemplate)"
-                    class="btn btn-sm  ms-5 mb-3 ">Crear deposito</div>
+                    class="btn btn-sm  ms-5 mb-3 ">Crear</div>
                 <hr class="my-4">
             </div>
         </div>
@@ -50,9 +58,11 @@
                 <!-- Purchase order jumbotron -->
                 <div class="jumbotron ms-1">
                     <div>
-                        <p class="d-inline display-4">SUBIR</p>
-                        <a (click)="uploadPurchaseOrderFile()" class="btn btn-sm ms-3 " role="button">-</a>
+                        <p class="d-inline display-4">CARGAR</p>
+                        
+                        <a (click)="uploadPurchaseOrderFile()" class="btn btn-sm ms-2 " role="button">-</a>
                         <input id="uploadInput" class="w-50 ms-2" type="file" (change)="selectFile($event)" />
+                      
                     </div>
                     <div id="orderItem" class="mt-1">
                         <p class="d-inline display-4">VER</p>
@@ -68,8 +78,8 @@
                 <!-- Supply jumbotron -->
                 <div class="jumbotron  ms-1">
                     <div>
-                        <p class="d-inline display-4">SUBIR</p>
-                        <a (click)="uploadSupplyFile()" class="btn btn-sm ms-3 " role="button">-</a>
+                        <p class="d-inline display-4">CARGAR</p>
+                        <a (click)="uploadSupplyFile()" class="btn btn-sm ms-2 " role="button">-</a>
                         <input id="uploadInput" class="w-50 ms-2" type="file" (change)="selectFile($event)" />
                     </div>
                     <div id="orderItem" class="mt-1">
@@ -104,24 +114,31 @@
     </div>
 </body>
 <ng-template #depositControlListTemplate>
-
-    <body>
-        <div id="orderListTemplate" class="container-flex">
+    <body  *ngIf="depositControlDtos.length==0">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+              <h1 class="display-4">No hay ningun item cargado..</h1>
+              <p (click)="onCloseDepositControlListTemplate()" class="lead"><button class="btn btn-sm text-white">Volver</button></p>
+            </div>
+          </div>
+    </body>
+    <body id="orderListTemplate" *ngIf="depositControlDtos.length>0">
+        <div id="orderListTemplate"  class="container-flex">
 
             <button id="closeButton" (click)="onCloseDepositControlListTemplate()"
                 class="btn btn-sm text-white">X</button>
             <div class="row">
                 <div class="col-md-1"></div>
-                <div class="col-md-6 ms-2">
+                <div class="col-md-8 ms-2">
                     <!-- Deposit control table -->
-                    <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline text-danger">{{selectedDepositStr}}
+                    <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline text-white">{{selectedDepositStr}}
                         </h2>
                     </h3>
                     <p class="lead">
                         <hr class="my-4">
-                    <table class="table table-flex table-bordered h-75">
+                    <table class="table table-flex table-hover table-bordered h-75">
                         <thead>
-                            <tr>
+                            <tr  class="text-center">
                                 <th scope="col">CODIGO</th>
                                 <th scope="col">U.MEDIDA</th>
                                 <th scope="col">DESCRIPCION</th>
@@ -136,7 +153,7 @@
                         <tbody class="text-center">
                             <tr *ngFor="let item of depositControlDtos">
                                 <td id="fullBlue_td">{{item.itemCode}}</td>
-                                <td>{{item.measureUnit}}</td>
+                                <td >{{item.measureUnit}}</td>
                                 <td>{{item.itemDescription}}</td>
                                 <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
                                 <td id="fullBlue_td">{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
@@ -144,8 +161,8 @@
                                 <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
                                 <td><button
                                         (click)="openDialogDepositControlUpdate(item.id,updateDepositContolTemplate)"
-                                        class="btn btn-sm">-</button></td>
-                                <td><button (click)="confirmDeleteDepositControl(item.id)" class="btn btn-sm">-</button>
+                                        class="btn btn-md"></button></td>
+                                <td><button (click)="confirmDeleteDepositControl(item.id)" class="btn btn-md"></button>
                                 </td>
 
                             </tr>
@@ -159,12 +176,16 @@
     </body>
 </ng-template>
 <ng-template #purchaseOrderTableTemplate>
+    <body id="supplyUpload" >
+        
+   
     <button id="closeButton" (click)="onClosePurchaseOrderTableTemplate()" class="btn btn-sm text-white">X</button>
+    <div id="supplyUpload"  class="container-flex">
     <div class="row mt-1">
         <div class="col-md-4"></div>
         <div class="col-md-4">
-            <h2 class="d-inline">ORDEN DE COMPRA NUMERO: </h2>
-            <h2 class="d-inline text-danger">{{purchaseOrderDto.orderNumber}} </h2>
+            <h2 class="d-inline text-dark">ORDEN DE COMPRA NUMERO: </h2>
+            <h2 class="d-inline text-danger">{{purchaseOrderDto.orderNumber}}<small class="text-dark fw-bold">-</small>{{ purchaseOrderDto.date.toString().substring(2,4)}} </h2>
         </div>
         <!-- Purchase order table -->
         <div class="col-md-1"></div>
@@ -206,7 +227,7 @@
     <div class="row mt-1">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <table class="table table-flex table-bordered">
+            <table class="table table-flex table-hover table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">CODIGO</th>
@@ -233,16 +254,21 @@
             </table>
         </div>
     </div>
+</div>
+</body>
 </ng-template>
 
 <ng-template #supplyTableTemplate>
+    <body id="supplyUpload">
+        
+   
     <!-- <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button> -->
-    <div *ngIf="supplyItemDtos.length>0" class="container-flex">
+    <div id="supplyUpload" *ngIf="supplyItemDtos.length>0" class="container-flex">
         <div class="row mt-1">
             <div class="col-md-5"></div>
             <div class="col-md-5">
                 <h2 class="d-inline">SUMINISTRO NUMERO: </h2>
-                <h2 class="d-inline text-danger">{{supplyDto.supplyNumber}} </h2>
+                <h2 class="d-inline text-danger">{{supplyDto.supplyNumber }}<small class="text-dark fw-bold">-</small>{{ supplyDto.date.toString().substring(2,4)}} </h2>
 
             </div>
             <div class="col-md-2">
@@ -295,7 +321,7 @@
         <div class="row mt-1">
             <div class="col-md-1"></div>
             <div class="col-md-10">
-                <table class="table table-flex table-bordered">
+                <table class="table table-sm table-hover table-bordered">
                     <thead>
                         <tr>
                             <th scope="col">CODIGO</th>
@@ -327,12 +353,20 @@
 
         </div>
     </div>
+</body>
 </ng-template>
 
 <ng-template #purchaseOrderListTemplate>
+    <body  *ngIf="purchaseOrderDtos.length==0">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+              <h1 class="display-4">No hay ninguna orden de compra cargada..</h1>
+              <p (click)="onClosepurchaseOrderListTemplate()" class="lead"><button class="btn btn-sm text-white">Volver</button></p>
+            </div>
+          </div>
+    </body>
 
-
-    <body id="orderListTemplate">
+    <body *ngIf="purchaseOrderDtos.length>0" id="orderListTemplate">
         <div class="container">
             <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
             <div class="row">
@@ -350,15 +384,15 @@
             <div class="row">
                 <div class="col">
                     <div id="table-div" >
-                        <table class="table table-flex table-bordered table-striped h-75">
+                        <table class="table table-flex table-hover table-bordered table-striped h-75">
                             <thead>
-                                <tr>
+                                <tr class="text-center">
                                     <th scope="col">FECHA</th>
                                 <th scope="col">NUMERO</th>
                                 <th scope="col">UNIDAD EJECUTORA</th>
                                 <th scope="col">DEPENDENCIA</th>
                                 <th scope="col">TOTAL</th>
-                                <th>VER ITEMS</th>
+                                <th>ITEMS</th>
                                 <th>A DEPOSITO</th>
                                 <th>CARGADO</th>
                                 <th>ELIMINAR</th>
@@ -375,20 +409,20 @@
                                     <td id="fullBlue_td">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
                                     <td class="text-center"><button
                                             (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
-                                            class="btn btn-sm  text-danger">-</button></td>
+                                            class="btn btn-md  text-danger"></button></td>
                                     <td class="text-center">
                                         <button *ngIf="order.loadedToDeposit"
-                                            (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
-                                            class="btn btn-sm text-danger" disabled>-</button>
+                                            (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
+                                            class="btn btn-md text-danger" disabled></button>
                                         <button *ngIf="!order.loadedToDeposit"
-                                            (click)="confirmDepositLoad(order.id,order.loadedToDeposit,order.orderNumber)"
-                                            class="btn btn-sm text-danger">-</button>
+                                            (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
+                                            class="btn btn-md text-danger"></button>
                                     </td>
                                     <td *ngIf="order.loadedToDeposit" class="text-success text-center">
                                         {{order.loadedToDepositName}}</td>
-                                    <td *ngIf="!order.loadedToDeposit" class="text-danger  text-center">No</td>
-                                    <td> <button (click)="confirmDeletePurchaseOrder(order.id)"
-                                            class="btn btn-sm text-danger">-</button></td>
+                                    <td *ngIf="!order.loadedToDeposit" class="text-danger text-center">No</td>
+                                    <td class="text-center"> <button (click)="confirmDeletePurchaseOrder(order.id)"
+                                            class="btn btn-md text-danger"></button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -401,7 +435,15 @@
 
 <ng-template #supplyListTemplate>
 
-    <body id="orderListTemplate">
+    <body  *ngIf="suppliesDto.length==0">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+              <h1 class="display-4">No hay ningun suministro cargado..</h1>
+              <p (click)="onCloseSupplyListTemplate()" class="lead"><button class="btn btn-sm text-white">Volver</button></p>
+            </div>
+          </div>
+    </body>
+    <body  *ngIf="suppliesDto.length>0" id="orderListTemplate">
         <div class="container">
             <button id="closeButton" (click)="onCloseSupplyListTemplate()" class="btn btn-sm text-white">X</button>
             <div class="row">
@@ -413,20 +455,20 @@
             <div class="row">
                 <div class="col">
                     <div id="table-div" >
-                        <table class="table table-flex table-bordered table-striped h-75">
+                        <table class="table table-flex table-hover table-bordered table-striped h-75">
                             <thead>
-                                <tr>
+                                <tr  class="text-center">
                                     <th scope="col">FECHA</th>
                                     <th scope="col">NUMERO</th>
                                     <th scope="col">SOLICITANTE</th>
                                     <th scope="col">COSTO TOTAL ESTIMADO</th>
-                                    <th scope="col">VER ITEMS</th>
+                                    <th scope="col">ITEMS</th>
                                     <th scope="col">COMPARAR</th>
                                     <th scope="col">DEPENDENCIA</th>
                                     <th scope="col">ELIMINAR</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="text-center">
                                 <tr *ngFor="let supply of suppliesDto">
                                     <td>{{supply.date |date: 'dd-MM-yyyy'}}</td>
                                     <td id="fullBlue_td">{{supply.supplyNumber + '/'+
@@ -443,7 +485,7 @@
                                             class="btn btn-lg text-danger"></button>
                                     </td>
                                     <td class="text-center">
-                                        <button (click)="openUpdateSupplyOrganizationApplicantTemplate
+                                        <button (click)="confirmUpdateOrganizationApplicant
                             (updateSuplyOrganizationApplicantTemplate,supply.id)"
                                             class="btn btn-lg text-danger"></button>
                                     </td>
@@ -466,9 +508,9 @@
         <h2 class="d-inline"> {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.date.toString().substring(2,4)}}
         </h2>
     </div>
-    <table class="table-sm table-bordered h-75">
+    <table class="table-sm table-bordered table-hover h-75">
         <thead>
-            <tr>
+            <tr  class="text-center">
                 <th scope="col">CODIGO</th>
                 <th scope="col">CAT.PROG.</th>
                 <th scope="col">CANTIDAD</th>
@@ -505,9 +547,9 @@
         <h1 class="d-inline">SUMINISTRO NUMERO:</h1>
         <h2 class="d-inline"> {{findedSupply.supplyNumber + '/' + findedSupply.date.toString().substring(2,4)}}</h2>
     </div>
-    <table class="table-sm table-bordered h-75">
+    <table class="table-sm table-hover table-bordered h-75">
         <thead>
-            <tr>
+            <tr class="text-center">
                 <th scope="col">CODIGO</th>
                 <th scope="col">CAT.PROG.</th>
                 <th scope="col">CANTIDAD</th>
@@ -537,9 +579,9 @@
 </ng-template>
 <ng-template #purchaseOrderToDepositTemplate>
     <button id="closeButton" (click)="onCloseOrderToDepositTemplate()" class="btn btn-sm text-white">X</button>
-    <table class="table-sm table-bordered h-75">
+    <table class="table-sm table-hover table-bordered h-75">
         <thead>
-            <tr>
+            <tr  class="text-center">
                 <th scope="col">ESTADO</th>
                 <th scope="col">CODIGO</th>
                 <th scope="col">DESCRIPCION</th>
@@ -773,7 +815,7 @@
                         <div class="form-group">
                             <label for="itemCode" class=" form-label fs-7 ">CODIGO</label>
                             <input class="form-control border-dark" type="text" formControlName="itemCode" id="itemCode"
-                                [readonly]="disableSelect">
+                                [readonly]="true">
                         </div>
                         <div class="form-group">
                             <label for="measureUnit" class=" form-label fs-7 ">U.MEDIDA</label>
@@ -813,7 +855,7 @@
                             </div>
                             <div class="d-inlin">
                                 <div id="btnDisableSelect" (click)="editAllDepositControlfields(false)"
-                                    class="btn btn-sm text-white ms-5 btn-danger border-dark"></div>
+                                    class="btn btn-sm text-white ms-5 btn-warning border-dark"></div>
                             </div>
                         </div>
                         <div *ngIf="!disableSelect">
@@ -822,7 +864,7 @@
                             </div>
                             <div class="d-inlin">
                                 <div id="btnDisableSelect" (click)="editAllDepositControlfields(true)"
-                                    class="btn btn-sm text-white ms-5 btn-warning border-dark"></div>
+                                    class="btn btn-sm text-white ms-5 btn-danger border-dark"></div>
                             </div>
                         </div>
                     </div>

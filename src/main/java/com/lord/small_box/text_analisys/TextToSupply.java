@@ -78,7 +78,7 @@ public class TextToSupply {
 		try {
 			return Integer.parseInt(number);
 		}catch(NumberFormatException ex) {
-			throw new TextFileInvalidException("No se encontro el numero de suministro, Aparentemente estas intentando cargar una orden de compra...",ex);
+			throw new TextFileInvalidException("No se encontro el numero de suministro, El archivo no es compatible con un suministro.",ex);
 			}
 	}
 

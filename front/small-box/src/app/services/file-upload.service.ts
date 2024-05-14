@@ -26,7 +26,10 @@ httpOptionsForm = {
     headers: new HttpHeaders({'Content-Type': 'multipart/form-data'})
   }
   handleError(error:HttpErrorResponse):Observable<any>{
-    return throwError(()=> new Error(error.error));
+    if(error.status==400){
+      return throwError(()=>'Debe seleccionar un archivo')
+    }
+    return throwError(()=>error.error);
     
   }
 

@@ -25,13 +25,21 @@ label{
 #invalid-number{
     font-size: 0.5rem;
 }
-button{
+button,a{
     background: linear-gradient(245.59deg, rgb(113, 132, 184) 0%, rgb(126, 115, 177) 28.53%, #7e76b9 75.52%); 
     height: 80%;
     color:rgb(212, 225, 41);
+    font-family: "Fira Code", monospace;
     font-weight: bold;
     border-radius: 0.4rem;
 }
+
+button:hover{
+    background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
+    color:rgb(215, 154, 41);
+}
+
+
 #sel-text{
     font-family: 'Quattrocento', serif;
     font-size: 1.2rem;
@@ -42,34 +50,40 @@ button{
 }
 
 p{
-    font-size: 1rem;
+    color: #361e96;
+    font-size: 0.9rem;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
+}
 
+
+h1{
+    font-size: 1rem;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 h2{
+    color: rgb(56, 18, 195);
     font-family: 'Noto Sans', sans-serif;
-    font-size: 1.2rem;
     font-weight: bold;
-    color:red;
+    font-size: 1.2rem;
 }
-
 h3{
     font-family: 'Noto Sans', sans-serif;
-    font-size: 1.2rem;
-    font-weight: bold;
 }
-
 h4{
     font-family: 'Quattrocento', serif;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: blue;
+    font-weight: 500;
+    font-size: 1rem;
+    
 }
+
 h5{
-    font-family: "Fira Code", monospace;
-    font-size: 1.1rem;
-    font-weight: bold;
-    color:rgb(21, 208, 77);
+    color:#000002;
+    font-family: "Anton", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+    font-size: 2.1rem;
 }
 
 small{
@@ -95,3 +109,33 @@ td{
     font-weight: bold;
     font-size: 0.9rem;
 }
+
+.float { float:left; width:100px; height:100px }
+
+#total_quantity{
+    font-family: "Fira Code", monospace;
+    color:rgb(17, 169, 6);
+    padding-right: 1.0rem;
+}
+#closeButton{
+    position: absolute;
+    right: 0;
+  }
+
+  #quantity_td{
+    width: 10rem;
+    height: 5rem;
+    margin-left: 1rem;
+  }
+  #quantity_form{
+    width: 4rem;
+    height: 5rem;
+    margin-left: 1rem;
+  }
+  #bag_icon{
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.float { float:left; width:100px; height:100px }

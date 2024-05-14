@@ -1,18 +1,34 @@
 <body>
   <app-navbar></app-navbar>
   <div class="container-flex">
-    <div class="row">
-      <div class="col-md-2">
-        <div class="mt-2">
-          <div class="d-inline">
-            <button (click)="createBigBagSwitch()" class="d-inline ms-5">NUEVO BOLSON</button>
-          </div>
-          <div *ngIf="!createdEnabled" class="d-inline">
-            <button (click)="openDialogSupplyList(bigBagListTemplate)" class="d-inline ms-5 mt-5">VER BOLSONES</button>
-          </div>
-        </div>
+    <div  class="row">
+      <div class=" text-center">
+        <img id="bag_icon" class="ms-1 mt-1" src="./assets/img/bag-shopping-solid.svg">
       </div>
-      <div class="col-md-4">
+    </div>
+    <div class="row mt-5 ms-4">
+    <div *ngIf="!createdEnabled"  class="col-md-3"></div>
+     <div *ngIf="!createdEnabled" class="col-md-3">
+        <div class="jumbotron ms-1">
+          <div>
+              <p class="d-inline display-4">NUEVO</p>
+              <button (click)="createBigBagSwitch()" class="btn btn-lg d-inline ms-5"></button>
+          </div>
+       <p class="lead">
+              <hr class="my-4">
+      </div>
+    </div>
+      <div *ngIf="!createdEnabled" class="col-md-3">
+      <div class="jumbotron ms-1">
+     <div id="orderItem">
+            <p class="d-inline display-4">VER</p>
+            <button (click)="openDialogSupplyList(bigBagListTemplate)" class="btn btn-lg  d-inline ms-5"></button>
+        </div>
+        <p class="lead">
+            <hr class="my-4">
+    </div>
+ </div>
+ <div class="col-md-4">
         <div *ngIf="createdEnabled">
           <form class="form-inline" [formGroup]="bigBagForm">
             <div class="row">
@@ -36,13 +52,14 @@
       </div>
       <div class="col-md-2">
         <div *ngIf="createdEnabled">
-          <button (click)="createBigBag()" class="btn btn-sm  mt-1">GUARDAR</button>
+          <button (click)="createBigBag()" class="btn btn-sm text-white  mt-1">GUARDAR</button>
+          <button (click)="reloadPage()" class="btn btn-sm text-warning  mt-1 ms-5">CANCELAR</button>
         </div>
       </div>
     </div>
-    <div class="row">
+    <div *ngIf="createdEnabled" class="row">
       <div class="col-md-6">
-        <div class="mt-4  ms-3" *ngIf="createdEnabled">
+        <div class="mt-4  ms-3">
           <div id="sel-text" class="border border-dark">
             <p class="d-inline">Seleccione items del deposito </p>
             <div id="deposit-selection" class="d-inline">
@@ -72,6 +89,7 @@
         </div>
       </div>
       <div class="col-md-6">
+        
         <div id="deposit-text">
           <h3 class="d-inline">DEPOSITO: </h3>
           <div id="deposit-selection" class="d-inline">
@@ -109,42 +127,78 @@
   </div>
 </body>
 <ng-template #bigBagListTemplate>
-  <button id="closeButton" (click)="onCloseBigBagListTemplate()" class="btn btn-sm text-white">X</button>
-  <div class="mt-1 ms-1">
-    <h1 class="d-inline">Bolsones</h1>
-  </div>
-  <div *ngIf="bigBagTotalQuantity>-1">
-    <h2>Cantidad: {{bigBagTotalQuantity}}</h2>
-  </div>
-  <table class="table-sm table-bordered h-75">
-    <thead>
-      <tr>
-        <th scope="col">Fecha de creacion</th>
-        <th scope="col">Nombre</th>
-        <th>VER ITEMS</th>
-        <th>CALCULAR</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let bigBag of findedBigBagDtos">
-        <td>{{bigBag.creationDate}}</td>
-        <td>{{bigBag.name}}</td>
-        <td>
-          <button (click)="openDialogBigBagItemsList(bigBag.id)" class="btn btn-sm">-</button>
-        </td>
-        <td>
-          <button (click)="calculateBigBagTotalQuantity(bigBag.id)" class="btn btn-sm">-</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+
+  <body id="orderListTemplate">
+    <div class="container">
+      <div id="closeButton" (click)="onCloseBigBagListTemplate()" class="btn btn-sm text-white">X</div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="float">
+            <h3>Cantidad:</h3>
+          </div>
+          <div class="float w-25">
+            <div>
+              <h3 id="total_quantity" class="" *ngIf="bigBagTotalQuantity==-1 ">#</h3>
+            </div>
+            <div>
+              <h3 id="total_quantity" class="" *ngIf="bigBagTotalQuantity==0">0</h3>
+            </div>
+            <div>
+              <h3 id="total_quantity" class="mb-2" *ngIf="bigBagTotalQuantity>0">{{bigBagTotalQuantity}}</h3>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <h2 class="text-center text-white"> <img id="bag_icon" class="ms-1 mt-1"
+              src="./assets/img/bag-shopping-solid.svg"></h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div id="table-div">
+            <table class="table table-flex table-bordered table-striped h-75">
+              <thead>
+                <tr>
+                  <th scope="col">Fecha de creacion</th>
+                  <th scope="col">Nombre</th>
+                  <th>VER ITEMS</th>
+                  <th>CALCULAR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let bigBag of findedBigBagDtos">
+                  <td>{{bigBag.creationDate}}</td>
+                  <td>{{bigBag.name}}</td>
+                  <td>
+                    <button (click)="openDialogBigBagItemsList(bigBag.id)" class="btn btn-sm">-</button>
+                  </td>
+                  <td>
+                    <button (click)="calculateBigBagTotalQuantity(bigBag.id)" class="btn btn-sm">-</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </ng-template>
+
+
 <ng-template #bigBagItemsListTemplate>
-  <button id="closeButton" (click)="onCloseBigBagItemListTemplate()" class="btn btn-sm text-white">X</button>
+  <body>
+    
+ 
+  <div id="closeButton" (click)="onCloseBigBagItemListTemplate()" class="btn btn-sm text-white">X</div>
+  <div class="container">
+  <div class="row">
   <div class="mt-1">
     <h1 class="d-inline">Items:</h1>
   </div>
-  <table class="table-sm table-bordered h-75">
+  <table class="table table-bordered table-striped table-hover h-75">
     <thead>
       <tr class="text-center">
         <th scope="col">CODIGO</th>
@@ -153,8 +207,9 @@
         <th scope="col">P.UNITARIO</th>
         <th scope="col">TOTAL</th>
         <th scope="col">CANTIDAD</th>
-        <th scope="col">NUEVA CANTIDAD</th>
+        <th scope="col">MOFIFICAR</th>
         <th scope="col">APLICAR</th>
+
       </tr>
     </thead>
     <tbody>
@@ -165,22 +220,29 @@
         <td>{{bigBagItem.unitCost | currency: '$': 'symbol'}}</td>
         <td>{{bigBagItem.totalCost| currency: '$': 'symbol'}}</td>
         <td>{{bigBagItem.quantity}}</td>
-        <td>
-          <form [formGroup]="bigBagItemForm" class=" w-25 form-group fw-bold ms-1">
-            <div class="form-group">
-              <input class="form-control border-dark" type="quantity" placeholder="0" formControlName="quantity" id="quantity">
-              <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)" class="text-danger">
-                <div *ngIf="quantity.errors?.['required']">
-                  debe poner una cantidad valida
+        <td id="quantity_td">
+          <div id="quantity_form">
+            <form [formGroup]="bigBagItemForm" class="form-group fw-bold ms-1">
+              <div class="form-group">
+                <input class="form-control border-dark" type="quantity" placeholder="0" formControlName="quantity"
+                  id="quantity">
+                <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)" class="text-danger">
+                  <div *ngIf="quantity.errors?.['required']">
+
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
+
+            </form>
+          </div>
         </td>
         <td>
-          <button (click)="updateBigBagItemQuantity(bigBagItem.id)" class="btn btn-sm">-</button>
+          <button (click)="updateBigBagItemQuantity(bigBagItem.id)" class="btn btn-sm"></button>
         </td>
       </tr>
     </tbody>
   </table>
+</div>
+</div>
+</body>
 </ng-template>

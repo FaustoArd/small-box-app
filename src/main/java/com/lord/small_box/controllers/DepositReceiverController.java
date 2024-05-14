@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
 import com.lord.small_box.dtos.DepositControlReceiverDto;
 import com.lord.small_box.dtos.DepositReceiverDto;
 import com.lord.small_box.dtos.RequestComparationNoteDto;
@@ -28,6 +29,8 @@ public class DepositReceiverController {
 	private final DepositRecevierService depositRecevierService;
 	
 	private static final Logger log = LoggerFactory.getLogger(DepositReceiverController.class);
+	
+	private static Gson gson = new Gson();
 	
 	@GetMapping(path="/find-receivers-by-organization")
 	ResponseEntity<List<DepositReceiverDto>> findAllReceiversByOrganization(@RequestParam("organizationId")long organizationId){
@@ -53,7 +56,7 @@ public class DepositReceiverController {
 	@DeleteMapping(path="/delete-deposit-receiver/{depositReceiverId}")
 	ResponseEntity<String> deleteControlRequestbyId(@PathVariable("depositReceiverId")long depositReceiverId){
 		String deletedReceiverCode = depositRecevierService.deleteDepositReceiver(depositReceiverId);
-		return ResponseEntity.ok(deletedReceiverCode);
+		return ResponseEntity.ok(gson.toJson(deletedReceiverCode));
 	}
 	
 	@GetMapping(path = "/get-comparator-note")

@@ -5,14 +5,19 @@ body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
 #orderListTemplate{
-   background: linear-gradient(245.59deg, rgb(70, 54, 194)30%, rgb(146, 129, 223) 50%, #6247c7 79%);
+   background: linear-gradient(245.59deg, rgb(138, 131, 186)30%, rgb(146, 133, 207) 50%, #978ac5 79%);
 }
 #purchaseOrders{
     height: 40rem;
     text-align: center;
     border: 1px solid black;
-    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(216, 205, 225) 50%, #aebdc9 79%);
    
+}
+
+
+#supplyUpload{
+    background: linear-gradient(245.59deg, rgb(163, 159, 186)30%, rgb(169, 163, 193) 50%, #b2aec2 79%);
 }
 #purchaseOrdersTable{
     width: 64.7rem;
@@ -21,9 +26,7 @@ body{
 .float { float:left; width:100px; height:100px }
 
 
-jumbotron{
-    background-color: aliceblue;
-}
+
 button,a{
     background: linear-gradient(245.59deg, rgb(99, 99, 190)33.33%, rgb(118, 90, 194) 33.33%, #6a4dc9 33.33%); 
     color:red;
@@ -39,7 +42,7 @@ button:hover{
     height: 2rem;
 }
 #bigBag{
-    background: linear-gradient(245.59deg, rgb(138, 42, 122)33.33%, rgb(170, 43, 187) 33.33%, #954dcd 33.33%); 
+    background: linear-gradient(245.59deg, rgb(177, 66, 158)30%, rgb(200, 27, 165) 50%, #cc52b8 79%);
    color:rgb(230, 229, 221)
 }
 
@@ -168,5 +171,15 @@ input{
   
     width: 2.5rem;
     height: 2.0rem;
+    margin-bottom: 0.5rem;
+}
+#bag_icon{
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+#glass_icon{
+    width: 0.8rem;
+    height: 0.8rem;
     margin-bottom: 0.5rem;
 }

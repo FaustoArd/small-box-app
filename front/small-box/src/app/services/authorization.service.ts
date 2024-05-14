@@ -25,7 +25,10 @@ export class AuthorizationService {
   };
 
   private handleError(error: HttpErrorResponse){
-    return throwError(() => new Error(error.error));
+    if(error.status==0){
+      return throwError(()=> 'Error al intentar conectar con el servidor');
+    }
+    return throwError(() => error.error);
  }
 
  loginUser(loginDto:LoginDto):Observable<LoginResponseDto>{

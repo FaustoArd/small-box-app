@@ -92,8 +92,9 @@ public class DepositReceiverServiceImpl implements DepositRecevierService {
 
 	@Override
 	public String deleteDepositReceiver(long depositReceiverId) {
+		log.info("Delete deposit receiver, id: " + depositReceiverId);
 		if(depositReceiverRepository.existsById(depositReceiverId)) {
-			String deletedReceiverCode  = findDepositReceiverById(depositReceiverId).getDepositRequestCode();
+			String deletedReceiverCode  = "Eliminado";
 			depositReceiverRepository.deleteById(depositReceiverId);
 			return deletedReceiverCode;
 		}

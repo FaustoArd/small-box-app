@@ -38,3 +38,18 @@ span{
     width: 1.5rem;
     height: 1.5rem;
 }
+
+small{
+    font-size: 0.7rem;
+}
+.float { float:left; width:100px; height:100px }
+
+#time{
+    height: 3.4rem;
+   margin: 0;
+   font-size: 0.7rem;
+}
+li{
+    color: #8678d3;
+    font-family: "Fira Code", monospace;
+}

@@ -2,13 +2,56 @@ body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
    
 }
+#body_color{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
 #createRequestCol{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
    
 }
+#showItems{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
 #toSendContainer{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
+#item_selection_table{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+table{
+    text-align: center;
+    max-height: 30rem;
+  overflow: auto;
+  display:inline-block;
+  border: solid 1px black;
+  background: linear-gradient(245.59deg, rgb(239, 239, 240)30%, rgb(234, 233, 222) 50%, #e3e2ec 79%);
+}
+th{
+    
+    border: 1px solid black;
+    font-size: 0.6rem;
+}
+td{
+    max-height: 20px;
+    border: 1px solid rgb(0, 0, 0);
+    font-size: 0.9rem;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: bold;
+}
+#fullBlue_td{
+    color: #2a31b6;
+    font-size: 0.9rem;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: bold;
+}
+
+.float { float:left; width:100px; height:100px }
+
+.table-wrapper {
+    max-height: 40rem;
+    overflow: auto;
+    display:inline-block;
+  }
 
 .barofcolourRed{
     margin-left: 1rem;
@@ -81,17 +124,21 @@ label{
     font-weight: bold;
 }
 select{
-    font-family: "Anton", sans-serif;
-    font-weight: 100;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
+   
 }
 option{
-    font-weight: 100;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
+   
 }
 a{
     font-family: "Anton", sans-serif;
     font-weight: bold;
  
 }
+
 #quantity{
     width: 6.5rem;
 }
@@ -99,20 +146,7 @@ a{
     color: rgb(8, 89, 8);
     font-weight: bold;
 }
-th{
-    font-size: 0.6rem;
-}
-td{
-    font-size: 0.9rem;
-    font-family: 'Quattrocento', serif;
-    font-weight: bold;
-}
-#fullBlue_td{
-    color: #2a31b6;
-    font-size: 0.9rem;
-    font-family: 'Quattrocento', serif;
-    font-weight: bold;
-}
+
 #supplyReportFullBlue{
     color: #2a31b6;
     font-size: 0.9rem;

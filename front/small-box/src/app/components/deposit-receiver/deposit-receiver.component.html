@@ -89,7 +89,7 @@
                 </div>
             </div>
             <div class="col-md-1">
-                <button (click)="deleteDepositReceiverById(receiver.id)" class="btn btn-sm">-</button>
+                <button (click)="confirmDeleteDepositReceiver(receiver.id)" class="btn btn-sm">-</button>
                 <hr class="my-4">
             </div>
         </div>
@@ -109,27 +109,27 @@
     <div class="row mt-2">
         <div class="col-md-1">
            
-            <h4 class=" mt-1 ms-3 text-white">CODIGO:</h4>
+            <h4 class=" mt-1 ms-3 text-dark">CODIGO:</h4>
         </div>
       <div class="col-md-6">
-            <h3 class=" text-white">{{depositReceiverDataShow.depositRequestCode}}</h3>
+            <h3 class=" text-dark">{{depositReceiverDataShow.depositRequestCode}}</h3>
         </div>
     </div>
     <div class="row mt-1">
         <div class="col-md-1">
            
-            <h4 class=" mt-1 ms-3  text-white">ORIGEN:</h4>
+            <h4 class=" mt-1 ms-3  text-dark">ORIGEN:</h4>
         </div>
       <div class="col-md-6 ">
-            <h3 class=" text-white">{{depositReceiverDataShow.fromOrganizationName}}</h3>
+            <h3 class=" text-dark">{{depositReceiverDataShow.fromOrganizationName}}</h3>
         </div>
         <div class="col-md-2">
            
         </div>
        
         <div class="d-inline col-md-2">
-            <small class="text-white">FECHA: </small>
-            <small class="fw-bold text-white">{{depositReceiverDataShow.receptionDate|date: 'dd-MM-yyyy'}}</small>
+            <small class="text-dark">FECHA: </small>
+            <small class="fw-bold text-dark">{{depositReceiverDataShow.receptionDate|date: 'dd-MM-yyyy'}}</small>
         </div>
     </div>
    
@@ -174,8 +174,10 @@
 </ng-template>
 
 <ng-template #comparatorNoteTemplate>
+<body id="orderListTemplate">
+    
 
-    <div class="container-flex">
+    <div  id="orderListTemplate" class="container-flex">
         <button id="closeButton" (click)="onCloseRequestComparatorNoteTemplate()"
             class="btn btn-sm text-white">X</button>
         <div class="row mt-2">
@@ -226,7 +228,7 @@
             <div class="col-md-1"></div>
             <div class="col-md-6">
                 <div>
-                    <h4 class="d-inline">DEPENDENCIA SOLICITANTE:</h4>
+                    <h4 class="d-inline">PARA:</h4>
                     <h1 class="d-inline"> {{comparatorDto.mainOrganization.toUpperCase()}}</h1>
                 </div>
             </div>
@@ -281,7 +283,7 @@
                 </div>
                 <div *ngIf="item.controlQuantityLeft>0">
                     <h1 class="d-inline">SOBRANTE :</h1> <small
-                        class="ms-2 text-warning">{{item.controlQuantityLeft}}</small>
+                        class="ms-2 text-primary">{{item.controlQuantityLeft}}</small>
 
                 </div>
                 <div *ngIf="item.controlQuantityLeft<0">
@@ -293,4 +295,5 @@
                 <hr class="my-4">
         </div>
     </div>
+</body>
 </ng-template>

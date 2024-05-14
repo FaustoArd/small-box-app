@@ -186,6 +186,7 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 
 	@Override
 	public String deleteDepositRequest(long depositRequestId) {
+		log.info("Delete Deposit request by id: " +depositRequestId);
 		if(depositRequestRepository.existsById(depositRequestId)) {
 			String deletedRequestCode = findRequestById(depositRequestId).getRequestCode();
 			depositRequestRepository.deleteById(depositRequestId);
