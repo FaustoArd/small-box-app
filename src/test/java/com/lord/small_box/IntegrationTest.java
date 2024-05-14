@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.internal.matchers.GreaterThan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,12 +40,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
+import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.BigBagItemDto;
 import com.lord.small_box.dtos.ExcelItemDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
+import com.lord.small_box.models.BigBag;
 import com.lord.small_box.models.BigBagItem;
 import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
@@ -1113,8 +1117,8 @@ public class IntegrationTest {
 	private List<BigBagItemDto> bigBagItemDtos;
 	@Test
 	@Order(58)
-	void createBigBag()throws Exception{
-		Deposit deposit = depositRepository.findById(3l).orElseThrow(()-> new ItemNotFoundException("No se encontro el depo."));
+	void addBigBagList()throws Exception{
+		Deposit deposit = depositRepository.findById(1l).orElseThrow(()-> new ItemNotFoundException("No se encontro el depo."));
 		bigBagItemDtos = depositControlRepository
 				.findAllByItemCodeInAndDeposit(List.of("2.1.1.03311.0003","2.1.1.00704.0008","2.1.1.02113.0002"),deposit)
 				.stream()
@@ -1128,6 +1132,40 @@ public class IntegrationTest {
 				}).toList();
 		
 
+	}
+	@Test
+	@Order(59)
+	void createBigBagNavidad()throws Exception{
+		BigBagDto bigBagDto = new BigBagDto();
+		bigBagDto.setName("Navidad");
+		bigBagDto.setItems(bigBagItemDtos);
+		
+		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/create-big-bag")
+				.content(gson.toJson(bigBagDto)).param("organizationId", "3")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+		.andExpect(jsonPath("$.id", is(notNullValue())))
+		.andExpect(jsonPath("$.name", is("Navidad")))
+		.andExpect(jsonPath("$.creationDate").isNotEmpty())
+		.andExpect(jsonPath("$.items[0].id", is(notNullValue())))
+		.andExpect(jsonPath("$.items[1].id", is(notNullValue())))
+		.andExpect(jsonPath("$.items[2].id", is(notNullValue())));
+		
+		
+		
+	}
+	@Test
+	@Order(60)
+	void calculateTotalBigBagQuantityAvailable()throws Exception{
+		Deposit deposit = depositRepository.findById(1l).orElseThrow(()-> new ItemNotFoundException("No se encontro el depo."));
+		int minorQuantityDepositItem = depositControlRepository
+				.findAllByItemCodeInAndDeposit(List.of("2.1.1.03311.0003","2.1.1.00704.0008","2.1.1.02113.0002"), deposit)
+				.stream().map(item -> item.getQuantity()).min(Integer::compareTo).get();
+		System.err.println("MINOR:" + minorQuantityDepositItem);
+		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-control/calculate-big-bag-total-quantity")
+				.param("bigBagId", "1").param("depositId","1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+		.andExpect(jsonPath("$", is(minorQuantityDepositItem)));
 	}
 }
 
