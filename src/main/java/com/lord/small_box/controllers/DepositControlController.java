@@ -65,7 +65,7 @@ public class DepositControlController {
 	}
 	@GetMapping(path="/find-deposits")
 	ResponseEntity<List<DepositDto>> findDeposits(@RequestParam("organizationId")long organizationId){
-		List<DepositDto> depositsDto = depositControlService.findAllDepositsbyOrganization(organizationId);
+		List<DepositDto> depositsDto = depositControlService.findAllDepositsByOrganization(organizationId);
 		return ResponseEntity.ok(depositsDto);
 	}
 	@PutMapping(path="/set-current-deposit")

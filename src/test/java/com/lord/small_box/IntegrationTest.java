@@ -18,8 +18,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -32,17 +37,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-
 import com.google.gson.Gson;
+import com.lord.small_box.controllers.SupplyController;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
 import com.lord.small_box.dtos.BigBagDto;
 import com.lord.small_box.dtos.BigBagItemDto;
+import com.lord.small_box.dtos.DepositControlRequestDto;
+import com.lord.small_box.dtos.DepositRequestDto;
 import com.lord.small_box.dtos.ExcelItemDto;
+import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
@@ -51,11 +60,13 @@ import com.lord.small_box.models.BigBag;
 import com.lord.small_box.models.BigBagItem;
 import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
+import com.lord.small_box.models.DepositControlRequest;
 import com.lord.small_box.models.ExcelItemContainer;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.SmallBoxType;
+import com.lord.small_box.models.Supply;
 import com.lord.small_box.repositories.AppUserRepository;
 import com.lord.small_box.repositories.AuthorityRepository;
 import com.lord.small_box.repositories.DepositControlRepository;
@@ -67,6 +78,8 @@ import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
 import com.lord.small_box.repositories.SmallBoxTypeRepository;
+import com.lord.small_box.repositories.SupplyItemRepository;
+import com.lord.small_box.repositories.SupplyRepository;
 import com.lord.small_box.services.AuthorizationService;
 
 @SpringBootTest
@@ -92,6 +105,12 @@ public class IntegrationTest {
 
 	@Autowired
 	private PurchaseOrderItemRepository purchaseOrderItemRepository;
+	
+	@Autowired
+	private SupplyRepository supplyRepository;
+	
+	@Autowired
+	private SupplyItemRepository supplyItemRepository;
 
 	@Autowired
 	private InputRepository inputRepository;
@@ -260,11 +279,11 @@ public class IntegrationTest {
 	void createOrganization() throws Exception {
 		mvcResult = this.mockMvc
 				.perform(post("http://localhost:8080/api/v1/smallbox/organization/new-organization").content(
-						"{\"organizationName\":\"Dir  de personas en situacion de calle\",\"organizationNumber\":1,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
+						"{\"organizationName\":\"Dir de personas en situacion de calle\",\"organizationNumber\":1,\"responsibleId\":1,\"maxRotation\":12,\"maxAmount\":45000}")
 						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.id", is(notNullValue())))
-				.andExpect(jsonPath("$.organizationName", is("Dir  de personas en situacion de calle")))
+				.andExpect(jsonPath("$.organizationName", is("Dir de personas en situacion de calle")))
 				.andExpect(jsonPath("$.maxRotation", is(12))).andExpect(jsonPath("$.maxAmount", is(45000)))
 				.andExpect(jsonPath("$.responsible", is("Analia Lagunas"))).andReturn();
 		oldSitDeCalleOrg = organizationRepository.findById(1L)
@@ -312,7 +331,7 @@ public class IntegrationTest {
 		String stringResult = mvcResult.getResponse().getContentAsString();
 		boolean doesContain = stringResult
 				.contains("El usuario: Pedro Mozart Tiene asignada las siguientes dependencias:"
-						+ " Dir  de personas en situacion de calle");
+						+ " Dir de personas en situacion de calle");
 		assertTrue(doesContain);
 
 	}
@@ -326,7 +345,7 @@ public class IntegrationTest {
 						.header("Authorization", "Bearer " + jwtToken).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$[0].id", is(notNullValue()))).andExpect(jsonPath("$[0].id", is(not(0))))
-				.andExpect(jsonPath("$[0].organizationName", is("Dir  de personas en situacion de calle")))
+				.andExpect(jsonPath("$[0].organizationName", is("Dir de personas en situacion de calle")))
 				.andExpect(jsonPath("$[0].responsible", is("Analia Lagunas")))
 				.andExpect(jsonPath("$[0].responsibleId", is(notNullValue())))
 				.andExpect(jsonPath("$[0].responsibleId", is(not(0))))
@@ -394,7 +413,7 @@ public class IntegrationTest {
 				.andExpect(status().is(201)).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.id", is(notNullValue()))).andExpect(jsonPath("$.id", is(not(0))))
 				.andExpect(jsonPath("$.smallBoxType", is("CHICA")))
-				.andExpect(jsonPath("$.organization", is("Dir  de personas en situacion de calle")))
+				.andExpect(jsonPath("$.organization", is("Dir de personas en situacion de calle")))
 				.andExpect(jsonPath("$.responsible", is("Analia Lagunas"))).andReturn();
 
 		String[] list = mvcResult.getResponse().getContentAsString().split("\"");
@@ -769,13 +788,14 @@ public class IntegrationTest {
 
 	@Test
 	@Order(38)
-	void uploadSupply551WithUserMiguel248() throws Exception {
+	void uploadSupply551WithSuperUserMiguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "sum-551.pdf", "application/pdf",
 				new ClassPathResource("\\pdf-test\\sum-551.pdf").getContentAsByteArray());
 		mockMvc.perform(multipart("http://localhost:8080/api/v1/smallbox/supply/collect-supply-pdf").file(file)
 				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.supplyNumber", is(551)))
 				.andExpect(jsonPath("$.date").value("2024-02-06"))
+				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.estimatedTotalCost", is(43697001.00)))
 				.andExpect(jsonPath("$.supplyItems[0].code", is("5.1.4.03451.0001")))
 				.andExpect(jsonPath("$.supplyItems[0].programaticCat", is("01.10.00")))
@@ -792,10 +812,22 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.supplyItems[1].unitCost", is(600.00)))
 				.andExpect(jsonPath("$.supplyItems[1].totalEstimatedCost", is(3000000.00)));
 	}
-
 	@Test
 	@Order(39)
-	void uploadSupply1043_WithUserMiguel248() throws Exception {
+	void setSupply551OrganizationApplicantWithSuperUserMiguel248()throws Exception{
+		OrganizationDto organizationDto = new OrganizationDto();
+		organizationDto.setId(1l);
+		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/supply/set-supply-organization-applicant")
+				.content(gson.toJson(organizationDto)).param("supplyId", "1")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200))
+				.andExpect(jsonPath("$",is( "Dir. de personas en situacion de calle")));
+	}
+
+	@Test
+	@Order(40)
+	void uploadSupply1043_WithSuperUserMiguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "sum-1043.pdf", "application/pdf",
 				new ClassPathResource("\\pdf-test\\sum-1043.pdf").getContentAsByteArray());
 		mockMvc.perform(multipart("http://localhost:8080/api/v1/smallbox/supply/collect-supply-pdf").file(file)
@@ -812,10 +844,22 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.supplyItems[0].totalEstimatedCost", is(5500000.00)));
 
 	}
+	@Test
+	@Order(41)
+	void setSupply1043ganizationApplicantWithSuperUserMiguel248()throws Exception{
+		OrganizationDto organizationDto = new OrganizationDto();
+		organizationDto.setId(1l);
+		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/supply/set-supply-organization-applicant")
+				.content("{\"id\":1}").param("supplyId", "2")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200))
+				.andExpect(jsonPath("$",is( "Dir. de personas en situacion de calle")));
+	}
 
 	@Test
-	@Order(40)
-	void createDepositAvellaneda_WithUserMiguel248() throws Exception {
+	@Order(42)
+	void createDepositAvellaneda_WithSuperUserMiguel248() throws Exception {
 		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/create-deposit").content(
 				"{\"name\":\"AVELLANEDA\",\"streetName\":\"Avellaneda\",\"houseNumber\":\"5432\",\"organizationId\":3}")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
@@ -824,7 +868,7 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(41)
+	@Order(43)
 	void checkCreatedDepositAvellanedaValues() throws Exception {
 		Deposit deposit = depositRepository.findById(1L)
 				.orElseThrow(() -> new ItemNotFoundException("Deposit not found"));
@@ -836,8 +880,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(42)
-	void setCurrentDepositToUserMiguel248_OrganizationSecDesSocial() throws Exception {
+	@Order(44)
+	void setCurrentDepositToSuperUserMiguel248_OrganizationSecDesSocial() throws Exception {
 		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/deposit-control/set-current-deposit").content("1")
 				.param("userId", "3").param("organizationId", "3")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
@@ -846,8 +890,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(43)
-	void getCurrentUserMiguel248Organization_DepositId() throws Exception {
+	@Order(45)
+	void getCurrentSuperUserMiguel248_Organization_DepositId() throws Exception {
 		mockMvc.perform(
 				get("http://localhost:8080/api/v1/smallbox/deposit-control/get-current-deposit").param("userId", "3")
 						.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
@@ -857,8 +901,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(44)
-	void loadPurchaseOrder365ToDeposit() throws Exception {
+	@Order(46)
+	void loadPurchaseOrder365ToDeposit_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/purchase-order/load-order-to-deposit").content("1")
 				.param("depositId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -908,8 +952,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(45)
-	void loadPurchaseOrder454WithUserMiguel248() throws Exception {
+	@Order(47)
+	void loadPurchaseOrder454With_SuperUserMiguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "oc-454.pdf", "application/pdf",
 				new ClassPathResource("\\pdf-test\\oc-454.pdf").getContentAsByteArray());
 		mockMvc.perform(
@@ -922,8 +966,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(46)
-	void loadPurchaseOrder454ToDepositControl_Miguel248() throws Exception {
+	@Order(48)
+	void loadPurchaseOrder454ToDepositControl_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/purchase-order/load-order-to-deposit").content("3")
 				.param("depositId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -946,8 +990,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(47)
-	void FindSecDesSocialPurchaseOrderList_Miguel248() throws Exception {
+	@Order(49)
+	void FindSecDesSocialPurchaseOrderList_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-all-orders-by-org")
 				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -969,8 +1013,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(48)
-	void findPurchaseOrder340Items_Miguel248() throws Exception {
+	@Order(50)
+	void findPurchaseOrder340Items_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-order-items")
 				.param("purchaseOrderId", "2").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -982,8 +1026,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(49)
-	void findSupply551Items_Miguel248() throws Exception {
+	@Order(51)
+	void findSupply551Items_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply//find-supply-items").param("supplyId", "1")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
@@ -995,8 +1039,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(50)
-	void deletePurchaseOrder340_Miguel248() throws Exception {
+	@Order(52)
+	void deletePurchaseOrder340_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(
 				delete("http://localhost:8080/api/v1/smallbox/purchase-order/delete-purchase-order/{orderId}", 2)
 						.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
@@ -1005,8 +1049,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(51)
-	void whenTryToFindPurchaseOrder340Items_mustReturn417ExpectationFailed_Miguel248() throws Exception {
+	@Order(53)
+	void whenTryToFindPurchaseOrder340Items_mustReturn417ExpectationFailed_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/purchase-order/find-order-items")
 				.param("purchaseOrderId", "2").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(417));
@@ -1014,15 +1058,15 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(52)
-	void deleteSupply551_Miguel248() throws Exception {
+	@Order(54)
+	void deleteSupply551_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(delete("http://localhost:8080/api/v1/smallbox/supply/delete-supply/{supplyId}", 1)
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200)).andExpect(jsonPath("$", is(551)));
 	}
 
 	@Test
-	@Order(53)
+	@Order(55)
 	void whenTryToFindSupply551Items_mustReturn417ExpectationFailed_Miguel248() throws Exception {
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply/find-supply-items").param("supplyId", "1")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
@@ -1031,8 +1075,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(54)
-	void loadPurchaseOrder534_Miguel248() throws Exception {
+	@Order(56)
+	void loadPurchaseOrder534_SuperUserMiguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "oc-534.pdf", "application/pdf",
 				new ClassPathResource("\\pdf-test\\oc-534.pdf").getContentAsByteArray());
 		mockMvc.perform(
@@ -1049,8 +1093,8 @@ public class IntegrationTest {
 	private DepositControl oldDepositItemSelected;
 
 	@Test
-	@Order(55)
-	void ImportExcelItemsToDeposit_Miguel248() throws Exception {
+	@Order(57)
+	void ImportExcelItemsToDeposit_SuperUserMiguel248() throws Exception {
 		MockMultipartFile file = new MockMultipartFile("file", "control_excel3-v3-test.xls", "application/xls",
 				new ClassPathResource("\\pdf-test\\control_excel3-v3-test.xls").getContentAsByteArray());
 		mockMvc.perform(
@@ -1085,7 +1129,7 @@ public class IntegrationTest {
 	private List<ExcelItemDto> excelSelectedItems;
 
 	@Test
-	@Order(56)
+	@Order(58)
 	void createExcelItemsSelectedList() {
 		excelSelectedItems = new ArrayList<ExcelItemDto>();
 		ExcelItemDto item1 = new ExcelItemDto();
@@ -1103,8 +1147,8 @@ public class IntegrationTest {
 	private Gson gson = new Gson();
 
 	@Test
-	@Order(57)
-	void createOrUpdateExcelItemsToDepositControl() throws Exception {
+	@Order(59)
+	void createOrUpdateExcelItemsToDepositControl_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-control/save-excel-items-to-deposit")
 				.content(gson.toJson(excelSelectedItems)).param("organizationId", "3").param("depositId", "1")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
@@ -1120,7 +1164,7 @@ public class IntegrationTest {
 	private List<BigBagItemDto> bigBagNavidadItemDtos;
 
 	@Test
-	@Order(58)
+	@Order(60)
 	void addBigBagList() throws Exception {
 		Deposit deposit = depositRepository.findById(1l)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
@@ -1139,8 +1183,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(59)
-	void createBigBagNavidad() throws Exception {
+	@Order(61)
+	void createBigBagNavidad_SuperUserMiguel248() throws Exception {
 		BigBagDto bigBagDto = new BigBagDto();
 		bigBagDto.setName("Navidad");
 		bigBagDto.setItems(bigBagNavidadItemDtos);
@@ -1160,8 +1204,8 @@ public class IntegrationTest {
 	private int minorQuantityDepositItemNavidad;
 
 	@Test
-	@Order(60)
-	void calculateTotalBigBagNavidadQuantityAvailable() throws Exception {
+	@Order(62)
+	void calculateTotalBigBagNavidadQuantityAvailable_SuperUserMiguel248() throws Exception {
 		Deposit deposit = depositRepository.findById(1l)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
 		minorQuantityDepositItemNavidad = depositControlRepository
@@ -1178,8 +1222,8 @@ public class IntegrationTest {
 	private List<BigBagItemDto> bigBagAñoNuevoItemDtos;
 
 	@Test
-	@Order(61)
-	void addBigBagAñoNuevo() throws Exception {
+	@Order(63)
+	void addBigBagAñoNuevo_SuperUserMiguel248() throws Exception {
 		Deposit deposit = depositRepository.findById(1l)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
 		bigBagAñoNuevoItemDtos = depositControlRepository
@@ -1196,8 +1240,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(62)
-	void createBigBagAñoNuevo() throws Exception {
+	@Order(64)
+	void createBigBagAñoNuevo_SuperUserMiguel248() throws Exception {
 		BigBagDto bigBagDto = new BigBagDto();
 		bigBagDto.setName("Año nuevo");
 		bigBagDto.setItems(bigBagAñoNuevoItemDtos);
@@ -1217,8 +1261,8 @@ public class IntegrationTest {
 	private int minorQuantityDepositItemAñoNuevo;
 
 	@Test
-	@Order(63)
-	void calculateTotalBigBagAñoNuevoQuantityAvailable() throws Exception {
+	@Order(65)
+	void calculateTotalBigBagAñoNuevoQuantityAvailable_SuperUserMiguel248() throws Exception {
 		Deposit deposit = depositRepository.findById(1l)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
 		minorQuantityDepositItemAñoNuevo = depositControlRepository
@@ -1233,8 +1277,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(64)
-	void updateBigBagItemQuantity() throws Exception {
+	@Order(66)
+	void updateBigBagItemQuantity_SuperUserMiguel248() throws Exception {
 		mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-control/update-big-bag-item-quantity")
 				.param("bigBagItemId", "5").param("quantity", "3")
 				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
@@ -1243,8 +1287,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	@Order(65)
-	void calculateTotalBigBagAñoNuevoQuantityAvailableWithModifiedItemQuantity() throws Exception {
+	@Order(67)
+	void calculateTotalBigBagAñoNuevoQuantityAvailableWithModifiedItemQuantity_SuperUserMiguel248() throws Exception {
 		Deposit deposit = depositRepository.findById(1l)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el depo."));
 		minorQuantityDepositItemAñoNuevo = depositControlRepository
@@ -1257,5 +1301,138 @@ public class IntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
 				.andExpect(jsonPath("$", is(minorQuantityDepositItemAñoNuevo / 3)));
 
+	}
+	@Test
+	@Order(68)
+	void uploadSupply551WithSuperUserMiguel248Again() throws Exception {
+		MockMultipartFile file = new MockMultipartFile("file", "sum-551.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\sum-551.pdf").getContentAsByteArray());
+		mockMvc.perform(multipart("http://localhost:8080/api/v1/smallbox/supply/collect-supply-pdf").file(file)
+				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.supplyNumber", is(551)))
+				.andExpect(jsonPath("$.date").value("2024-02-06"))
+				.andExpect(jsonPath("$.id", is(3)))
+				.andExpect(jsonPath("$.estimatedTotalCost", is(43697001.00)))
+				.andExpect(jsonPath("$.supplyItems[0].code", is("5.1.4.03451.0001")))
+				.andExpect(jsonPath("$.supplyItems[0].programaticCat", is("01.10.00")))
+				.andExpect(jsonPath("$.supplyItems[0].quantity", is(5500)))
+				.andExpect(jsonPath("$.supplyItems[0].measureUnit", is("KILOGRAMO")))
+				.andExpect(jsonPath("$.supplyItems[0].itemDetail").value(containsString("AZUCAR")))
+				.andExpect(jsonPath("$.supplyItems[0].unitCost", is(1280.01000)))
+				.andExpect(jsonPath("$.supplyItems[0].totalEstimatedCost", is(7040055.00)))
+				.andExpect(jsonPath("$.supplyItems[1].code", is("5.1.4.03503.0003")))
+				.andExpect(jsonPath("$.supplyItems[1].programaticCat", is("01.10.00")))
+				.andExpect(jsonPath("$.supplyItems[1].quantity", is(5000)))
+				.andExpect(jsonPath("$.supplyItems[1].measureUnit", is("CADA-UNO")))
+				.andExpect(jsonPath("$.supplyItems[1].itemDetail").value(containsString("FLAN")))
+				.andExpect(jsonPath("$.supplyItems[1].unitCost", is(600.00)))
+				.andExpect(jsonPath("$.supplyItems[1].totalEstimatedCost", is(3000000.00)));
+	}
+	@Test
+	@Order(69)
+	void setSupply551OrganizationApplicantWithSuperUserMiguel248Again()throws Exception{
+		OrganizationDto organizationDto = new OrganizationDto();
+		organizationDto.setId(1l);
+		mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/supply/set-supply-organization-applicant")
+				.content(gson.toJson(organizationDto)).param("supplyId", "3")
+				.header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200))
+				.andExpect(jsonPath("$",is( "Dir. de personas en situacion de calle")));
+	}
+	
+	
+	@Test
+	@Order(70)
+	void createDepositRequestWithDirPersSitDeCalle_UserPedro()throws Exception{
+		DepositRequestDto depositRequestDto = new DepositRequestDto();
+		depositRequestDto.setId(1l);
+		depositRequestDto.setMainOrganizationId(1);
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-request/create-request").content(
+				gson.toJson(depositRequestDto))
+				.header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+				.andExpect(jsonPath("$.id", is(notNullValue())))
+				.andExpect(jsonPath("$.requestDate", is(notNullValue())))
+				.andExpect(jsonPath("$.mainOrganizationId", is(1)));
+				
+	}
+	@Test
+	@Order(71)
+	void setDepositRequestDestinationOrganization_UserPedro()throws Exception{
+		DepositRequestDto depositRequestDto = new DepositRequestDto();
+		depositRequestDto.setId(1l);
+		depositRequestDto.setDestinationOrganizationId(3l);
+		this.mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/deposit-request/set-destination-organization")
+				.content(gson.toJson(depositRequestDto))
+				.header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.requestDate", is(notNullValue())))
+				.andExpect(jsonPath("$.destinationOrganizationName", is("Secretaria de desarrollo social")))
+				.andExpect(jsonPath("$.destinationOrganizationId", is(3)))
+				.andExpect(jsonPath("$.mainOrganizationId", is(1)));
+	}
+	@Test
+	@Order(72)
+	void checkSupplyOrganizationApplicant()throws Exception{
+		Organization organization = organizationRepository.findById(3l).get();
+		assertThat(organization.getId()).isEqualTo(3l);
+		
+		Supply supply551 = supplyRepository.findBySupplyNumberAndMainOrganization(551,organization).get();
+		Supply supply1043 = supplyRepository.findBySupplyNumberAndMainOrganization(1043,organization).get();
+		assertThat(supply551.getSupplyNumber()).isEqualTo(551);
+		assertThat(supply551.getApplicantOrganization().getId()).isEqualTo(1l);
+		assertThat(supply1043.getApplicantOrganization().getId()).isEqualTo(1l);
+	}
+	
+	@Test
+	@Order(73)
+	void saveItemsToRequest_UserPedro()throws Exception{
+		DepositRequestDto depositRequestDto = new DepositRequestDto();
+		depositRequestDto.setId(1l);
+		Map<String, Integer> itemSelectedMap = new HashMap<>();
+		itemSelectedMap.put("5.1.4.03503.0003", 10);
+		itemSelectedMap.put("5.1.4.03501.0001", 18);
+		itemSelectedMap.put("5.1.4.07776.0001", 14);
+		Organization destinationOrganization = organizationRepository.findById(3l).get();
+		Organization mainOrganization = organizationRepository.findById(1l).get();
+		List<Supply> supplies =  supplyRepository
+				.findAllByMainOrganizationAndApplicantOrganization(destinationOrganization, mainOrganization);
+		List<DepositControlRequestDto> requestItemDtos= supplyItemRepository.findAllBySupplyIn(supplies).stream()
+				.map(supplyItem -> {
+					if(itemSelectedMap.containsKey(supplyItem.getCode())) {
+						DepositControlRequestDto depositControlRequestDto = new DepositControlRequestDto();
+						depositControlRequestDto.setItemCode(supplyItem.getCode());
+						depositControlRequestDto.setItemMeasureUnit(supplyItem.getMeasureUnit());
+						depositControlRequestDto.setItemQuantity(itemSelectedMap.get(supplyItem.getCode()));
+						depositControlRequestDto.setItemDescription(supplyItem.getItemDetail());
+						return depositControlRequestDto;
+					}
+					DepositControlRequestDto depositControlRequestDto = new DepositControlRequestDto();
+					depositControlRequestDto.setItemCode("B");
+					return depositControlRequestDto;
+				}).filter(f -> f.getItemCode()!="B").toList();
+		depositRequestDto.setDepositControlRequestDtos(requestItemDtos);
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-request/save-items-to-request")
+				.content(gson.toJson(depositRequestDto))
+				.header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.requestDate", is(notNullValue())))
+				.andExpect(jsonPath("$.destinationOrganizationName", is("Secretaria de desarrollo social")))
+				.andExpect(jsonPath("$.destinationOrganizationId", is(3)))
+				.andExpect(jsonPath("$.mainOrganizationId", is(1)))
+				.andExpect(jsonPath("$.depositControlRequestDtos[0].itemCode", is("5.1.4.07776.0001")))
+				.andExpect(jsonPath("$.depositControlRequestDtos[0].itemQuantity", is(14)));
+		
+	}
+	@Test
+	@Order(74)
+	void sendRequest_UserPedro()throws Exception{
+		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-request/send-request")
+				.param("depositRequestId", "1").header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
+		.andExpect(jsonPath("$").isString());
 	}
 }

@@ -31,7 +31,7 @@ public interface DepositControlService {
 
 	public String createDeposit(DepositDto depositDto);
 
-	public List<DepositDto> findAllDepositsbyOrganization(long organizationId);
+	public List<DepositDto> findAllDepositsByOrganization(long organizationId);
 
 	public DepositResponseDto setCurrentDeposit(long userId, long organizationId, long depositId);
 

@@ -93,7 +93,7 @@ public class DepositControlServiceImpl implements DepositControlService {
 	}
 
 	@Override
-	public List<DepositDto> findAllDepositsbyOrganization(long organizationId) {
+	public List<DepositDto> findAllDepositsByOrganization(long organizationId) {
 		log.info("Find all deposit by organization");
 		Organization org = organizationService.findById(organizationId);
 		List<Deposit> deposits = depositRepository.findAllByOrganization(org);
