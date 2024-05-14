@@ -38,11 +38,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.google.gson.Gson;
 import com.lord.small_box.dtos.AppUserRegistrationDto;
+import com.lord.small_box.dtos.BigBagItemDto;
 import com.lord.small_box.dtos.ExcelItemDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.Authority;
 import com.lord.small_box.models.AuthorityName;
+import com.lord.small_box.models.BigBagItem;
 import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.ExcelItemContainer;
@@ -1107,6 +1109,25 @@ public class IntegrationTest {
 		.andExpect(jsonPath("$.[1].quantity", is(30)));
 		
 				
+	}
+	private List<BigBagItemDto> bigBagItemDtos;
+	@Test
+	@Order(58)
+	void createBigBag()throws Exception{
+		Deposit deposit = depositRepository.findById(3l).orElseThrow(()-> new ItemNotFoundException("No se encontro el depo."));
+		bigBagItemDtos = depositControlRepository
+				.findAllByItemCodeInAndDeposit(List.of("2.1.1.03311.0003","2.1.1.00704.0008","2.1.1.02113.0002"),deposit)
+				.stream()
+				.map(depoItem ->{
+					BigBagItemDto itemDto = new BigBagItemDto();
+					itemDto.setCode(depoItem.getItemCode());
+					itemDto.setMeasureUnit(depoItem.getMeasureUnit());
+					itemDto.setDescription(depoItem.getItemDescription());
+					itemDto.setDepositControlId(depoItem.getId());
+					return itemDto;
+				}).toList();
+		
+
 	}
 }
 
