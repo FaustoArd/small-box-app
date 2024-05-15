@@ -657,9 +657,9 @@ export class DepositHomeComponent implements OnInit {
   private depositSelectionMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogDepositSelection(template: any) {
     this.getAllDepositsByOrganization();
-    this.depositSelectionMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    this.depositSelectionMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'30%','30%',true,true);
     this.depositSelectionMatDialogRef.afterClosed().subscribe({
       complete: () => {
         this.getCurrentDeposit();

@@ -1,299 +1,322 @@
 <app-navbar></app-navbar>
 
 <body>
-    <div class="container-flex text-center">
+    <div class="container-fluid text-center">
         <div class="row">
             <div class="col mt-2">
                 <div class="barofcolourRed mt-0">
-                    <h1 class="text-center">INBOX</h1>
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/inbox-solid -last.svg">
                 </div>
 
             </div>
         </div>
-        <div id="titleRow" class="row mt-3">
+        <div id="titlesRow" class="row mt-3">
 
             <div class="col-md-1 mt-3 ms-2">
-                <div class="barofcolourColumn mt-0">
-                    <h2>FECHA</h2>
+                <div class=" mt-0">
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/calendar-days-solid.svg">
                 </div>
-                <hr class="my-4">
+               
             </div>
             <div class="col-md-3 mt-3">
-                <div class="barofcolourColumn mt-0">
-                    <h2>ORIGEN</h2>
+                <div class=" mt-0">
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/location-dot-solid.svg">
                 </div>
-                <hr class="my-4">
+              
             </div>
             <div class="col-md-1 mt-3">
-                <div class="barofcolourColumn mt-0">
-                    <h2>ITEMS</h2>
+                <div class=" mt-0">
+                    <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/cart-shopping-solid.svg">
                 </div>
-                <hr class="my-4">
+               
             </div>
             <div class="col-md-1 mt-3">
-                <div class="barofcolourColumn mt-0">
-                    <h2>COMPARAR</h2>
+                <div class=" mt-0">
+                    <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/code-compare-solid.svg">
                 </div>
-                <hr class="my-4">
+             
             </div>
             <div class="col-md-3 mt-3">
-                <div class="barofcolourColumn mt-0">
-                    <h2>CODIGO DE ENVIO</h2>
+                <div class=" mt-0">
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/key_24dp.svg">
                 </div>
-                <hr class="my-4">
+             
             </div>
             <div class="col-md-1 mt-3">
-                <div class="barofcolourColumn mt-0">
-                    <h2>LEÍDO!</h2>
+                <div class=" mt-0">
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/bookmark-solid.svg">
                 </div>
-                <hr class="my-4">
+             
             </div>
             <div class="col-md-1  mt-3">
-                <div class="barofcolourColumn mt-0">
+                <div class=" mt-0">
                     <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/trash-solid.svg">
                 </div>
-                <hr class="my-4">
+               
+            </div>
+            <div class="row">
+                <hr class="my-4 text-white">
             </div>
         </div>
         <div *ngFor="let receiver of depositReceiverDtos" class="row">
 
 
             <div class="col-md-1 ms-2">
-                <h3>{{receiver.receptionDate}}</h3>
-                <hr class="my-4">
+                <h3>{{receiver.receptionDate  |date: 'dd-MM-yyyy' }}</h3>
+               
             </div>
             <div class="col-md-3">
                 <h3>{{receiver.fromOrganizationName}}</h3>
-                <hr class="my-4">
+               
             </div>
             <div class="col-md-1">
-               <button (click)="openDialogDepositCreation(depositControlReceiversTemplate,receiver.id)" class="btn btn-sm">-</button>
-                <hr class="my-4">
+                <button (click)="openDialogDepositCreation(depositControlReceiversTemplate,receiver.id)"
+                    class="btn btn-md"></button>
+              
             </div>
             <div class="col-md-1">
-                <button (click)="openRequestComparatorNoteTemplate(comparatorNoteTemplate,receiver.id)" class="btn btn-sm">-</button>
-                 <hr class="my-4">
-             </div>
+                <button (click)="openRequestComparatorNoteTemplate(comparatorNoteTemplate,receiver.id)"
+                    class="btn btn-md"></button>
+             
+            </div>
             <div class="col-md-3">
                 <h3>{{receiver.depositRequestCode}}</h3>
-                <hr class="my-4">
+               
             </div>
             <div class="col-md-1">
                 <div *ngIf="!receiver.readed">
-                    <button (click)="markAsReaded(receiver.id)" class="btn btn-sm">-</button>
-                    <hr class="my-4">
+                    <button (click)="markAsReaded(receiver.id)" class="btn btn-md"></button>
+                  
                 </div>
                 <div *ngIf="receiver.readed">
                     <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/thumbs-up-regular.svg">
-                    <hr class="my-4">
+                  
                 </div>
             </div>
             <div class="col-md-1">
-                <button (click)="confirmDeleteDepositReceiver(receiver.id)" class="btn btn-sm">-</button>
+                <button (click)="confirmDeleteDepositReceiver(receiver.id)" class="btn btn-md"></button>
+               
+            </div>
+            <div class="row">
                 <hr class="my-4">
             </div>
         </div>
+      
     </div>
 </body>
 <ng-template #depositControlReceiversTemplate>
-    <body id="orderListTemplate" >
-        
-   
-    <div  class="container">
-    <button id="closeButton" (click)="onCloseDepositCreationTemplate()" class="btn btn-sm text-white">X</button>
-    <div class="row">
-        <div class="col">
-            <div class="barofcolourRed mt-3">-</div>
-        </div>
-    </div>
-    <div class="row mt-2">
-        <div class="col-md-1">
-           
-            <h4 class=" mt-1 ms-3 text-dark">CODIGO:</h4>
-        </div>
-      <div class="col-md-6">
-            <h3 class=" text-dark">{{depositReceiverDataShow.depositRequestCode}}</h3>
-        </div>
-    </div>
-    <div class="row mt-1">
-        <div class="col-md-1">
-           
-            <h4 class=" mt-1 ms-3  text-dark">ORIGEN:</h4>
-        </div>
-      <div class="col-md-6 ">
-            <h3 class=" text-dark">{{depositReceiverDataShow.fromOrganizationName}}</h3>
-        </div>
-        <div class="col-md-2">
-           
-        </div>
-       
-        <div class="d-inline col-md-2">
-            <small class="text-dark">FECHA: </small>
-            <small class="fw-bold text-dark">{{depositReceiverDataShow.receptionDate|date: 'dd-MM-yyyy'}}</small>
-        </div>
-    </div>
-   
-    <div class="row">
-        <div class="col-md-1"></div>
-        
-     
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-6">
-           <hr class="my-4">
-        </div>
-    </div>
- <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <table class="table table-flex table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">CODIGO</th>
-                            <th scope="col">U.MEDIDA</th>
-                            <th scope="col">DESCRIPCION</th>
-                           <th scope="col">CANTIDAD</th>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let controlReceivce of depositControlReceiverDtos">
-                        <td id="fullBlue_td">{{controlReceivce.itemCode}}</td>
-                        <td>{{controlReceivce.itemMeasureUnit}}</td>
-                        <td>{{controlReceivce.itemDescription}}</td>
-                        <td *ngIf="controlReceivce.itemQuantity>=10" class="text-success fw-bold">{{controlReceivce.itemQuantity}}</td>
-                        <td *ngIf="controlReceivce.itemQuantity<10" class="text-danger fw-bold">{{controlReceivce.itemQuantity}}</td>
-                        </tr>
-                  
 
-                </tbody>
-            </table>
+    <body id="orderListTemplate">
+
+
+        <div class="container">
+            <button id="closeButton" (click)="onCloseDepositCreationTemplate()" class="btn btn-sm text-white">X</button>
+            <div class="row">
+                <div class="col">
+
+                    <div class="barofcolourRed mt-3">-</div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-1">
+                    <img id="thumbsUp" class="ms-5 mb-1" src="./assets/img/key_24dp.svg">
+                </div>
+                <div class="col-md-8">
+                    <h3 class=" text-dark">{{depositReceiverDataShow.depositRequestCode}}</h3>
+                </div>
+                <div class="d-inline col-md-2">
+                    <img id="factory_icon" class="" src="./assets/img/calendar-days-solid.svg">
+                    <small class="fw-bold text-dark">{{depositReceiverDataShow.receptionDate|date:
+                        'dd-MM-yyyy'}}</small>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-1">
+                    <img id="thumbsUp" class="ms-5 mb-1" src="./assets/img/location-dot-solid.svg">
+                </div>
+                <div class="col-md-6 ">
+                    <h3 class=" text-dark">{{depositReceiverDataShow.fromOrganizationName}}</h3>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+
+               
+            </div>
+
+            <div class="row">
+                <div class="col-md-1"></div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <hr class="my-4">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <table class="table table-flex table-bordered">
+                        <thead>
+                            <tr class="text-center">
+                                <th  scope="col">CODIGO</th>
+                                <th scope="col">U.MEDIDA</th>
+                                <th scope="col">DESCRIPCION</th>
+                                <th scope="col">CANTIDAD</th>
+                        </thead>
+                        <tbody  class="text-center">
+                            <tr  *ngFor="let controlReceivce of depositControlReceiverDtos">
+                                <td id="fullBlue_td">{{controlReceivce.itemCode}}</td>
+                                <td >{{controlReceivce.itemMeasureUnit}}</td>
+                                <td>{{controlReceivce.itemDescription}}</td>
+                                <td id="fullGreen_td" *ngIf="controlReceivce.itemQuantity>=10" class=" ">
+                                    {{controlReceivce.itemQuantity}}</td>
+                                <td *ngIf="controlReceivce.itemQuantity<10" class="text-danger">
+                                    {{controlReceivce.itemQuantity}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </ng-template>
 
 <ng-template #comparatorNoteTemplate>
-<body id="orderListTemplate">
-    
 
-    <div  id="orderListTemplate" class="container-flex">
-        <button id="closeButton" (click)="onCloseRequestComparatorNoteTemplate()"
-            class="btn btn-sm text-white">X</button>
-        <div class="row mt-2">
-            <div class="col-md-3">
+    <body id="orderListTemplate">
 
-            </div>
 
-            <div class="col-md-6">
-                <h2>DETALLE DE COMPARACION DE PEDIDO CON STOCK</h2>
-
-            </div>
-
-            <div class="col-md-3">
-                <div>
-                    <h4> Fecha de envio: {{comparatorDto.requestDate|date: 'dd-MM-yyyy'}}</h4>
+        <div id="orderListTemplate" class="container-flex">
+            <button id="closeButton" (click)="onCloseRequestComparatorNoteTemplate()"
+                class="btn btn-sm text-white">X</button>
+            <div class="row">
+                <div class="col-md-3">
 
                 </div>
+
+                <div class="col-md-6">
+                    <h2 class="text-dark text-center">DETALLE DE COMPARACION DE PEDIDO CON STOCK</h2>
+
+                </div>
+
+                <div class="col-md-3">
+                    <div>
+                        <img id="factory_icon" class="" src="./assets/img/calendar-days-solid.svg">
+                        <h4 class="d-inline text-dark">{{comparatorDto.requestDate|date: 'dd-MM-yyyy'}}</h4>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div clasS="col-md-6">
+                    <div>
+                        <img id="factory_icon" class="" src="./assets/img/building-solid.svg">
+                        <h1 id="h1Comp" class="d-inline"> {{comparatorDto.depositName}}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <div>
+                        <img id="thumbsUp" class="ms-1 mb-1" src="./assets/img/key_24dp.svg">
+                        <h1 id="h1Comp" class="d-inline"> {{comparatorDto.requestCode}}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <div>
+                        <img id="thumbsUp" class="ms-1 mb-1" src="./assets/img/location-dot-solid.svg">
+                        <h1 id="h1Comp" class="d-inline"> {{comparatorDto.fromOrganization.toUpperCase()}}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <div>
+                        <img id="thumbsUp" class="ms-1 mb-2" src="./assets/img/house-solid.svg">
+                        <h1 id="h1Comp" class="d-inline"> {{comparatorDto.mainOrganization.toUpperCase()}}</h1>
+                    </div>
+                </div>
+                <p class="lead">
+                    <hr class="my-4">
+            </div>
+            <div class="row mt-2" *ngFor="let item of comparatorDto.items">
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <div class="mt-2">
+                        <p class="text-dark">ITEM SUMINISTRO:</p>
+                        <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2 ">
+                            {{item.requestItemCode}}</small>
+                    </div>
+
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2 ">
+                            {{item.requestItemDescription}}</small>
+                    </div>
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2 ">
+                            {{item.requestItemMeasureUnit}}</small>
+                    </div>
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> CANTIDAD:</h1> <small
+                            class="ms-2 text-success">{{item.requestItemQuantity}}</small>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-4">
+                    <div class="mt-2">
+                        <p>ITEM DEPOSITO:</p>
+                        <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1>
+                        <small *ngIf="item.controlItemCode=='No encontrado'" class="ms-2 text-dark">
+                            {{item.controlItemCode}} </small>
+                        <small *ngIf="item.controlItemCode!='No encontrado'" class="ms-2 text-success">
+                            {{item.controlItemCode}} </small>
+                    </div>
+
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1>
+
+                        <small *ngIf="item.controlItemCode=='No encontrado'"
+                            class="ms-2 text-dark">-</small>
+                        <small *ngIf="item.controlItemCode!='No encontrado'"
+                            class="ms-2 text-success">{{item.controlItemDescription}}</small>
+                    </div>
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1>
+                        <small *ngIf="item.controlItemCode=='No encontrado'"
+                            class="ms-2 text-dark">-</small>
+                        <small *ngIf="item.controlItemCode!='No encontrado'"
+                            class="ms-2 text-success">{{item.controlItemMeasureUnit}}</small>
+                    </div>
+                    <div *ngIf="item.controlItemQuantity>=10">
+                        <h1 id="supplyReportFullBlue" class="d-inline">CANTIDAD :</h1> <small
+                            class="ms-2 text-success">{{item.controlItemQuantity}}</small>
+                    </div>
+                    <div *ngIf="item.controlItemQuantity<10">
+                        <h1 id="supplyReportFullBlue" class="d-inline">CANTIDAD :</h1> <small
+                            class="ms-2 text-danger">{{item.controlItemQuantity}}</small>
+                    </div>
+                    <div *ngIf="item.controlQuantityLeft>0">
+                        <h1 id="supplyReportFullBlue" class="d-inline">SOBRANTE :</h1> <small
+                            class="ms-2 text-primary">{{item.controlQuantityLeft}}</small>
+
+                    </div>
+                    <div *ngIf="item.controlQuantityLeft<0">
+                        <h1 id="supplyReportFullBlue" class="d-inline">FALTANTE :</h1> <small
+                            class="ms-2">{{item.controlQuantityLeft.toString().replace("-","")}}</small>
+                    </div>
+                </div>
+                <p class="lead">
+                    <hr class="my-4">
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div clasS="col-md-6">
-                <div>
-                    <h4 class="d-inline">DEPOSITO: </h4>
-                    <h1 class="d-inline"> {{comparatorDto.depositName}}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-6">
-                <div>
-                    <h4 class="d-inline"> CODIGO DE ENVIO:</h4>
-                    <h1 class="d-inline"> {{comparatorDto.requestCode}}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-6">
-                <div>
-                    <h4 class="d-inline">DE:</h4>
-                    <h1 class="d-inline"> {{comparatorDto.fromOrganization.toUpperCase()}}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-6">
-                <div>
-                    <h4 class="d-inline">PARA:</h4>
-                    <h1 class="d-inline"> {{comparatorDto.mainOrganization.toUpperCase()}}</h1>
-                </div>
-            </div>
-            <p class="lead">
-                <hr class="my-4">
-        </div>
-        <div class="row mt-2" *ngFor="let item of comparatorDto.items">
-            <div class="col-md-2"></div>
-            <div class="col-md-3">
-                <div class="mt-2">
-                    <p>ITEM SUMINISTRO:</p>
-                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2 ">
-                        {{item.requestItemCode}}</small>
-                </div>
-
-                <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2 ">
-                        {{item.requestItemDescription}}</small>
-                </div>
-                <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2 ">
-                        {{item.requestItemMeasureUnit}}</small>
-                </div>
-                <div>
-                    <h1 class="d-inline"> CANTIDAD:</h1> <small
-                        class="ms-2 text-success">{{item.requestItemQuantity}}</small>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-3">
-                <div class="mt-2">
-                    <p>ITEM DEPOSITO:</p>
-                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2">
-                        {{item.controlItemCode}} </small>
-                </div>
-
-                <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2">
-                        {{item.controlItemDescription}}</small>
-                </div>
-                <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2">
-                        {{item.controlItemMeasureUnit}}</small>
-                </div>
-                <div *ngIf="item.controlItemQuantity>=10">
-                    <h1 class="d-inline">CANTIDAD :</h1> <small
-                        class="ms-2 text-success">{{item.controlItemQuantity}}</small>
-                </div>
-                <div *ngIf="item.controlItemQuantity<10">
-                    <h1 class="d-inline">CANTIDAD :</h1> <small
-                        class="ms-2 text-danger">{{item.controlItemQuantity}}</small>
-                </div>
-                <div *ngIf="item.controlQuantityLeft>0">
-                    <h1 class="d-inline">SOBRANTE :</h1> <small
-                        class="ms-2 text-primary">{{item.controlQuantityLeft}}</small>
-
-                </div>
-                <div *ngIf="item.controlQuantityLeft<0">
-                    <h1 class="d-inline">FALTANTE :</h1> <small
-                        class="ms-2 text-danger">{{item.controlQuantityLeft.toString().replace("-","")}}</small>
-                </div>
-            </div>
-            <p class="lead">
-                <hr class="my-4">
-        </div>
-    </div>
-</body>
+    </body>
 </ng-template>

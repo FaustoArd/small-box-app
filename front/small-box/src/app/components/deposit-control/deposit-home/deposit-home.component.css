@@ -5,7 +5,7 @@ body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
 #orderListTemplate{
-   background: linear-gradient(245.59deg, rgb(138, 131, 186)30%, rgb(146, 133, 207) 50%, #978ac5 79%);
+    background: linear-gradient(245.59deg, rgb(187, 185, 199)30%, rgb(198, 196, 206) 50%, #d5d2dc 79%);
 }
 #purchaseOrders{
     height: 40rem;
@@ -17,7 +17,7 @@ body{
 
 
 #supplyUpload{
-    background: linear-gradient(245.59deg, rgb(163, 159, 186)30%, rgb(169, 163, 193) 50%, #b2aec2 79%);
+    background: linear-gradient(245.59deg, rgb(187, 185, 199)30%, rgb(198, 196, 206) 50%, #d5d2dc 79%);
 }
 #purchaseOrdersTable{
     width: 64.7rem;
@@ -54,16 +54,17 @@ h1{
 
 h2{
     color: rgb(56, 18, 195);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: "Anton", sans-serif;
     font-weight: bold;
     font-size: 1.2rem;
 }
 h3{
-    font-family: 'Noto Sans', sans-serif;
+    font-family: "Anton", sans-serif;
 }
 h4{
-    font-family: 'Quattrocento', serif;
-    font-weight: 500;
+    color: rgb(47, 13, 174);
+    font-family: "Anton", sans-serif;
+    font-weight: bold;
     font-size: 1rem;
     
 }
@@ -182,4 +183,8 @@ input{
     width: 0.8rem;
     height: 0.8rem;
     margin-bottom: 0.5rem;
+}
+#thumbsUp{
+    width: 1.5rem;
+    height: 1.5rem;
 }

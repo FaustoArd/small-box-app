@@ -60,7 +60,9 @@ import com.lord.small_box.models.BigBag;
 import com.lord.small_box.models.BigBagItem;
 import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositControl;
+import com.lord.small_box.models.DepositControlReceiver;
 import com.lord.small_box.models.DepositControlRequest;
+import com.lord.small_box.models.DepositReceiver;
 import com.lord.small_box.models.ExcelItemContainer;
 import com.lord.small_box.models.Input;
 import com.lord.small_box.models.Organization;
@@ -69,7 +71,10 @@ import com.lord.small_box.models.SmallBoxType;
 import com.lord.small_box.models.Supply;
 import com.lord.small_box.repositories.AppUserRepository;
 import com.lord.small_box.repositories.AuthorityRepository;
+import com.lord.small_box.repositories.DepositControlReceiverRepository;
 import com.lord.small_box.repositories.DepositControlRepository;
+import com.lord.small_box.repositories.DepositControlRequestRepository;
+import com.lord.small_box.repositories.DepositReceiverRepository;
 import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.ExcelItemContainerRepository;
 import com.lord.small_box.repositories.ExcelItemRepository;
@@ -123,6 +128,12 @@ public class IntegrationTest {
 
 	@Autowired
 	private DepositControlRepository depositControlRepository;
+	
+	@Autowired
+	private DepositReceiverRepository depositReceiverRepository;
+	
+	@Autowired
+	private DepositControlReceiverRepository depositControlReceiverRepository;
 
 	@Autowired
 	private ExcelItemRepository excelItemRepository;
@@ -1427,12 +1438,66 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.depositControlRequestDtos[0].itemQuantity", is(14)));
 		
 	}
+	
+	private String dirSitDeCalleRequestCode;
 	@Test
 	@Order(74)
 	void sendRequest_UserPedro()throws Exception{
-		this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-request/send-request")
+	  mvcResult = 	this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-request/send-request")
 				.param("depositRequestId", "1").header("Authorization", "Bearer " + userPedrojwtToken)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201))
-		.andExpect(jsonPath("$").isString());
+			  .andDo(MockMvcResultHandlers.print())
+		.andExpect(jsonPath("$").isString()).andReturn();
+	  dirSitDeCalleRequestCode = mvcResult.getResponse().getContentAsString().replace("\"","");
+	 
+	}
+	
+	@Test
+	@Order(75)
+	void checkRequestReception_SuperUserMiguel248()throws Exception{
+		this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-receiver/find-receivers-by-organization")
+				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200))
+				.andExpect(jsonPath("$.[0].id", is(notNullValue())))
+				.andExpect(jsonPath("$.[0].fromOrganizationName",is("Dir. de personas en situacion de calle")))
+				.andExpect(jsonPath("$.[0].depositRequestCode", is(dirSitDeCalleRequestCode)));
+	}
+	@Test
+	@Order(76)
+	void checkRequestReceptionItems_SuperUserMiguel248()throws Exception{
+		this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-receiver/find-all-control-receivers-by-receiver")
+				.param("depositReceiverId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200))
+				.andExpect(jsonPath("$.[0].id", is(notNullValue())))
+				.andExpect(jsonPath("$.[0].itemCode",is("5.1.4.07776.0001")))
+				.andExpect(jsonPath("$.[0].itemQuantity",is(14)));
+		DepositReceiver depositReceiver = depositReceiverRepository.findById(1l).get();
+			List<DepositControlReceiver> receivers = depositControlReceiverRepository.findAllByDepositReceiver(depositReceiver);
+			assertThat(receivers.stream().filter(item -> item.getItemCode().equals("5.1.4.03503.0003"))
+					.findFirst().get().getItemQuantity()).isEqualTo(10);
+			assertThat(receivers.stream().filter(item -> item.getItemCode().equals("5.1.4.03501.0001"))
+					.findFirst().get().getItemQuantity()).isEqualTo(18);
+			assertThat(receivers.stream().filter(item -> item.getItemCode().equals("5.1.4.07776.0001"))
+					.findFirst().get().getItemQuantity()).isEqualTo(14);
+	}
+	@Test
+	@Order(77)
+	void getRequestComparationNote_SuperUserMiguel248()throws Exception{
+		
+		this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-receiver/get-comparator-note")
+				.param("depositReceiverId", "1").param("depositId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200))
+				.andExpect(jsonPath("$.items[0].requestItemCode",is("5.1.4.07776.0001")))
+				.andExpect(jsonPath("$.items[0].requestItemQuantity",is(14)))
+				.andExpect(jsonPath("$.items[0].controlItemCode",is("No encontrado")))
+				.andExpect(jsonPath("$.items[1].requestItemCode",is("5.1.4.03503.0003")))
+				.andExpect(jsonPath("$.items[1].requestItemQuantity",is(10)))
+				.andExpect(jsonPath("$.items[1].controlItemCode",is("No encontrado")))
+				.andExpect(jsonPath("$.items[2].requestItemCode",is("5.1.4.03501.0001")))
+				.andExpect(jsonPath("$.items[2].requestItemQuantity",is(18)))
+				.andExpect(jsonPath("$.items[2].controlItemCode",is("No encontrado")));
 	}
 }

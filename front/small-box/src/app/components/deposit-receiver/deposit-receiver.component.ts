@@ -156,9 +156,9 @@ export class DepositReceiverComponent implements OnInit {
   requestComparatorNoteTemplateRef!: MatDialogRef<DialogTemplateComponent>;
   openRequestComparatorNoteTemplate(template: TemplateRef<any>, depositReceiverId: number) {
     this.getItemsComparator(depositReceiverId);
-    this.requestComparatorNoteTemplateRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    this.requestComparatorNoteTemplateRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'85%','95%',true,true);
     this.requestComparatorNoteTemplateRef.afterClosed().subscribe();
 
   }

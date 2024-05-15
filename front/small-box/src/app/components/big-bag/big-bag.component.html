@@ -1,6 +1,6 @@
 <body>
   <app-navbar></app-navbar>
-  <div class="container-flex">
+  <div class="container-fluid">
     <div  class="row">
       <div class=" text-center">
         <img id="bag_icon" class="ms-1 mt-1" src="./assets/img/bag-shopping-solid.svg">
@@ -8,24 +8,21 @@
     </div>
     <div class="row mt-5 ms-4">
     <div *ngIf="!createdEnabled"  class="col-md-3"></div>
-     <div *ngIf="!createdEnabled" class="col-md-3">
+     <div *ngIf="!createdEnabled" class="col-md-4">
         <div class="jumbotron ms-1">
           <div>
               <p class="d-inline display-4">NUEVO</p>
               <button (click)="createBigBagSwitch()" class="btn btn-lg d-inline ms-5"></button>
           </div>
-       <p class="lead">
-              <hr class="my-4">
-      </div>
-    </div>
-      <div *ngIf="!createdEnabled" class="col-md-3">
+       </div>
+     </div>
+    <div *ngIf="!createdEnabled" class="col-md-3">
       <div class="jumbotron ms-1">
      <div id="orderItem">
             <p class="d-inline display-4">VER</p>
             <button (click)="openDialogSupplyList(bigBagListTemplate)" class="btn btn-lg  d-inline ms-5"></button>
         </div>
-        <p class="lead">
-            <hr class="my-4">
+      
     </div>
  </div>
  <div class="col-md-4">
@@ -50,16 +47,27 @@
           </form>
         </div>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2 mt-1">
         <div *ngIf="createdEnabled">
-          <button (click)="createBigBag()" class="btn btn-sm text-white  mt-1">GUARDAR</button>
-          <button (click)="reloadPage()" class="btn btn-sm text-warning  mt-1 ms-5">CANCELAR</button>
+           <div class="jumbotron ms-1">
+          <div>
+              <p class="d-inline display-4">GUARDAR</p>
+              <button  id="btnSaveBigBag" (click)="createBigBag()" class="btn btn-lg d-inline ms-3"></button>
+          </div>
+       </div>
+       <div class="jumbotron ms-1">
+        <div>
+            <p class="d-inline display-4">CANCELAR</p>
+            <button id="btnCancelBigBag" (click)="reloadPage()" class="btn btn-lg d-inline ms-2"></button>
+        </div>
+     </div>
+    
         </div>
       </div>
     </div>
     <div *ngIf="createdEnabled" class="row">
       <div class="col-md-6">
-        <div class="mt-4  ms-3">
+        <div class="mt-1  ms-3">
           <div id="sel-text" class="border border-dark">
             <p class="d-inline">Seleccione items del deposito </p>
             <div id="deposit-selection" class="d-inline">
@@ -160,22 +168,22 @@
           <div id="table-div">
             <table class="table table-flex table-bordered table-striped h-75">
               <thead>
-                <tr>
+                <tr class="text-center">
                   <th scope="col">Fecha de creacion</th>
                   <th scope="col">Nombre</th>
                   <th>VER ITEMS</th>
                   <th>CALCULAR</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="text-center">
                 <tr *ngFor="let bigBag of findedBigBagDtos">
                   <td>{{bigBag.creationDate}}</td>
                   <td>{{bigBag.name}}</td>
                   <td>
-                    <button (click)="openDialogBigBagItemsList(bigBag.id)" class="btn btn-sm">-</button>
+                    <button (click)="openDialogBigBagItemsList(bigBag.id)" class="btn btn-md"></button>
                   </td>
                   <td>
-                    <button (click)="calculateBigBagTotalQuantity(bigBag.id)" class="btn btn-sm">-</button>
+                    <button (click)="calculateBigBagTotalQuantity(bigBag.id)" class="btn btn-md"></button>
                   </td>
                 </tr>
               </tbody>

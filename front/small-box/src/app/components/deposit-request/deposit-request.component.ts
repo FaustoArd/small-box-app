@@ -347,7 +347,7 @@ private getItemCode(itemId:number):string{
     this.getAllControlRequestsByRequestId(depositRequestId);
     this.depositControlrequestsMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    },'60%','50%',true,true);
+    },'85%','95%',true,true);
     this.depositControlrequestsMatDialogRef.afterClosed().subscribe();
   }
 

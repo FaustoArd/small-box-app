@@ -33,6 +33,18 @@ button,a{
     font-weight: bold;
     border-radius: 0.4rem;
 }
+#btnSaveBigBag{
+    background: linear-gradient(245.59deg, rgb(45, 14, 216)20%, rgb(22, 25, 185) 30%, #353cb6 79%); 
+}
+#btnSaveBigBag:hover{
+    background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
+}
+#btnCancelBigBag{
+    background: linear-gradient(245.59deg, rgb(174, 7, 71)20%, rgb(192, 29, 138) 30%, #cd13ba 79%); 
+}
+#btnCancelBigBag:hover{
+    background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
+}
 
 button:hover{
     background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
@@ -114,7 +126,8 @@ td{
 
 #total_quantity{
     font-family: "Fira Code", monospace;
-    color:rgb(17, 169, 6);
+    font-weight: bold;
+    color:rgb(1, 10, 1);
     padding-right: 1.0rem;
 }
 #closeButton{

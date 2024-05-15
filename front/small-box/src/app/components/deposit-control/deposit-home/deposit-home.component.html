@@ -1,6 +1,6 @@
 <body>
     <app-navbar></app-navbar>
-    <div class="container-flex">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-md-3">
                 <button routerLink="/big-bag" id="bigBag" class="btn btn-md  ms-5 mt-1 text-center">
@@ -31,7 +31,8 @@
 
             </div>
         </div>
-        <div class="row mt-5 ms-3">
+        <div class="row mt-5 ms-5">
+           
             <div class="col-md-3">
                 <h5 class="d-inline">ORDEN DE COMPRA</h5>
                
@@ -52,7 +53,7 @@
                 <hr class="my-4">
             </div>
         </div>
-        <div class="row mt-3 ms-3">
+        <div class="row mt-3 ms-5">
 
             <div class="col-md-3 mt-1">
                 <!-- Purchase order jumbotron -->
@@ -181,16 +182,17 @@
    
     <button id="closeButton" (click)="onClosePurchaseOrderTableTemplate()" class="btn btn-sm text-white">X</button>
     <div id="supplyUpload"  class="container-flex">
-    <div class="row mt-1">
+    <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-4">
             <h2 class="d-inline text-dark">ORDEN DE COMPRA NUMERO: </h2>
-            <h2 class="d-inline text-danger">{{purchaseOrderDto.orderNumber}}<small class="text-dark fw-bold">-</small>{{ purchaseOrderDto.date.toString().substring(2,4)}} </h2>
+            <h2 class="d-inline text-primary">{{purchaseOrderDto.orderNumber}}<small class="text-dark">-</small>{{ purchaseOrderDto.date.toString().substring(2,4)}} </h2>
         </div>
         <!-- Purchase order table -->
         <div class="col-md-1"></div>
         <div class="col-md-2">
-            <h3>FECHA: {{purchaseOrderDto.date |date: 'dd-MM-yyyy'}}</h3>
+            <img id="thumbsUp" class="float ms-1 mt-1 " src="./assets/img/calendar-days-solid.svg">
+           <h4 class="mt-2 ms-1" >{{purchaseOrderDto.date |date: 'dd-MM-yyyy'}}</h4>
         </div>
     </div>
     <div class="row">
@@ -202,19 +204,22 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <h3>UNIDAD EJECUTORA: {{purchaseOrderDto.executerUnit}}</h3>
+            <h3 class="d-inline">UNIDAD EJECUTORA:</h3>
+            <h4 class="d-inline"> {{purchaseOrderDto.executerUnit}}</h4>
         </div>
     </div>
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <h3>DEPENDENCIA: {{purchaseOrderDto.dependency}}</h3>
+            <h3  class="d-inline">DEPENDENCIA: </h3>
+            <h4 class="d-inline">{{purchaseOrderDto.dependency}}</h4> 
         </div>
     </div>
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <h3>FUENTE DE FINANCIAMIENTO: {{purchaseOrderDto.financingSource}}</h3>
+            <h3 class="d-inline">FUENTE DE FINANCIAMIENTO:</h3>
+            <h4 class="d-inline"> {{purchaseOrderDto.financingSource}}</h4>
         </div>
     </div>
     <div class="row">
@@ -264,7 +269,7 @@
    
     <!-- <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button> -->
     <div id="supplyUpload" *ngIf="supplyItemDtos.length>0" class="container-flex">
-        <div class="row mt-1">
+        <div class="row">
             <div class="col-md-5"></div>
             <div class="col-md-5">
                 <h2 class="d-inline">SUMINISTRO NUMERO: </h2>
@@ -772,15 +777,16 @@
     </div>
 </ng-template>
 <ng-template #depositSelectionTemplate>
-    <div class="container-flex">
-        <div class="row mt-3">
-            <div class="col">
-                <h5 class="text-center">SELECCIONAR DEPOSTIO</h5>
+    <body id="correction">
+        <div id="correction" class="container-flex">
+        <div class="row">
+            <div class="col mt-3">
+                <h5 class="text-center">SELECCIONAR DEPOSITO</h5>
             </div>
         </div>
         <div class="row mt-5">
-            <div class="col-md-5"></div>
-            <div class="col-md-4">
+            <div class="col-md-3"></div>
+            <div class="col-md-4 ms-3">
                 <table class="table-sm table-bordered h-75">
                     <thead>
                         <tr>
@@ -789,9 +795,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="text-center" *ngFor="let deposit of depositDtos">
-                            <td class="text-primary">{{deposit.name}}</td>
-                            <td><button (click)="setCurrentDeposit(deposit.id)"
+                        <tr class="text-center border border-dark" *ngFor="let deposit of depositDtos">
+                            <td class="text-dark border border-dark">{{deposit.name}}</td>
+                            <td class="text-dark border border-dark"><button (click)="setCurrentDeposit(deposit.id)"
                                     class="btn btn-sm text-primary">-</button></td>
                         </tr>
                     </tbody>
@@ -799,6 +805,7 @@
             </div>
         </div>
     </div>
+</body>
 </ng-template>
 <ng-template #updateDepositContolTemplate>
 

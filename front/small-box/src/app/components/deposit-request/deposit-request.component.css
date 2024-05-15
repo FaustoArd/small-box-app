@@ -1,112 +1,68 @@
 body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
-   
-}
-#body_color{
-    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
-}
-#createRequestCol{
-    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
-   
-}
-#showItems{
-    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
-}
-#toSendContainer{
-    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
-}
-#item_selection_table{
-    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
-}
-table{
-    text-align: center;
-    max-height: 30rem;
-  overflow: auto;
-  display:inline-block;
-  border: solid 1px black;
-  background: linear-gradient(245.59deg, rgb(239, 239, 240)30%, rgb(234, 233, 222) 50%, #e3e2ec 79%);
-}
-th{
-    
-    border: 1px solid black;
-    font-size: 0.6rem;
-}
-td{
-    max-height: 20px;
-    border: 1px solid rgb(0, 0, 0);
-    font-size: 0.9rem;
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: bold;
-}
-#fullBlue_td{
-    color: #2a31b6;
-    font-size: 0.9rem;
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: bold;
 }
 
-.float { float:left; width:100px; height:100px }
 
-.table-wrapper {
-    max-height: 40rem;
-    overflow: auto;
-    display:inline-block;
-  }
+#orderListTemplate{
+    background: linear-gradient(245.59deg, rgb(187, 185, 199)30%, rgb(198, 196, 206) 50%, #d5d2dc 79%);
+}
+#comparatorNoteCss{
+    background: linear-gradient(245.59deg, rgb(187, 185, 199)30%, rgb(198, 196, 206) 50%, #d5d2dc 79%);
+}
 
 .barofcolourRed{
     margin-left: 1rem;
     margin-right: 1rem;
-    background: linear-gradient(245.59deg, rgb(216, 13, 13)33.33%, rgb(202, 9, 19) 33.33%, #d61111 33.33%);
+    background: linear-gradient(245.59deg,  #6f5cae 33.33%, rgb(145, 124, 202) 33.33%, #6f5cae 33.33%);
     height: 2rem;
 }
-
 .barofcolourColumn{
     padding-top: 0.1rem;
     margin-left: 0.2rem;
     margin-right: 0.2rem;
-    background: linear-gradient(245.59deg, rgb(167, 179, 208)30%, rgb(174, 167, 213) 50%, #b5b0da 79%);
+    background: linear-gradient(245.59deg,  #6f5cae 33.33%, rgb(145, 124, 202) 33.33%, #6f5cae 33.33%);
     height: 2rem;
 }
-.barofcolourOther{
-    padding-top: 0.1rem;
-    margin-left: 0;
-    margin-right: 0;
-    background: linear-gradient(245.59deg, rgb(184, 195, 219)30%, rgb(184, 179, 216) 50%, #bebad8 79%);
-    height: 2rem;
+#titlesRow{
+ 
+    background: linear-gradient(245.59deg, rgb(187, 185, 199)30%, rgb(198, 196, 206) 50%, #d5d2dc 79%);
+    margin-bottom: 3rem;
 }
-#deleteIcon{
-  height: 1.5rem;
+#tableRequest{
+    background-color: #000002;
 }
-#btnSend{
-    height: 1.6rem;
-    width: 4.6rem;
-}
+
 button{
     background: linear-gradient(245.59deg, rgb(111, 111, 199)33.33%, rgb(145, 124, 202) 33.33%, #6f5cae 33.33%);
     color:red;
     font-family: "Fira Code", monospace;
-   
+    font-weight: bold;
+    font-size: 0.8rem;
 }
-button:hover{
-    background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
-    color:rgb(215, 154, 41);
-}
+
 h1{
+    color: rgb(222, 224, 225);
     font-size: 1rem;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: "Anton", sans-serif;
+}
+#h1Comp{
+    color: rgb(47, 13, 174);
+    font-size: 1rem;
+    font-family: "Anton", sans-serif;
 }
 
 h2{
-    color: rgb(56, 18, 195);
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: bold;
+    color: rgb(222, 224, 225);
+    font-family: "Anton", sans-serif;
+    
     font-size: 1.2rem;
 }
 h3{
-    font-family: 'Noto Sans', sans-serif;
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
 }
 h4{
-    font-family: 'Quattrocento', serif;
+    font-family: "Anton", sans-serif;
     font-weight: 500;
     font-size: 1rem;
     
@@ -124,21 +80,17 @@ label{
     font-weight: bold;
 }
 select{
-    font-family: "Fira Code", monospace;
-    font-weight: bold;
-   
+    font-family: "Anton", sans-serif;
+    font-weight: 100;
 }
 option{
-    font-family: "Fira Code", monospace;
-    font-weight: bold;
-   
+    font-weight: 100;
 }
 a{
     font-family: "Anton", sans-serif;
     font-weight: bold;
  
 }
-
 #quantity{
     width: 6.5rem;
 }
@@ -146,7 +98,20 @@ a{
     color: rgb(8, 89, 8);
     font-weight: bold;
 }
-
+th{
+    font-size: 0.6rem;
+}
+td{
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
+#fullBlue_td{
+    color: #2a31b6;
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+}
 #supplyReportFullBlue{
     color: #2a31b6;
     font-size: 0.9rem;
@@ -155,9 +120,9 @@ a{
 }
 
 small{
-    color:rgb(180, 10, 10);
-    font-weight: bold;
-    font-family: 'Quattrocento', serif;
+    color: #010108;
+    font-family: "Anton", sans-serif;
+    font-weight: 100;
     font-size: 1rem;
 }
 #closeButton{
@@ -174,6 +139,15 @@ form{
 input{
     font-weight: bold;
 }
-small{
-    font-size: 0.8rem;
+
+#thumbsUp{
+    width: 1.5rem;
+    height: 1.5rem;
 }
+#factory_icon{
+  
+    width: 2.5rem;
+    height: 2.0rem;
+    margin-bottom: 0.5rem;
+}
+
