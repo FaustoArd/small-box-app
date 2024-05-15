@@ -97,4 +97,11 @@ public class SupplyController {
 		List<SupplyItemRequestDto> supplyItems = supplyService.findAllSupplyItemsByOrganizationApplicant(mainOrganization,organizationApplicantId);
 		return ResponseEntity.ok(supplyItems);
 	}
+	@GetMapping(path="/check-supply-assigned")
+	ResponseEntity<Boolean> checkOrganizationApplicantSupplyAssigned
+	(@RequestParam("mainOrganizationId")long mainOrganizationId, @RequestParam("applicantOrganizationId")long applicantOrganizationId){
+		boolean result = supplyService.checkOrganizationApplicantSupplyAssigned(mainOrganizationId, applicantOrganizationId);
+		System.out.println("check assgned suply: " +result);
+		return ResponseEntity.ok(result);
+	}
 }

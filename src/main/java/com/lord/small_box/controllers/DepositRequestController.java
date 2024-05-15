@@ -19,6 +19,8 @@ import com.google.gson.Gson;
 import com.lord.small_box.dtos.DepositControlRequestDto;
 import com.lord.small_box.dtos.DepositRequestDto;
 import com.lord.small_box.services.DepositRequestService;
+import com.lord.small_box.services.SupplyService;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,6 +30,7 @@ public class DepositRequestController {
 	
 	@Autowired
 	private final DepositRequestService depositRequestService;
+	
 	
 	private static final Gson gson = new Gson();
 	
@@ -43,7 +46,7 @@ public class DepositRequestController {
 	@PutMapping(path="/set-destination-organization")
 	ResponseEntity<DepositRequestDto> setDestinationOrganization(@RequestBody DepositRequestDto depositRequestDto){
 		log.info("Deposit request controller, Destination organization id value: "+depositRequestDto.getDestinationOrganizationId());
-		DepositRequestDto updatedDepositRequestDto = depositRequestService.setDestinationOrganization(depositRequestDto);
+	DepositRequestDto updatedDepositRequestDto = depositRequestService.setDestinationOrganization(depositRequestDto);
 		return new ResponseEntity<DepositRequestDto>(updatedDepositRequestDto,HttpStatus.OK);
 	}
 	

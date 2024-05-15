@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.lord.small_box.exceptions.ItemNotAssignedException;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.exceptions.LoginException;
 import com.lord.small_box.exceptions.MaxAmountExeededException;
@@ -48,6 +50,10 @@ public class SmallBoxExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(TextFileInvalidException.class)
 	ResponseEntity<String> handleTextFileInvalid(TextFileInvalidException ex) {
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.valueOf(422));
+	}
+	@ExceptionHandler(ItemNotAssignedException.class)
+	ResponseEntity<String> handleItemNotAssigned(ItemNotAssignedException ex) {
+		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.valueOf(204));
 	}
 
 }

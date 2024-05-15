@@ -19,6 +19,13 @@ button,a{
     font-size: 1rem;
     font-family: 'Noto Sans', sans-serif;
 }
+.h1{
+    font-family: "Anton", sans-serif;
+}
+label{
+    font-family: "Anton", sans-serif;
+    font-weight: lighter;
+}
 
 h2{
     color: rgb(56, 18, 195);

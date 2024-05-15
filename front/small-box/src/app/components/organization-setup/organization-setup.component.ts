@@ -19,16 +19,16 @@ import { ParentOrganizationDto } from 'src/app/models/parentOrganization';
 export class OrganizationSetupComponent implements OnInit {
 
   constructor(private organizationService: OrganizationService, private snackBarService: SnackBarService
-    , private formBuilder: FormBuilder,private dialogService:DialogService) { }
+    , private formBuilder: FormBuilder, private dialogService: DialogService) { }
 
   organizationDto!: OrganizationDto;
-  updateOrganizationDto!:OrganizationDto;
-  organizationUpdateDto!:OrganizationDto;
+  updateOrganizationDto!: OrganizationDto;
+  organizationUpdateDto!: OrganizationDto;
   responsibleDto!: OrganizationResponsibleDto;
-  updateResponsibleDto!:OrganizationResponsibleDto;
-  responsiblesOrgs:OrganizationResponsibleDto[] = [];
-  organizationsDto:OrganizationDto[]= [];
-  responsiblesDto:OrganizationResponsibleDto[]=[];
+  updateResponsibleDto!: OrganizationResponsibleDto;
+  responsiblesOrgs: OrganizationResponsibleDto[] = [];
+  organizationsDto: OrganizationDto[] = [];
+  responsiblesDto: OrganizationResponsibleDto[] = [];
   private matDialogRef!: MatDialogRef<DialogTemplateComponent>;
 
   ngOnInit(): void {
@@ -43,10 +43,10 @@ export class OrganizationSetupComponent implements OnInit {
     organizationNumber: ['', Validators.required],
     maxRotation: [0, Validators.required],
     maxAmount: [0, Validators.required],
-    responsibleId:[0, Validators.required]
+    responsibleId: [0, Validators.required]
   });
 
-//Getters
+  //Getters
   get organizationName() {
     return this.organizationForm.controls.organizationName;
   }
@@ -59,7 +59,7 @@ export class OrganizationSetupComponent implements OnInit {
   get maxAmount() {
     return this.organizationForm.controls.maxAmount;
   }
-  get responsible(){
+  get responsible() {
     return this.organizationForm.controls.responsibleId;
   }
 
@@ -78,7 +78,7 @@ export class OrganizationSetupComponent implements OnInit {
         error: (errorData) => {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         },
-        complete:()=>{
+        complete: () => {
           //Get Organization List
           this.getOrganizations();
         }
@@ -87,99 +87,99 @@ export class OrganizationSetupComponent implements OnInit {
   }
 
   //Update Organization form Builder
-updateOrganizationForm = this.formBuilder.group({
-    id:[0],
+  updateOrganizationForm = this.formBuilder.group({
+    id: [0],
     organizationName: ['', Validators.required],
     organizationNumber: [0, Validators.required],
     maxRotation: [0, Validators.required],
     maxAmount: [0, Validators.required],
-    responsibleId:[0, Validators.required]
+    responsibleId: [0, Validators.required]
 
   });
 
   // this method  Patch values of the organization item to be updated in update Form.
-  onUpdateOrganizationShow(org:OrganizationDto):void{
-    
+  onUpdateOrganizationShow(org: OrganizationDto): void {
+
     this.updateOrganizationForm.patchValue({
-      id:this.organizationUpdateDto.id,
-      organizationName:this.organizationUpdateDto.organizationName,
-      organizationNumber:this.organizationUpdateDto.organizationNumber,
-      maxRotation:this.organizationUpdateDto.maxRotation,
-      maxAmount:this.organizationUpdateDto.maxAmount,
-      responsibleId:this.organizationUpdateDto.responsibleId
+      id: this.organizationUpdateDto.id,
+      organizationName: this.organizationUpdateDto.organizationName,
+      organizationNumber: this.organizationUpdateDto.organizationNumber,
+      maxRotation: this.organizationUpdateDto.maxRotation,
+      maxAmount: this.organizationUpdateDto.maxAmount,
+      responsibleId: this.organizationUpdateDto.responsibleId
 
     });
   }
 
+  updateOrganizationMatDialogRef!:MatDialogRef<DialogTemplateComponent>;
   // This method open the template dialog form
-  openDialogUpdateOrganization(id:number,template:TemplateRef<any>){
+  openDialogUpdateOrganization(id: number, template: TemplateRef<any>) {
     //Get organization By Id from selection
     this.getOrganizationbyId(id);
     //Get responsibles to show in form
     this.getResponsibles();
-
-    this.matDialogRef = this.dialogService.openDialogCreation({
+    this.updateOrganizationMatDialogRef = this.dialogService.openDialogCreation({
       template
     });
-    this.matDialogRef.afterClosed().subscribe();
+    this.updateOrganizationMatDialogRef.afterClosed().subscribe();
     this.updateOrganizationForm.reset();
   }
   //this method reset the update form and close the template dialog
-  create():void{
+  create(): void {
     this.matDialogRef.close();
     this.updateOrganizationForm.reset();
-   }
+  }
 
-   //Update form method
-   updateOrganization():void{
-    if(this.updateOrganizationForm.valid){
+  //Update form method
+  updateOrganization(): void {
+    if (this.updateOrganizationForm.valid) {
       //Assign form to OrganizationDto class
       this.organizationUpdateDto = new OrganizationDto();
-      this.organizationUpdateDto = Object.assign(this.organizationUpdateDto,this.updateOrganizationForm.value);
+      this.organizationUpdateDto = Object.assign(this.organizationUpdateDto, this.updateOrganizationForm.value);
       //Organization service update POST method, recieves OrganizationDto class
       this.organizationService.updateOrganization(this.organizationUpdateDto).subscribe({
-         //Recieves Organization values
-        next:(orgData)=>{
-         this.snackBarService.openSnackBar('Se actializo la organizacion: ' + orgData.organizationName,'Cerrar',3000);
+        //Recieves Organization values
+        next: (orgData) => {
+          this.snackBarService.openSnackBar('Se actializo la organizacion: ' + orgData.organizationName, 'Cerrar', 3000);
         },
-        error:(errorData)=>{
-          this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+        error: (errorData) => {
+          this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         }
       });
     }
-   }
+  }
 
-   //Find one organization By id.
-   getOrganizationbyId(id:number):void{
+  //Find one organization By id.
+  getOrganizationbyId(id: number): void {
     this.organizationService.getOrganizationById(id).subscribe({
-      next:(orgData)=>{
+      next: (orgData) => {
         this.organizationUpdateDto = orgData;
         this.onUpdateOrganizationShow(this.organizationUpdateDto);
-      
+
       },
-      error:(errorData)=>{
-        this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
       },
-      });
+    });
   }
 
   //Get all Organizations.
-  getOrganizations(){
+  getOrganizations() {
     this.organizationService.getAllOrganizations().subscribe({
-      next:(orgsData)=>{
+      next: (orgsData) => {
         this.organizationsDto = orgsData;
       },
-      error:(errorData)=>{
-        this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
       }
     });
   };
 
   responsibleForm = this.formBuilder.group({
-  name: ['', Validators.required],
-  lastname: ['', Validators.required],
+    name: ['', Validators.required],
+    lastname: ['', Validators.required],
 
-   
+
   });
 
   //Organization Responsible Getters
@@ -189,7 +189,7 @@ updateOrganizationForm = this.formBuilder.group({
   get lastname() {
     return this.responsibleForm.controls.lastname;
   }
- 
+
 
   //This method is to create new organization responsible
   newResponsible() {
@@ -204,8 +204,8 @@ updateOrganizationForm = this.formBuilder.group({
         error: (errorData) => {
           this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         },
-        complete:()=>{
-         this.getResponsibles();
+        complete: () => {
+          this.getResponsibles();
         }
       });
     }
@@ -213,7 +213,7 @@ updateOrganizationForm = this.formBuilder.group({
 
   //Update Resposible form builder
   updateResponsibleForm = this.formBuilder.group({
-    id:[0],
+    id: [0],
     name: ['', Validators.required],
 
     lastname: ['', Validators.required],
@@ -221,41 +221,45 @@ updateOrganizationForm = this.formBuilder.group({
   })
 
   //this method patch values from responsible selected by id to update dialog Form
-  updateResponsibleShow(responsible:OrganizationResponsibleDto):void{
+  updateResponsibleShow(responsible: OrganizationResponsibleDto): void {
     this.updateResponsibleForm.patchValue({
-      id:this.updateResponsibleDto.id,
-      name:this.updateResponsibleDto.name,
-      lastname:this.updateResponsibleDto.lastname
+      id: this.updateResponsibleDto.id,
+      name: this.updateResponsibleDto.name,
+      lastname: this.updateResponsibleDto.lastname
     });
   }
+
+  onCloseDialogUpdateResponsible() {
+    this.updateResponsibleMatDialogRef.close();
+  }
+  updateResponsibleMatDialogRef!:MatDialogRef<DialogTemplateComponent>;
   //This method open update responsible template dialog form
-  openDialogUpdateResponsible(id:number,template:TemplateRef<any>){
+  openDialogUpdateResponsible(id: number, template: TemplateRef<any>) {
     this.getResponsibleById(id);
-    this.matDialogRef = this.dialogService.openDialogCreation({
+    this.updateResponsibleMatDialogRef = this.dialogService.openDialogCreation({
       template
     });
-    this.matDialogRef.afterClosed().subscribe();
+    this.updateResponsibleMatDialogRef.afterClosed().subscribe();
     this.updateResponsibleForm.reset();
 
   }
 
   //This method update responsible to backend
-  updateResponsible():void{
-   
-    if(this.updateResponsibleForm.valid){
+  updateResponsible(): void {
+    if (this.updateResponsibleForm.valid) {
       //Assign values from form to OrganizationResponsible class
       this.updateResponsibleDto = new OrganizationResponsibleDto();
-      this.updateResponsibleDto = Object.assign(this.updateResponsibleDto,this.updateResponsibleForm.value);
+      this.updateResponsibleDto = Object.assign(this.updateResponsibleDto, this.updateResponsibleForm.value);
       //Organization Service PUT method 
       this.organizationService.updateResponsible(this.updateResponsibleDto).subscribe({
-        next:(respData)=>{
+        next: (respData) => {
           //Returns Responsible name and lastname
-          this.snackBarService.openSnackBar('Se actualizo el responsable: ' + respData.name + ' ' + respData.lastname,'Cerrar',3000);
+          this.snackBarService.openSnackBar('Se actualizo el responsable: ' + respData.name + ' ' + respData.lastname, 'Cerrar', 3000);
         },
-        error:(errorData)=>{
-          this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+        error: (errorData) => {
+          this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
         },
-        complete:()=>{
+        complete: () => {
           //Get all Organization and Responsibles
           this.getOrganizations();
           this.getResponsibles();
@@ -266,186 +270,186 @@ updateOrganizationForm = this.formBuilder.group({
   }
 
   //Get one responsible by id
-  getResponsibleById(id:number):void{
+  getResponsibleById(id: number): void {
     this.organizationService.getResponsibleById(id).subscribe({
-      next:(respData)=>{
+      next: (respData) => {
         this.updateResponsibleDto = respData;
         console.log(this.updateResponsibleDto);
         this.updateResponsibleShow(this.updateResponsibleDto);
       },
-      error:(errorData)=>{
-        this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
       }
     })
 
   }
 
   //Get all responsibles
-getResponsibles(){
-  this.organizationService.getAllResponsibles().subscribe({
-    next:(responsiblesData)=>{
-      this.responsiblesDto = responsiblesData;
-      this.responsiblesOrgs = responsiblesData;
-    },
-    error:(errorData)=>{
-      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
-    },
-    complete:()=>{
-       this.responsiblesOrgs.map(res =>{
-         res.name = res.name + ' ' + res.lastname;
-       });
-      
-    }
+  getResponsibles() {
+    this.organizationService.getAllResponsibles().subscribe({
+      next: (responsiblesData) => {
+        this.responsiblesDto = responsiblesData;
+        this.responsiblesOrgs = responsiblesData;
+      },
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+      },
+      complete: () => {
+        this.responsiblesOrgs.map(res => {
+          res.name = res.name + ' ' + res.lastname;
+        });
+
+      }
+    })
+  }
+  selectedMainOrgId!: number;
+  parentOrganizationForm = this.formBuilder.group({
+    mainOrganizationId: [this.selectedMainOrgId, Validators.required],
   })
-}
-selectedMainOrgId!:number;
-parentOrganizationForm = this.formBuilder.group({
-  mainOrganizationId:[this.selectedMainOrgId,Validators.required],
-})
-get mainOrganization(){
-  return this.parentOrganizationForm.controls.mainOrganizationId;
-}
-
-onCloseParentOrganizationTemplate(){
- 
-  this.setParentOrganizationTemplateMatDialogRef.close();
-  this.selectedParentOrganizationIds =  [];
-this.selectedParentOrganizationNames = [];
-}
- 
- private setParentOrganizationTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
-
- openSetParentOrganizationTemplate(mainOrgId:number,template: TemplateRef<any>) {
-  this.selectedMainOrgId = mainOrgId;
-  this.getParentOrganizationByMainOrganizationId(this.selectedMainOrgId);
-  this.getOrganizatiosnByMainOrganizationId(this.selectedMainOrgId)
-   this.setParentOrganizationTemplateMatDialogRef = this.dialogService.openDialogCreation({
-     template
-   });
-   this.setParentOrganizationTemplateMatDialogRef.afterClosed().subscribe();
+  get mainOrganization() {
+    return this.parentOrganizationForm.controls.mainOrganizationId;
   }
-parentOrganizationDto!:ParentOrganizationDto;
-savedParentOrganization!:ParentOrganizationDto;
-parentOrganizationId!:number;
-setParentOrganization(){
-  console.log("main org Id: " + this.selectedMainOrgId)
- 
-  this.parentOrganizationDto = new ParentOrganizationDto();
-  this.parentOrganizationDto.mainOrganizationId = this.selectedMainOrgId;
-  this.parentOrganizationDto.parentOrganizationIds = this.selectedParentOrganizationIds;
-  
-  this.parentOrganizationDto.id = this.parentOrganizationId;
-  console.log("P ID: " +this.parentOrganizationId)
-  this.organizationService.setParentOrganizations(this.parentOrganizationDto).subscribe({
-    next:(parentData)=>{
-      this.savedParentOrganization = parentData;
-    },
-    error:(errorData)=>{
-      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
-    },
-    complete:()=>{
-      this.onCloseParentOrganizationTemplate();
-      this.openSavedParentOrganizationTemplate();
-    }
-  });
-}
 
-getParentOrganizationByMainOrganizationId(mainOrganizationId:number){
-  var result = 0;
-  this.organizationService.getParentOrganizationByMainOrganizationId(mainOrganizationId).subscribe({
-    next:(parentData)=>{
-     this.parentOrganizationId = parentData.id;
-     console.log("ID::::" +this.parentOrganizationId)
-    },
-    error:(errorData)=>{
-      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
-    }
-  });
- 
-}
-getOrganizatiosnByMainOrganizationId(mainOrganizationId:number){
-  this.organizationService.getOrganizationsByMainOrganizationId(mainOrganizationId).subscribe({
-    next:(orgDatas)=>{
-      orgDatas.forEach(org =>{
-        this.onSelectParentOrganization(org.id);
-        console.log(this.selectedParentOrganizationIds);
-        console.log(this.selectedParentOrganizationNames);
-      });
-    },
-    error:(errorData)=>{
-      this.snackBarService.openSnackBar(errorData,'Cerrar',3000);
-    }
-  });
- }
- 
+  onCloseParentOrganizationTemplate() {
 
-selectedParentOrganizationIds:number[]=[];
-selectedParentOrganizationNames:OrganizationDto[]=[];
-onSelectParentOrganization(organizationId:number){
-  const checkParent = this.selectedParentOrganizationIds.findIndex(p => p==organizationId);
-  if(checkParent>-1){
-   const repeatedOrg = this.onFindOrg(organizationId);
-    this.snackBarService.openSnackBar("La organizacion: " + repeatedOrg.organizationName + " ya fue seleccionada.",'Cerrar',3000);
-  }else{
-    const selectedOrg = this.onFindOrg(organizationId);
-    this.selectedParentOrganizationIds.push(organizationId);
-    this.selectedParentOrganizationNames.push(selectedOrg);
-    this.snackBarService.openSnackBar("Selecciono la organizacion: " + selectedOrg.organizationName ,'Cerrar',3000);
+    this.setParentOrganizationTemplateMatDialogRef.close();
+    this.selectedParentOrganizationIds = [];
+    this.selectedParentOrganizationNames = [];
   }
-}
-onDeleteParentOrganization(organizationId:number){
-  this.selectedParentOrganizationIds.forEach((item,index)=>{
-    if(item==organizationId){
-      this.selectedParentOrganizationIds.splice(index,1);
-      this.selectedParentOrganizationNames.splice(index,1);
+
+  private setParentOrganizationTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+
+  openSetParentOrganizationTemplate(mainOrgId: number, template: TemplateRef<any>) {
+    this.selectedMainOrgId = mainOrgId;
+    this.getParentOrganizationByMainOrganizationId(this.selectedMainOrgId);
+    this.getOrganizatiosnByMainOrganizationId(this.selectedMainOrgId)
+    this.setParentOrganizationTemplateMatDialogRef = this.dialogService.openDialogCreation({
+      template
+    });
+    this.setParentOrganizationTemplateMatDialogRef.afterClosed().subscribe();
+  }
+  parentOrganizationDto!: ParentOrganizationDto;
+  savedParentOrganization!: ParentOrganizationDto;
+  parentOrganizationId!: number;
+  setParentOrganization() {
+    console.log("main org Id: " + this.selectedMainOrgId)
+
+    this.parentOrganizationDto = new ParentOrganizationDto();
+    this.parentOrganizationDto.mainOrganizationId = this.selectedMainOrgId;
+    this.parentOrganizationDto.parentOrganizationIds = this.selectedParentOrganizationIds;
+
+    this.parentOrganizationDto.id = this.parentOrganizationId;
+    console.log("P ID: " + this.parentOrganizationId)
+    this.organizationService.setParentOrganizations(this.parentOrganizationDto).subscribe({
+      next: (parentData) => {
+        this.savedParentOrganization = parentData;
+      },
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+      },
+      complete: () => {
+        this.onCloseParentOrganizationTemplate();
+        this.openSavedParentOrganizationTemplate();
+      }
+    });
+  }
+
+  getParentOrganizationByMainOrganizationId(mainOrganizationId: number) {
+    var result = 0;
+    this.organizationService.getParentOrganizationByMainOrganizationId(mainOrganizationId).subscribe({
+      next: (parentData) => {
+        this.parentOrganizationId = parentData.id;
+        console.log("ID::::" + this.parentOrganizationId)
+      },
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+
+  }
+  getOrganizatiosnByMainOrganizationId(mainOrganizationId: number) {
+    this.organizationService.getOrganizationsByMainOrganizationId(mainOrganizationId).subscribe({
+      next: (orgDatas) => {
+        orgDatas.forEach(org => {
+          this.onSelectParentOrganization(org.id);
+          console.log(this.selectedParentOrganizationIds);
+          console.log(this.selectedParentOrganizationNames);
+        });
+      },
+      error: (errorData) => {
+        this.snackBarService.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+  }
+
+
+  selectedParentOrganizationIds: number[] = [];
+  selectedParentOrganizationNames: OrganizationDto[] = [];
+  onSelectParentOrganization(organizationId: number) {
+    const checkParent = this.selectedParentOrganizationIds.findIndex(p => p == organizationId);
+    if (checkParent > -1) {
+      const repeatedOrg = this.onFindOrg(organizationId);
+      this.snackBarService.openSnackBar("La organizacion: " + repeatedOrg.organizationName + " ya fue seleccionada.", 'Cerrar', 3000);
+    } else {
+      const selectedOrg = this.onFindOrg(organizationId);
+      this.selectedParentOrganizationIds.push(organizationId);
+      this.selectedParentOrganizationNames.push(selectedOrg);
+      this.snackBarService.openSnackBar("Selecciono la organizacion: " + selectedOrg.organizationName, 'Cerrar', 3000);
     }
-    const deletedOrg = this.onFindOrg(organizationId);
-    this.snackBarService.openSnackBar("Se elimino la organizacion " + deletedOrg.organizationName,'Cerrar',3000);
-  });
-}
+  }
+  onDeleteParentOrganization(organizationId: number) {
+    this.selectedParentOrganizationIds.forEach((item, index) => {
+      if (item == organizationId) {
+        this.selectedParentOrganizationIds.splice(index, 1);
+        this.selectedParentOrganizationNames.splice(index, 1);
+      }
+      const deletedOrg = this.onFindOrg(organizationId);
+      this.snackBarService.openSnackBar("Se elimino la organizacion " + deletedOrg.organizationName, 'Cerrar', 3000);
+    });
+  }
 
-private  onFindOrg(organizationId:number):OrganizationDto{
-  const orgIndex = this.organizationsDto.findIndex(org => org.id==organizationId);
-    return   this.organizationsDto[orgIndex];
-}
+  private onFindOrg(organizationId: number): OrganizationDto {
+    const orgIndex = this.organizationsDto.findIndex(org => org.id == organizationId);
+    return this.organizationsDto[orgIndex];
+  }
 
-onCloseSavedParentOrganizationTemplate(){
- 
-  this.savedParentOrganizationTemplateMatDialogRef.close();
-}
+  onCloseSavedParentOrganizationTemplate() {
 
-private savedParentOrganizationTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
-@ViewChild('savedParentOrganizationTemplate') savedParentOrganizationTemplate!: TemplateRef<any>;
-openSavedParentOrganizationTemplate() {
-  const template = this.savedParentOrganizationTemplate;
-  this.savedParentOrganizationTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
-    template
-  });
-  this.savedParentOrganizationTemplateMatDialogRef.afterClosed().subscribe();
- }
+    this.savedParentOrganizationTemplateMatDialogRef.close();
+  }
 
- onCloseOrganizationListTemplate(){
-  this.organizationListTemplateMatDialogRef.close();
- }
+  private savedParentOrganizationTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+  @ViewChild('savedParentOrganizationTemplate') savedParentOrganizationTemplate!: TemplateRef<any>;
+  openSavedParentOrganizationTemplate() {
+    const template = this.savedParentOrganizationTemplate;
+    this.savedParentOrganizationTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.savedParentOrganizationTemplateMatDialogRef.afterClosed().subscribe();
+  }
 
- private organizationListTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
- openOrganizationListTemplate(template:TemplateRef<any>){
-  this.organizationListTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
-    template
-  });
-  this.organizationListTemplateMatDialogRef.afterClosed().subscribe();
- }
+  onCloseOrganizationListTemplate() {
+    this.organizationListTemplateMatDialogRef.close();
+  }
 
- onCloseResponsibleListTemplate(){
-  this.responsibleListTemplateMatDialogRef.close();
- }
+  private organizationListTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+  openOrganizationListTemplate(template: TemplateRef<any>) {
+    this.organizationListTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.organizationListTemplateMatDialogRef.afterClosed().subscribe();
+  }
 
- private responsibleListTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
- openResponsibleListTemplate(template:TemplateRef<any>){
-  this.responsibleListTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
-    template
-  });
-  this.responsibleListTemplateMatDialogRef.afterClosed().subscribe();
- }
+  onCloseResponsibleListTemplate() {
+    this.responsibleListTemplateMatDialogRef.close();
+  }
+
+  private responsibleListTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
+  openResponsibleListTemplate(template: TemplateRef<any>) {
+    this.responsibleListTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+      template
+    });
+    this.responsibleListTemplateMatDialogRef.afterClosed().subscribe();
+  }
 
 }

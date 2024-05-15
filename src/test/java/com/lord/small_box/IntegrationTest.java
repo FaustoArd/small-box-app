@@ -1373,6 +1373,7 @@ public class IntegrationTest {
 	void setDepositRequestDestinationOrganization_UserPedro()throws Exception{
 		DepositRequestDto depositRequestDto = new DepositRequestDto();
 		depositRequestDto.setId(1l);
+		depositRequestDto.setMainOrganizationId(1l);
 		depositRequestDto.setDestinationOrganizationId(3l);
 		this.mockMvc.perform(put("http://localhost:8080/api/v1/smallbox/deposit-request/set-destination-organization")
 				.content(gson.toJson(depositRequestDto))

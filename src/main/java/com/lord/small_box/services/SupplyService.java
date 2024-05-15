@@ -26,5 +26,7 @@ public interface SupplyService {
 	
 	public String setOrganizationApplicant(long supplyId,long organizationId);
 	
-	public List<SupplyItemRequestDto> findAllSupplyItemsByOrganizationApplicant(long mainOrganization,long organizationApplicantId);
+	public boolean checkOrganizationApplicantSupplyAssigned(long mainOrganizationId,long applicantOrganizationId);
+	
+	public List<SupplyItemRequestDto> findAllSupplyItemsByOrganizationApplicant(long mainOrganization,long applicantOrganizationId);
 }

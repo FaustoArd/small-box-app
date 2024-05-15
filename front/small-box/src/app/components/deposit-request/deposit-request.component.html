@@ -1,4 +1,5 @@
 <app-navbar></app-navbar>
+
 <body>
     <div class="container-fluid text-center">
         <div class="row">
@@ -16,43 +17,43 @@
                 <div class=" mt-0">
                     <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/calendar-days-solid.svg">
                 </div>
-             
+
             </div>
             <div class="col-md-3 mt-3">
                 <div class=" mt-0">
                     <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/location-dot-solid.svg">
                 </div>
-            
+
             </div>
             <div class="col-md-1 mt-3">
                 <div class=" mt-0">
                     <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/cart-shopping-solid.svg">
                 </div>
-             
+
             </div>
             <div class="col-md-1 mt-3">
                 <div class=" mt-0">
                     <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/code-compare-solid.svg">
                 </div>
-             
+
             </div>
             <div class="col-md-3 mt-3">
                 <div class=" mt-0">
                     <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/key_24dp.svg">
                 </div>
-              
+
             </div>
             <div class="col-md-1 mt-3">
                 <div class="mt-0">
                     <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/bookmark-solid.svg">
                 </div>
-              
+
             </div>
             <div class="col-md-1  mt-3">
                 <div class=" mt-0">
                     <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/trash-solid.svg">
                 </div>
-             
+
             </div>
             <div class="row">
                 <hr class="my-4 text-white">
@@ -88,7 +89,7 @@
                 <hr class="my-4">
             </div>
         </div>
-      
+
     </div>
 </body>
 <ng-template #createRequestTemplate>
@@ -136,13 +137,13 @@
         <div class="row">
             <div class="col-md-1"></div>
             <div id="createRequestCol" class="col-md-10">
-                <form [formGroup]="setDestinationOrganizationForm">
+                <form [formGroup]="setDestinationOrganizationForm" (ngSubmit)="onSetDestinationOrganization()">
                     <div class="form-group text-center">
                         <label for="destinationOrganizationId" class="form-label fs-7 text-center">Seleccione el
                             destino</label>
                         <select id="destinationOrganizationId" formControlName="destinationOrganizationId"
                             class="form-select  border-dark">
-                            <option value="Seleccione la dependencia de destino">Seleccione la dependencia de destino
+                            <option>Seleccione la dependencia de destino
                             </option>
                             <option type="number" class="form-control border-dark"
                                 *ngFor="let orgs of parentOrganizationDtos" id="destinationOrganizationId"
@@ -154,9 +155,11 @@
                             <div *ngIf="destinationOrganizationId.errors?.['required']">
                                 Debe seleccionar una organizacion
                             </div>
+                            <!-- <div *ngIf="destinationOrganizationId.errors?.['nullValidator']">
+                                Debe seleccionar una organizacion
+                            </div> -->
                         </div>
-                        <button (click)="setDestinationOrganization()"
-                            class="btn btn-sm mt-2 text-white text-center">CONTINUAR</button>
+                        <button type="submit" class="btn btn-sm mt-2 text-white text-center">CONTINUAR</button>
                     </div>
                 </form>
             </div>
@@ -256,7 +259,7 @@
 <ng-template #savedDepositControlRequestTemplate>
 
     <body id="orderListTemplate">
-     <div id="orderListTemplate" class="container-flex">
+        <div id="orderListTemplate" class="container-flex">
             <div class="row mt-1">
 
                 <div class="col-md-4 ms-3">
@@ -294,15 +297,15 @@
                     <table class="table table-flex table-bordered">
                         <thead>
                             <tr class="text-center">
-                                <th  scope="col">CODIGO</th>
+                                <th scope="col">CODIGO</th>
                                 <th scope="col">U.MEDIDA</th>
                                 <th scope="col">DESCRIPCION</th>
                                 <th scope="col">CANTIDAD</th>
                         </thead>
-                        <tbody  class="text-center">
-                            <tr  *ngFor="let item  of toSendDepositRequestDto.depositControlRequestDtos">
+                        <tbody class="text-center">
+                            <tr *ngFor="let item  of toSendDepositRequestDto.depositControlRequestDtos">
                                 <td id="fullBlue_td">{{item .itemCode}}</td>
-                                <td >{{item .itemMeasureUnit}}</td>
+                                <td>{{item .itemMeasureUnit}}</td>
                                 <td>{{item .itemDescription}}</td>
                                 <td>{{item.itemQuantity}}</td>
                             </tr>
@@ -319,7 +322,8 @@
 
 
         <div class="container">
-            <button id="closeButton"  (click)="onCloseDepositControlRequestsTemplate()" class="btn btn-sm text-white">X</button>
+            <button id="closeButton" (click)="onCloseDepositControlRequestsTemplate()"
+                class="btn btn-sm text-white">X</button>
             <div class="row">
                 <div class="col">
 
@@ -350,7 +354,7 @@
 
                 </div>
 
-               
+
             </div>
 
             <div class="row">
@@ -370,12 +374,12 @@
                     <table class="table table-flex table-bordered">
                         <thead>
                             <tr class="text-center">
-                                <th  scope="col">CODIGO</th>
+                                <th scope="col">CODIGO</th>
                                 <th scope="col">U.MEDIDA</th>
                                 <th scope="col">DESCRIPCION</th>
                                 <th scope="col">CANTIDAD</th>
                         </thead>
-                        <tbody  class="text-center">
+                        <tbody class="text-center">
                             <tr *ngFor="let controlReceive of depositControlRequestDtos">
                                 <td id="fullBlue_td">{{controlReceive.itemCode}}</td>
                                 <td>{{controlReceive.itemMeasureUnit}}</td>
@@ -387,6 +391,27 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</ng-template>
+<ng-template #noSupplyAssignedTemplate>
+
+    <body>
+        <button id="closeButton" (click)="onCloseNoSupplyAssignedTemplate()" class="btn btn-sm text-white">X</button>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col mt-2">
+                    <div class="barofcolourRed mt-0 text-center">
+                        <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/mail_24dp_FILL0_wght200.svg">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h2 id="h1Comp" class="text-dark">La organizacion de destino no tiene ningun item asignado con esta dependencia.</h2>
                 </div>
             </div>
         </div>

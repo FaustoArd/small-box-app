@@ -16,7 +16,7 @@ import { PurchaseOrderToDepositReportDto } from 'src/app/models/purchaseOrderToD
 import { DepositControlDto } from 'src/app/models/depositControlDto';
 import { SupplyCorrectionNote } from 'src/app/models/supplyCorrectionNoteDto';
 import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { DepositDto } from 'src/app/models/depositDto';
 import { Router } from '@angular/router';
 import { DepositItemComparatorDto } from 'src/app/models/depositItemComparatorDto';
@@ -132,8 +132,16 @@ export class DepositHomeComponent implements OnInit {
   }
   purchaseOrderToDepositConfirmData!: boolean;
   confirmLoadPurchaseOrderToDeposit(purchaseOrderId: number, orderDate: Date, loadedToDeposit: boolean) {
-    const orderIndex = this.purchaseOrderDtos.findIndex(item => item.id == purchaseOrderId);
-    const orderNumber = this.purchaseOrderDtos[orderIndex].orderNumber;
+    if (!this.selectedDepositBol) {
+      this.snackBar.openSnackBar("Debe seleccionar un deposito.", 'Cerrar', 3000);
+    } else {
+      const orderIndex = this.purchaseOrderDtos.findIndex(item => item.id == purchaseOrderId);
+      const orderNumber = this.purchaseOrderDtos[orderIndex].orderNumber;
+      this.processPurchaseOrderLoadToDeposit(loadedToDeposit, purchaseOrderId, orderNumber, orderDate)
+    }
+  }
+
+  private processPurchaseOrderLoadToDeposit(loadedToDeposit: boolean, purchaseOrderId: number, orderNumber: number, orderDate: Date) {
     if (loadedToDeposit) {
       this.snackBar.openSnackBar('La orden de compra: ' + orderNumber + 'Ya fue cargada.', 'Cerrar', 3000);
     } else {
@@ -311,11 +319,22 @@ export class DepositHomeComponent implements OnInit {
   }
 
   supplyOrganizationApplicantForm = this.formBuilder.group({
-    id: [0, Validators.required]
+    id: ['', [this.numberValidator, Validators.required]]
   });
+
+  numberValidator(control: FormControl) {
+    if (isNaN(control.value)) {
+      return {
+        number: true
+      }
+    }
+    return null;
+  }
+
   get id() {
     return this.supplyOrganizationApplicantForm.controls.id;
   }
+
 
 
   organizationsDto: OrganizationDto[] = [];
@@ -376,7 +395,7 @@ export class DepositHomeComponent implements OnInit {
     var check = this.findedSupply?.dependecyApplicantOrganizationId;
     if (typeof check !== 'undefined') {
       this.supplyOrganizationApplicantForm.patchValue({
-        id: this.findedSupply.dependecyApplicantOrganizationId
+        id: Object.assign(this.findedSupply.dependecyApplicantOrganizationId.valueOf)
       });
     }
   }
@@ -384,23 +403,23 @@ export class DepositHomeComponent implements OnInit {
     this.updateSuplyOrganizationApplicantTemplateRef.close();
   }
 
-  confirmUpdateOrganizationApplicant(template:TemplateRef<any>, supplyId:number){
-   const supplyIndex = this.suppliesDto.findIndex(supply => supply.id==supplyId);
-   const oldDependencyName = this.suppliesDto[supplyIndex].applicantOrganization;
-   if(oldDependencyName==null){
-    this.openUpdateSupplyOrganizationApplicantTemplate(template,supplyId);
-   }else{
-    this.confirmUpdateOrgApplicant(template,supplyId,oldDependencyName);
+  confirmUpdateOrganizationApplicant(template: TemplateRef<any>, supplyId: number) {
+    const supplyIndex = this.suppliesDto.findIndex(supply => supply.id == supplyId);
+    const oldDependencyName = this.suppliesDto[supplyIndex].applicantOrganization;
+    if (oldDependencyName == null) {
+      this.openUpdateSupplyOrganizationApplicantTemplate(template, supplyId);
+    } else {
+      this.confirmUpdateOrgApplicant(template, supplyId, oldDependencyName);
+    }
   }
-  }
-  
-  private confirmUpdateOrgApplicant(template:TemplateRef<any>,supplyId:number,oldDependencyName:string){
+
+  private confirmUpdateOrgApplicant(template: TemplateRef<any>, supplyId: number, oldDependencyName: string) {
     var confirmText = "Desea modificar la dependencia: " + oldDependencyName + "?";
     this.confirmDialogService.confirmDialog(confirmText).subscribe({
       next: (confirmData) => {
         this.depositControlConfirmData = confirmData;
         if (this.depositControlConfirmData) {
-          this.openUpdateSupplyOrganizationApplicantTemplate(template,supplyId);
+          this.openUpdateSupplyOrganizationApplicantTemplate(template, supplyId);
         } else {
           this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
         }
@@ -499,15 +518,20 @@ export class DepositHomeComponent implements OnInit {
   private supplyCorrectionNoteMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
 
   openSupplyCorrectionNoteDialog(template: any, supplyId: number) {
-    this.now = new Date();
-    this.now.getTime();
-    this.getSupplyCorrectionNote(supplyId);
-    this.supplyCorrectionNoteMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
-      template
-    });
-    this.supplyCorrectionNoteMatDialogRef.afterClosed().subscribe();
+    if(this.selectedDepositBol){
+      this.now = new Date();
+      this.now.getTime();
+      this.getSupplyCorrectionNote(supplyId);
+      this.supplyCorrectionNoteMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+        template
+      });
+      this.supplyCorrectionNoteMatDialogRef.afterClosed().subscribe();
+    }else{
+      this.snackBar.openSnackBar('Debe seleccionar un deposito.','Cerrar',3000);
+    }
+   
   }
-
+ 
 
   supplyCorrectionNote!: SupplyCorrectionNote;
   getSupplyCorrectionNote(supplyId: number) {
@@ -524,10 +548,10 @@ export class DepositHomeComponent implements OnInit {
 
   supplyConfirmData!: boolean;
   confirmDeleteSupply(supplyId: number) {
-    const supplyIndex = this.suppliesDto.findIndex(supply => supply.id==supplyId);
+    const supplyIndex = this.suppliesDto.findIndex(supply => supply.id == supplyId);
     const supply = this.suppliesDto[supplyIndex];
-    
-    var confirmText = "Desea eliminar el suministro: " + supply.supplyNumber +'/'+ supply.date.toString().substring(2,4) + " ?";
+
+    var confirmText = "Desea eliminar el suministro: " + supply.supplyNumber + '/' + supply.date.toString().substring(2, 4) + " ?";
     this.confirmDialogService.confirmDialog(confirmText).subscribe({
       next: (confirmData) => {
         this.supplyConfirmData = confirmData;
@@ -659,7 +683,7 @@ export class DepositHomeComponent implements OnInit {
     this.getAllDepositsByOrganization();
     this.depositSelectionMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    },'30%','30%',true,true);
+    }, '30%', '30%', true, true);
     this.depositSelectionMatDialogRef.afterClosed().subscribe({
       complete: () => {
         this.getCurrentDeposit();

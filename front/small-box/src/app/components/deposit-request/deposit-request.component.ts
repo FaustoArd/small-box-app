@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DepositRequestDto } from 'src/app/models/depositRequestDto';
 import { OrganizationDto } from 'src/app/models/organizationDto';
@@ -68,13 +68,22 @@ export class DepositRequestComponent implements OnInit {
 }
 
 setDestinationOrganizationForm = this.formBuilder.group({
-  destinationOrganizationId: [0, Validators.required]
+  destinationOrganizationId: ['',[this.numberValidator,Validators.required]]
 });
+
+numberValidator(control:FormControl){
+  if(isNaN(control.value)){
+    return {
+      number:true
+    }
+  }
+  return null;
+}
 get destinationOrganizationId() {
   return this.setDestinationOrganizationForm.controls.destinationOrganizationId;
 }
 
-closeSetDestinationOrganization(): void {
+closeSetDestinationOrganizationTemplate(): void {
    this.setDestinationOrganizationTemplateMatDialogRef.close();
 }
 
@@ -91,26 +100,79 @@ openSetDestinationOrganizationTemplate( mainOrganizationId:number){
 
 destinationOrganizationRequestDto!:DepositRequestDto;
 udpatedDepositRequestDto!:DepositRequestDto;
-setDestinationOrganization(){
+onSetDestinationOrganization(){
   if(this.setDestinationOrganizationForm.valid){
     this.destinationOrganizationRequestDto = new DepositRequestDto();
     this.destinationOrganizationRequestDto = Object.assign
     (this.destinationOrganizationRequestDto,this.setDestinationOrganizationForm.value);
     this.destinationOrganizationRequestDto.id = this.savedDepositRequestDto.id;
-    this.depositRequestService.setDestinationOrganization(this.destinationOrganizationRequestDto).subscribe({
-      next:(requestData)=>{
-        this.udpatedDepositRequestDto = requestData;
-      },
-      error:(errorData)=>{
-
-      },
-      complete:()=>{
-        this.closeSetDestinationOrganization();
-         this.openSupplyItemRequestSelectionTemplate
-          (this.udpatedDepositRequestDto.destinationOrganizationId, this.udpatedDepositRequestDto.mainOrganizationId);
-      }
-    })
+    this.destinationOrganizationRequestDto.mainOrganizationId= this.savedDepositRequestDto.mainOrganizationId;
+   this.checkSupplyAssigned(this.destinationOrganizationRequestDto);
+    }else{
+    this.snackBar.openSnackBar('Debe seleccionar una organizacion', 'Cerrar', 3000);
   }
+}
+checkSupplyAssigned(requestDto:DepositRequestDto){
+  var test=false;
+  this.depositControlService.checkOrganizationApplicantSupplyAssigned(requestDto.destinationOrganizationId,requestDto.mainOrganizationId).subscribe({
+    next:(resultData)=>{
+     if(resultData){
+       this.setDestinationOrganization(requestDto);
+     }else{
+      this.openNoSupplyAssignedTemplate(requestDto.id);
+     }
+    },   error:(errorData)=>{
+     this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+    },
+  
+   });
+ 
+}
+
+private setDestinationOrganization(requestDto:DepositRequestDto){
+  this.depositRequestService.setDestinationOrganization(requestDto).subscribe({
+    next:(requestData)=>{
+      this.udpatedDepositRequestDto = requestData;
+     
+    },
+    error:(errorData)=>{
+      this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      
+    },
+    complete:()=>{
+      this.closeSetDestinationOrganizationTemplate();
+       this.openSupplyItemRequestSelectionTemplate
+        (this.udpatedDepositRequestDto.destinationOrganizationId, this.udpatedDepositRequestDto.mainOrganizationId);
+    }
+  });
+}
+ 
+
+onCloseNoSupplyAssignedTemplate(){
+  this.noSupplyAssignedMatDialogRef.close();
+  this.closeSetDestinationOrganizationTemplate()
+ 
+ 
+}
+
+private noSupplyAssignedMatDialogRef!:MatDialogRef<DialogTemplateComponent>;
+@ViewChild('noSupplyAssignedTemplate')noSupplyAssignedTemplate!: TemplateRef<any>;
+openNoSupplyAssignedTemplate(depositRequestId:number):void{
+  const template = this.noSupplyAssignedTemplate ;
+  this.noSupplyAssignedMatDialogRef = this.dialogService.openCustomDialogCreation({
+    template
+  },'25%','20%',true,true);
+  this.noSupplyAssignedMatDialogRef.afterClosed().subscribe({
+    next:()=>{
+      this.deleteDepositRequestById(depositRequestId);
+    },
+    error:(errorData)=>{
+      this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+    },
+    complete:()=>{
+      this.reloadPage();
+    }
+  });
 }
 
   private supplyItemRequestMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
@@ -166,8 +228,7 @@ this.openSetDestinationOrganizationTemplate( this.savedDepositRequestDto.mainOrg
     this.organizationService.getOrganizationsByMainOrganizationId(mainOrganizationId).subscribe({
       next:(orgsData)=>{
         this.parentOrganizationDtos = orgsData;
-        console.log("PARENMT" +this.parentOrganizationDtos);
-      },
+        },
       error:(errorData)=>{
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);
       }
@@ -212,14 +273,15 @@ this.openSetDestinationOrganizationTemplate( this.savedDepositRequestDto.mainOrg
   // }
   supplyItemRequestDtos: SupplyItemRequestDto[] = [];
   getllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganizationId: number, organizationApplicantId: number) {
-    this.depositControlService.findAllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganizationId, organizationApplicantId).subscribe({
+    this.depositControlService
+    .findAllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganizationId, organizationApplicantId).subscribe({
       next: (supplyRequestDatas) => {
         this.supplyItemRequestDtos = supplyRequestDatas;
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }
-    })
+    });
   }
   itemQuantityForm = this.formBuilder.group({
     quantity: [0, Validators.required]
@@ -237,7 +299,7 @@ this.openSetDestinationOrganizationTemplate( this.savedDepositRequestDto.mainOrg
     const itemIndex  = this.selectedSupplyItemRequestDtos.findIndex(item => item.itemCode==code);
     if(itemIndex>-1){
       const repeatedItem = this.selectedSupplyItemRequestDtos[itemIndex];
-      this.snackBar.openSnackBar("El item codigo: "+repeatedItem.itemCode + ", ya fue seleccionado...",'Cerrar',3000);
+      this.snackBar.openSnackBar('El item codigo: '+repeatedItem.itemCode + ', ya fue seleccionado...','Cerrar',3000);
     }else{
       this.selectItemWithQuantity(itemId);
     }
@@ -406,7 +468,12 @@ private getItemCode(itemId:number):string{
   deleteDepositRequestById(depositRequestId:number){
     this.depositRequestService.deleteDepositRequestById(depositRequestId).subscribe({
       next:(deletedCodeData)=>{
-        this.snackBar.openSnackBar('Se elimino el pedido de deposito: ' + deletedCodeData,'Cerrar',3000);
+        console.log("delete code data: " + deletedCodeData)
+        if(deletedCodeData){
+          this.snackBar.openSnackBar('Se elimino el pedido de deposito.' + deletedCodeData,'Cerrar',3000);
+        
+        }
+        this.snackBar.openSnackBar('Se elimino el pedido de deposito en proceso. ','Cerrar',3000);
       },error:(errorData)=>{
         this.snackBar.openSnackBar(errorData,'Cerrar',3000);
       }
