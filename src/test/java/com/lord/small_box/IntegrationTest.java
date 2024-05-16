@@ -1370,6 +1370,21 @@ public class IntegrationTest {
 	}
 	@Test
 	@Order(71)
+	void checkSupplyItemsOrganizationAssigned()throws Exception{
+		DepositRequestDto depositRequestDto = new DepositRequestDto();
+		depositRequestDto.setId(1l);
+		depositRequestDto.setMainOrganizationId(1);
+		depositRequestDto.setDestinationOrganizationId(3l);
+		this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/supply/check-supply-assigned")
+				.param("mainOrganizationId", gson.toJson(depositRequestDto.getDestinationOrganizationId()))
+				.param("applicantOrganizationId", gson.toJson(depositRequestDto.getMainOrganizationId()))
+				.header("Authorization", "Bearer " + userPedrojwtToken)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200))
+		.andExpect(jsonPath("$", is(true)));
+	}
+	
+	@Test
+	@Order(72)
 	void setDepositRequestDestinationOrganization_UserPedro()throws Exception{
 		DepositRequestDto depositRequestDto = new DepositRequestDto();
 		depositRequestDto.setId(1l);
@@ -1386,7 +1401,7 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.mainOrganizationId", is(1)));
 	}
 	@Test
-	@Order(72)
+	@Order(73)
 	void checkSupplyOrganizationApplicant()throws Exception{
 		Organization organization = organizationRepository.findById(3l).get();
 		assertThat(organization.getId()).isEqualTo(3l);
@@ -1399,7 +1414,7 @@ public class IntegrationTest {
 	}
 	
 	@Test
-	@Order(73)
+	@Order(74)
 	void saveItemsToRequest_UserPedro()throws Exception{
 		DepositRequestDto depositRequestDto = new DepositRequestDto();
 		depositRequestDto.setId(1l);
@@ -1442,7 +1457,7 @@ public class IntegrationTest {
 	
 	private String dirSitDeCalleRequestCode;
 	@Test
-	@Order(74)
+	@Order(75)
 	void sendRequest_UserPedro()throws Exception{
 	  mvcResult = 	this.mockMvc.perform(post("http://localhost:8080/api/v1/smallbox/deposit-request/send-request")
 				.param("depositRequestId", "1").header("Authorization", "Bearer " + userPedrojwtToken)
@@ -1454,7 +1469,7 @@ public class IntegrationTest {
 	}
 	
 	@Test
-	@Order(75)
+	@Order(76)
 	void checkRequestReception_SuperUserMiguel248()throws Exception{
 		this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-receiver/find-receivers-by-organization")
 				.param("organizationId", "3").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
@@ -1465,7 +1480,7 @@ public class IntegrationTest {
 				.andExpect(jsonPath("$.[0].depositRequestCode", is(dirSitDeCalleRequestCode)));
 	}
 	@Test
-	@Order(76)
+	@Order(77)
 	void checkRequestReceptionItems_SuperUserMiguel248()throws Exception{
 		this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-receiver/find-all-control-receivers-by-receiver")
 				.param("depositReceiverId", "1").header("Authorization", "Bearer " + superUserMiguel248JwtToken)
@@ -1484,7 +1499,7 @@ public class IntegrationTest {
 					.findFirst().get().getItemQuantity()).isEqualTo(14);
 	}
 	@Test
-	@Order(77)
+	@Order(78)
 	void getRequestComparationNote_SuperUserMiguel248()throws Exception{
 		
 		this.mockMvc.perform(get("http://localhost:8080/api/v1/smallbox/deposit-receiver/get-comparator-note")
