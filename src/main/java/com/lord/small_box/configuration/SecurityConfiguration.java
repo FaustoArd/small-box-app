@@ -77,8 +77,12 @@ public class SecurityConfiguration {
 					"ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/organization/get-max-amount").hasAnyRole("USER", "SUPERUSER",
 					"ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/organization/all-orgs").hasAnyRole("USER", "SUPERUSER",
-					"ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/organization/all-orgs").hasRole("ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/organization/set-parent-organizations").hasRole("ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/organization/get-parent-organizations").hasAnyRole("USER",
+					"SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/organization/get-parent-organization-by-main-organization")
+					.hasAnyRole("USER", "SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/work-templates/create").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/work-templates/by-id/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/work-templates/by-user-id/**").hasAnyRole("SUPERUSER", "ADMIN");
@@ -89,15 +93,15 @@ public class SecurityConfiguration {
 			auth.requestMatchers("/api/v1/smallbox/work-templates/delete-template-destination/**")
 					.hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/work-templates/delete-work-template-by-id/**").hasRole("ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/location-contracts/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallox/dispatchs/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/template-destination/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/users/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/csv-utils/**").hasRole("ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/deposit-control/**").hasAnyRole("SUPERUSER", "ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/supply/**").hasAnyRole("USER","SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/purchase-order/**").hasAnyRole("SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/supply/**").hasAnyRole("USER", "SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/pdf-to-text/**").hasAnyRole("SUPERUSER", "ADMIN");
-			auth.requestMatchers("/api/v1/smallbox/deposit-request/**").hasAnyRole("USER","SUPERUSER", "ADMIN");
+			auth.requestMatchers("/api/v1/smallbox/deposit-request/**").hasAnyRole("USER", "SUPERUSER", "ADMIN");
 			auth.requestMatchers("/api/v1/smallbox/deposit-receiver/**").hasAnyRole("SUPERUSER", "ADMIN");
 			auth.anyRequest().authenticated();
 
