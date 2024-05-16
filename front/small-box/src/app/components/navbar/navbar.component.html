@@ -33,11 +33,11 @@
 
             </div>
             <div class="col-xs-2 ms-3">
-                <button mat-button [matMenuTriggerFor]="userMenu" class="text-white">USUARIOS</button>
+                <button mat-button [matMenuTriggerFor]="userMenu" class="text-white">ADMIN</button>
                 <mat-menu #userMenu yPosition="above">
-                    <button mat-menu-item routerLink="/register">Nuevo</button>
-                    <button mat-menu-item routerLink="/org">Asignar dependencia</button>
-                    <button mat-menu-item routerLink="/org-setup">Panel Dependencias</button>
+                    <button mat-menu-item routerLink="/register">Usuarios</button>
+                    <button mat-menu-item routerLink="/org">Asignar organizacion</button>
+                    <button mat-menu-item routerLink="/org-setup">Panel organizaciones</button>
                 </mat-menu>
             </div>
             <!-- <div class="col-md-1 ms-3" *ngIf="!adminAuth "></div> -->

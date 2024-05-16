@@ -43,6 +43,7 @@ import { BigBagComponent } from './components/big-bag/big-bag.component';
 import { DepositComparatorComponent } from './components/deposit-comparator/deposit-comparator.component';
 import { DepositRequestComponent } from './components/deposit-request/deposit-request.component';
 import { DepositReceiverComponent } from './components/deposit-receiver/deposit-receiver.component';
+import { ReloadComponentComponent } from './components/reload-component/reload-component.component';
 
 
 
@@ -79,6 +80,7 @@ import { DepositReceiverComponent } from './components/deposit-receiver/deposit-
     DepositComparatorComponent,
     DepositRequestComponent,
     DepositReceiverComponent,
+    ReloadComponentComponent,
    
    
     

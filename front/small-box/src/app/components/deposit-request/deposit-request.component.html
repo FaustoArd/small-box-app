@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 
 <body>
-    <div class="container-fluid text-center">
+    <div id="containerMain" class="container-fluid text-center">
         <div class="row">
             <div class="col mt-2">
                 <div class="barofcolourRed mt-0">
@@ -171,19 +171,19 @@
 <ng-template #supplyItemRequestSelectionTemplate>
 
     <body id="item_selection_table">
-        <div id="orderListTemplate" class="container-flex">
+        <div id="orderListTemplate" class="container-fluid">
             <div class="row">
                 <div class="col-md-5 ms-2">
-                    <div class="d-inline">
-                        <h3 class="text-center">Seleccionar items</h3>
+                    <div class="d-inline mt-1">
+                        <h3 id="selTitle" class="text-center">Seleccionar<img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/cart-shopping-solid.svg"></h3>
                     </div>
-
                     <p class="lead">
                         <hr class="my-4">
-                        <small>Ingrese una cantidad y presione aplicar.</small>
-                    <table>
+                        <small id="fullBlue_td">Ingrese una cantidad y presione aplicar.</small>
+                        <div id="table-div" class="overflow-scroll  border border-dark">
+                    <table class="table table-sm table-hover table-bordered">
                         <thead>
-                            <tr>
+                            <tr class="text-center">
                                 <th scope="col">CODIGO</th>
                                 <th scope="col">U.MEDIDA</th>
                                 <th scope="col">DESCRIPCION</th>
@@ -192,10 +192,10 @@
                             </tr>
                         </thead>
                         <tbody class="text-center">
-                            <tr *ngFor="let item of supplyItemRequestDtos">
+                            <tr id="itemSelTd" *ngFor="let item of supplyItemRequestDtos">
                                 <td id="fullBlue_td">{{item.code}}</td>
-                                <td>{{item.measureUnit}}</td>
-                                <td>{{item.itemDetail}}</td>
+                                <td id="itemSelTd">{{item.measureUnit}}</td>
+                                <td id="itemSelTd">{{item.itemDetail}}</td>
                                 <td>
                                     <form [formGroup]="itemQuantityForm" clasS="form-group">
                                         <div class="form-group">
@@ -211,41 +211,46 @@
                                     </form>
                                 </td>
                                 <td><button (click)="selectedSupplyItemRequest(item.itemId)"
-                                        class="btn btn-sm">-</button>
+                                        class="btn btn-md"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+                </div>
                 <div class="col-md-5">
                     <div class="d-inline">
-                        <h3 class="text-center">Items seleccionados</h3>
+                        <h3 id="selTitle" class="text-center">
+                            <img id="thumbsUp" class="ms-1 mt-1" src="./assets/img/cart-shopping-solid.svg">Seleccionados</h3>
                     </div>
 
                     <p class="lead">
                         <hr class="my-4">
-                    <table *ngIf="selectedSupplyItemRequestDtos.length>0">
+                        <small id="fullBlue_td">Finalizada la seleccion presione </small>
+                        <div id="table-div" class="overflow-scroll  border border-dark">
+                    <table  class="table table-sm table-hover table-bordered" *ngIf="selectedSupplyItemRequestDtos.length>0">
                         <thead>
                             <tr>
                                 <th scope="col">CODIGO</th>
                                 <th scope="col">U.MEDIDA</th>
                                 <th scope="col">DESCRIPCION</th>
                                 <th scope="col">CANTIDAD</th>
-                                <th></th>
+                                <th scope="col">ELIMINAR</th>
                             </tr>
                         </thead>
                         <tbody class="text-center">
                             <tr *ngFor="let item of selectedSupplyItemRequestDtos">
                                 <td id="fullBlue_td">{{item.itemCode}}</td>
-                                <td>{{item.itemMeasureUnit}}</td>
-                                <td>{{item.itemDescription}}</td>
+                                <td id="itemSelTd">{{item.itemMeasureUnit}}</td>
+                                <td id="itemSelTd">{{item.itemDescription}}</td>
                                 <td id="quantityShow">{{item.itemQuantity}}</td>
                                 <td><button (click)="onDeleteSelectedSupplyItemRequest(item.id)"
-                                        class="btn btn-sm">-</button>
+                                        class="btn btn-md"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
                 </div>
                 <div class="col-md-1 mt-3">
                     <div class="text-success">
@@ -411,7 +416,8 @@
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-10">
-                    <h2 id="h1Comp" class="text-dark">La organizacion de destino no tiene ningun item asignado con esta dependencia.</h2>
+                    <h2 id="h1Comp" class="text-dark">La organizacion de destino no tiene ningun item asignado con esta
+                        dependencia.</h2>
                 </div>
             </div>
         </div>

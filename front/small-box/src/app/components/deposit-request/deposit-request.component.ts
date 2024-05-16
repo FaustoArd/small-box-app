@@ -34,6 +34,12 @@ export class DepositRequestComponent implements OnInit {
     this.getAllDepositRequests();
   }
 
+  async reloadPage() {
+    const currentUrl = this.router.url;
+    await this.router.navigate(['reload-component']);
+    await this.router.navigate([currentUrl])
+  }
+
   depositRequestFormBuilder = this.formBuilder.group({
     mainOrganizationId: [0, Validators.required],
   
@@ -168,10 +174,8 @@ openNoSupplyAssignedTemplate(depositRequestId:number):void{
     },
     error:(errorData)=>{
       this.snackBar.openSnackBar(errorData,'Cerrar',3000);
-    },
-    complete:()=>{
-      this.reloadPage();
     }
+  
   });
 }
 
@@ -184,7 +188,7 @@ openNoSupplyAssignedTemplate(depositRequestId:number):void{
     const template = this.supplyItemRequestSelectionTemplate;
     this.supplyItemRequestMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    },'90%','80%',true,true);
+    },'95%','90%',true,true);
 
   }
 
@@ -284,7 +288,7 @@ this.openSetDestinationOrganizationTemplate( this.savedDepositRequestDto.mainOrg
     });
   }
   itemQuantityForm = this.formBuilder.group({
-    quantity: [0, Validators.required]
+    quantity: [0, [Validators.required,Validators.min(1)]]
   });
 
   get quantity() {
@@ -459,11 +463,7 @@ private getItemCode(itemId:number):string{
     });
   }
 
-  async reloadPage() {
-    const currentUrl = this.router.url;
-    await this.router.navigate(['home']);
-    await this.router.navigate([currentUrl])
-  }
+ 
 
   deleteDepositRequestById(depositRequestId:number){
     this.depositRequestService.deleteDepositRequestById(depositRequestId).subscribe({

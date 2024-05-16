@@ -33,6 +33,13 @@ export class DepositReceiverComponent implements OnInit {
    this.getCurrentDepositIdIfEmpty();
    
   }
+
+  async reloadPage() {
+    const currentUrl = this.router.url;
+    await this.router.navigate(['reload-component']);
+    await this.router.navigate([currentUrl])
+  }
+  
   getCurrentDepositIdIfEmpty(){
     if(Number(this.cookieService.getCurrentDepositSelectedId())==0){
       this.getCurrentDeposit();
@@ -141,11 +148,7 @@ export class DepositReceiverComponent implements OnInit {
     return this.depositReceiverDtos[deletedReceiverIndex].depositRequestCode;
   }
 
-  async reloadPage() {
-    const currentUrl = this.router.url;
-    await this.router.navigate(['home']);
-    await this.router.navigate([currentUrl])
-  }
+ 
 
 
 

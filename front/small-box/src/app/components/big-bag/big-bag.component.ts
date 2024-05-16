@@ -30,6 +30,11 @@ export class BigBagComponent implements OnInit {
     this.getCurrentDeposit();
     this.getAllDepositControls();
   }
+  async reloadPage(){
+    const currentUrl = this.router.url;
+    await this.router.navigate(['reload-component']);
+    await this.router.navigate([currentUrl])
+  }
 
   createdEnabled!: boolean;
   createBigBagSwitch() {
@@ -117,11 +122,7 @@ export class BigBagComponent implements OnInit {
     });
   }
   }
-  async reloadPage(){
-    const currentUrl = this.router.url;
-    await this.router.navigate(['home']);
-    await this.router.navigate([currentUrl])
-  }
+  
 
   currentDepositName!: string;
   getCurrentDeposit() {

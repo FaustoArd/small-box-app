@@ -23,6 +23,7 @@ import { BigBagComponent } from './components/big-bag/big-bag.component';
 import { DepositComparatorComponent } from './components/deposit-comparator/deposit-comparator.component';
 import { DepositRequestComponent } from './components/deposit-request/deposit-request.component';
 import { DepositReceiverComponent } from './components/deposit-receiver/deposit-receiver.component';
+import { ReloadComponentComponent } from './components/reload-component/reload-component.component';
 
 const routes: Routes = [
   { path:'home', component:HomeComponent },
@@ -49,7 +50,8 @@ const routes: Routes = [
   {path:'big-bag', component:BigBagComponent},
   {path:'deposit-comparator', component:DepositComparatorComponent},
   {path:'deposit-request', component:DepositRequestComponent},
-  {path:'deposit-receiver', component:DepositReceiverComponent}
+  {path:'deposit-receiver', component:DepositReceiverComponent},
+  {path:'reload-component',component:ReloadComponentComponent}
 ];
 
 @NgModule({

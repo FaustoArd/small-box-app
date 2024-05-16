@@ -1,6 +1,9 @@
 body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
+#containerMain{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
 
 
 #orderListTemplate{
@@ -31,6 +34,11 @@ body{
 #tableRequest{
     background-color: #000002;
 }
+#itemTableSelection{
+    font-family: "Anton", sans-serif;
+    border: 1px solid black;
+   
+}
 
 button{
     background: linear-gradient(245.59deg, rgb(111, 111, 199)33.33%, rgb(145, 124, 202) 33.33%, #6f5cae 33.33%);
@@ -38,6 +46,13 @@ button{
     font-family: "Fira Code", monospace;
     font-weight: bold;
     font-size: 0.8rem;
+}
+#selTitle{
+    color: rgb(20, 14, 170);
+    font-size: 1.3rem;
+    font-family: "Anton", sans-serif;
+    font-weight: 300;
+
 }
 
 h1{
@@ -96,15 +111,35 @@ a{
 }
 #quantityShow{
     color: rgb(8, 89, 8);
-    font-weight: bold;
+    font-weight: lighter;
+}
+#table-div{
+    height: 30%;
+    width: 100%;
+   
+}
+#tableSelDiv{
+    height: 10rem;
+
 }
 th{
+    background: rgb(187, 185, 199);
     font-size: 0.6rem;
 }
 td{
+    height: 20%;
+    background:rgb(187, 185, 199);
     font-size: 0.9rem;
-    font-family: 'Quattrocento', serif;
-    font-weight: bold;
+    font-family: "Anton", sans-serif;
+    font-weight: lighter;
+    
+}
+#itemSelTd{
+ 
+   font-family: 'Quattrocento', serif; 
+   color: black;
+   font-weight: bold;
+   font-size: 0.7rem;
 }
 #fullBlue_td{
     color: #2a31b6;
