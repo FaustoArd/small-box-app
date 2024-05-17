@@ -89,7 +89,7 @@
                   <td>{{bigBagItem.measureUnit}}</td>
                   <td>{{bigBagItem.description}}</td>
                   <td><button (click)="deleteDepositeItemFromSelection(bigBagItem.depositControlId)"
-                      class="btn btn-sm">-</button></td>
+                      class="btn btn-md"></button></td>
                 </tr>
               </tbody>
             </table>
@@ -122,7 +122,7 @@
                 <td class="text-primary">{{depositControl.quantity}}</td>
                 <td>
                   <button *ngIf="createdEnabled" (click)="selectDepositItem(depositControl.itemCode,depositControl.measureUnit,
-                  depositControl.itemDescription,depositControl.id)" class="mx-2">-</button>
+                  depositControl.itemDescription,depositControl.id)" class="btn btn-md mx-2"></button>
                   <button *ngIf="!createdEnabled" (click)="selectDepositItem(depositControl.itemCode,depositControl.measureUnit,
                     depositControl.itemDescription,depositControl.id)" class="mx-2" disabled>X</button>
                 </td>
@@ -202,11 +202,12 @@
     
  
   <div id="closeButton" (click)="onCloseBigBagItemListTemplate()" class="btn btn-sm text-white">X</div>
-  <div class="container">
+  <div class="container-fluid">
   <div class="row">
   <div class="mt-1">
     <h1 class="d-inline">Items:</h1>
   </div>
+  <div id="table-div" class="overflow-scroll">
   <table class="table table-bordered table-striped table-hover h-75">
     <thead>
       <tr class="text-center">
@@ -251,6 +252,7 @@
       </tr>
     </tbody>
   </table>
+</div>
 </div>
 </div>
 </body>

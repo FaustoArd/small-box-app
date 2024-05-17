@@ -1,8 +1,12 @@
 body{
-    background: linear-gradient(245.59deg, rgb(221, 224, 232) 0%, rgb(220, 218, 229) 28.53%, #dedde6 75.52%);
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
    
 }
-
+#table-div{
+    text-align: center;
+   
+height: 90%;
+}
 button,a{
     background: linear-gradient(245.59deg, rgb(99, 99, 190)33.33%, rgb(118, 90, 194) 33.33%, #6a4dc9 33.33%); 
     color:rgb(206, 210, 193);
@@ -20,7 +24,9 @@ button,a{
     font-family: 'Noto Sans', sans-serif;
 }
 .h1{
-    font-family: "Anton", sans-serif;
+    color: rgb(2, 0, 7);
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: bold;
 }
 label{
     font-family: "Anton", sans-serif;
@@ -70,3 +76,30 @@ td{
     position: absolute;
     right: 0;
   }
+  input{
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+  }
+  select{
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+  }
+  option{
+    font-size: 0.9rem;
+    font-family: 'Quattrocento', serif;
+    font-weight: bold;
+  }
+  th{
+    
+    border: 1px solid black;
+    font-size: 0.6rem;
+    font-weight: lighter;
+}
+td{
+    border: 1px solid rgb(129, 81, 220);
+    font-size: 0.9rem;
+    font-family: "Anton", sans-serif;
+   
+}

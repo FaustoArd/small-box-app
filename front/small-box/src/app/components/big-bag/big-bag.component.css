@@ -2,7 +2,7 @@
 body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
-.container-flex{
+.container-fluid{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
 }
 input{
@@ -11,7 +11,7 @@ input{
     font-weight: bold;
 }
 #table-div{
-    height: 90%;
+    height: 34%;
    
 }
 label{

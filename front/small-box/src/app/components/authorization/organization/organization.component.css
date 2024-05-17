@@ -1,9 +1,9 @@
-#userTable{
-    font-family: 'Noto Sans', sans-serif;
-   text-align: center;
-  
-  
-    
+body{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+#table-div{
+    text-align: center;
+height: 100%;
 }
 button{
     font-family: 'Noto Sans', sans-serif;
@@ -25,4 +25,21 @@ span{
 }
 h2{
     color: rgb(181, 17, 17);
+}
+th{
+    
+    border: 1px solid black;
+    font-size: 0.6rem;
+}
+td{
+    border: 1px solid rgb(129, 81, 220);
+    font-size: 0.9rem;
+    font-family: "Anton", sans-serif;
+   
+}
+small{
+    color: rgb(181, 17, 17);
+    font-family: "Fira Code", monospace;
+    font-size: 0.8rem;
+    font-weight: bold;
 }

@@ -107,11 +107,8 @@ export class DepositHomeComponent implements OnInit {
     const orgId = Number(this.cookieService.getUserMainOrganizationId());
     this.getAllPurchaseOrders(orgId);
     this.purchaseOrderTemplateRef = this.dialogService.openCustomDialogCreation({
-
       template,
-
-    }, '80%',
-      '85%', true, false);
+    }, '90%', '95%', true, false);
     this.purchaseOrderTemplateRef.afterClosed().subscribe();
   }
   private confirmData!: boolean;
@@ -227,6 +224,7 @@ export class DepositHomeComponent implements OnInit {
     this.depositControlService.findPurchaseOrderById(orderId).subscribe({
       next: (orderData) => {
         this.findedPurchaseOrder = orderData;
+
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
@@ -518,7 +516,7 @@ export class DepositHomeComponent implements OnInit {
   private supplyCorrectionNoteMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
 
   openSupplyCorrectionNoteDialog(template: any, supplyId: number) {
-    if(this.selectedDepositBol){
+    if (this.selectedDepositBol) {
       this.now = new Date();
       this.now.getTime();
       this.getSupplyCorrectionNote(supplyId);
@@ -526,12 +524,12 @@ export class DepositHomeComponent implements OnInit {
         template
       });
       this.supplyCorrectionNoteMatDialogRef.afterClosed().subscribe();
-    }else{
-      this.snackBar.openSnackBar('Debe seleccionar un deposito.','Cerrar',3000);
+    } else {
+      this.snackBar.openSnackBar('Debe seleccionar un deposito.', 'Cerrar', 3000);
     }
-   
+
   }
- 
+
 
   supplyCorrectionNote!: SupplyCorrectionNote;
   getSupplyCorrectionNote(supplyId: number) {

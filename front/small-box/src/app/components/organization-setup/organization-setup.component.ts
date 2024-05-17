@@ -434,9 +434,9 @@ export class OrganizationSetupComponent implements OnInit {
 
   private organizationListTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
   openOrganizationListTemplate(template: TemplateRef<any>) {
-    this.organizationListTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    this.organizationListTemplateMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'50%','80%',true,true);
     this.organizationListTemplateMatDialogRef.afterClosed().subscribe();
   }
 
@@ -446,9 +446,9 @@ export class OrganizationSetupComponent implements OnInit {
 
   private responsibleListTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
   openResponsibleListTemplate(template: TemplateRef<any>) {
-    this.responsibleListTemplateMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
+    this.responsibleListTemplateMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'70%','70%',true,true);
     this.responsibleListTemplateMatDialogRef.afterClosed().subscribe();
   }
 

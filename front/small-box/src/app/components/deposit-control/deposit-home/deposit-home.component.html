@@ -35,13 +35,13 @@
            
             <div class="col-md-3">
                 <h5 class="d-inline">ORDEN DE COMPRA</h5>
-               
+                <img id="bag_icon" class="ms-1 mt-1" src="./assets/img/assignment_24dp.svg">
                 <hr class="my-4">
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-3">
                 <h5 class="d-inline">SUMINISTRO</h5>
-              
+                <img id="bag_icon" class="ms-1 mt-1" src="./assets/img/article_24dp.svg">
                 <hr class="my-4">
             </div>
             <div class="col-md-1"></div>
@@ -372,7 +372,7 @@
     </body>
 
     <body *ngIf="purchaseOrderDtos.length>0" id="orderListTemplate">
-        <div class="container">
+        <div id="orderListTemplate" class="container-fluid">
             <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
             <div class="row">
                 <div class="col-md-4">
@@ -388,7 +388,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <div id="table-div" >
+                    <div id="table-div" class="overflow-scroll">
                         <table class="table table-flex table-hover table-bordered table-striped h-75">
                             <thead>
                                 <tr class="text-center">
@@ -459,7 +459,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <div id="table-div" >
+                    <div id="table-div">
                         <table class="table table-flex table-hover table-bordered table-striped h-75">
                             <thead>
                                 <tr  class="text-center">
@@ -510,7 +510,7 @@
     <button id="closeButton" (click)="onClosepurchaseOrderItemListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="mt-1 ms-1">
         <h1 class="d-inline">O.C NUMERO:</h1>
-        <h2 class="d-inline"> {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.date.toString().substring(2,4)}}
+        <h2 *ngIf="findedPurchaseOrder!=undefined" class="d-inline"> {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.date.toString().substring(2,4)}}
         </h2>
     </div>
     <table class="table-sm table-bordered table-hover h-75">
@@ -550,7 +550,7 @@
     <button id="closeButton" (click)="onCloseSupplyItemListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="mt-1">
         <h1 class="d-inline">SUMINISTRO NUMERO:</h1>
-        <h2 class="d-inline"> {{findedSupply.supplyNumber + '/' + findedSupply.date.toString().substring(2,4)}}</h2>
+        <h2 *ngIf="findedSupply!=undefined" class="d-inline"> {{findedSupply.supplyNumber + '/' + findedSupply.date.toString().substring(2,4)}}</h2>
     </div>
     <table class="table-sm table-hover table-bordered h-75">
         <thead>
@@ -615,7 +615,7 @@
     <body id="comparatorNoteCss">
         
    
-    <div id="comparatorNoteCss" class="container-flex">
+    <div *ngIf="supplyCorrectionNote!=undefined" id="comparatorNoteCss" class="container-flex">
         <button id="closeButton" (click)="onCloseSupplyCorrectionNoteTemplate()"
             class="btn btn-sm text-white">X</button>
         <div class="row mt-2">
