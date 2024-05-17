@@ -1,3 +1,9 @@
+body{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
+#usersListTemplate{
+    background: linear-gradient(245.59deg, rgb(187, 185, 199)30%, rgb(198, 196, 206) 50%, #d5d2dc 79%);
+}
 .row{
     font-family: 'Quattrocento', serif;
     font-weight: bold;
@@ -22,4 +28,8 @@ button{
 }
 button:hover{
     background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 
+}
+td{
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
 }

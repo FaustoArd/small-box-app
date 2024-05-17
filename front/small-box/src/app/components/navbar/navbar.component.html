@@ -6,7 +6,7 @@
                 <button class=" btn btn-lg text-white" routerLink="/home">Inicio</button>
             </div>
             <div class="col-xs-2 ms-5">
-                <button mat-button [matMenuTriggerFor]="containerMenu" class="text-white">RENDICION</button>
+                <button id="navButton" mat-button [matMenuTriggerFor]="containerMenu" class="text-white">RENDICION</button>
                 <mat-menu #containerMenu yPosition="above">
                     <button mat-menu-item routerLink="/container">Crear</button>
                     <button mat-menu-item routerLink="/open-container">Abrir</button>
@@ -14,14 +14,14 @@
             </div>
             <div class="col-xs-2">
                 <div>
-                    <button mat-button routerLink="/deposit-request" class="text-white ms-2">PEDIDO</button>
+                    <button id="navButton" mat-button routerLink="/deposit-request" class="text-white ms-2">PEDIDO</button>
 
                 </div>
             </div>
             <div class="col-xs-2">
                 <div>
 
-                    <button mat-button routerLink="/deposit-receiver" class="text-white ms-2">INBOX</button>
+                    <button id="navButton" mat-button routerLink="/deposit-receiver" class="text-white ms-2">INBOX</button>
 
 
                     <img routerLink="/deposit-receiver" *ngIf="messageQuantity<=0" id="envelopeOff" class="ms-1 mt-1"
@@ -33,16 +33,16 @@
 
             </div>
             <div class="col-xs-2 ms-3">
-                <button mat-button [matMenuTriggerFor]="userMenu" class="text-white">ADMIN</button>
-                <mat-menu #userMenu yPosition="above">
-                    <button mat-menu-item routerLink="/register">Usuarios</button>
+                <button id="navButton" mat-button [matMenuTriggerFor]="userMenu" class="text-white">ADMIN</button>
+                <mat-menu  #userMenu yPosition="above">
+                    <button   mat-menu-item routerLink="/register">Usuarios</button>
                     <button mat-menu-item routerLink="/org">Asignar organizacion</button>
                     <button mat-menu-item routerLink="/org-setup">Panel organizaciones</button>
                 </mat-menu>
             </div>
             <!-- <div class="col-md-1 ms-3" *ngIf="!adminAuth "></div> -->
             <div class="col-md-2 ms-3">
-                <button mat-button [matMenuTriggerFor]="templateMenu" class="text-white">PLANTILLAS</button>
+                <button id="navButton" mat-button [matMenuTriggerFor]="templateMenu" class="text-white">PLANTILLAS</button>
                 <mat-menu #templateMenu yPosition="above">
                     <button mat-menu-item routerLink="/memo-create">Memo</button>
                     <button mat-menu-item routerLink="/work-template-list">Ver</button>
@@ -50,10 +50,10 @@
                 </mat-menu>
                 <!-- <button mat-button routerLink="/dispatch"  class="text-white ms-5">Despacho</button> -->
 
-                <button mat-button routerLink="/deposit-home" class="text-white ms-5">SUMINISTROS</button>
+                <button id="navButton" mat-button routerLink="/deposit-home" class="text-white ms-4">SUMINISTROS</button>
             </div>
             <div class="col-sm-1"></div>
-            <div class="col-md-2 ms-4">
+            <div class="col-md-2 ms-5">
                 <button routerLink="/user-panel" class="btn btn-sm text-white border-primary">
                     <img id="thumbsUp" class=" mb-1" src="./assets/img/home_24dp_FILL0_wght300.svg"> <small *ngIf="!userMainOrganizationSelected"
                         class="text-danger">{{userMainOrganizationName}}</small>
@@ -61,8 +61,8 @@
                 </button>
             </div>
             <div class="col-xs-1 ms-5"></div>
-
-            <div class="col-xs-1  top-0 end-0 mt-1 ms-5">
+            <div class="col-xs-1 ms-5"></div>
+            <div class="col-xs-  top-0 end-0 mt-1 ms-5">
                 <h4 id="user-name" class="d-inline ms-1" *ngIf="currentUsername!==undefined">{{currentUsername}}</h4>
                 <button id="btnSession" (click)="onLogout()" class="btn btn-sm ms-3 ">Cerrar sesion</button>
               

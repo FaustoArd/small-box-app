@@ -11,83 +11,87 @@
         </div>
     </div>
 </div>
-<div *ngIf="containers.length>0" class="container-flex">
+<div *ngIf="containers.length>0" class="container-fluid">
     <div class="row">
         <div class="col mt-5">
 
             <table class="table table-fluid table-hover table-bordered table-striped border border-dark">
                 <thead>
                     <tr class="bg-primary fw-bold text-center">
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Dependencia</th>
-                        <th scope="col">Responsable</th>
-                        <th scope="col">Opciones</th>
-
+                        <th scope="col">FECHA</th>
+                        <th scope="col">NOMBRE</th>
+                        <th scope="col">DEPENDENCIA</th>
+                        <th scope="col">RESPONSABLE</th>
+                        <th scope="col">ABRIR</th>
+                        <th scope="col">MODIFICAR</th>
 
 
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="text-center" *ngFor="let container of containers">
-                        <td scope="row" class="fw-light">{{container.smallBoxDate | date: 'dd-MM-yyyy'}}</td>
+                        <td scope="row" >{{container.smallBoxDate | date: 'dd-MM-yyyy'}}</td>
 
-                        <td scope="row" class="fw-light">{{container.smallBoxType}}</td>
+                        <td scope="row" >{{container.smallBoxType}}</td>
 
-                        <td scope="row" class="fw-light">{{container.organization}}</td>
+                        <td scope="row" >{{container.organization}}</td>
 
-                        <td scope="row" class="fw-light">{{container.responsible}}</td>
+                        <td scope="row" >{{container.responsible}}</td>
 
 
                         <td>
                             <button id="btnOpen" (click)="setCurrentContainerId(container.id)"
-                                routerLink="/completed-by-id" class="btn">Abrir</button>
+                                routerLink="/completed-by-id" class="btn  btn-md "></button>
+                         
+                        </td>
+                        <td>
                             <button id="btnOpen"
-                                (click)="openDialogUpdateContainer(container.id,udpateContainerTemplate)"
-                                class="btn ms-3">Modificar Datos</button>
+                            (click)="openDialogUpdateContainer(container.id,udpateContainerTemplate)"
+                            class="btn btn-md ms-3"></button>
                         </td>
 
                     </tr>
                 </tbody>
             </table>
         </div>
-        <ng-template #udpateContainerTemplate>
-            <form [formGroup]="containerForm" class="form-group   p-3 bg-light border border-dark text-center fw-bold">
-                <div class="form-group mt-3">
-                    <label for="smallBoxType" class="form-label fs-7">Tipo</label>
-                    <select id="smallBoxType" formControlName="smallBoxType" class="form-select border-dark">
-                        <option value="">Seleccione tipo de rendicion</option>
-                        <option class="form-control" *ngFor="let sm of smallBoxTypes" id="smallBoxType"
-                            [value]="sm.smallBoxType">
-                            {{sm.smallBoxType}}</option>
-                        <div *ngIf="smallBoxType.invalid && (smallBoxType.dirty || smallBoxType.touched)"
-                            class="text-danger">
-                            <div *ngIf="smallBoxType.errors?.['required']">
-                                Debes seleccionar un tipo de rendicion
-                            </div>
-                        </div>
-                    </select>
-                </div>
-                <div class="form-group mt-3">
-                    <label for="organizationId" class="form-label fs-7">Dependencia</label>
-                    <select id="organizationId" formControlName="organizationId" class="form-select border-dark">
-                        <option>Seleccione una Dependencia</option>
-                        <option class="form-control" *ngFor="let org of organizations" id="organizationId"
-                            [value]="org.id">
-                            {{org.organizationName}}</option>
-                        <div *ngIf="organizationId.invalid && (organizationId.dirty || organizationId.touched)"
-                            class="text-danger">
-                            <div *ngIf="organizationId.errors?.['required']">
-                                Debes seleccionar una Dependencia
-                            </div>
-
-
-                        </div>
-                    </select>
-                </div>
-                <button type="submit" (click)="updateContainer()"
-                    class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
-            </form>
-        </ng-template>
+       
     </div>
 </div>
+<ng-template #udpateContainerTemplate>
+    <form [formGroup]="containerForm" class="form-group   p-3 bg-light border border-dark text-center fw-bold">
+        <div class="form-group mt-3">
+            <label for="smallBoxType" class="form-label fs-7">Tipo</label>
+            <select id="smallBoxType" formControlName="smallBoxType" class="form-select border-dark">
+                <option value="">Seleccione tipo de rendicion</option>
+                <option class="form-control" *ngFor="let sm of smallBoxTypes" id="smallBoxType"
+                    [value]="sm.smallBoxType">
+                    {{sm.smallBoxType}}</option>
+                <div *ngIf="smallBoxType.invalid && (smallBoxType.dirty || smallBoxType.touched)"
+                    class="text-danger">
+                    <div *ngIf="smallBoxType.errors?.['required']">
+                        Debes seleccionar un tipo de rendicion
+                    </div>
+                </div>
+            </select>
+        </div>
+        <div class="form-group mt-3">
+            <label for="organizationId" class="form-label fs-7">Dependencia</label>
+            <select id="organizationId" formControlName="organizationId" class="form-select border-dark">
+                <option>Seleccione una Dependencia</option>
+                <option class="form-control" *ngFor="let org of organizations" id="organizationId"
+                    [value]="org.id">
+                    {{org.organizationName}}</option>
+                <div *ngIf="organizationId.invalid && (organizationId.dirty || organizationId.touched)"
+                    class="text-danger">
+                    <div *ngIf="organizationId.errors?.['required']">
+                        Debes seleccionar una Dependencia
+                    </div>
+
+
+                </div>
+            </select>
+        </div>
+        <button type="submit" (click)="updateContainer()"
+            class="btn btn-success border border-dark mt-2 mb-2">Guardar</button>
+    </form>
+</ng-template>

@@ -139,9 +139,9 @@ onCloseUserListTemplate(){
   private userListTemplateMatDialogRef!: MatDialogRef<DialogTemplateComponent>
   openUserListTemplate(template:TemplateRef<any>){
     this.getAllUsers();
-    this.userListTemplateMatDialogRef = this.dialogService.openCreateRequestCreation({
+    this.userListTemplateMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
-    });
+    },'70%','70%',true,true);
     this.userListTemplateMatDialogRef.afterClosed().subscribe();
   }
 

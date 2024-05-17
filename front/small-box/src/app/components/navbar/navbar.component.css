@@ -1,5 +1,10 @@
 button{
     font-family: 'Noto Sans', sans-serif;
+    font-weight: bold;
+}
+#navButton{
+    font-family: "Fira Code", monospace;
+    font-weight: bold;
 }
 #btnSession{
     background: linear-gradient(245.59deg, rgb(27, 61, 165) 0%, rgb(43, 21, 151) 28.53%, #493aa1 75.52%);
