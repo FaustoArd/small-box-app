@@ -16,7 +16,7 @@
         </div>
         
     </div>
-    <div class="container-flex w-75  ms-5 mt-1">
+    <div class="container-fluid  mt-1">
         <div class="row">
             <div class="col-md-4"> </div>
             <div class="col-md-4 mb-2 ms-2">
@@ -39,33 +39,33 @@
             </form>
         </div>
         </div>
-        <div id="main-row"  class="row mt-2 ms-5">
+        <div id="main-row"  class="row mt-2 ">
             
                 <div  class="col-md-1 mt-2">
-                    <h3 >Fecha</h3>
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/calendar-days-solid.svg">
                 </div>
                 <div class="col-md-1  mt-2">
-                    <h3 >Tipo</h3>
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/description_24dp_FILL0_wght400.svg">
                 </div>
                 <div class="col-md-1  mt-2">
-                    <h3 >Numero.</h3>
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/tag_24dp_FILL0.svg">
                 </div>
                 <div class="col-md-1 ms-4  mt-2">
                     <h3 >Alc.</h3>
                 </div>
                 
-                <div clasS="col-md-4  mt-2">
-                    <h3 >Descripcion</h3>
+                <div clasS="col-md-4  mt-2 text-center">
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/quick_reference_24dp.svg">
                 </div>
-                <div class="col-md-2  mt-2">
-                    <h3 >Destino</h3>
+                <div class="col-md-2  mt-2 text-center">
+                    <img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/location-dot-solid.svg">
                
             </div>
            
 
         </div>
    
-        <div  id="main-row" class="row ms-5" *ngFor="let d of dispatchs | paginate: { itemsPerPage: 20 ,currentPage: p }">
+        <div  id="main-row" class="row " *ngFor="let d of dispatchs | paginate: { itemsPerPage: 20 ,currentPage: p }">
            
                 <div  class="col-md-1  mt-2" >
                     <h4 >{{d.date | date : 'dd-MM-yyyy'}}</h4>

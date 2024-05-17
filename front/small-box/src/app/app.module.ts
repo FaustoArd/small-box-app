@@ -32,7 +32,6 @@ import { MemoSingleShowComponent } from './components/show-work-template/memo-si
 import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
 import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
-import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog/confirm-dialog.component';
 import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
 import {NgxPaginationModule} from 'ngx-pagination';
@@ -70,8 +69,7 @@ import { ReloadComponentComponent } from './components/reload-component/reload-c
     WorkTemplateListComponent,
     ManualReferComponent,
     MemoSingleEditComponent,
-   DispatchMainComponent,
-    ConfirmDialogComponent,
+  ConfirmDialogComponent,
     DispatchMatComponent,
     AdminPanelComponent,
     DepositHomeComponent,

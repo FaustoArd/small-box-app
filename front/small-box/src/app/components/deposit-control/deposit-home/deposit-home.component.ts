@@ -38,6 +38,7 @@ export class DepositHomeComponent implements OnInit {
   disableSelect: boolean = true;
 
   totalPurchaseOrders!: number;
+  totalSupplies!:number;
   now!: Date;
 
 
@@ -108,7 +109,7 @@ export class DepositHomeComponent implements OnInit {
     this.getAllPurchaseOrders(orgId);
     this.purchaseOrderTemplateRef = this.dialogService.openCustomDialogCreation({
       template,
-    }, '90%', '95%', true, false);
+    }, '90%', '100%', true, false);
     this.purchaseOrderTemplateRef.afterClosed().subscribe();
   }
   private confirmData!: boolean;
@@ -477,6 +478,7 @@ export class DepositHomeComponent implements OnInit {
     this.depositControlService.findAllSuppliesByOrganization(organizationId).subscribe({
       next: (suppliesData) => {
         this.suppliesDto = suppliesData;
+        this.totalSupplies = suppliesData.length;
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);

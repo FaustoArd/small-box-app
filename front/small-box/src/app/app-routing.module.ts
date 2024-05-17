@@ -15,7 +15,6 @@ import { MemoSingleShowComponent } from './components/show-work-template/memo-si
 import { WorkTemplateListComponent } from './components/work-template/work-template-list/work-template-list.component';
 import { ManualReferComponent } from './components/work-template/manual-refer/manual-refer.component';
 import { MemoSingleEditComponent } from './components/work-template/memo-single-edit/memo-single-edit.component';
-import { DispatchMainComponent } from './components/dispatch/dispatch-main/dispatch-main.component';
 import { DispatchMatComponent } from './components/dispatch/dispatch-mat/dispatch-mat.component';
 import { DepositHomeComponent } from './components/deposit-control/deposit-home/deposit-home.component';
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
@@ -43,7 +42,6 @@ const routes: Routes = [
   { path:'memo-show', component:MemoSingleShowComponent},
   { path:'work-template-list', component:WorkTemplateListComponent},
   { path:'refer-create',component:ManualReferComponent},
-  { path:'dispatch',component:DispatchMainComponent},
   { path:'dispatch-page',component:DispatchMatComponent},
   { path:'deposit-home', component:DepositHomeComponent},
   { path:'user-panel',component:UserPanelComponent},

@@ -7,10 +7,10 @@
                     <img id="bag_icon" class="ms-1 mt-1" src="./assets/img/bag-shopping-solid.svg">
                 </button>
             </div>
-             <div class="col-md-2"></div>
+            <div class="col-md-2"></div>
 
             <div class="col-md-3">
-              
+
             </div>
             <div class="col-md-3">
                 <div> <img id="factory_icon" class="ms-1 mt-1" src="./assets/img/building-solid.svg">
@@ -22,7 +22,7 @@
                     class="btn btn-sm mt-1 ms-3 text-white">Delete</button> -->
                 </div>
             </div>
-           
+
         </div>
 
         <div class="row">
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="row mt-5 ms-5">
-           
+
             <div class="col-md-3">
                 <h5 class="d-inline">ORDEN DE COMPRA</h5>
                 <img id="bag_icon" class="ms-1 mt-1" src="./assets/img/assignment_24dp.svg">
@@ -60,10 +60,10 @@
                 <div class="jumbotron ms-1">
                     <div>
                         <p class="d-inline display-4">CARGAR</p>
-                        
+
                         <a (click)="uploadPurchaseOrderFile()" class="btn btn-md ms-2 " role="button"></a>
                         <input id="uploadInput" class="w-50 ms-2" type="file" (change)="selectFile($event)" />
-                      
+
                     </div>
                     <div id="orderItem" class="mt-1">
                         <p class="d-inline display-4">VER</p>
@@ -85,8 +85,7 @@
                     </div>
                     <div id="orderItem" class="mt-1">
                         <p class="d-inline display-4">VER</p>
-                        <a (click)="openDialogSupplyList(supplyListTemplate)" class="btn btn-md ms-3"
-                            role="button"></a>
+                        <a (click)="openDialogSupplyList(supplyListTemplate)" class="btn btn-md ms-3" role="button"></a>
                     </div>
                     <p class="lead">
                         <hr class="my-4">
@@ -115,16 +114,19 @@
     </div>
 </body>
 <ng-template #depositControlListTemplate>
-    <body  *ngIf="depositControlDtos.length==0">
+
+    <body *ngIf="depositControlDtos.length==0">
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
-              <h1 class="display-4">No hay ningun item cargado..</h1>
-              <p (click)="onCloseDepositControlListTemplate()" class="lead"><button class="btn btn-sm text-white">Volver</button></p>
+                <h1 class="display-4">No hay ningun item cargado..</h1>
+                <p (click)="onCloseDepositControlListTemplate()" class="lead"><button
+                        class="btn btn-sm text-white">Volver</button></p>
             </div>
-          </div>
+        </div>
     </body>
+
     <body id="orderListTemplate" *ngIf="depositControlDtos.length>0">
-        <div id="orderListTemplate"  class="container-flex">
+        <div id="orderListTemplate" class="container-flex">
 
             <button id="closeButton" (click)="onCloseDepositControlListTemplate()"
                 class="btn btn-sm text-white">X</button>
@@ -139,7 +141,7 @@
                         <hr class="my-4">
                     <table class="table table-flex table-hover table-bordered h-75">
                         <thead>
-                            <tr  class="text-center">
+                            <tr class="text-center">
                                 <th scope="col">CODIGO</th>
                                 <th scope="col">U.MEDIDA</th>
                                 <th scope="col">DESCRIPCION</th>
@@ -154,14 +156,13 @@
                         <tbody class="text-center">
                             <tr *ngFor="let item of depositControlDtos">
                                 <td id="fullBlue_td">{{item.itemCode}}</td>
-                                <td >{{item.measureUnit}}</td>
+                                <td>{{item.measureUnit}}</td>
                                 <td>{{item.itemDescription}}</td>
                                 <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
                                 <td id="fullBlue_td">{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
                                 <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
                                 <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
-                                <td><a
-                                        (click)="openDialogDepositControlUpdate(item.id,updateDepositContolTemplate)"
+                                <td><a (click)="openDialogDepositControlUpdate(item.id,updateDepositContolTemplate)"
                                         class="btn btn-md"></a></td>
                                 <td><a (click)="confirmDeleteDepositControl(item.id)" class="btn btn-md"></a>
                                 </td>
@@ -177,222 +178,224 @@
     </body>
 </ng-template>
 <ng-template #purchaseOrderTableTemplate>
-    <body id="supplyUpload" >
-        
-   
-    <button id="closeButton" (click)="onClosePurchaseOrderTableTemplate()" class="btn btn-sm text-white">X</button>
-    <div id="supplyUpload"  class="container-flex">
-    <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
-            <h2 class="d-inline text-dark">ORDEN DE COMPRA NUMERO: </h2>
-            <h2 class="d-inline text-primary">{{purchaseOrderDto.orderNumber}}<small class="text-dark">-</small>{{ purchaseOrderDto.date.toString().substring(2,4)}} </h2>
-        </div>
-        <!-- Purchase order table -->
-        <div class="col-md-1"></div>
-        <div class="col-md-2">
-            <img id="thumbsUp" class="float ms-1 mt-1 " src="./assets/img/calendar-days-solid.svg">
-           <h4 class="mt-2 ms-1" >{{purchaseOrderDto.date |date: 'dd-MM-yyyy'}}</h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
 
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h3 class="d-inline">UNIDAD EJECUTORA:</h3>
-            <h4 class="d-inline"> {{purchaseOrderDto.executerUnit}}</h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h3  class="d-inline">DEPENDENCIA: </h3>
-            <h4 class="d-inline">{{purchaseOrderDto.dependency}}</h4> 
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h3 class="d-inline">FUENTE DE FINANCIAMIENTO:</h3>
-            <h4 class="d-inline"> {{purchaseOrderDto.financingSource}}</h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h3 class="d-inline">TOTAL: </h3>
-            <h3 class="d-inline text-danger">{{purchaseOrderDto.purchaseOrderTotal | currency: '$': 'symbol'}}</h3>
-        </div>
-    </div>
-    <div class="row mt-1">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <table class="table table-flex table-hover table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">CODIGO</th>
-                        <th scope="col">CAT PROG</th>
-                        <th scope="col">CANTIDAD</th>
-                        <th scope="col">U.MEDIDA</th>
-                        <th scope="col">DESCRIPCION</th>
-                        <th scope="col">P.UNITARIO</th>
-                        <th scope="col">TOTAL</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of purchaseOrderItemDtos">
-                        <td>{{item.code}}</td>
-                        <td>{{item.programaticCat}}</td>
-                        <td>{{item.quantity}}</td>
-                        <td>{{item.measureUnit}}</td>
-                        <td>{{item.itemDetail}}</td>
-                        <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
-                        <td class="text-primary">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
-                    </tr>
+    <body id="supplyUpload">
 
-                </tbody>
-            </table>
+
+        <button id="closeButton" (click)="onClosePurchaseOrderTableTemplate()" class="btn btn-sm text-white">X</button>
+        <div id="supplyUpload" class="container-flex">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <h2 class="d-inline text-dark">ORDEN DE COMPRA NUMERO: </h2>
+                    <h2 class="d-inline text-primary">{{purchaseOrderDto.orderNumber}}<small
+                            class="text-dark">-</small>{{ purchaseOrderDto.date.toString().substring(2,4)}} </h2>
+                </div>
+                <!-- Purchase order table -->
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
+                    <img id="thumbsUp" class="float ms-1 mt-1 " src="./assets/img/calendar-days-solid.svg">
+                    <h4 class="mt-2 ms-1">{{purchaseOrderDto.date |date: 'dd-MM-yyyy'}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h3 class="d-inline">UNIDAD EJECUTORA:</h3>
+                    <h4 class="d-inline"> {{purchaseOrderDto.executerUnit}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h3 class="d-inline">DEPENDENCIA: </h3>
+                    <h4 class="d-inline">{{purchaseOrderDto.dependency}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h3 class="d-inline">FUENTE DE FINANCIAMIENTO:</h3>
+                    <h4 class="d-inline"> {{purchaseOrderDto.financingSource}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h3 class="d-inline">TOTAL: </h3>
+                    <h3 class="d-inline text-danger">{{purchaseOrderDto.purchaseOrderTotal | currency: '$': 'symbol'}}
+                    </h3>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <table class="table table-flex table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">CODIGO</th>
+                                <th scope="col">CAT PROG</th>
+                                <th scope="col">CANTIDAD</th>
+                                <th scope="col">U.MEDIDA</th>
+                                <th scope="col">DESCRIPCION</th>
+                                <th scope="col">P.UNITARIO</th>
+                                <th scope="col">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of purchaseOrderItemDtos">
+                                <td>{{item.code}}</td>
+                                <td>{{item.programaticCat}}</td>
+                                <td>{{item.quantity}}</td>
+                                <td>{{item.measureUnit}}</td>
+                                <td>{{item.itemDetail}}</td>
+                                <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
+                                <td class="text-primary">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </ng-template>
 
 <ng-template #supplyTableTemplate>
+
     <body id="supplyUpload">
-        
-   
-    <!-- <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button> -->
-    <div id="supplyUpload" *ngIf="supplyItemDtos.length>0" class="container-flex">
-        <div class="row">
-            <div class="col-md-5"></div>
-            <div class="col-md-5">
-                <h2 class="d-inline">SUMINISTRO NUMERO: </h2>
-                <h2 class="d-inline text-danger">{{supplyDto.supplyNumber }}<small class="text-dark fw-bold">-</small>{{ supplyDto.date.toString().substring(2,4)}} </h2>
 
-            </div>
-            <div class="col-md-2">
-                <h3>FECHA: {{supplyDto.date |date: 'dd-MM-yyyy' }}</h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                <h3>UNIDAD EJECUTORA:</h3>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-6">
-                <h3>DEPENDENCIA SOLICITANTE: {{supplyDto.dependencyApplicant}}</h3>
+        <!-- <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button> -->
+        <div id="supplyUpload" *ngIf="supplyItemDtos.length>0" class="container-flex">
+            <div class="row">
+                <div class="col-md-5"></div>
+                <div class="col-md-5">
+                    <h2 class="d-inline">SUMINISTRO NUMERO: </h2>
+                    <h2 class="d-inline text-danger">{{supplyDto.supplyNumber }}<small
+                            class="text-dark fw-bold">-</small>{{ supplyDto.date.toString().substring(2,4)}} </h2>
+
+                </div>
+                <div class="col-md-2">
+                    <h3>FECHA: {{supplyDto.date |date: 'dd-MM-yyyy' }}</h3>
+                </div>
             </div>
-            <div class="col-md-4">
-                <form [formGroup]="supplyOrganizationApplicantForm"
-                    class="row g-6 form-group justifty-center text-center fw-bold ms-1">
-                    <div class="form-group">
-                        <label for="id" class="form-label fs-7 ">DEPENDENCIA</label>
-                        <select id="id" formControlName="id" class="form-select  border-dark">
-                            <option value="Seleccione la dependencia soliciante">Seleccione la dependencia soliciante
-                            </option>
-                            <option type="number" class="form-control border-dark "
-                                *ngFor="let orgs of organizationsDto" id="id" [value]="orgs.id">
-                                {{orgs.organizationName}}</option>
-                        </select>
-                        <div *ngIf="id.invalid && (id.dirty || id.touched)" class="text-danger">
-                            <div *ngIf="id.errors?.['required']">
-                                Debe seleccionar una organizacion
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h3>UNIDAD EJECUTORA:</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <h3>DEPENDENCIA SOLICITANTE: {{supplyDto.dependencyApplicant}}</h3>
+                </div>
+                <div class="col-md-4">
+                    <form [formGroup]="supplyOrganizationApplicantForm"
+                        class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+                        <div class="form-group">
+                            <label for="id" class="form-label fs-7 ">DEPENDENCIA</label>
+                            <select id="id" formControlName="id" class="form-select  border-dark">
+                                <option value="Seleccione la dependencia soliciante">Seleccione la dependencia
+                                    soliciante
+                                </option>
+                                <option type="number" class="form-control border-dark "
+                                    *ngFor="let orgs of organizationsDto" id="id" [value]="orgs.id">
+                                    {{orgs.organizationName}}</option>
+                            </select>
+                            <div *ngIf="id.invalid && (id.dirty || id.touched)" class="text-danger">
+                                <div *ngIf="id.errors?.['required']">
+                                    Debe seleccionar una organizacion
+                                </div>
                             </div>
+                            <button (click)="setSupplyOrganizationApplicant(supplyDto.id)"
+                                class="btn btn-sm mt-1 text-white">APLICAR</button>
                         </div>
-                        <button (click)="setSupplyOrganizationApplicant(supplyDto.id)"
-                            class="btn btn-sm mt-1 text-white">APLICAR</button>
-                    </div>
 
-                </form>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h3 class="d-inline">TOTAL:</h3>
+                    <h3 class="d-inline text-danger">{{supplyDto.estimatedTotalCost| currency: '$': 'symbol'}}</h3>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <table class="table table-sm table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">CODIGO</th>
+                                <th scope="col">CAT PROG</th>
+                                <th scope="col">CANTIDAD</th>
+                                <th scope="col">U.MEDIDA</th>
+                                <th scope="col">DESCRIPCION</th>
+                                <th scope="col">P.UNITARIO</th>
+                                <th scope="col">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of supplyItemDtos">
+                                <td id="fullBlue_td">{{item.code}}</td>
+                                <td>{{item.programaticCat}}</td>
+                                <td>{{item.quantity}}</td>
+                                <td>{{item.measureUnit}}</td>
+                                <td>{{item.itemDetail}}</td>
+                                <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
+                                <td id="fullBlue_td">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"></div>
+
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                <h3 class="d-inline">TOTAL:</h3>
-                <h3 class="d-inline text-danger">{{supplyDto.estimatedTotalCost| currency: '$': 'symbol'}}</h3>
-            </div>
-        </div>
-        <div class="row mt-1">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                <table class="table table-sm table-hover table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">CODIGO</th>
-                            <th scope="col">CAT PROG</th>
-                            <th scope="col">CANTIDAD</th>
-                            <th scope="col">U.MEDIDA</th>
-                            <th scope="col">DESCRIPCION</th>
-                            <th scope="col">P.UNITARIO</th>
-                            <th scope="col">TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of supplyItemDtos">
-                            <td id="fullBlue_td">{{item.code}}</td>
-                            <td>{{item.programaticCat}}</td>
-                            <td>{{item.quantity}}</td>
-                            <td>{{item.measureUnit}}</td>
-                            <td>{{item.itemDetail}}</td>
-                            <td>{{item.unitCost | currency: '$': 'symbol'}}</td>
-                            <td id="fullBlue_td">{{item.totalEstimatedCost | currency: '$': 'symbol'}}</td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3"></div>
-
-        </div>
-    </div>
-</body>
+    </body>
 </ng-template>
 
 <ng-template #purchaseOrderListTemplate>
-    <body  *ngIf="purchaseOrderDtos.length==0">
-        <div class="jumbotron jumbotron-fluid">
-            <div class="container">
-              <h1 class="display-4">No hay ninguna orden de compra cargada..</h1>
-              <p (click)="onClosepurchaseOrderListTemplate()" class="lead"><button class="btn btn-sm text-white">Volver</button></p>
-            </div>
-          </div>
-    </body>
+    <div *ngIf="purchaseOrderDtos.length==0" class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">No hay ninguna orden de compra cargada..</h1>
+            <p (click)="onClosepurchaseOrderListTemplate()" class="lead"><button
+                    class="btn btn-sm text-white">Volver</button></p>
+        </div>
+    </div>
+    <div *ngIf="purchaseOrderDtos.length>0" id="orderListTemplate" class="container-fluid">
+        <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
+        <div class="row">
+            <div class="col-md-4">
+                <div id="count">
 
-    <body *ngIf="purchaseOrderDtos.length>0" id="orderListTemplate">
-        <div id="orderListTemplate" class="container-fluid">
-            <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
-            <div class="row">
-                <div class="col-md-4">
-                    <div id="count">
-                 
-                        <h3 class="float mt-1 text-white">{{totalPurchaseOrders}}</h3>
-                    </div>
-    
-                </div>
-                <div class="col-md-4">
-                    <h2 id="ordersTitle" class="text-center">ORDENES DE COMPRA</h2>
+                    <h3 class="float mt-1 text-white">{{totalPurchaseOrders}}</h3>
                 </div>
             </div>
-            <div class="row">
-                <div class="col">
-                    <div id="table-div" class="overflow-scroll">
-                        <table class="table table-flex table-hover table-bordered table-striped h-75">
-                            <thead>
-                                <tr class="text-center">
-                                    <th scope="col">FECHA</th>
+            <div class="col-md-4">
+                <h2 id="ordersTitle" class="text-center">ORDENES DE COMPRA</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="table-div" class="overflow-scroll">
+                    <table class="table table-flex table-hover table-bordered table-striped h-75">
+                        <thead>
+                            <tr class="text-center">
+                                <th scope="col">FECHA</th>
                                 <th scope="col">NUMERO</th>
                                 <th scope="col">UNIDAD EJECUTORA</th>
                                 <th scope="col">DEPENDENCIA</th>
@@ -401,58 +404,65 @@
                                 <th>A DEPOSITO</th>
                                 <th>CARGADO</th>
                                 <th>ELIMINAR</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let order of purchaseOrderDtos">
-                               
-                                    <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
-                                    <td id="fullBlue_td">{{order.orderNumber + '/' + order.date.toString().substring(2,4) }}
-                                    </td>
-                                    <td>{{order.executerUnit}}</td>
-                                    <td>{{order.dependency}}</td>
-                                    <td id="fullBlue_td">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
-                                    <td class="text-center"><a
-                                            (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
-                                            class="btn btn-md  text-danger"></a></td>
-                                    <td class="text-center">
-                                        <a *ngIf="order.loadedToDeposit"
-                                            (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
-                                            class="btn btn-md text-danger" disabled></a>
-                                        <a *ngIf="!order.loadedToDeposit"
-                                            (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
-                                            class="btn btn-md text-danger"></a>
-                                    </td>
-                                    <td *ngIf="order.loadedToDeposit" class="text-success text-center">
-                                        {{order.loadedToDepositName}}</td>
-                                    <td *ngIf="!order.loadedToDeposit" class="text-danger text-center">No</td>
-                                    <td class="text-center"> <a (click)="confirmDeletePurchaseOrder(order.id)"
-                                            class="btn btn-md text-danger"></a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let order of purchaseOrderDtos">
+
+                                <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
+                                <td id="fullBlue_td">{{order.orderNumber + '/' + order.date.toString().substring(2,4) }}
+                                </td>
+                                <td>{{order.executerUnit}}</td>
+                                <td>{{order.dependency}}</td>
+                                <td id="fullBlue_td">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
+                                <td class="text-center"><a
+                                        (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
+                                        class="btn btn-md  text-danger"></a></td>
+                                <td class="text-center">
+                                    <a *ngIf="order.loadedToDeposit"
+                                        (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
+                                        class="btn btn-md text-danger" disabled></a>
+                                    <a *ngIf="!order.loadedToDeposit"
+                                        (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
+                                        class="btn btn-md text-danger"></a>
+                                </td>
+                                <td *ngIf="order.loadedToDeposit" class="text-success text-center">
+                                    {{order.loadedToDepositName}}</td>
+                                <td *ngIf="!order.loadedToDeposit" class="text-danger text-center">No</td>
+                                <td class="text-center"> <a (click)="confirmDeletePurchaseOrder(order.id)"
+                                        class="btn btn-md text-danger"></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
 </ng-template>
 
 <ng-template #supplyListTemplate>
 
-    <body  *ngIf="suppliesDto.length==0">
+    <body *ngIf="suppliesDto.length==0">
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
-              <h1 class="display-4">No hay ningun suministro cargado..</h1>
-              <p (click)="onCloseSupplyListTemplate()" class="lead"><button class="btn btn-sm text-white">Volver</button></p>
+                <h1 class="display-4">No hay ningun suministro cargado..</h1>
+                <p (click)="onCloseSupplyListTemplate()" class="lead"><button
+                        class="btn btn-sm text-white">Volver</button></p>
             </div>
-          </div>
+        </div>
     </body>
-    <body  *ngIf="suppliesDto.length>0" id="orderListTemplate">
+
+    <body *ngIf="suppliesDto.length>0" id="orderListTemplate">
         <div class="container">
             <button id="closeButton" (click)="onCloseSupplyListTemplate()" class="btn btn-sm text-white">X</button>
             <div class="row">
-                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <div id="count">
+    
+                        <h3 class="float mt-1 text-white">{{totalSupplies}}</h3>
+                    </div>
+                </div>
+               
                 <div class="col-md-4">
                     <h2 id="ordersTitle" class="text-center text-dark">SUMINISTROS</h2>
                 </div>
@@ -462,7 +472,7 @@
                     <div id="table-div">
                         <table class="table table-flex table-hover table-bordered table-striped h-75">
                             <thead>
-                                <tr  class="text-center">
+                                <tr class="text-center">
                                     <th scope="col">FECHA</th>
                                     <th scope="col">NUMERO</th>
                                     <th scope="col">SOLICITANTE</th>
@@ -485,14 +495,12 @@
                                             (click)="openDialogSuppliesItemList(supplyItemsListTemplate,supply.id)"
                                             class="btn btn-md  text-danger"></a></td>
                                     <td class="text-center">
-                                        <a
-                                            (click)="openSupplyCorrectionNoteDialog(supplyCorrectionNoteTemplate,supply.id)"
+                                        <a (click)="openSupplyCorrectionNoteDialog(supplyCorrectionNoteTemplate,supply.id)"
                                             class="btn btn-md text-danger"></a>
                                     </td>
                                     <td class="text-center">
                                         <a (click)="confirmUpdateOrganizationApplicant
-                            (updateSuplyOrganizationApplicantTemplate,supply.id)"
-                                            class="btn btn-md text-danger"></a>
+                            (updateSuplyOrganizationApplicantTemplate,supply.id)" class="btn btn-md text-danger"></a>
                                     </td>
                                     <td class="text-center"><a (click)="confirmDeleteSupply(supply.id)"
                                             class="btn btn-md text-danger"></a></td>
@@ -510,12 +518,13 @@
     <button id="closeButton" (click)="onClosepurchaseOrderItemListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="mt-1 ms-1">
         <h1 class="d-inline">O.C NUMERO:</h1>
-        <h2 *ngIf="findedPurchaseOrder!=undefined" class="d-inline"> {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.date.toString().substring(2,4)}}
+        <h2 *ngIf="findedPurchaseOrder!=undefined" class="d-inline">
+            {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.date.toString().substring(2,4)}}
         </h2>
     </div>
     <table class="table-sm table-bordered table-hover h-75">
         <thead>
-            <tr  class="text-center">
+            <tr class="text-center">
                 <th scope="col">CODIGO</th>
                 <th scope="col">CAT.PROG.</th>
                 <th scope="col">CANTIDAD</th>
@@ -550,7 +559,8 @@
     <button id="closeButton" (click)="onCloseSupplyItemListTemplate()" class="btn btn-sm text-white">X</button>
     <div class="mt-1">
         <h1 class="d-inline">SUMINISTRO NUMERO:</h1>
-        <h2 *ngIf="findedSupply!=undefined" class="d-inline"> {{findedSupply.supplyNumber + '/' + findedSupply.date.toString().substring(2,4)}}</h2>
+        <h2 *ngIf="findedSupply!=undefined" class="d-inline"> {{findedSupply.supplyNumber + '/' +
+            findedSupply.date.toString().substring(2,4)}}</h2>
     </div>
     <table class="table-sm table-hover table-bordered h-75">
         <thead>
@@ -586,7 +596,7 @@
     <button id="closeButton" (click)="onCloseOrderToDepositTemplate()" class="btn btn-sm text-white">X</button>
     <table class="table-sm table-hover table-bordered h-75">
         <thead>
-            <tr  class="text-center">
+            <tr class="text-center">
                 <th scope="col">ESTADO</th>
                 <th scope="col">CODIGO</th>
                 <th scope="col">DESCRIPCION</th>
@@ -612,129 +622,130 @@
     </table>
 </ng-template>
 <ng-template #supplyCorrectionNoteTemplate>
+
     <body id="comparatorNoteCss">
-        
-   
-    <div *ngIf="supplyCorrectionNote!=undefined" id="comparatorNoteCss" class="container-flex">
-        <button id="closeButton" (click)="onCloseSupplyCorrectionNoteTemplate()"
-            class="btn btn-sm text-white">X</button>
-        <div class="row mt-2">
-            <div class="col-md-3">
 
-            </div>
 
-            <div id="ordersTitle" class="col-md-6">
-                <h2>DETALLE DE COMPARACION DE SUMINISTRO CON STOCK</h2>
-
-            </div>
-
-            <div class="col-md-3">
-                <div>
-                    <h4> Fecha: {{now |date: 'dd-MM-yyyy'}}</h4>
+        <div *ngIf="supplyCorrectionNote!=undefined" id="comparatorNoteCss" class="container-flex">
+            <button id="closeButton" (click)="onCloseSupplyCorrectionNoteTemplate()"
+                class="btn btn-sm text-white">X</button>
+            <div class="row mt-2">
+                <div class="col-md-3">
 
                 </div>
+
+                <div id="ordersTitle" class="col-md-6">
+                    <h2>DETALLE DE COMPARACION DE SUMINISTRO CON STOCK</h2>
+
+                </div>
+
+                <div class="col-md-3">
+                    <div>
+                        <h4> Fecha: {{now |date: 'dd-MM-yyyy'}}</h4>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div clasS="col-md-6">
+                    <div>
+                        <img id="factory_icon" class="" src="./assets/img/building-solid.svg">
+                        <h1 class="d-inline"> {{supplyCorrectionNote.depositName}}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <div>
+                        <h4 class="d-inline"> SUM N:</h4>
+                        <h1 class="d-inline"> {{supplyCorrectionNote.supplyNumber + '/'
+                            + supplyCorrectionNote.supplyDate.toString().substring(2,4)}}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <div>
+                        <h4 class="d-inline">DE:</h4>
+                        <h1 class="d-inline"> {{supplyCorrectionNote.from.toUpperCase()}}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <div>
+                        <h4 class="d-inline">SOLICITANTE:</h4>
+                        <h1 class="d-inline"> {{supplyCorrectionNote.to.toUpperCase()}}</h1>
+                    </div>
+                </div>
+                <p class="lead">
+                    <hr class="my-4">
+            </div>
+            <div class="row mt-2" *ngFor="let item of supplyCorrectionNote.supplyReport">
+                <div class="col-md-2"></div>
+                <div class="col-md-3">
+                    <div class="mt-2">
+                        <p>ITEM SUMINISTRO:</p>
+                        <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2 ">
+                            {{item.supplyItemCode}}</small>
+                    </div>
+
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2 ">
+                            {{item.supplyItemDetail}}</small>
+                    </div>
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2 ">
+                            {{item.supplyItemMeasureUnit}}</small>
+                    </div>
+                    <div>
+                        <h1 class="d-inline"> CANTIDAD:</h1> <small
+                            class="ms-2 text-success">{{item.supplyItemQuantity}}</small>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                    <div class="mt-2">
+                        <p>ITEM DEPOSITO:</p>
+                        <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2">
+                            {{item.depositItemCode}} </small>
+                    </div>
+
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2">
+                            {{item.depositItemDetail}}</small>
+                    </div>
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2">
+                            {{item.depositItemMeasureUnit}}</small>
+                    </div>
+                    <div *ngIf="item.depositItemQuantity>=10">
+                        <h1 class="d-inline">CANTIDAD :</h1> <small
+                            class="ms-2 text-success">{{item.depositItemQuantity}}</small>
+                    </div>
+                    <div *ngIf="item.depositItemQuantity<10">
+                        <h1 class="d-inline">CANTIDAD :</h1> <small
+                            class="ms-2 text-danger">{{item.depositItemQuantity}}</small>
+                    </div>
+                    <div *ngIf="item.depositQuantityLeft>0">
+                        <h1 class="d-inline">SOBRANTE :</h1> <small
+                            class="ms-2 text-warning">{{item.depositQuantityLeft}}</small>
+
+                    </div>
+                    <div *ngIf="item.depositQuantityLeft<0">
+                        <h1 class="d-inline">FALTANTE :</h1> <small
+                            class="ms-2 text-danger">{{item.depositQuantityLeft.toString().replace("-","")}}</small>
+                    </div>
+                </div>
+                <p class="lead">
+                    <hr class="my-4">
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div clasS="col-md-6">
-                <div>
-                    <img id="factory_icon" class="" src="./assets/img/building-solid.svg">
-                    <h1 class="d-inline"> {{supplyCorrectionNote.depositName}}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-6">
-                <div>
-                    <h4 class="d-inline"> SUM N:</h4>
-                    <h1 class="d-inline"> {{supplyCorrectionNote.supplyNumber + '/'
-                        + supplyCorrectionNote.supplyDate.toString().substring(2,4)}}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-6">
-                <div>
-                    <h4 class="d-inline">DE:</h4>
-                    <h1 class="d-inline"> {{supplyCorrectionNote.from.toUpperCase()}}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-6">
-                <div>
-                    <h4 class="d-inline">SOLICITANTE:</h4>
-                    <h1 class="d-inline"> {{supplyCorrectionNote.to.toUpperCase()}}</h1>
-                </div>
-            </div>
-            <p class="lead">
-                <hr class="my-4">
-        </div>
-        <div class="row mt-2" *ngFor="let item of supplyCorrectionNote.supplyReport">
-            <div class="col-md-2"></div>
-            <div class="col-md-3">
-                <div class="mt-2">
-                    <p>ITEM SUMINISTRO:</p>
-                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2 ">
-                        {{item.supplyItemCode}}</small>
-                </div>
-
-                <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2 ">
-                        {{item.supplyItemDetail}}</small>
-                </div>
-                <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2 ">
-                        {{item.supplyItemMeasureUnit}}</small>
-                </div>
-                <div>
-                    <h1 class="d-inline"> CANTIDAD:</h1> <small
-                        class="ms-2 text-success">{{item.supplyItemQuantity}}</small>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-3">
-                <div class="mt-2">
-                    <p>ITEM DEPOSITO:</p>
-                    <h1 id="supplyReportFullBlue" class="d-inline">CODIGO:</h1><small class="ms-2">
-                        {{item.depositItemCode}} </small>
-                </div>
-
-                <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2">
-                        {{item.depositItemDetail}}</small>
-                </div>
-                <div>
-                    <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2">
-                        {{item.depositItemMeasureUnit}}</small>
-                </div>
-                <div *ngIf="item.depositItemQuantity>=10">
-                    <h1 class="d-inline">CANTIDAD :</h1> <small
-                        class="ms-2 text-success">{{item.depositItemQuantity}}</small>
-                </div>
-                <div *ngIf="item.depositItemQuantity<10">
-                    <h1 class="d-inline">CANTIDAD :</h1> <small
-                        class="ms-2 text-danger">{{item.depositItemQuantity}}</small>
-                </div>
-                <div *ngIf="item.depositQuantityLeft>0">
-                    <h1 class="d-inline">SOBRANTE :</h1> <small
-                        class="ms-2 text-warning">{{item.depositQuantityLeft}}</small>
-
-                </div>
-                <div *ngIf="item.depositQuantityLeft<0">
-                    <h1 class="d-inline">FALTANTE :</h1> <small
-                        class="ms-2 text-danger">{{item.depositQuantityLeft.toString().replace("-","")}}</small>
-                </div>
-            </div>
-            <p class="lead">
-                <hr class="my-4">
-        </div>
-    </div>
-</body>
+    </body>
 </ng-template>
 <ng-template #createDepositTemplate>
     <button id="closeButton" (click)="onCloseDepositCreationTemplate()" class="btn btn-sm text-white">X</button>
@@ -780,35 +791,36 @@
     </div>
 </ng-template>
 <ng-template #depositSelectionTemplate>
+
     <body id="correction">
         <div id="correction" class="container-flex">
-        <div class="row">
-            <div class="col mt-3">
-                <h5 class="text-center">SELECCIONAR DEPOSITO</h5>
+            <div class="row">
+                <div class="col mt-3">
+                    <h5 class="text-center">SELECCIONAR DEPOSITO</h5>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-3"></div>
+                <div class="col-md-4 ms-3">
+                    <table class="table-sm table-bordered h-75">
+                        <thead>
+                            <tr>
+                                <th scope="col">DEPOSITO</th>
+                                <th scope="col">SELECCIONAR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center border border-dark" *ngFor="let deposit of depositDtos">
+                                <td class="text-dark border border-dark">{{deposit.name}}</td>
+                                <td class="text-dark border border-dark"><button (click)="setCurrentDeposit(deposit.id)"
+                                        class="btn btn-sm text-primary">-</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="row mt-5">
-            <div class="col-md-3"></div>
-            <div class="col-md-4 ms-3">
-                <table class="table-sm table-bordered h-75">
-                    <thead>
-                        <tr>
-                            <th scope="col">DEPOSITO</th>
-                            <th scope="col">SELECCIONAR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="text-center border border-dark" *ngFor="let deposit of depositDtos">
-                            <td class="text-dark border border-dark">{{deposit.name}}</td>
-                            <td class="text-dark border border-dark"><button (click)="setCurrentDeposit(deposit.id)"
-                                    class="btn btn-sm text-primary">-</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</body>
+    </body>
 </ng-template>
 <ng-template #updateDepositContolTemplate>
 
@@ -904,7 +916,7 @@
                 <div class="form-group">
                     <label for="id" class="form-label fs-7 ">DEPENDENCIA</label>
                     <select id="id" formControlName="id" class="form-select  border-dark">
-                       
+
                         <option type="number" class="form-control border-dark " *ngFor="let orgs of organizationsDto"
                             id="id" [value]="orgs.id">
                             {{orgs.organizationName}}</option>

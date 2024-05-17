@@ -1,4 +1,7 @@
 
+body{
+    background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(224, 222, 234) 50%, #e3e2ec 79%);
+}
 h3{
     
     font-weight: bold;
@@ -28,6 +31,7 @@ h4{
 #main-row{
     background-color: rgb(246, 246, 242);
     border-radius :1px;
+    border: 1px solid black;
    border-bottom: solid 1px;
    border-left: solid 1px;
    border-right: solid 1px;
@@ -59,4 +63,14 @@ label{
     font-family: 'Quattrocento', serif;
     background-color:  rgb(253, 252, 246);
     font-weight: bold;
+}
+#thumbsUp{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+#factory_icon{
+  
+    width: 2.5rem;
+    height: 2.0rem;
+    margin-bottom: 0.5rem;
 }
