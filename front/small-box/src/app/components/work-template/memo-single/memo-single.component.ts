@@ -168,7 +168,7 @@ export class MemoSingleComponent implements OnInit {
   }
 
   getRefsList(): void {
-    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM", "REMITO INTERNO", "FACTURA", "REMITO", "AGENTE"];
+    this.refsList = ["-","MEMO", "NOTA", "EXP", "OC", "SUM", "REMITO INTERNO", "FACTURA", "REMITO", "AGENTE","ACTA DE REUNION"];
   }
 
 

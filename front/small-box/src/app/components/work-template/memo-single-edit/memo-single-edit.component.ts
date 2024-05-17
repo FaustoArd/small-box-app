@@ -99,7 +99,7 @@ export class MemoSingleEditComponent {
   addSelectedItem() {
     this.itemPartial = new Item();
     this.itemPartial = Object.assign(this.itemPartial, this.itemFormBuilder.value);
-    let itemComplete = this.itemPartial.item + ' N° ' + this.itemPartial.itemNumber + '\n';
+    let itemComplete = this.itemPartial.item  + this.itemPartial.itemNumber + '\n';
     this.items.push(itemComplete);
     this.getRefsList();
   }
@@ -163,7 +163,7 @@ export class MemoSingleEditComponent {
   }
 
   getRefsList(): void {
-    this.refsList = ["MEMO", "NOTA", "EXP", "OC", "SUM", "REMITO INTERNO", "FACTURA", "REMITO"];
+    this.refsList = ["-","MEMO", "NOTA", "EXP", "OC", "SUM", "REMITO INTERNO", "FACTURA", "REMITO", "AGENTE","ACTA DE REUNION"];
   }
 
 

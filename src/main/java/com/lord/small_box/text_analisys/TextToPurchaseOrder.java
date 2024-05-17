@@ -193,7 +193,7 @@ public class TextToPurchaseOrder {
 		log.info("Text to purchase order get item detail");
 		String itemDetail = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1)
 				.map(m -> m.replaceAll("[0-9\\W]", "")).collect(Collectors.joining(" "));
-		if (itemDetail.startsWith("UNO-")) {
+		if (itemDetail.startsWith("-UNO")) {
 			itemDetail = itemDetail.substring(itemDetail.indexOf("-") + 1, itemDetail.length() - 1);
 		}
 		return itemDetail;

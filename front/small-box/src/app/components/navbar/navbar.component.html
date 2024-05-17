@@ -1,5 +1,5 @@
 <!-- Admin Navbar -->
-<div *ngIf="adminAuth" class="container-fluid">
+<div  *ngIf="adminAuth" class="container-fluid">
     <div class="row">
         <mat-toolbar class="bg-dark">
             <div class="col-xs-2">
@@ -42,13 +42,13 @@
             </div>
             <!-- <div class="col-md-1 ms-3" *ngIf="!adminAuth "></div> -->
             <div class="col-md-2 ms-3">
-                <button id="navButton" mat-button [matMenuTriggerFor]="templateMenu" class="text-white">PLANTILLAS</button>
+                <button id="navButton" mat-button [matMenuTriggerFor]="templateMenu" class="text-white">MEMO</button>
                 <mat-menu #templateMenu yPosition="above">
                     <button mat-menu-item routerLink="/memo-create">Memo</button>
                     <button mat-menu-item routerLink="/work-template-list">Ver</button>
-                    <button mat-menu-item routerLink="/dispatch-page">Despacho</button>
+                 
                 </mat-menu>
-                <!-- <button mat-button routerLink="/dispatch"  class="text-white ms-5">Despacho</button> -->
+                <button id="navButton" mat-button routerLink="/dispatch-page" class="text-white ms-4">DESPACHO</button>
 
                 <button id="navButton" mat-button routerLink="/deposit-home" class="text-white ms-4">SUMINISTROS</button>
             </div>

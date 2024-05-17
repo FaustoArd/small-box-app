@@ -225,9 +225,10 @@ public class DepositReceiverServiceImpl implements DepositRecevierService {
 		controlReceivers.stream().forEach(requestItem -> {
 			workTemplateItems.add(generateWorkTemplateItem(requestItem,deposit));
 		});
-		List<String> cleanWorkTemplateItems  =  workTemplateItems.stream().filter(line -> !line.equals("")).map(line -> line).toList();
+		//List<String> cleanWorkTemplateItems  =  workTemplateItems.stream().filter(line -> !line.equals("")).map(line -> line).toList();
 		
-		return new ArrayList<>(cleanWorkTemplateItems);
+		//return new ArrayList<>(cleanWorkTemplateItems);
+		return new ArrayList<>(workTemplateItems);
 	}
 
 	private  String generateWorkTemplateItem(DepositControlReceiver requestItem,Deposit deposit) {

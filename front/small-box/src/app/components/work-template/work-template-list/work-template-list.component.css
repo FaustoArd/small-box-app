@@ -10,15 +10,16 @@ form{
 }
 
 th{
-    font-family: "Anton", sans-serif;
+  font-family: "Anton", sans-serif;
     color: rgb(7, 27, 139);
     font-weight: 200;
     background: rgb(210, 209, 219);
     font-size: 1.4rem;
+    border: 1px solid black
 }
 
 td{
-    
+    border: 1px solid black;
     color: rgb(16, 18, 2);
     background: rgb(210, 209, 219);
     font-size: 0.8rem;
@@ -40,7 +41,9 @@ td{
 
 #table-div{
    
-    height: 44%;
+
+    
+    height: 37rem;
     width: 100%;
    
 }
@@ -63,4 +66,14 @@ input{
 }
 #filterForm{
     width: 8rem;
+}
+#thumbsUp{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+#factory_icon{
+  
+    width: 2.5rem;
+    height: 2.0rem;
+    margin-bottom: 0.5rem;
 }
