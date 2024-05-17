@@ -165,8 +165,12 @@ public class TextToSupply {
 	}
 
 	private String getItemDetails(String[] arrItems) {
-		return Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1).map(m -> m.replaceAll("[0-9\\W]", ""))
+		String itemDetail = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1).map(m -> m.replaceAll("[0-9\\W]", ""))
 				.collect(Collectors.joining(" "));
+		if (itemDetail.startsWith("UNO-")) {
+			itemDetail = itemDetail.substring(itemDetail.indexOf("-") + 1, itemDetail.length() - 1);
+		}
+		return itemDetail;
 	}
 
 	private BigDecimal getItemUnitCost(String[] arrItems) {

@@ -14,6 +14,9 @@ body{
     background: linear-gradient(245.59deg, rgb(231, 235, 244)30%, rgb(216, 205, 225) 50%, #aebdc9 79%);
    
 }
+#comparatorNoteCss{
+    background: linear-gradient(245.59deg, rgb(187, 185, 199)30%, rgb(198, 196, 206) 50%, #d5d2dc 79%);
+}
 
 
 #supplyUpload{
@@ -33,9 +36,9 @@ button,a{
     font-family: "Fira Code", monospace;
     font-weight: bold;
 }
-button:hover{
-    background: linear-gradient(245.59deg, rgb(200, 134, 12)20%, rgb(201, 104, 20) 30%, #d7b90d 79%); 
-    color:rgb(215, 154, 41);
+button,a:hover{
+    background: linear-gradient(245.59deg, rgb(73, 192, 83) 0%, rgb(66, 175, 68) 28.53%, #76b987 75.52%); 
+   
 }
 #btnDisableSelect{
     width: 2rem;
@@ -49,22 +52,23 @@ button:hover{
 
 h1{
     font-size: 1rem;
-    font-family: 'Noto Sans', sans-serif;
+  
+    font-family: "Anton", sans-serif;
 }
 
 h2{
     color: rgb(56, 18, 195);
     font-family: "Anton", sans-serif;
-    font-weight: bold;
+    font-weight: 200;
     font-size: 1.2rem;
 }
 h3{
     font-family: "Anton", sans-serif;
 }
 h4{
-    color: rgb(47, 13, 174);
-    font-family: "Anton", sans-serif;
-    font-weight: bold;
+    color: rgb(6, 3, 18);
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 100;
     font-size: 1rem;
     
 }
@@ -84,7 +88,12 @@ p{
     font-family: "Fira Code", monospace;
     font-weight: bold;
 }
-
+#ordersTitle{
+    color: #4e2add;
+    font-size: 1.1rem;
+    font-family: "Anton", sans-serif;
+    font-weight: bold;
+}
 #orderItem{
     margin-left: 1.1rem;
 }

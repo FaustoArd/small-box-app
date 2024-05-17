@@ -30,8 +30,8 @@ export class DepositReceiverComponent implements OnInit {
   ngOnInit(): void {
 
     this.getAllReceiversByOrganization();
-   this.getCurrentDepositIdIfEmpty();
-   
+    this.getCurrentDepositIdIfEmpty();
+
   }
 
   async reloadPage() {
@@ -39,9 +39,9 @@ export class DepositReceiverComponent implements OnInit {
     await this.router.navigate(['reload-component']);
     await this.router.navigate([currentUrl])
   }
-  
-  getCurrentDepositIdIfEmpty(){
-    if(Number(this.cookieService.getCurrentDepositSelectedId())==0){
+
+  getCurrentDepositIdIfEmpty() {
+    if (Number(this.cookieService.getCurrentDepositSelectedId()) == 0) {
       this.getCurrentDeposit();
     }
   }
@@ -119,14 +119,14 @@ export class DepositReceiverComponent implements OnInit {
         this.receiverConfirmData = confirmData;
         if (this.receiverConfirmData) {
           this.deleteDepositReceiverById(depositReceiverId);
-         // this.reloadPage();
+          // this.reloadPage();
         } else {
           this.snackBar.openSnackBar('Se cancelo la operacion.', 'Cerrar', 3000);
         }
       }, error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
-      complete:()=>{
+      complete: () => {
         this.reloadPage();
       }
     });
@@ -136,19 +136,19 @@ export class DepositReceiverComponent implements OnInit {
     this.depositReceiverService.deleteDepositReceiverById(depositReceiverId).subscribe({
       next: (deleteCodeData) => {
         this.deletedCodeData = deleteCodeData;
-      },error: (errorData) => {
+      }, error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       }, complete: () => {
-       this.snackBar.openSnackBar('Se elimino el pedido: ' + this.getDeletedReceiverCode(depositReceiverId), 'Cerrar', 3000);
+        this.snackBar.openSnackBar('Se elimino el pedido: ' + this.getDeletedReceiverCode(depositReceiverId), 'Cerrar', 3000);
       }
     });
   }
-  getDeletedReceiverCode(depositReceiverId:number):string{
-    const deletedReceiverIndex = this.depositReceiverDtos.findIndex(reciever => reciever.id==depositReceiverId);
+  getDeletedReceiverCode(depositReceiverId: number): string {
+    const deletedReceiverIndex = this.depositReceiverDtos.findIndex(reciever => reciever.id == depositReceiverId);
     return this.depositReceiverDtos[deletedReceiverIndex].depositRequestCode;
   }
 
- 
+
 
 
 
@@ -161,7 +161,7 @@ export class DepositReceiverComponent implements OnInit {
     this.getItemsComparator(depositReceiverId);
     this.requestComparatorNoteTemplateRef = this.dialogService.openCustomDialogCreation({
       template
-    },'85%','95%',true,true);
+    }, '85%', '95%', true, true);
     this.requestComparatorNoteTemplateRef.afterClosed().subscribe();
 
   }
@@ -180,23 +180,43 @@ export class DepositReceiverComponent implements OnInit {
     })
   }
 
-   getCurrentDeposit() {
+  getCurrentDeposit() {
 
-     const userId = Number(this.cookieService.getCurrentUserId());
-     const organizationId = Number(this.cookieService.getUserMainOrganizationId());
-     this.depositControlService.getCurrentDeposit(userId, organizationId).subscribe({
-       next: (depositIdData) => {
-         if (depositIdData.id === null || undefined || depositIdData.id === 0) {
-           this.snackBar.openSnackBar('No hay ningun deposito asignado', 'Cerrar', 3000);
-         } else {
-           this.cookieService.setCurrentDepositSelectedId(JSON.stringify(depositIdData.id));
+    const userId = Number(this.cookieService.getCurrentUserId());
+    const organizationId = Number(this.cookieService.getUserMainOrganizationId());
+    this.depositControlService.getCurrentDeposit(userId, organizationId).subscribe({
+      next: (depositIdData) => {
+        if (depositIdData.id === null || undefined || depositIdData.id === 0) {
+          this.snackBar.openSnackBar('No hay ningun deposito asignado', 'Cerrar', 3000);
+        } else {
+          this.cookieService.setCurrentDepositSelectedId(JSON.stringify(depositIdData.id));
 
-         }
-       },
-    error: (errorData) => {
-         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+        }
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    });
+  }
+
+  workTemplateId!: number;
+  generateCorrectionMemo(depositReceiverId: number) {
+    const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
+    this.depositReceiverService.generateRequestCorrectionMemo(depositReceiverId, depositId).subscribe({
+      next: (workTemplateIdData) => {
+        this.workTemplateId = workTemplateIdData;
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      },
+
+       complete: () => {
+        this.snackBar.openSnackBar('Se genero el MEMO','Cerrar',3000);
+        this.onCloseRequestComparatorNoteTemplate();
+       this.router.navigateByUrl("memo-edit/" + this.workTemplateId);
+    
        }
-     });
-   }
 
+    });
+  }
 }

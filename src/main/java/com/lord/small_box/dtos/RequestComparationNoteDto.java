@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 public class RequestComparationNoteDto {
 
+	private long receiverId;
+	
 	private Calendar requestDate;
 	
 	private String fromOrganization;

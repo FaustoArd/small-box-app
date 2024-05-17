@@ -49,6 +49,7 @@ public class WorkTemplate {
 	
 	 private ArrayList<String> refs;
 	 
+	 @Column(name="items", length = 800)
 	 private ArrayList<String> items;
 	
 	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)

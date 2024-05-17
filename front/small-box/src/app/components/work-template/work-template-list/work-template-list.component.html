@@ -1,24 +1,23 @@
 <app-navbar></app-navbar>
-<body id="main-container">
-    
 
-<div  class="container-flex">
-    <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-6">
-            <form class="form-inline mt-2" [formGroup]="findByExampleFormBuilder">
-                <div class="input-group">
-                <div class="form-group w-50 text-center">
-                    <input type="text" class="form-control" formControlName="example" id="example"
-                        placeholder="Ingrese una referencia..." (ngModelChange)="filterWorkTemplateTest()">
-                    <div *ngIf="example.invalid && (example.dirty || example.touched)" class="text-danger">
-                        <div *ngIf="example.errors?.['required']">
-                            Debe ingresar un dato valido
+<body id="main-container">
+    <div id="main-container" class="container-fluid">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-6">
+                <form class="form-inline mt-2" [formGroup]="findByExampleFormBuilder">
+                    <div class="input-group">
+                        <div class="form-group w-50 text-center">
+                            <input type="text" class="form-control" formControlName="example" id="example"
+                                placeholder="Ingrese una referencia..." (ngModelChange)="filterWorkTemplateTest()">
+                            <div *ngIf="example.invalid && (example.dirty || example.touched)" class="text-danger">
+                                <div *ngIf="example.errors?.['required']">
+                                    Debe ingresar un dato valido
+                                </div>
+                            </div>
+                            <!-- <button (click)="findWorkTemplateByExample()" id="btnFind" class="btn btn-sm  mt-1 ">Buscar</button> -->
                         </div>
-                    </div>
-                    <!-- <button (click)="findWorkTemplateByExample()" id="btnFind" class="btn btn-sm  mt-1 ">Buscar</button> -->
-                </div>
-                <!-- <div id="filterForm" class="form-group ms-1">
+                        <!-- <div id="filterForm" class="form-group ms-1">
                     <select id="filter" formControlName="filter" class=" form-select  border-dark ">
                         <option value="">Filtrar por:</option>
                         <option type="text" class="form-control border-dark " *ngFor="let filter of filters"
@@ -28,52 +27,56 @@
                     </select>
                    
                 </div> -->
-                
+
+                    </div>
+                </form>
             </div>
-            </form>
+            <div class="col-md-4"></div>
         </div>
-        <div class="col-md-4"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10 mt-5">
-            <table class="table table-fluid table-bordered border border-dark">
-                <thead>
-                    <tr class=" fw-bold text-center">
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Producido por</th>
-                        <th scope="col">Corresponde</th>
-                        <th scope="col">Destinos</th>
-                        <th scope="col">Ref</th>
-                        <th scope="col">Texto</th>
-                        <th scope="col">Items</th>
-                        <th scope="col">Modificar</th>
-                        <th scope="col">Crear copia</th>
-                        <th scope="col">Eliminar</th>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 mt-4">
+                <div id="table-div" class="overflow-scroll  border border-dark">
+                    <table class="table table-fluid table-bordered table-hover border border-dark">
+                        <thead class="bg-light sticky-top top-0">
+                            <tr class=" fw-bold text-center">
+                                <th scope="col">FECHA</th>
+                                <th scope="col">PRODUCIDO POR</th>
+                                <th scope="col">CORRESPONDE</th>
+                                <th scope="col">DESTINOS</th>
+                                <th scope="col">REF</th>
+                                <th scope="col">TEXTO</th>
+                                <th scope="col">ITEMS</th>
+                                <th scope="col">MODIFICAR</th>
+                                <th scope="col">CREAR COPIA</th>
+                                <th scope="col">ELIMINAR</th>
 
 
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="text-center" *ngFor="let template of workTemplates">
-                        <td scope="row" class="fw-bold">{{template.date | date:
-                            'dd-MM-yyyy'}}</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let template of workTemplates">
+                                <td scope="row" class="fw-bold">{{template.date | date:
+                                    'dd-MM-yyyy'}}</td>
 
-                        <td scope="row" class="fw-bold">{{template.producedBy}}</td>
-                        <td scope="row" class="fw-bold">{{template.correspond + ' ' + template.correspondNumber}}</td>
+                                <td scope="row" class="fw-bold">{{template.producedBy}}</td>
+                                <td scope="row" class="fw-bold">{{template.correspond + ' ' +
+                                    template.correspondNumber}}</td>
 
-                        <td scope="row" class="fw-bold">{{template.destinations}}</td>
+                                <td scope="row" class="fw-bold">{{template.destinations}}</td>
 
-                        <td scope="row" class="fw-bold">{{template.refs}}</td>
-                        <td scope="row" id="rowCompleted" class="fw-bold">{{template.text}}</td>
-                        <td scope="row" class="fw-bold">{{template.items}}</td>
-                        <td><button class="btn btn-sm" routerLink="/memo-edit/{{template.id}}">-</button></td>
-                        <td><button class="btn btn-sm" (click)="copyWorkTemplate(template.id)">-</button></td>
-                        <td><button class="btn btn-sm" (click)="deleteWorkTemplateById(template.id)">-</button></td>
-                    </tr>
-                </tbody>
-            </table>
+                                <td scope="row" class="fw-bold">{{template.refs}}</td>
+                                <td id="textRow" scope="row" class="fw-bold">{{template.text}}</td>
+                                <td id="itemsRow" scope="row" class="fw-bold">{{template.items}}</td>
+                                <td><button class="btn btn-md" routerLink="/memo-edit/{{template.id}}"></button></td>
+                                <td><button class="btn btn-md" (click)="copyWorkTemplate(template.id)"></button></td>
+                                <td><button class="btn btn-md" (click)="deleteWorkTemplateById(template.id)"></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 </body>

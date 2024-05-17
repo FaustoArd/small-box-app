@@ -10,13 +10,42 @@ form{
 }
 
 th{
-    background-color: rgb(236, 239, 230);
-    font-size: 1.0rem;
+    font-family: "Anton", sans-serif;
+    color: rgb(7, 27, 139);
+    font-weight: 200;
+    background: rgb(210, 209, 219);
+    font-size: 1.4rem;
 }
 
 td{
-    background-color: rgb(226, 231, 238);
+    
+    color: rgb(16, 18, 2);
+    background: rgb(210, 209, 219);
+    font-size: 0.8rem;
+    font-family: "Fira Code", monospace;
+    font-weight: 200;
 }
+#itemsRow{
+    background: rgb(210, 209, 219);
+    font-size: 0.6rem;
+    font-family: "Fira Code", monospace;
+    font-weight: 200;
+}
+#textRow{
+    background: rgb(210, 209, 219);
+    font-size: 0.6rem;
+    font-family: "Fira Code", monospace;
+    font-weight: 200;
+}
+
+#table-div{
+   
+    height: 44%;
+    width: 100%;
+   
+}
+
+ 
 button{
     color:white;
     background: linear-gradient(245.59deg, rgb(73, 105, 192) 0%, rgb(86, 66, 175) 28.53%, #7e76b9 75.52%); 

@@ -7,7 +7,7 @@ body{
     background: linear-gradient(245.59deg, rgb(187, 185, 199)30%, rgb(198, 196, 206) 50%, #d5d2dc 79%);
 }
 #comparatorNoteCss{
-    background: linear-gradient(245.59deg, rgb(187, 185, 199)30%, rgb(198, 196, 206) 50%, #d5d2dc 79%);
+    background: linear-gradient(245.59deg, rgb(204, 202, 214)30%, rgb(205, 203, 211) 50%, #dedbe2 79%);
 }
 
 .barofcolourRed{
@@ -33,10 +33,13 @@ body{
 
 button{
     background: linear-gradient(245.59deg, rgb(111, 111, 199)33.33%, rgb(145, 124, 202) 33.33%, #6f5cae 33.33%);
-    color:red;
+    color:rgb(3, 0, 0);
     font-family: "Fira Code", monospace;
     font-weight: bold;
     font-size: 0.8rem;
+}
+button:hover{
+    background: linear-gradient(245.59deg, rgb(73, 192, 83) 0%, rgb(66, 175, 68) 28.53%, #76b987 75.52%); 
 }
 
 h1{

@@ -55,4 +55,10 @@ export class DepositReceiverService {
       (`${DEPOSIT_RECEIVER_BASE_URL}/get-comparator-note?depositReceiverId=${depositReceiverId}&depositId=${depositId}`
       ,this.httpOptions).pipe(catchError(this.handleError));
     }
+
+    generateRequestCorrectionMemo(depositReceiverId:number,depositId:number):Observable<number>{
+      return this.http.post<number>
+      (`${DEPOSIT_RECEIVER_BASE_URL}/generate-correction-memo?depositId=${depositId}`,depositReceiverId,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
 }

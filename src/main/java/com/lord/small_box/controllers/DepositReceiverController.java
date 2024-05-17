@@ -5,10 +5,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +20,7 @@ import com.google.gson.Gson;
 import com.lord.small_box.dtos.DepositControlReceiverDto;
 import com.lord.small_box.dtos.DepositReceiverDto;
 import com.lord.small_box.dtos.RequestComparationNoteDto;
+import com.lord.small_box.dtos.WorkTemplateDto;
 import com.lord.small_box.services.DepositRecevierService;
 import lombok.RequiredArgsConstructor;
 
@@ -66,5 +70,11 @@ public class DepositReceiverController {
 		RequestComparationNoteDto comparationNote = depositRecevierService
 				.createRequestComparationNote(depositReceiverId, depositId);
 		return ResponseEntity.ok(comparationNote);
+	}
+	@PostMapping(path="/generate-correction-memo")
+	ResponseEntity<Long> generateRequestCorrectionMemo
+	(@RequestBody long depositReceiverId,@RequestParam("depositId")long depositId){
+		long workTemplateId = depositRecevierService.generateRequestCorrectionMemo(depositReceiverId, depositId);
+		return new ResponseEntity<Long>(workTemplateId,HttpStatus.CREATED);
 	}
 }

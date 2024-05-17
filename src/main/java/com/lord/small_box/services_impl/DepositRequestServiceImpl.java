@@ -1,5 +1,4 @@
 package com.lord.small_box.services_impl;
-
 import java.util.Calendar;
 import java.util.List;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import com.lord.small_box.dtos.DepositControlRequestDto;
 import com.lord.small_box.dtos.DepositRequestDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.DepositControlRequestMapper;
-import com.lord.small_box.mappers.DepositControlRequestMapperImpl;
 import com.lord.small_box.mappers.DepositRequestMapper;
 import com.lord.small_box.models.AppUser;
 import com.lord.small_box.models.DepositControlReceiver;
@@ -28,7 +26,6 @@ import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.services.AppUserService;
 import com.lord.small_box.services.DepositRequestService;
 import com.lord.small_box.utils.RandomCodeGeneratorUtil;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -96,7 +93,7 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 		return requestDto;
 	}
 
-	private List<DepositControlRequest> mapDtoToDepositControlRequest(DepositRequestDto depositRequestDto,
+	private static List<DepositControlRequest> mapDtoToDepositControlRequest(DepositRequestDto depositRequestDto,
 			DepositRequest depositRequest) {
 		log.info("Map dto to deposit control request");
 		List<DepositControlRequest> controlRequests = depositRequestDto.getDepositControlRequestDtos().stream()
@@ -142,7 +139,7 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 	}
 	
 
-	private DepositReceiver mapDepositRequestToDepositReceiver(DepositRequest depositRequest,
+	private static DepositReceiver mapDepositRequestToDepositReceiver(DepositRequest depositRequest,
 			Organization destinationOrganization) {
 		log.info("Map deposit request to  deposit receiver");
 		DepositReceiver depositReceiver = new DepositReceiver();
@@ -151,6 +148,7 @@ public class DepositRequestServiceImpl implements DepositRequestService {
 		return depositReceiver;
 	}
 
+	//Map items request to items receiver and save all  
 	private List<DepositControlReceiver> mapControlRequestToControlReceiver(List<DepositControlRequest> controlRequests,
 			DepositReceiver depositReceiver) {
 		log.info("Map control request to  control receiver");

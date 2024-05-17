@@ -359,7 +359,7 @@ export class MemoSingleEditComponent {
         this.updateWorkTemplateShow();
         this.destinations = this.findedWorkTemplate.destinations;
         this.refs = this.findedWorkTemplate.refs;
-        this.beforeBys = this.findedWorkTemplate.beforeBy;
+        //this.beforeBys = this.findedWorkTemplate.beforeBy;
         this.items = this.findedWorkTemplate.items;
       },
       error: (errorData) => {
