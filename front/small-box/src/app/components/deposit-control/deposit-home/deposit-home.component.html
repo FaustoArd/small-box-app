@@ -1,5 +1,7 @@
 <body>
     <app-navbar></app-navbar>
+
+    <!--Main page-->
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3">
@@ -113,6 +115,8 @@
 
     </div>
 </body>
+
+<!-- Deposit controls item table template -->
 <ng-template #depositControlListTemplate>
 
     <body *ngIf="depositControlDtos.length==0">
@@ -131,14 +135,25 @@
             <button id="closeButton" (click)="onCloseDepositControlListTemplate()"
                 class="btn btn-sm text-white">X</button>
             <div class="row">
-                <div class="col-md-1"></div>
+                <div class="col-md-1">
+                    <div id="count" class="ms-2">
+                        <h3 class="float mt-1 text-white">{{totalDepositControls}}</h3>
+                    </div>
+                </div>
                 <div class="col-md-8 ms-2">
-                    <!-- Deposit control table -->
+
                     <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline text-white">{{selectedDepositStr}}
                         </h2>
                     </h3>
                     <p class="lead">
                         <hr class="my-4">
+                    <div class="mb-2">
+                        <small id="searchSmall" class="d-block text-center">Busqueda por descripcion</small>
+                        <div class="text-center ms-5">
+                            <input (keydown.enter)="filterDepositControls(filter.value)" type="text" #filter>
+                            <a class="btn btn-sm text-white ms-2" (click)="filterDepositControls(filter.value)">Buscar</a>
+                        </div>
+                    </div>
                     <table class="table table-flex table-hover table-bordered h-75">
                         <thead>
                             <tr class="text-center">
@@ -150,11 +165,10 @@
                                 <th scope="col">CANTIDAD</th>
                                 <th scope="col">MODIFICAR</th>
                                 <th scope="col">ELIMINAR</th>
-
                             </tr>
                         </thead>
                         <tbody class="text-center">
-                            <tr *ngFor="let item of depositControlDtos">
+                            <tr *ngFor="let item of depositControlFilters">
                                 <td id="fullBlue_td">{{item.itemCode}}</td>
                                 <td>{{item.measureUnit}}</td>
                                 <td>{{item.itemDescription}}</td>
@@ -166,22 +180,19 @@
                                         class="btn btn-md"></a></td>
                                 <td><a (click)="confirmDeleteDepositControl(item.id)" class="btn btn-md"></a>
                                 </td>
-
                             </tr>
-
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
     </body>
 </ng-template>
+
+<!-- Purchase order upload report template -->
 <ng-template #purchaseOrderTableTemplate>
 
     <body id="supplyUpload">
-
-
         <button id="closeButton" (click)="onClosePurchaseOrderTableTemplate()" class="btn btn-sm text-white">X</button>
         <div id="supplyUpload" class="container-flex">
             <div class="row">
@@ -191,7 +202,7 @@
                     <h2 class="d-inline text-primary">{{purchaseOrderDto.orderNumber}}<small
                             class="text-dark">-</small>{{ purchaseOrderDto.date.toString().substring(2,4)}} </h2>
                 </div>
-                <!-- Purchase order table -->
+
                 <div class="col-md-1"></div>
                 <div class="col-md-2">
                     <img id="thumbsUp" class="float ms-1 mt-1 " src="./assets/img/calendar-days-solid.svg">
@@ -267,12 +278,10 @@
     </body>
 </ng-template>
 
+<!--Supply upload report template-->
 <ng-template #supplyTableTemplate>
-
-    <body id="supplyUpload">
-
-
-        <!-- <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button> -->
+ <body id="supplyUpload">
+ <!-- <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button> -->
         <div id="supplyUpload" *ngIf="supplyItemDtos.length>0" class="container-flex">
             <div class="row">
                 <div class="col-md-5"></div>
@@ -368,6 +377,7 @@
     </body>
 </ng-template>
 
+<!--Purchase orders list template-->
 <ng-template #purchaseOrderListTemplate>
     <div *ngIf="purchaseOrderDtos.length==0" class="jumbotron jumbotron-fluid">
         <div class="container">
@@ -395,15 +405,18 @@
                     <table class="table table-flex table-hover table-bordered table-striped h-75">
                         <thead>
                             <tr class="text-center">
-                                <th scope="col">FECHA</th>
-                                <th scope="col">NUMERO</th>
+                                <th scope="col"> <img id="date_icon_list" class="ms-1 mt-1 " src="./assets/img/calendar-days-solid.svg"></th>
+                                <th scope="col"><img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/tag_24dp_FILL0.svg"></th>
                                 <th scope="col">UNIDAD EJECUTORA</th>
                                 <th scope="col">DEPENDENCIA</th>
                                 <th scope="col">TOTAL</th>
-                                <th>ITEMS</th>
-                                <th>A DEPOSITO</th>
+                                <th> <img id="cart_icon_list" src="./assets/img/cart-shopping-solid.svg"></th>
+                                <th>
+                                     <img class="d-inline" id="arrow_right_icon_list" src="./assets/img/arrow_forward.svg">
+                                    <img id="factory_icon_list" src="./assets/img/building-solid.svg">
+                                </th>
                                 <th>CARGADO</th>
-                                <th>ELIMINAR</th>
+                                <th> <img id="trash_icon_list" class="ms-1 mt-1" src="./assets/img/trash-solid.svg"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -419,9 +432,9 @@
                                         (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
                                         class="btn btn-md  text-danger"></a></td>
                                 <td class="text-center">
-                                    <a *ngIf="order.loadedToDeposit"
+                                    <button *ngIf="order.loadedToDeposit"
                                         (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
-                                        class="btn btn-md text-danger" disabled></a>
+                                        class="btn btn-md text-danger" disabled></button>
                                     <a *ngIf="!order.loadedToDeposit"
                                         (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
                                         class="btn btn-md text-danger"></a>
@@ -458,11 +471,11 @@
             <div class="row">
                 <div class="col-md-4">
                     <div id="count">
-    
+
                         <h3 class="float mt-1 text-white">{{totalSupplies}}</h3>
                     </div>
                 </div>
-               
+
                 <div class="col-md-4">
                     <h2 id="ordersTitle" class="text-center text-dark">SUMINISTROS</h2>
                 </div>

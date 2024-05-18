@@ -39,8 +39,9 @@ export class DepositHomeComponent implements OnInit {
 
   totalPurchaseOrders!: number;
   totalSupplies!:number;
+  totalDepositControls!:number;
   now!: Date;
-
+ 
 
 
   constructor(private dialogService: DialogService,
@@ -88,6 +89,9 @@ export class DepositHomeComponent implements OnInit {
   onClosePurchaseOrderTableTemplate(): void {
     this.purchaseOrderTableMatDialogRef.close();
   }
+
+
+  /**Purchase order upload report template */
   private purchaseOrderTableMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('purchaseOrderTableTemplate') purchaseOrderTableTemplate !: TemplateRef<any>
   openPurchaseOrderTableTemplate(purchaseOrderItems: PurchaseOrderItemDto[]): void {
@@ -102,6 +106,8 @@ export class DepositHomeComponent implements OnInit {
   onClosepurchaseOrderListTemplate() {
     this.purchaseOrderTemplateRef.close();
   }
+
+   /**Purchase orders list  template */
   private purchaseOrderTemplateRef!: MatDialogRef<DialogTemplateComponent>;
   purchaseOrderDtos: PurchaseOrderDto[] = [];
   openDialogPurchaseOrderList(template: any) {
@@ -183,6 +189,8 @@ export class DepositHomeComponent implements OnInit {
     this.orderToDepositMatDialogRef.close();
   }
 
+
+   /**Purchase order load items to deposit  template */
   private orderToDepositMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('purchaseOrderToDepositTemplate') purchaseOrderReportTemplateRef !: TemplateRef<any>
   openDialogOrderToDepositReport(): void {
@@ -210,6 +218,8 @@ export class DepositHomeComponent implements OnInit {
   onClosepurchaseOrderItemListTemplate() {
     this.purchaseOrderItemListMatDialogRef.close();
   }
+
+  /**Purchase order items list template */
   private purchaseOrderItemListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogPurchaseOrderItemsList(template: any, purchaseOrderId: number) {
     this.getPurchaseOrderItems(purchaseOrderId);
@@ -278,7 +288,10 @@ export class DepositHomeComponent implements OnInit {
       }
     });
   }
+ 
+ /**SUPPLY */
 
+ /**Supply upload report template */
   @ViewChild('supplyTableTemplate') supplyTableTemplate !: TemplateRef<any>
   openSupplyTableTemplate(supplyItems: SupplyItemDto[]): void {
     this.supplyItemDtos = supplyItems;
@@ -295,7 +308,6 @@ export class DepositHomeComponent implements OnInit {
 
   }
 
-  /**SUPPLY */
   uploadSupplyFile() {
     const orgId = Number(this.cookieService.getUserMainOrganizationId());
     this.fileUploadService.sendSupplyPdfToBackEnd(this.file, orgId).subscribe({
@@ -314,7 +326,7 @@ export class DepositHomeComponent implements OnInit {
   }
   onCloseSupplyTableTemplate() {
     this.supplyTableTemplateRef.close();
-    this.router.navigateByUrl('deposit-home');
+    this.router.navigateByUrl('deposit-home');// reload page??
   }
 
   supplyOrganizationApplicantForm = this.formBuilder.group({
@@ -428,6 +440,7 @@ export class DepositHomeComponent implements OnInit {
   }
 
   findedSupplyId!: number;
+  /**Supply update organization applicant template */
   private updateSuplyOrganizationApplicantTemplateRef!: MatDialogRef<DialogTemplateComponent>
   openUpdateSupplyOrganizationApplicantTemplate(template: TemplateRef<any>, supplyId: number) {
     this.getSupplybyId(supplyId);
@@ -489,6 +502,7 @@ export class DepositHomeComponent implements OnInit {
     this.supplyItemListMatDialogRef.close();
   }
 
+  /**Supply items list template */
   private supplyItemListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogSuppliesItemList(template: any, supplyId: number) {
     this.getSupplyItems(supplyId);
@@ -582,7 +596,7 @@ export class DepositHomeComponent implements OnInit {
     });
   }
 
-  /**DEPOSIT */
+  /**DEPOSIT SECTION */
   depositControlDtos: DepositControlDto[] = [];
 
   getDepositControlsByDeposit() {
@@ -590,6 +604,8 @@ export class DepositHomeComponent implements OnInit {
     this.depositControlService.findAllDepositControlsByDeposit(depoId).subscribe({
       next: (depositData) => {
         this.depositControlDtos = depositData;
+        this.depositControlFilters = this.depositControlDtos;
+        this.totalDepositControls = depositData.length;
       },
       error: (errorData) => {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
@@ -600,6 +616,8 @@ export class DepositHomeComponent implements OnInit {
   onCloseDepositControlListTemplate() {
     this.depositControlListMatDialogRef.close();
   }
+
+   /**Deposit items list template */
   private depositControlListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDepositControlListTemplate(template: any): void {
     this.getDepositControlsByDeposit();
@@ -623,7 +641,7 @@ export class DepositHomeComponent implements OnInit {
     this.depositCreateMatDialogRef.close();
 
   }
-
+  /**Deposit creation template */
   private depositCreateMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogDepositCreation(template: any) {
 
@@ -678,6 +696,7 @@ export class DepositHomeComponent implements OnInit {
 
   }
 
+  /**Deposit Selection template */
   private depositSelectionMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   openDialogDepositSelection(template: any) {
     this.getAllDepositsByOrganization();
@@ -854,6 +873,30 @@ export class DepositHomeComponent implements OnInit {
       }
     });
   }
+
+  findByExampleFormBuilder = this.formBuilder.group({
+    example: ['', Validators.required],
+    //filter: ['']
+  });
+
+  get example() {
+    return this.findByExampleFormBuilder.controls.example;
+  }
+
+
+depositControlFilters:DepositControlDto[]=[];
+depositControlTemp!:DepositControlDto;
+filterDepositControls(filter:string){
+  if(!filter){
+    this.depositControlFilters =this.depositControlDtos;
+ return;
+ 
+  }
+  this.depositControlFilters = this.depositControlDtos.filter(control =>
+    control.itemDescription.toLowerCase().includes(filter.toLowerCase())
+  );
+ 
+}
 
   get name() {
     return this.depositFormbuilder.controls.name;
