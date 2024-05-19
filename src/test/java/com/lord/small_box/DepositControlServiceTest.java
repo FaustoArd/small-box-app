@@ -1395,7 +1395,7 @@ public class DepositControlServiceTest {
 	@Order(23)
 	void checkOrderItemDescriptions() {
 		Organization organization = organizationService.findById(2L);
-		PurchaseOrder purchaseOrder = purchaseOrderRepository.findByOrderNumberAndOrganization(365, organization).get();
+		PurchaseOrder purchaseOrder = purchaseOrderRepository.findByOrderNumberAndExerciseYearAndOrganization(365,2024, organization).get();
 		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(purchaseOrder);
 		items.forEach(item -> System.out.println(item.getItemDetail()));
 	}
@@ -1403,7 +1403,7 @@ public class DepositControlServiceTest {
 	@Order(24)
 	void checkSupplyItemDescriptions() {
 		Organization organization = organizationService.findById(2L);
-	Supply supply = supplyRepository.findBySupplyNumberAndMainOrganization(525, organization).get();
+	Supply supply = supplyRepository.findBySupplyNumberAndExerciseYearAndMainOrganization(525,2024, organization).get();
 		List<SupplyItem> items =supplyItemRepository.findAllBySupply(supply);
 		items.forEach(item -> System.out.println(item.getItemDetail()));
 	}

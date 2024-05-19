@@ -67,13 +67,11 @@ public class SupplyServiceImpl implements SupplyService {
 		log.info("Collect supply from text");
 		SupplyDto supplyDto = textToSupply.textToSupply(text, organizationService);
 		Organization org = organizationService.findById(organizationId);
-		Optional<Supply> check = supplyRepository.findBySupplyNumberAndMainOrganization(supplyDto.getSupplyNumber(),
-				org);
+		Optional<Supply> check = supplyRepository.findBySupplyNumberAndExerciseYearAndMainOrganization(
+				supplyDto.getSupplyNumber(), supplyDto.getExerciseYear(), org);
 		if (check.isPresent()) {
-			if (check.get().getExerciseYear() == supplyDto.getExerciseYear()) {
-				throw new DuplicateItemException("El suministro numero: " + supplyDto.getSupplyNumber() + "-"
-						+ supplyDto.getExerciseYear() + " ya existe.");
-			}
+			throw new DuplicateItemException("El suministro numero: " + supplyDto.getSupplyNumber() + "-"
+					+ supplyDto.getExerciseYear() + " ya existe.");
 		}
 
 		Supply supply = SupplyMapper.INSTANCE.dtoToSupply(supplyDto);

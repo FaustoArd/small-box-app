@@ -1437,8 +1437,8 @@ public class IntegrationTest {
 		Organization organization = organizationRepository.findById(3l).get();
 		assertThat(organization.getId()).isEqualTo(3l);
 		
-		Supply supply551 = supplyRepository.findBySupplyNumberAndMainOrganization(551,organization).get();
-		Supply supply1043 = supplyRepository.findBySupplyNumberAndMainOrganization(1043,organization).get();
+		Supply supply551 = supplyRepository.findBySupplyNumberAndExerciseYearAndMainOrganization(551,2024,organization).get();
+		Supply supply1043 = supplyRepository.findBySupplyNumberAndExerciseYearAndMainOrganization(1043,2023,organization).get();
 		assertThat(supply551.getSupplyNumber()).isEqualTo(551);
 		assertThat(supply551.getApplicantOrganization().getId()).isEqualTo(1l);
 		assertThat(supply1043.getApplicantOrganization().getId()).isEqualTo(1l);
