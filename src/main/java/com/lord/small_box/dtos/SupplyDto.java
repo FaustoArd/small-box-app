@@ -17,6 +17,8 @@ public class SupplyDto {
 	private String jurisdiction;
 	
 	private int supplyNumber;
+	
+	private int exerciseYear;
 
 	private List<SupplyItemDto> supplyItems;
 	

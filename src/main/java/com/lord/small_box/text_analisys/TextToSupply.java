@@ -35,6 +35,7 @@ public class TextToSupply {
 		SupplyDto supplyDto = new SupplyDto();
 		String[] arrTextSplitN = text.split("\\n");
 		supplyDto.setSupplyNumber(getSupplyNumber(arrTextSplitN));
+		supplyDto.setExerciseYear(getExcerciseYear(arrTextSplitN));
 		supplyDto.setDate(getDate(text));
 		supplyDto.setSupplyItems(getSupplyItemList(arrTextSplitN));
 		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
@@ -80,6 +81,14 @@ public class TextToSupply {
 		}catch(NumberFormatException ex) {
 			throw new TextFileInvalidException("No se encontro el numero de suministro, El archivo no es compatible con un suministro.",ex);
 			}
+	}
+	
+	private int getExcerciseYear(String[] arrText) {
+		
+		String exerciseYear = Stream.of(arrText)
+				.filter(line -> line.toLowerCase().contains("ejercicio:")).findFirst()
+				.map(line -> line.substring(line.lastIndexOf(":")+1, line.length())).get().trim();
+		return Integer.parseInt(exerciseYear);
 	}
 
 	private final String strDateV2 = "^(?=.*([0-9]{2})*([/]{1})){2}([0-9]{2,4})";
@@ -167,8 +176,8 @@ public class TextToSupply {
 	private String getItemDetails(String[] arrItems) {
 		String itemDetail = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1).map(m -> m.replaceAll("[0-9\\W]", ""))
 				.collect(Collectors.joining(" "));
-		if (itemDetail.startsWith("UNO-")) {
-			itemDetail = itemDetail.substring(itemDetail.indexOf("-") + 1, itemDetail.length() - 1);
+		if (itemDetail.startsWith("UNO")) {
+			itemDetail = itemDetail.substring(itemDetail.indexOf(" ") + 1, itemDetail.length());
 		}
 		return itemDetail;
 	}

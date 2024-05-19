@@ -12,6 +12,11 @@ body{
 
     height: 90%;
 }
+#table-div-orders{
+    text-align: center;
+
+    height: 38rem;
+}
 #purchaseOrders{
     height: 40rem;
     text-align: center;

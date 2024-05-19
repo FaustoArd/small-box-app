@@ -1,5 +1,6 @@
 package com.lord.small_box;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,6 +30,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -46,6 +49,7 @@ import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.services.OrganizationService;
+import com.lord.small_box.text_analisys.TextToSupply;
 import com.lord.small_box.utils.PdfToStringUtils;
 
 @SpringBootTest
@@ -62,6 +66,8 @@ public class PdfTextToSupplyTest {
 	private OrganizationResponsibleRepository organizationResponsibleRepository;
 
 	private List<String> measureUnits = List.of("cada", "kilogramo", "unidad");
+	
+	private static final Logger log = LoggerFactory.getLogger(TextToSupply.class);
 
 	private String text;
 	private List<String> supplyPdfList;
@@ -186,6 +192,7 @@ public class PdfTextToSupplyTest {
 		arrTextSplitN = text.split("\\n");
 		SupplyDto supplyDto = new SupplyDto();
 		supplyDto.setSupplyNumber(getSupplyNumber(arrTextSplitN));
+		supplyDto.setExerciseYear(getExcerciseYear(arrTextSplitN));
 		supplyDto.setDate(getDate(text));
 		supplyDto.setSupplyItems(getSupplyItemList(arrTextSplitN));
 		supplyDto.setEstimatedTotalCost(getEstimatedTotal(arrTextSplitN));
@@ -205,6 +212,8 @@ public class PdfTextToSupplyTest {
 		supplyDto.getSupplyItems().forEach(e -> System.out.println(e.getCode()));
 		supplyDto.getSupplyItems().forEach(e -> System.out.println("quant: " + e.getQuantity()));
 		supplyDto.getSupplyItems().forEach(e -> System.out.println("measure unit: " + e.getMeasureUnit()));
+		
+		assertThat(supplyDto.getExerciseYear()).isEqualTo(2024);
 		/*
 		 * assertEquals(supplyDto.getSupplyItems().get(0).getMeasureUnit(),
 		 * "KILOGRAMO");
@@ -221,7 +230,7 @@ public class PdfTextToSupplyTest {
 	}
 
 	private String getApplicant(String[] arrText) {
-
+		log.info("Text to Supply Get applicant");
 		String applicant = Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst()
 				.map(m -> m.substring(m.indexOf("O") + 1, m.lastIndexOf("M") - 1).replace("Secretaría de", "")
 						.replace("Dirección de", "").replace("Subsecretaría de", "").trim())
@@ -231,7 +240,7 @@ public class PdfTextToSupplyTest {
 	}
 
 	private BigDecimal getEstimatedTotal(String[] arrText) {
-
+		log.info("Text to Supply Get Estimated total");
 		return new BigDecimal(Stream.of(arrText).filter(f -> f.toLowerCase().contains("total")).findFirst().get()
 				.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".")
 				.strip());
@@ -240,20 +249,30 @@ public class PdfTextToSupplyTest {
 	private final String supplyNumberTitleRegex = "(SOLICITUD DE PEDIDO Nº)";
 
 	private int getSupplyNumber(String[] arrText) {
+		log.info("Text to Supply Get supply number");
 
 		Pattern p = Pattern.compile(supplyNumberTitleRegex);
 		String number = Stream.of(arrText).filter(f -> p.matcher(f).find()).map(m -> m.substring(24, 28))
 				.map(m -> m.replaceAll("[a-zA-Z\\D]", "")).collect(Collectors.joining(""));
+
 		try {
 			return Integer.parseInt(number);
-		} catch (NumberFormatException ex) {
-			throw new TextFileInvalidException("El archivo no es compatible con un suministro.", ex);
-		}
+		}catch(NumberFormatException ex) {
+			throw new TextFileInvalidException("No se encontro el numero de suministro, El archivo no es compatible con un suministro.",ex);
+			}
+	}
+	
+	private int getExcerciseYear(String[] arrText) {
+		String exerciseYear = Stream.of(arrText)
+				.filter(line -> line.toLowerCase().contains("ejercicio:")).findFirst()
+				.map(line -> line.substring(line.lastIndexOf(":")+1, line.length())).get().trim();
+		return Integer.parseInt(exerciseYear);
 	}
 
 	private final String strDateV2 = "^(?=.*([0-9]{2})*([/]{1})){2}([0-9]{2,4})";
 
 	private Calendar getDate(String text) {
+		log.info("Text to Supply Get date");
 
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -281,7 +300,7 @@ public class PdfTextToSupplyTest {
 	Pattern pUnitPrice = Pattern.compile(itemUnitPrice);
 
 	private List<SupplyItemDto> getSupplyItemList(String[] arrText) {
-
+		log.info("Text to Supply Get supply items");
 		List<String> strItems = Stream.of(arrText).filter(f -> pCode.matcher(f).find()).collect(Collectors.toList());
 		return strItems.stream().map(item -> {
 			SupplyItemDto supplyItemDto = new SupplyItemDto();
@@ -333,8 +352,12 @@ public class PdfTextToSupplyTest {
 	}
 
 	private String getItemDetails(String[] arrItems) {
-		return Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1).map(m -> m.replaceAll("[0-9\\W]", ""))
-				.collect(Collectors.joining("-"));
+		String itemDetail = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1).map(m -> m.replaceAll("[0-9\\W]", ""))
+				.collect(Collectors.joining(" "));
+		if (itemDetail.startsWith("UNO")) {
+			itemDetail = itemDetail.substring(itemDetail.indexOf(" ") + 1, itemDetail.length());
+		}
+		return itemDetail;
 	}
 
 	private BigDecimal getItemUnitCost(String[] arrItems) {
@@ -345,4 +368,5 @@ public class PdfTextToSupplyTest {
 	private BigDecimal getItemTotalEstimatedCost(String item) {
 		return new BigDecimal(item.substring(item.lastIndexOf("$") + 1).replace(".", "").replace(",", ".").strip());
 	}
+
 }

@@ -69,10 +69,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService{
 		Optional<PurchaseOrder> checkDuplicate = purchaseOrderRepository
 				.findByOrderNumberAndOrganization(purchaseOrderDto.getOrderNumber(),org);
 		if (checkDuplicate.isPresent()) {
-			if(checkDuplicate.get().getDate().get(Calendar.YEAR)==purchaseOrderDto.getDate().get(Calendar.YEAR)) {
+			if(checkDuplicate.get().getExerciseYear()==purchaseOrderDto.getExerciseYear()) {
 				throw new DuplicateItemException(
 						"La orden de compra con el numero: " + purchaseOrderDto.getOrderNumber()+ "-"
-				+ checkDuplicate.get().getDate().get(Calendar.YEAR) +" ya fue cargada.");
+				+ purchaseOrderDto.getExerciseYear() +" ya fue cargada.");
 			}
 		
 		}

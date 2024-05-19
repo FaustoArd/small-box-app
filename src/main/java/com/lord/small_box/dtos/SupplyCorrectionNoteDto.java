@@ -14,6 +14,8 @@ public class SupplyCorrectionNoteDto {
 	
 	private int supplyNumber;
 	
+	private int supplyExcerciseYear;
+	
 	private String from;
 	
 	private String to;

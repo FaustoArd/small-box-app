@@ -12,6 +12,8 @@ public class PurchaseOrderDto {
 	private Long id;
 
 	private int orderNumber;
+	
+	private int exerciseYear;
 
 	private String jurisdiction;
 

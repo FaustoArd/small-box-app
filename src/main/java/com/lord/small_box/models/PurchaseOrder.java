@@ -36,6 +36,8 @@ public class PurchaseOrder {
 
 	private String jurisdiction;
 	
+	private int exerciseYear;
+	
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="organization_id",referencedColumnName = "id")
 	private Organization organization;

@@ -70,9 +70,9 @@ public class SupplyServiceImpl implements SupplyService {
 		Optional<Supply> check = supplyRepository.findBySupplyNumberAndMainOrganization(supplyDto.getSupplyNumber(),
 				org);
 		if (check.isPresent()) {
-			if (check.get().getDate().get(Calendar.YEAR) == supplyDto.getDate().get(Calendar.YEAR)) {
-				throw new DuplicateItemException("El suministro numero: " + check.get().getSupplyNumber() + "-"
-						+ check.get().getDate().get(Calendar.YEAR) + " ya existe.");
+			if (check.get().getExerciseYear() == supplyDto.getExerciseYear()) {
+				throw new DuplicateItemException("El suministro numero: " + supplyDto.getSupplyNumber() + "-"
+						+ supplyDto.getExerciseYear() + " ya existe.");
 			}
 		}
 
@@ -113,6 +113,7 @@ public class SupplyServiceImpl implements SupplyService {
 		SupplyCorrectionNoteDto supplyCorrectionNote = new SupplyCorrectionNoteDto();
 		supplyCorrectionNote.setSupplyDate(supply.getDate());
 		supplyCorrectionNote.setSupplyNumber(supply.getSupplyNumber());
+		supplyCorrectionNote.setSupplyExcerciseYear(supply.getExerciseYear());
 		supplyCorrectionNote.setFrom(org.getOrganizationName());
 		supplyCorrectionNote.setTo(organizationApplicantName);
 		supplyCorrectionNote.setSupplyReport(reportDtos);

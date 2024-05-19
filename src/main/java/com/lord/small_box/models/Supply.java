@@ -41,6 +41,8 @@ public class Supply {
 	private String jurisdiction;
 	
 	private int supplyNumber;
+	
+	private int exerciseYear;
 
 	private BigDecimal estimatedTotalCost;
 	

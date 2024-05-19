@@ -21,6 +21,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -39,6 +41,7 @@ import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.repositories.OrganizationRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.services.OrganizationService;
+import com.lord.small_box.text_analisys.TextToPurchaseOrder;
 import com.lord.small_box.utils.PdfToStringUtils;
 
 @SpringBootTest
@@ -53,6 +56,8 @@ public class PdfTextToPurchaseOrderTest {
 	private String[] arrTextSplitPageEnd;
 	private String[] arrTextSplitN;
 
+	private static final Logger log = LoggerFactory.getLogger(PdfTextToPurchaseOrderTest.class);
+	
 	@Autowired
 	private OrganizationRepository organizationRepository;
 
@@ -136,13 +141,15 @@ public class PdfTextToPurchaseOrderTest {
 
 	@Test
 	void mustReturnPurchaseOrder() throws Exception {
-		MockMultipartFile file = new MockMultipartFile("file", "oc-760.pdf", "application/pdf",
-				new ClassPathResource("\\pdf-test\\oc-760.pdf").getContentAsByteArray());
+		MockMultipartFile file = new MockMultipartFile("file", "oc-365.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-365.pdf").getContentAsByteArray());
 		String text = pdfToStringUtils.pdfToString(file.getBytes());
+		System.out.println(text);
 		arrTextSplitPageEnd = text.split("PageEnd");
 		arrTextSplitN = text.split("\\n");
 		PurchaseOrderDto purchaseOrderDto = new PurchaseOrderDto();
 		purchaseOrderDto.setDate(getDate(text));
+		purchaseOrderDto.setExerciseYear(getExcerciseYear(arrTextSplitN));
 		purchaseOrderDto.setOrderNumber(getPurchaseOrderNumber(arrTextSplitN));
 		purchaseOrderDto.setFinancingSource(getFinancingSource(arrTextSplitN));
 		purchaseOrderDto.setItems(getItems(arrTextSplitN));
@@ -158,16 +165,36 @@ public class PdfTextToPurchaseOrderTest {
 		System.err.println("Executer Unit: " + purchaseOrderDto.getExecuterUnit());
 		System.err.println("Dependency: " + purchaseOrderDto.getDependency());
 		purchaseOrderDto.getItems().forEach(e -> System.out.println(e.getQuantity()));
+		assertThat(purchaseOrderDto.getExerciseYear()).isEqualTo(2024);
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal()).isGreaterThan(new BigDecimal(0));
 		assertThat(purchaseOrderDto.getItems().stream().mapToDouble(d -> d.getTotalEstimatedCost().doubleValue()).sum())
 				.isEqualTo(purchaseOrderDto.getPurchaseOrderTotal().doubleValue());
 
 	}
 
+
+private int getPurchaseOrderNumber(String[] arrText) {
+		log.info("Text to purchase order Get purchase order number");
+		String orderNumber =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().orElseThrow(()-> new TextFileInvalidException("No se encontro el numero de orden, archivo no compatible."));
+		orderNumber = orderNumber.replaceAll("[\\D]", "").strip();
+		try {
+			return Integer.parseInt(orderNumber);
+		}catch (NumberFormatException ex) {
+			throw new TextFileInvalidException("No se encontro el numero de orden, archivo no compatible.",ex.getCause());
+		}
+	}
+
+	private int getExcerciseYear(String[] arrText) {
+	String exerciseYear = Stream.of(arrText)
+			.filter(line -> line.toLowerCase().contains("ejercicio:")).findFirst()
+			.map(line -> line.substring(line.lastIndexOf(":")+1, line.length())).get().trim();
+	return Integer.parseInt(exerciseYear);
+}
+
 	private final String executerUnitRegex = "^(?=.*(unidad ejecutora))";
 
 	private String getExecuterUnit(String[] arrText) {
-
+		log.info("Text to purchase order Get Executer unit");
 		Pattern pExecUnit = Pattern.compile(executerUnitRegex, Pattern.CASE_INSENSITIVE);
 		String executerInut = Stream.of(arrText).filter(f -> pExecUnit.matcher(f).find())
 				.map(m -> m.substring(m.indexOf(":") + 1, m.lastIndexOf(":") - 5)).findFirst().get()
@@ -179,7 +206,7 @@ public class PdfTextToPurchaseOrderTest {
 	private final String financingSourceRegex = "(?=.*(fuente de financiamiento))";
 
 	private String getFinancingSource(String[] arrText) {
-
+		log.info("Text to purchase order Get Financing source");
 		Pattern pFinancingSource = Pattern.compile(financingSourceRegex, Pattern.CASE_INSENSITIVE);
 		String financingSourceLine = Stream.of(arrText).filter(f -> pFinancingSource.matcher(f).find()).findFirst()
 				.orElse("No encontrado");
@@ -191,25 +218,23 @@ public class PdfTextToPurchaseOrderTest {
 	private final String dependencyRegex = "^(?=.*(dependencia))";
 
 	private String getDependency(String[] arrText) {
-
+		log.info("Text to purchase order Get Dependency");
 		Pattern pDependency = Pattern.compile(dependencyRegex, Pattern.CASE_INSENSITIVE);
 		String dependency = Stream.of(arrText).filter(f -> pDependency.matcher(f).find())
 				.map(m -> m.substring(m.trim().indexOf(":") + 1, m.length() - 1)).findFirst().get().trim();
 		return dependency;
 	}
 
-	private int getPurchaseOrderNumber(String[] arrText) {
-
-		String orderNumber =  Stream.of(arrText).filter(f -> f.contains("MUNICIPIO")).findFirst().get().replaceAll("[\\D]", "")
-				.strip();
-		return Integer.parseInt(orderNumber); 
-	}
+	
 
 	private BigDecimal getPurchaseTotal(String[] arrText) {
-
-		return new BigDecimal(Stream.of(arrText).filter(f -> f.toLowerCase().contains("total:")).findFirst().get()
-				.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".")
-				.strip());
+		log.info("Text to purchase order Get purchase total");
+		
+		String purchaseTotal = Stream.of(arrText).filter(f -> f.toLowerCase().contains("total:")).findFirst()
+				.orElseThrow(()-> new TextFileInvalidException("No se encontro el total, archivo no compatible."));
+		purchaseTotal = purchaseTotal.replaceAll("[a-zA-Z]", "").replace(":", "").replace("$", "").replace(".", "").replace(",", ".").strip();
+				
+		return new BigDecimal(purchaseTotal);
 	}
 
 	// REGEX to find items data.
@@ -224,14 +249,14 @@ public class PdfTextToPurchaseOrderTest {
 
 	// This method find all the purchase order items.
 	private List<PurchaseOrderItemDto> getItems(String[] arrText) {
-
+		log.info("Text to purchase order Get Items");
+		
 		// This list contains all lines that match the item code REGEX
 		List<String> itemsText = Stream.of(arrText).filter(f -> pItemCode.matcher(f).find())
 				.collect(Collectors.toList());
 
 		// Iterate the list and save each item element in a new PurchaseOrderItem
 		// object.
-
 		return itemsText.stream().map(item -> {
 			PurchaseOrderItemDto purchaseOrderItem = new PurchaseOrderItemDto();
 			String[] arrItems = item.split(" ");
@@ -247,30 +272,25 @@ public class PdfTextToPurchaseOrderTest {
 	}
 
 	private String getItemCode(String[] arrItems) {
-
+		log.info("Text to purchase order get item code");
 		return Stream.of(arrItems).filter(f -> pItemCode.matcher(f).find()).findFirst().get().strip();
 	}
 
-	private int getItemQuantity(String[] arrItems) {
-
+	private int getItemQuantity(String[] arrItems){
+		log.info("Text to purchase order get item quantity");
 		String strQuantity = Stream.of(arrItems).filter(f -> pItemQuantity.matcher(f).find())
 				.map(m -> m.substring(0, m.indexOf(",")).trim()).findFirst().get();
-		if (strQuantity.contains("."))
-			;
+		if(strQuantity.contains("."));
 		strQuantity = strQuantity.replace(".", "");
 		int quantity = Integer.parseInt(strQuantity);
-		System.out.println("Quantitry: " + quantity);
-		return quantity;
-
-		/*
-		 * return Integer.parseInt(Stream.of(arrItems).filter(f ->
-		 * pItemQuantity.matcher(f).find()) .map(m -> m.substring(0,
-		 * m.indexOf(","))).findFirst().get());
-		 */
+	return quantity;
+		
+		/*return Integer.parseInt(Stream.of(arrItems).filter(f -> pItemQuantity.matcher(f).find())
+				.map(m -> m.substring(0, m.indexOf(","))).findFirst().get());*/
 	}
 
 	private String getItemMeasureUnit(String[] arrItems) {
-
+		log.info("Text to purchase order get item measure unit");
 		String measureUnitResult = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).findFirst().get();
 		if (measureUnitResult.equalsIgnoreCase("cada")) {
 			measureUnitResult = measureUnitResult + "-UNO";
@@ -279,61 +299,49 @@ public class PdfTextToPurchaseOrderTest {
 	}
 
 	private String getItemProgramaticCat(String[] arrItems) {
-
+		log.info("Text to purchase order get item programatic cat");
 		return Stream.of(arrItems).filter(f -> pProgCat.matcher(f).find()).findFirst().get().strip();
 	}
 
 	private String getItemDetail(String[] arrItems) {
-
+		log.info("Text to purchase order get item detail");
 		String itemDetail = Stream.of(arrItems).filter(f -> f.matches("([a-zA-Z]*)")).skip(1)
-				.map(m -> m.replaceAll("[0-9\\W]", "")).collect(Collectors.joining("-"));
-		if (itemDetail.startsWith("UNO-")) {
-			itemDetail = itemDetail.substring(itemDetail.indexOf("-") + 1, itemDetail.length() - 1);
+				.collect(Collectors.joining(" "));
+		if (itemDetail.startsWith("UNO")) {
+			itemDetail = itemDetail.substring(itemDetail.indexOf(" ") + 1, itemDetail.length());
 		}
 		return itemDetail;
 	}
 
 	private BigDecimal getUnitCost(String[] arrItems) {
-
+		log.info("Text to purchase order get item unit cost");
 		return new BigDecimal(Stream.of(arrItems).filter(f -> pUnitPrice.matcher(f).find())
 				.map(m -> m.replace(".", "").replace(",", ".")).findFirst().get());
 	}
 
 	private BigDecimal getItemTotalCost(String item) {
-
+		log.info("Text to purchase order get item total cost");
 		return new BigDecimal(item.substring(item.lastIndexOf("$") + 1).replace(".", "").replace(",", ".").strip());
 	}
 
 	private final String strDateV2 = "^(?=.*(?=.*[0-9]{2})*(?=.*[/]{1})){2}(?=.*[0-9]{2,4})";
 
-	private final String strDateFinder = "^(?=.*(fecha))";
-
 	private Calendar getDate(String text) {
-		Pattern pDateFinder = Pattern.compile(strDateFinder, Pattern.CASE_INSENSITIVE);
+		log.info("Text to purchase order get date");
 		Pattern pDate = Pattern.compile(strDateV2);
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		String date = Stream.of(text.split(" "))
-				.filter(f -> pDate.matcher(f).find())
+		String date = Stream.of(text.split(" ")).filter(f -> pDate.matcher(f).find())
 				.skip(1)
-				.findFirst().orElseThrow(()-> new TextFileInvalidException("El archivo no es compatible con una orden de compra"));
-				date = date.replaceAll("[a-zA-Z]", "").replace("/", "-").strip();
-		/*
-		 * .map(m -> m.substring(m.indexOf(":")+1,m.length()-1).replace("/",
-		 * "-").strip()).get();
-		 */
-		System.err.println("New Date: " + date);
-		/*
-		 * String date = Stream.of(text).filter(f ->
-		 * pDate.matcher(f).find()).findFirst().get().replaceAll("[a-zA-Z]", "")
-		 * .replace("/", "-").strip();
-		 */
+				.findFirst()
+				.orElseThrow(()-> new TextFileInvalidException("No se encontro la fecha, archivo no compatible."));
+		date = date.replaceAll("[a-zA-Z]", "").replace("/", "-").strip();
 		try {
 			cal.setTime(sdf.parse(date));
 
 			return cal;
-		} catch (ParseException ex) {
-			throw new TextFileInvalidException("Error al parsear la fecha.",ex);
+		} catch (ParseException e) {
+			throw new RuntimeException("Error al parsear la fecha");
 		}
 	}
 }

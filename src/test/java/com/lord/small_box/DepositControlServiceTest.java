@@ -54,6 +54,7 @@ import com.lord.small_box.models.ExcelItem;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.OrganizationResponsible;
 import com.lord.small_box.models.PurchaseOrder;
+import com.lord.small_box.models.PurchaseOrderItem;
 import com.lord.small_box.models.Supply;
 import com.lord.small_box.models.SupplyItem;
 import com.lord.small_box.repositories.BigBagItemRepository;
@@ -64,6 +65,7 @@ import com.lord.small_box.repositories.ExcelItemRepository;
 import com.lord.small_box.repositories.OrganizationResponsibleRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
+import com.lord.small_box.repositories.SupplyItemRepository;
 import com.lord.small_box.repositories.SupplyRepository;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.PurchaseOrderService;
@@ -110,6 +112,9 @@ public class DepositControlServiceTest {
 	
 	@Autowired
 	private SupplyRepository supplyRepository;
+	
+	@Autowired
+	private SupplyItemRepository supplyItemRepository;
 
 	private long depositAvellanedaId;
 
@@ -240,12 +245,14 @@ public class DepositControlServiceTest {
 		assertEquals(purchaseOrderDto.getItems().get(7).getQuantity(), 1);
 		assertThat(purchaseOrderDto.getItems().get(7).getItemDetail().length()).isGreaterThan(4);
 		assertEquals(purchaseOrderDto.getOrderNumber(), 365);
+		assertThat(purchaseOrderDto.getItems().get(7).getItemDetail()).startsWith("DULCE");
+		assertThat(purchaseOrderDto.getItems().get(7).getItemDetail()).contains("DULCE TIPO DE MEMBRILLO");
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		cal.set(2024, 1, 18);
 		cal2.set(2024, 1, 20);
 		assertThat(purchaseOrderDto.getDate()).isBetween(cal, cal2);
-		
+		assertThat(purchaseOrderDto.getExerciseYear()).isEqualTo(2024);
 		
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
@@ -390,7 +397,7 @@ public class DepositControlServiceTest {
 		cal.set(2024, 1, 21);
 		cal2.set(2024, 1, 23);
 		assertThat(purchaseOrderDto.getDate()).isBetween(cal, cal2);
-		
+		assertThat(purchaseOrderDto.getExerciseYear()).isEqualTo(2024);
 		
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
@@ -559,7 +566,7 @@ public class DepositControlServiceTest {
 				.get().getItemDetail().length()).isGreaterThan(3);
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00454.0003"))
 				.findFirst().get().getUnitCost().doubleValue(), 2.440, 41000);
-
+		assertThat(purchaseOrderDto.getExerciseYear()).isEqualTo(2024);
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
 				.stream().mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -716,7 +723,8 @@ public class DepositControlServiceTest {
 				.get().getItemDetail().length()).isGreaterThan(3);
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00610.0001"))
 				.findFirst().get().getUnitCost().doubleValue(), 2050.00000);
-
+		
+		assertThat(purchaseOrderDto.getExerciseYear()).isEqualTo(2024);
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
 				.stream().mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -829,7 +837,8 @@ public class DepositControlServiceTest {
 				.get().getItemDetail().length()).isGreaterThan(3);
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.9.3.05921.0004"))
 				.findFirst().get().getUnitCost().doubleValue(), 870.75000);
-
+		
+		assertThat(purchaseOrderDto.getExerciseYear()).isEqualTo(2024);
 		// Assert Purchase Order total cost equals sum of all items total cost
 		assertThat(purchaseOrderDto.getPurchaseOrderTotal().doubleValue()).isEqualTo(purchaseOrderDto.getItems()
 				.stream().mapToDouble(totalItem -> totalItem.getTotalEstimatedCost().doubleValue()).sum());
@@ -900,6 +909,7 @@ public class DepositControlServiceTest {
 		cal2.set(2024, 1, 7);
 		assertThat(dto.getId()).isNotNull();
 		assertThat(dto.getDate()).isBetween(cal, cal2);
+		assertThat(dto.getExerciseYear()).isEqualTo(2024);
 		assertEquals(dto.getEstimatedTotalCost().doubleValue(), new BigDecimal(43697001.00).doubleValue());
 		assertThat(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("5.1.4.03451.0001"))
 				.findFirst().get().getProgramaticCat()).isEqualTo("01.10.00");
@@ -972,7 +982,8 @@ public class DepositControlServiceTest {
 		assertThat(dto.getId()).isNotNull();
 		assertThat(dto.getDate()).isBetween(cal, cal2);
 		assertEquals(dto.getEstimatedTotalCost().doubleValue(), new BigDecimal(1305266.71).doubleValue());
-
+		assertThat(dto.getExerciseYear()).isEqualTo(2023);
+		
 		assertThat(dto.getSupplyItems().get(0).getCode()).isEqualTo("3.3.1.07030.0001");
 		assertThat(dto.getSupplyItems().get(0).getProgramaticCat()).isEqualTo("39.00.00");
 		System.err.println("sum 223 quantity:" + dto.getSupplyItems().get(0).getQuantity());
@@ -1016,6 +1027,7 @@ public class DepositControlServiceTest {
 		assertEquals(dto.getSupplyNumber(), 177);
 		assertThat(dto.getDate()).isBetween(cal, cal2);
 		assertEquals(dto.getEstimatedTotalCost().doubleValue(), new BigDecimal(27104000.00).doubleValue());
+		assertThat(dto.getExerciseYear()).isEqualTo(2024);
 		assertThat(dto.getSupplyItems().get(0).getCode()).isEqualTo("5.1.4.07522.0001");
 		assertThat(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("5.1.4.07522.0001")).findFirst().get()
 				.getQuantity()).isEqualTo(50);
@@ -1099,6 +1111,7 @@ public class DepositControlServiceTest {
 		cal2.set(2023, 2, 9);
 		assertThat(dto.getId()).isNotNull();
 		assertEquals(dto.getSupplyNumber(), 1043);
+		assertThat(dto.getExerciseYear()).isEqualTo(2023);
 		assertThat(dto.getDate()).isBetween(cal, cal2);
 		assertEquals(dto.getEstimatedTotalCost().doubleValue(), new BigDecimal(5500000.00).doubleValue());
 		assertThat(dto.getSupplyItems().get(0).getCode()).isEqualTo("5.1.4.07776.0001");
@@ -1135,7 +1148,7 @@ public class DepositControlServiceTest {
 		assertEquals(dto.getSupplyNumber(), 100);
 		assertThat(dto.getDate()).isBetween(cal, cal2);
 		assertEquals(dto.getEstimatedTotalCost().doubleValue(), new BigDecimal(231000.00).doubleValue());
-
+		assertThat(dto.getExerciseYear()).isEqualTo(2024);
 		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get()
 				.getProgramaticCat(), "35.04.00");
 		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.3.4.05032.0002")).findFirst().get()
@@ -1172,7 +1185,7 @@ public class DepositControlServiceTest {
 		assertEquals(dto.getSupplyNumber(), 525);
 		assertThat(dto.getDate()).isBetween(cal, cal2);
 		assertEquals(dto.getEstimatedTotalCost().doubleValue(), new BigDecimal(38423400.00).doubleValue());
-
+		assertThat(dto.getExerciseYear()).isEqualTo(2024);
 		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get()
 				.getProgramaticCat(), "01.01.00");
 		assertEquals(dto.getSupplyItems().stream().filter(f -> f.getCode().equals("2.2.2.02859.0011")).findFirst().get()
@@ -1254,21 +1267,16 @@ public class DepositControlServiceTest {
 		
 		List<ExcelItemDto> excelCandidates = excelToListUtils.excelDataToDeposit(file);
 		
-		  excelCandidates.forEach(e -> System.out.println("[" + e.getExcelItemId() +
-		 "] " + "[" + e.getItemDescription() + "] " + "[" + e.getItemMeasureUnit() +
-		 "] " + "[" + e.getItemQuantity() + "]"));
+		
 		 
 		List<DepositItemComparatorDto> comparators = depositControlService
 				.getExcelToPuchaseOrderComparator(excelCandidates, admYDespachoId);
 		List<ExcelItem> dbExcelItems = excelItemRepository.findAll();
-		// comparators.forEach(e -> System.out.println("Candidates: " +
-		 //e.getExcelItemDto().getExcelItemId()+" " +
-		// e.getExcelItemDto().getItemDescription()));
-		/*comparators.stream().forEach(e -> {
-			List<PurchaseOrderItemCandidateDto> dtos = e.getPurchaseOrderItemCandidateDtos();
-			dtos.forEach(item -> System.out
-					.println("orderID: " + item.getOrderId() + "description: " + item.getItemDetail()));
-		});*/
+		
+		dbExcelItems.forEach(e -> System.out.println("[" + e.getId() +
+					 "] " + "[" + e.getItemDescription() + "] " + "[" + e.getItemMeasureUnit() +
+					 "] " + "[" + e.getItemQuantity() + "]"));
+	
 	}
 	@Test
 	@DisplayName("CARGAR ORDEN DE COMPRA N 360_24")
@@ -1280,7 +1288,7 @@ public class DepositControlServiceTest {
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 360);
-
+		assertThat(purchaseOrderDto.getExerciseYear()).isEqualTo(2024);
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("5.1.4.05125.0002"))
 				.findFirst().get().getQuantity(),3000);
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("5.1.4.05125.0002"))
@@ -1318,7 +1326,7 @@ public class DepositControlServiceTest {
 		PurchaseOrderDto purchaseOrderDto = purchaseOrderService.collectPurchaseOrderFromText(text, admYDespachoId);
 
 		assertEquals(purchaseOrderDto.getOrderNumber(), 572);
-
+		assertThat(purchaseOrderDto.getExerciseYear()).isEqualTo(2024);
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00481.0010"))
 				.findFirst().get().getQuantity(),587);
 		assertEquals(purchaseOrderDto.getItems().stream().filter(f -> f.getCode().equals("2.1.1.00481.0010"))
@@ -1382,6 +1390,31 @@ public class DepositControlServiceTest {
 		Deposit deposit = depositRepository.findById(depositAvellanedaId).orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
 		assertThat(deposit.getOrganization().getId()).isGreaterThan(0l);
 		
+	}
+	@Test
+	@Order(23)
+	void checkOrderItemDescriptions() {
+		Organization organization = organizationService.findById(2L);
+		PurchaseOrder purchaseOrder = purchaseOrderRepository.findByOrderNumberAndOrganization(365, organization).get();
+		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(purchaseOrder);
+		items.forEach(item -> System.out.println(item.getItemDetail()));
+	}
+	@Test
+	@Order(24)
+	void checkSupplyItemDescriptions() {
+		Organization organization = organizationService.findById(2L);
+	Supply supply = supplyRepository.findBySupplyNumberAndMainOrganization(525, organization).get();
+		List<SupplyItem> items =supplyItemRepository.findAllBySupply(supply);
+		items.forEach(item -> System.out.println(item.getItemDetail()));
+	}
+	
+	@Test
+	@Order(25)
+	void checkAllPurchaseOrderText()throws Exception {
+		MockMultipartFile file = new MockMultipartFile("file", "oc-609.pdf", "application/pdf",
+				new ClassPathResource("\\pdf-test\\oc-609.pdf").getContentAsByteArray());
+		String text = pdfToStringUtils.pdfToString(file.getBytes());
+		System.out.println(text);
 	}
 	
 	

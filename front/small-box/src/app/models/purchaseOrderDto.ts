@@ -4,6 +4,7 @@ import { PurchaseOrderItemDto } from "./purchaseOrderItemDto";
 export class PurchaseOrderDto {
     id!: number;
     orderNumber!: number;
+   exerciseYear!:number;
     jurisdiction!: string;
     executerUnit!: string;
     executerUnitOrganizationId!: number;

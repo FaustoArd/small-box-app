@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +34,7 @@ public class DepositControl {
 	
 	private String itemDescription;
 	
+	@Column(name="code", unique = true)
 	private String itemCode;
 	
 	private int quantity;

@@ -151,7 +151,8 @@
                         <small id="searchSmall" class="d-block text-center">Busqueda por descripcion</small>
                         <div class="text-center ms-5">
                             <input (keydown.enter)="filterDepositControls(filter.value)" type="text" #filter>
-                            <a class="btn btn-sm text-white ms-2" (click)="filterDepositControls(filter.value)">Buscar</a>
+                            <a class="btn btn-sm text-white ms-2"
+                                (click)="filterDepositControls(filter.value)">Buscar</a>
                         </div>
                     </div>
                     <table class="table table-flex table-hover table-bordered h-75">
@@ -200,7 +201,7 @@
                 <div class="col-md-4">
                     <h2 class="d-inline text-dark">ORDEN DE COMPRA NUMERO: </h2>
                     <h2 class="d-inline text-primary">{{purchaseOrderDto.orderNumber}}<small
-                            class="text-dark">-</small>{{ purchaseOrderDto.date.toString().substring(2,4)}} </h2>
+                            class="text-dark">-</small>{{ purchaseOrderDto.exerciseYear}} </h2>
                 </div>
 
                 <div class="col-md-1"></div>
@@ -280,15 +281,16 @@
 
 <!--Supply upload report template-->
 <ng-template #supplyTableTemplate>
- <body id="supplyUpload">
- <!-- <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button> -->
+
+    <body id="supplyUpload">
+        <!-- <button id="closeButton" (click)="onCloseSupplyTableTemplate()" class="btn btn-sm text-white">X</button> -->
         <div id="supplyUpload" *ngIf="supplyItemDtos.length>0" class="container-flex">
             <div class="row">
                 <div class="col-md-5"></div>
                 <div class="col-md-5">
                     <h2 class="d-inline">SUMINISTRO NUMERO: </h2>
                     <h2 class="d-inline text-danger">{{supplyDto.supplyNumber }}<small
-                            class="text-dark fw-bold">-</small>{{ supplyDto.date.toString().substring(2,4)}} </h2>
+                            class="text-dark fw-bold">-</small>{{ supplyDto.exerciseYear}} </h2>
 
                 </div>
                 <div class="col-md-2">
@@ -379,78 +381,89 @@
 
 <!--Purchase orders list template-->
 <ng-template #purchaseOrderListTemplate>
-    <div *ngIf="purchaseOrderDtos.length==0" class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1 class="display-4">No hay ninguna orden de compra cargada..</h1>
-            <p (click)="onClosepurchaseOrderListTemplate()" class="lead"><button
-                    class="btn btn-sm text-white">Volver</button></p>
-        </div>
-    </div>
-    <div *ngIf="purchaseOrderDtos.length>0" id="orderListTemplate" class="container-fluid">
-        <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()" class="btn btn-sm text-white">X</button>
-        <div class="row">
-            <div class="col-md-4">
-                <div id="count">
 
-                    <h3 class="float mt-1 text-white">{{totalPurchaseOrders}}</h3>
+    <body *ngIf="purchaseOrderDtos.length==0" id="orderListTemplate">
+        <div  class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">No hay ninguna orden de compra cargada..</h1>
+                <p (click)="onClosepurchaseOrderListTemplate()" class="lead"><button
+                        class="btn btn-sm text-white">Volver</button></p>
+            </div>
+        </div>
+    </body>
+
+    <body id="orderListTemplate">
+        <div *ngIf="purchaseOrderDtos.length>0" id="orderListTemplate" class="container-fluid">
+            <button id="closeButton" (click)="onClosepurchaseOrderListTemplate()"
+                class="btn btn-sm text-white">X</button>
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="count">
+
+                        <h3 class="float mt-1 text-white">{{totalPurchaseOrders}}</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h2 id="ordersTitle" class="text-center">ORDENES DE COMPRA</h2>
                 </div>
             </div>
-            <div class="col-md-4">
-                <h2 id="ordersTitle" class="text-center">ORDENES DE COMPRA</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div id="table-div" class="overflow-scroll">
-                    <table class="table table-flex table-hover table-bordered table-striped h-75">
-                        <thead>
-                            <tr class="text-center">
-                                <th scope="col"> <img id="date_icon_list" class="ms-1 mt-1 " src="./assets/img/calendar-days-solid.svg"></th>
-                                <th scope="col"><img id="thumbsUp" class="ms-1 mt-1 " src="./assets/img/tag_24dp_FILL0.svg"></th>
-                                <th scope="col">UNIDAD EJECUTORA</th>
-                                <th scope="col">DEPENDENCIA</th>
-                                <th scope="col">TOTAL</th>
-                                <th> <img id="cart_icon_list" src="./assets/img/cart-shopping-solid.svg"></th>
-                                <th>
-                                     <img class="d-inline" id="arrow_right_icon_list" src="./assets/img/arrow_forward.svg">
-                                    <img id="factory_icon_list" src="./assets/img/building-solid.svg">
-                                </th>
-                                <th>CARGADO</th>
-                                <th> <img id="trash_icon_list" class="ms-1 mt-1" src="./assets/img/trash-solid.svg"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let order of purchaseOrderDtos">
+            <div class="row">
+                <div class="col">
+                    <div id="table-div-orders" class="overflow-scroll">
+                        <table class="table table-flex table-hover table-bordered table-striped h-75">
+                            <thead>
+                                <tr class="text-center">
+                                    <th scope="col"> <img id="date_icon_list" class="ms-1 mt-1 "
+                                            src="./assets/img/calendar-days-solid.svg"></th>
+                                    <th scope="col"><img id="thumbsUp" class="ms-1 mt-1 "
+                                            src="./assets/img/tag_24dp_FILL0.svg"></th>
+                                    <th scope="col">UNIDAD EJECUTORA</th>
+                                    <th scope="col">DEPENDENCIA</th>
+                                    <th scope="col">TOTAL</th>
+                                    <th> <img id="cart_icon_list" src="./assets/img/cart-shopping-solid.svg"></th>
+                                    <th>
+                                        <img class="d-inline" id="arrow_right_icon_list"
+                                            src="./assets/img/arrow_forward.svg">
+                                        <img id="factory_icon_list" src="./assets/img/building-solid.svg">
+                                    </th>
+                                    <th>CARGADO</th>
+                                    <th> <img id="trash_icon_list" class="ms-1 mt-1" src="./assets/img/trash-solid.svg">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let order of purchaseOrderDtos">
 
-                                <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
-                                <td id="fullBlue_td">{{order.orderNumber + '/' + order.date.toString().substring(2,4) }}
-                                </td>
-                                <td>{{order.executerUnit}}</td>
-                                <td>{{order.dependency}}</td>
-                                <td id="fullBlue_td">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
-                                <td class="text-center"><a
-                                        (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
-                                        class="btn btn-md  text-danger"></a></td>
-                                <td class="text-center">
-                                    <button *ngIf="order.loadedToDeposit"
-                                        (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
-                                        class="btn btn-md text-danger" disabled></button>
-                                    <a *ngIf="!order.loadedToDeposit"
-                                        (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
-                                        class="btn btn-md text-danger"></a>
-                                </td>
-                                <td *ngIf="order.loadedToDeposit" class="text-success text-center">
-                                    {{order.loadedToDepositName}}</td>
-                                <td *ngIf="!order.loadedToDeposit" class="text-danger text-center">No</td>
-                                <td class="text-center"> <a (click)="confirmDeletePurchaseOrder(order.id)"
-                                        class="btn btn-md text-danger"></a></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <td>{{order.date |date: 'dd-MM-yyyy'}}</td>
+                                    <td id="fullBlue_td">{{order.orderNumber + '/' + order.exerciseYear }}
+                                    </td>
+                                    <td>{{order.executerUnit}}</td>
+                                    <td>{{order.dependency}}</td>
+                                    <td id="fullBlue_td">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
+                                    <td class="text-center"><a
+                                            (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"
+                                            class="btn btn-md  text-danger"></a></td>
+                                    <td class="text-center">
+                                        <button *ngIf="order.loadedToDeposit"
+                                            (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
+                                            class="btn btn-md text-danger" disabled></button>
+                                        <a *ngIf="!order.loadedToDeposit"
+                                            (click)="confirmLoadPurchaseOrderToDeposit(order.id,order.date,order.loadedToDeposit)"
+                                            class="btn btn-md text-danger"></a>
+                                    </td>
+                                    <td *ngIf="order.loadedToDeposit" class="text-success text-center">
+                                        {{order.loadedToDepositName}}</td>
+                                    <td *ngIf="!order.loadedToDeposit" class="text-danger text-center">No</td>
+                                    <td class="text-center"> <a (click)="confirmDeletePurchaseOrder(order.id)"
+                                            class="btn btn-md text-danger"></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </body>
 </ng-template>
 
 <ng-template #supplyListTemplate>
@@ -500,7 +513,7 @@
                                 <tr *ngFor="let supply of suppliesDto">
                                     <td>{{supply.date |date: 'dd-MM-yyyy'}}</td>
                                     <td id="fullBlue_td">{{supply.supplyNumber + '/'+
-                                        supply.date.toString().substring(2,4)}}</td>
+                                        supply.exerciseYear}}</td>
 
                                     <td>{{supply.applicantOrganization}}</td>
                                     <td id="fullBlue_td">{{supply.estimatedTotalCost | currency: '$': 'symbol'}}</td>
@@ -532,7 +545,7 @@
     <div class="mt-1 ms-1">
         <h1 class="d-inline">O.C NUMERO:</h1>
         <h2 *ngIf="findedPurchaseOrder!=undefined" class="d-inline">
-            {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.date.toString().substring(2,4)}}
+            {{findedPurchaseOrder.orderNumber+'/'+findedPurchaseOrder.exerciseYear}}
         </h2>
     </div>
     <table class="table-sm table-bordered table-hover h-75">
@@ -573,7 +586,7 @@
     <div class="mt-1">
         <h1 class="d-inline">SUMINISTRO NUMERO:</h1>
         <h2 *ngIf="findedSupply!=undefined" class="d-inline"> {{findedSupply.supplyNumber + '/' +
-            findedSupply.date.toString().substring(2,4)}}</h2>
+            findedSupply.exerciseYear}}</h2>
     </div>
     <table class="table-sm table-hover table-bordered h-75">
         <thead>
@@ -674,7 +687,7 @@
                     <div>
                         <h4 class="d-inline"> SUM N:</h4>
                         <h1 class="d-inline"> {{supplyCorrectionNote.supplyNumber + '/'
-                            + supplyCorrectionNote.supplyDate.toString().substring(2,4)}}</h1>
+                            + supplyCorrectionNote.supplyExcerciseYear}}</h1>
                     </div>
                 </div>
             </div>

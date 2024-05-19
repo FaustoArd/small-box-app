@@ -5,6 +5,7 @@ export class SupplyDto{
     date!:Date;
     jurisdiction!:string;
     supplyNumber!:number;
+    exerciseYear!:number;
     supplyItems!:Array<SupplyItemDto>;
     estimatedTotalCost!:number;
     dependencyApplicant!:string;
