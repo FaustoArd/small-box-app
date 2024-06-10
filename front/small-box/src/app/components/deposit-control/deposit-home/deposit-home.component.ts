@@ -303,7 +303,7 @@ export class DepositHomeComponent implements OnInit {
     }, '70%',
       '80%',
       true,
-      false);
+      true);
     this.supplyTableTemplateRef.afterClosed().subscribe();
 
   }
