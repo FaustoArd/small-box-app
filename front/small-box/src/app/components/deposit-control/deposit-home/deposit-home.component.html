@@ -52,6 +52,7 @@
                 <img id="bag_icon" class="ms-1 mt-1" src="./assets/img/table-cells-solid.svg">
                 <div id="createDepositBtn" (click)="openDialogDepositCreation(createDepositTemplate)"
                     class="btn btn-sm  ms-5 mb-3 ">Crear</div>
+                  
                 <hr class="my-4">
             </div>
         </div>
@@ -134,19 +135,32 @@
 
             <button id="closeButton" (click)="onCloseDepositControlListTemplate()"
                 class="btn btn-sm text-white">X</button>
-            <div class="row">
-                <div class="col-md-1">
-                    <div id="count" class="ms-2">
-                        <h3 class="float mt-1 text-white">{{totalDepositControls}}</h3>
+                <div class="row">
+                    <div class="col-md-2">
+                      
+                            <div id="count" class="ms-2">
+                                <h3 class="float mt-1 text-white">{{totalDepositControls}}</h3>
+                            </div>
+                       
                     </div>
-                </div>
-                <div class="col-md-8 ms-2">
-
-                    <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline text-white">{{selectedDepositStr}}
+                    <div class="col-md-2">
+                        <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline text-white">{{selectedDepositStr}}
                         </h2>
                     </h3>
                     <p class="lead">
                         <hr class="my-4">
+                    </div> 
+                    <div class="col-md-4"></div>
+                    <div class="col-md-2">
+                        <div id="createDepositBtn" (click)="exportDepositToExcel()"
+                        class="btn btn-sm  ms-5 mb-3 mt-2 ">Exportar</div>
+                    </div>
+                </div> 
+            <div class="row">
+               <div class="col-md-1"></div>
+                <div class="col-md-8 ms-2">
+
+                  
                     <div class="mb-2">
                         <small id="searchSmall" class="d-block text-center">Busqueda por descripcion</small>
                         <div class="text-center ms-5">

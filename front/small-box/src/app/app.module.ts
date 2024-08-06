@@ -43,6 +43,9 @@ import { DepositComparatorComponent } from './components/deposit-comparator/depo
 import { DepositRequestComponent } from './components/deposit-request/deposit-request.component';
 import { DepositReceiverComponent } from './components/deposit-receiver/deposit-receiver.component';
 import { ReloadComponentComponent } from './components/reload-component/reload-component.component';
+import { ExcelService } from './services/excel.service';
+
+
 
 
 
@@ -106,7 +109,7 @@ import { ReloadComponentComponent } from './components/reload-component/reload-c
   ],
  
  
-  providers: [CookieService,
+  providers: [CookieService,ExcelService,
     
   {
     provide: HTTP_INTERCEPTORS,

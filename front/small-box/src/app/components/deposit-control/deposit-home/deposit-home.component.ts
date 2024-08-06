@@ -22,6 +22,7 @@ import { Router } from '@angular/router';
 import { DepositItemComparatorDto } from 'src/app/models/depositItemComparatorDto';
 import { OrganizationService } from 'src/app/services/organization.service';
 import { OrganizationDto } from 'src/app/models/organizationDto';
+import { ExcelService } from 'src/app/services/excel.service';
 
 @Component({
   selector: 'app-deposit-home',
@@ -48,7 +49,7 @@ export class DepositHomeComponent implements OnInit {
     private fileUploadService: FileUploadService, private snackBar: SnackBarService
     , private depositControlService: DepositControlService, private cookieService: CookieStorageService,
     private confirmDialogService: ConfirmDialogService, private formBuilder: FormBuilder
-    , private router: Router, private organizationService: OrganizationService
+    , private router: Router, private organizationService: OrganizationService,private excelService:ExcelService
   ) { }
 
   ngOnInit(): void {
@@ -896,6 +897,11 @@ filterDepositControls(filter:string){
     control.itemDescription.toLowerCase().includes(filter.toLowerCase())
   );
  
+}
+
+exportDepositToExcel():void{
+  console.log(this.depositControlDtos)
+  this.excelService.generateExcel(this.depositControlDtos,`desposito`);
 }
 
   get name() {
