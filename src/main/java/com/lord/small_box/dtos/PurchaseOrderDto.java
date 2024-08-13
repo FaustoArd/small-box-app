@@ -23,6 +23,8 @@ public class PurchaseOrderDto {
 
 	private String dependency;
 	
+	private String dependencyApplicant;
+	
 	private String provider;
 
 	private String deliverTo;
