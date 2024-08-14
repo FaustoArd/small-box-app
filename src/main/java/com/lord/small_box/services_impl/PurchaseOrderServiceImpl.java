@@ -2,7 +2,6 @@ package com.lord.small_box.services_impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -27,6 +26,7 @@ import com.lord.small_box.repositories.DepositControlRepository;
 import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.PurchaseOrderItemRepository;
 import com.lord.small_box.repositories.PurchaseOrderRepository;
+import com.lord.small_box.services.DepositDependencyControlService;
 import com.lord.small_box.services.OrganizationService;
 import com.lord.small_box.services.PurchaseOrderService;
 import com.lord.small_box.text_analisys.TextToPurchaseOrder;
@@ -54,6 +54,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 	@Autowired
 	private final DepositControlRepository depositControlRepository;
+	
+	@Autowired
+	private DepositDependencyControlService dependencyControlService;
 
 	Sort purchaseOrderDateSort = Sort.by("date").descending();
 
@@ -122,7 +125,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 	@Transactional
 	@Override
-	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositControl(Long purchaseOrderId,
+	public List<List<PurchaseOrderToDepositReportDto>> loadPurchaseOrderToDepositControl(Long purchaseOrderId,
 			Long depositId) {
 		log.info("Load purchase order to deposit");
 		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrderId)
@@ -131,6 +134,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		List<PurchaseOrderToDepositReportDto> report = new ArrayList<>();
 		Deposit deposit = depositRepository.findById(depositId)
 				.orElseThrow(() -> new ItemNotFoundException("No se encontro el deposito"));
+		Organization applicantOrganization = organizationService.findById(order.getApplicantOrganization().getId());
 		List<DepositControl> collectedItems = items.stream().map(orderItem -> {
 			Optional<DepositControl> depositControlFound = depositControlRepository
 					.findByItemCodeAndDeposit(orderItem.getCode(), deposit);
@@ -141,8 +145,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 				return createNewDepositItem(report, order, deposit, orderItem);
 			}
 		}).toList();
+		
 		depositControlRepository.saveAll(collectedItems);
-		return report;
+		List<PurchaseOrderToDepositReportDto> dependencyControlReport =
+				dependencyControlService.loadPurchaseOrderToDepositDependencyControl(order,items,deposit,applicantOrganization);
+		List<List<PurchaseOrderToDepositReportDto>> reports = new ArrayList<>();
+		reports.add(report);
+		reports.add(dependencyControlReport);
+		return reports;
 	}
 
 	private DepositControl updateDepositExistingItem(List<PurchaseOrderToDepositReportDto> report, PurchaseOrder order,
@@ -197,6 +207,21 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 				.orElseThrow(() -> new ItemNotFoundException("No se encontrol la orden"));
 		List<PurchaseOrderItem> items = purchaseOrderItemRepository.findAllByPurchaseOrder(purchaseOrder);
 		return PurchaseOrderItemMapper.INSTANCE.itemsToDtos(items);
+	}
+
+	@Override
+	public String setOrganizationApplicant(long purchaseOrderId, long organizationId) {
+		log.info("Set organization Applicant id: " + organizationId);
+		PurchaseOrder order = purchaseOrderRepository.findById(purchaseOrderId)
+				.orElseThrow(() -> new ItemNotFoundException("No se encontro la order de compra"));
+		
+		Organization applicantOrg = organizationService.findById(organizationId);
+		order.setApplicantOrganization(applicantOrg);
+		purchaseOrderRepository.save(order);
+		
+		return applicantOrg.getOrganizationName();
+		
+		
 	}
 
 }
