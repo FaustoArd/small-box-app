@@ -1,0 +1,43 @@
+package com.lord.small_box.dtos;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+public class DepositDependencyControlDto {
+	
+	private Long id;
+
+	private String place;
+
+	private String itemDescription;
+
+	private String itemCode;
+
+	private int quantity;
+
+	private Calendar expirationDate;
+
+	private String provider;
+
+	private String measureUnit;
+
+	private BigDecimal itemUnitPrice;
+
+	private BigDecimal itemTotalPrice;
+
+	private String mainOrganization;
+	
+	private String applicantOrganization;
+	
+	private long applicantOrganizationId;
+
+	private String depositName;
+	
+	private long depositId;
+
+}

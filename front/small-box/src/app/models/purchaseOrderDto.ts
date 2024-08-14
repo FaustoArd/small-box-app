@@ -11,6 +11,7 @@ export class PurchaseOrderDto {
     financingSource!: string;
     dependency!: string;
     dependencyOrganizacionId!: number;
+    dependencyApplicant!:string;
     provider!: string;
     deliverTo!: string;
     date!: Date;

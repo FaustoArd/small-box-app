@@ -10,6 +10,8 @@ public interface PurchaseOrderService {
 	
 	
 	public PurchaseOrderDto collectPurchaseOrderFromText(String text, long organizationId);
+	
+	public String setOrganizationApplicant(long purchaseOrderId,long organizationId);
 
 	public PurchaseOrderDto findPurchaseOrder(long purchaseOrderId);
 
@@ -17,7 +19,7 @@ public interface PurchaseOrderService {
 
 	public int deletePurchaseOrder(long orderId);
 
-	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositControl(Long purchaseOrderId,
+	public List<List<PurchaseOrderToDepositReportDto>> loadPurchaseOrderToDepositControl(Long purchaseOrderId,
 			Long depositId);
 
 	public List<PurchaseOrderDto> findAllOrdersByOrganizationId(long organizationId);

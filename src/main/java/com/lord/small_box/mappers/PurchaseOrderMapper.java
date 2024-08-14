@@ -18,6 +18,7 @@ public interface   PurchaseOrderMapper {
 	public  PurchaseOrder dtoToOrder(PurchaseOrderDto purchaseOrderDto);
 	
 	@Mapping(target="items", ignore = true)
+	@Mapping(target = "dependencyApplicant", source="applicantOrganization.organizationName")
 	public  PurchaseOrderDto orderToDto(PurchaseOrder purchaseOrder); 
 		
 	public List<PurchaseOrderDto> ordersToDtos(List<PurchaseOrder> orders);

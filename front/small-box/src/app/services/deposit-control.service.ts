@@ -16,8 +16,11 @@ import { BigBagItemDto } from '../models/bigBagItemDto';
 import { ExcelItemDto } from '../models/excelItemDto';
 import { OrganizationDto } from '../models/organizationDto';
 import { SupplyItemRequestDto } from '../models/supplyItemRequestDto';
+import { DepositDependencyControlDto } from '../models/depositDependencyControlDto';
 
 const DEPOSIT_CONTROL_BASE_URL = "http://localhost:8080/api/v1/smallbox/deposit-control";
+
+const DEPENDENCY_CONTROL_BASE_URL = "http://localhost:8080/api/v1/smallbox/dependency-control";
 
 const SUPPLY_BASE_URL = "http://localhost:8080/api/v1/smallbox/supply";
 
@@ -56,8 +59,8 @@ export class DepositControlService {
       .pipe(catchError(this.handleError));
     }
 
-    loadPurchaseOrderToDeposit(purchaseOrderId:number,depositId:number):Observable<Array<PurchaseOrderToDepositReportDto>>{
-      return this.http.put<Array<PurchaseOrderToDepositReportDto>>(`${PURCHASE_ORDER_BASE_URL}/load-order-to-deposit?depositId=${depositId}`,purchaseOrderId)
+    loadPurchaseOrderToDeposit(purchaseOrderId:number,depositId:number):Observable<Array<Array<PurchaseOrderToDepositReportDto>>>{
+      return this.http.put<Array<Array<PurchaseOrderToDepositReportDto>>>(`${PURCHASE_ORDER_BASE_URL}/load-order-to-deposit?depositId=${depositId}`,purchaseOrderId)
       .pipe(catchError(this.handleError));
     }
 
@@ -81,6 +84,17 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
 
     findAllDepositControlsByDeposit(depositId:number):Observable<DepositControlDto[]>{
       return this.http.get<DepositControlDto[]>(`${DEPOSIT_CONTROL_BASE_URL}/find-deposit-controls-by-deposit?depositId=${depositId}`)
+      .pipe(catchError(this.handleError));
+    }
+    findAllDependencyControlsByDeposit(depositId:number):Observable<DepositDependencyControlDto[]>{
+      return this.http.get<DepositDependencyControlDto[]>
+      (`${DEPENDENCY_CONTROL_BASE_URL}/find-dependency-controls-by-deposit?depositId=${depositId}`,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
+
+    findAllDependencyControlsByApplicantOrganizationAndDeposit(applicantOrganzationId:number,depositId:number):Observable<DepositDependencyControlDto[]>{
+      return this.http.get<DepositDependencyControlDto[]>
+      (`${DEPENDENCY_CONTROL_BASE_URL}/find-dependency-controls?applicantOrganizationId=${applicantOrganzationId}&depositId=${depositId}`,this.httpOptions)
       .pipe(catchError(this.handleError));
     }
    createDeposit(depositDto:DepositDto):Observable<string>{
@@ -172,6 +186,11 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
     return this.http.put<string>
     (`${SUPPLY_BASE_URL}/set-supply-organization-applicant?supplyId=${supplyId}`
     ,organizationDto,this.httpOptions).pipe(catchError(this.handleError));
+   }
+
+   setPurchaseOrderOrganizationApplicant(organizationDto:OrganizationDto,purchaseOrderId:number):Observable<string>{
+    return this.http.put<string>(`${PURCHASE_ORDER_BASE_URL}/set-purchase-order-organization-applicant?purchaseOrderId=${purchaseOrderId}`,organizationDto
+      ,this.httpOptions).pipe(catchError(this.handleError));
    }
 
    findAllSupplyItemsByMainOrganizationAndOrganizationApplicant(mainOrganization:number,organizationApplicantId:number):Observable<SupplyItemRequestDto[]>{

@@ -13,6 +13,7 @@ public class PurchaseOrderToDepositReportDto {
 	private String depositItemMeasureUnit;
 	private String depositItemStatus;
 	
+	
 	public PurchaseOrderToDepositReportDto(String depositItemCode,String depositItemDescription,int depositItemQuantity,String depositItemMeasureUnit,String depositItemStatus) {
 		this.depositItemCode = depositItemCode;
 		this.depositItemDescription = depositItemDescription;

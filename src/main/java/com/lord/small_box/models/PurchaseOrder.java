@@ -41,6 +41,10 @@ public class PurchaseOrder {
 	@ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	@JoinColumn(name="organization_id",referencedColumnName = "id")
 	private Organization organization;
+	
+	@ManyToOne(cascade =  CascadeType.MERGE,fetch = FetchType.LAZY)
+	@JoinColumn(name="applicant_organization_id",referencedColumnName = "id")
+	private Organization applicantOrganization;
 
 	private String executerUnit;
 

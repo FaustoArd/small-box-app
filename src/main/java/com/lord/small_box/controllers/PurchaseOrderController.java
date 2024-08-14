@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.google.gson.Gson;
+import com.lord.small_box.dtos.OrganizationDto;
 import com.lord.small_box.dtos.PurchaseOrderDto;
 import com.lord.small_box.dtos.PurchaseOrderItemDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
@@ -34,6 +37,8 @@ public class PurchaseOrderController {
 	@Autowired
 	private final PdfToStringUtils pdfToStringUtils;
 	
+	private static final Gson gson = new Gson();
+	
 	//ORDER
 		@GetMapping(path = "/find-all-orders-by-org")
 		ResponseEntity<List<PurchaseOrderDto>> findAllOrdersByOrganization(@RequestParam("organizationId")long organizationId){
@@ -47,10 +52,10 @@ public class PurchaseOrderController {
 			return ResponseEntity.ok(itemDtos);
 		}
 		@PutMapping(path = "/load-order-to-deposit")
-		ResponseEntity<List<PurchaseOrderToDepositReportDto>> loadPurchaseOrdertoDeposit
+		ResponseEntity<List<List<PurchaseOrderToDepositReportDto>>> loadPurchaseOrdertoDeposit
 		(@RequestBody long purchaseOrderId,@RequestParam("depositId")long depositId){
-			List<PurchaseOrderToDepositReportDto> loadReport = purchaseOrderService.loadPurchaseOrderToDepositControl(purchaseOrderId,depositId);
-			return new ResponseEntity<List<PurchaseOrderToDepositReportDto>>(loadReport,HttpStatus.OK);
+			List<List<PurchaseOrderToDepositReportDto>> loadReport = purchaseOrderService.loadPurchaseOrderToDepositControl(purchaseOrderId,depositId);
+			return new ResponseEntity<List<List<PurchaseOrderToDepositReportDto>>>(loadReport,HttpStatus.OK);
 		}
 		@PostMapping(path="/collect-purchase-order-pdf",consumes =MediaType.MULTIPART_FORM_DATA_VALUE)
 		ResponseEntity<PurchaseOrderDto> collectPurchaseOrderFromText(@RequestPart("file")MultipartFile file,
@@ -76,6 +81,13 @@ public class PurchaseOrderController {
 				ResponseEntity<Integer> deletePurchaseOrder(@PathVariable("orderId")long orderId){
 					int orderNumberDeleted = purchaseOrderService.deletePurchaseOrder(orderId);
 					return ResponseEntity.ok(orderNumberDeleted);
+				}
+				
+				@PutMapping(path="/set-purchase-order-organization-applicant")
+				ResponseEntity<String> setPurchaseOrderOrganizationApplicant(@RequestBody OrganizationDto organizationDto,
+						@RequestParam("purchaseOrderId")long purchaseOrderId){
+					String orgName = purchaseOrderService.setOrganizationApplicant(purchaseOrderId, organizationDto.getId());
+					return new ResponseEntity<String>(gson.toJson(orgName),HttpStatus.OK);
 				}
 
 }

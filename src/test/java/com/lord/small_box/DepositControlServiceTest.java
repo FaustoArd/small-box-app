@@ -872,12 +872,12 @@ public class DepositControlServiceTest {
 	@DisplayName("CARGAR ORDEN DE COMPRA N 365_24 A DEPOSITO")
 	@Order(8)
 	void loadPurchaseOrder365_24ToDepositControl() throws Exception {
-		List<PurchaseOrderToDepositReportDto> report = purchaseOrderService
+		List<List<PurchaseOrderToDepositReportDto>> report = purchaseOrderService
 				.loadPurchaseOrderToDepositControl(purchaseOrder365Id, depositAvellanedaId);
 		List<DepositControlDto> depositItems = depositControlService.findDepositControlsByDeposit(depositAvellanedaId);
 			depositControlTestId = depositItems.stream().filter(f -> f.getItemCode().equals("2.1.1.00788.0013")).findFirst().get().getId();
 		report.stream().forEach(e -> {
-			assertEquals(e.getDepositItemStatus(), "NUEVO");
+			assertEquals(e.get(0).getDepositItemStatus(), "NUEVO");
 		});
 
 		assertThat(depositItems.stream().filter(f -> f.getItemCode().equals("2.1.1.00788.0013")).findFirst().get()

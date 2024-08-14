@@ -105,6 +105,10 @@
                             role="button"></a>
                     </div>
                     <div class="mt-1">
+                        <p class="d-inline display-4 ms-3">DEPENDENCIAS</p>
+                        <a (click)="openDependencyControlListTemplate(dependencyControlListTemplate)" class="btn btn-md ms-2 " role="button"></a>
+                    </div>
+                    <div class="mt-1">
                         <p class="d-inline display-4">IMPORTAR EXCEL</p>
                         <a routerLink="/deposit-comparator" class="btn btn-md ms-2 " role="button"></a>
                     </div>
@@ -204,6 +208,95 @@
     </body>
 </ng-template>
 
+<!-- Dependency control list template -->
+<ng-template #dependencyControlListTemplate>
+
+    <body *ngIf="depositDependencyControlDtos.length==0">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">No hay ningun item cargado..</h1>
+                <p (click)="onCloseDependencyControlListTemplate()" class="lead"><button
+                        class="btn btn-sm text-white">Volver</button></p>
+            </div>
+        </div>
+    </body>
+
+    <body id="orderListTemplate" *ngIf="depositDependencyControlDtos.length>0">
+        <div id="orderListTemplate" class="container-flex">
+
+            <button id="closeButton" (click)="onCloseDependencyControlListTemplate()"
+                class="btn btn-sm text-white">X</button>
+                <div class="row">
+                    <div class="col-md-2">
+                      
+                            <div id="count" class="ms-2">
+                                <h3 class="float mt-1 text-white">{{totalDependencyControls}}</h3>
+                            </div>
+                       
+                    </div>
+                    <div class="col-md-2">
+                        <h3 *ngIf="selectedDepositBol"> DEPOSITO: <h2 class="d-inline text-white">{{selectedDepositStr}}
+                        </h2>
+                    </h3>
+                    <p class="lead">
+                        <hr class="my-4">
+                    </div> 
+                    <div class="col-md-4"></div>
+                    <div class="col-md-2">
+                        <!-- <div id="createDepositBtn" (click)="exportDepositToExcel()"
+                        class="btn btn-sm  ms-5 mb-3 mt-2 ">Exportar</div> -->
+                    </div>
+                </div> 
+            <div class="row">
+               <div class="col-md-1"></div>
+                <div class="col-md-8 ms-2">
+
+                  
+                    <div class="mb-2">
+                        <small id="searchSmall" class="d-block text-center">Busqueda por descripcion</small>
+                        <div class="text-center ms-5">
+                            <input (keydown.enter)="filterDependencyControls(filter.value)" type="text" #filter>
+                            <a class="btn btn-sm text-white ms-2"
+                                (click)="filterDependencyControls(filter.value)">Buscar</a>
+                        </div>
+                    </div>
+                    <table class="table table-flex table-hover table-bordered h-75">
+                        <thead>
+                            <tr class="text-center">
+                                <th scope="col">DEPENDENCIA</th>
+                                <th scope="col">CODIGO</th>
+                                <th scope="col">U.MEDIDA</th>
+                                <th scope="col">DESCRIPCION</th>
+                                <th scope="col">P.UNITARIO</th>
+                                <th scope="col">TOTAL</th>
+                                <th scope="col">CANTIDAD</th>
+                                <th scope="col">MODIFICAR</th>
+                                <th scope="col">ELIMINAR</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr *ngFor="let item of depositDependencyFilters">
+                                <td>{{item.applicantOrganization}}</td>
+                                <td id="fullBlue_td">{{item.itemCode}}</td>
+                                <td>{{item.measureUnit}}</td>
+                                <td>{{item.itemDescription}}</td>
+                                <td>{{item.itemUnitPrice | currency: '$': 'symbol'}}</td>
+                                <td id="fullBlue_td">{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
+                                <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
+                                <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
+                                <!-- <td><a (click)="openDialogDepositControlUpdate(item.id,updateDepositContolTemplate)"
+                                        class="btn btn-md"></a></td>
+                                <td><a (click)="confirmDeleteDepositControl(item.id)" class="btn btn-md"></a>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</ng-template>
+
 <!-- Purchase order upload report template -->
 <ng-template #purchaseOrderTableTemplate>
 
@@ -246,9 +339,33 @@
             </div>
             <div class="row">
                 <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col-md-4">
                     <h3 class="d-inline">FUENTE DE FINANCIAMIENTO:</h3>
                     <h4 class="d-inline"> {{purchaseOrderDto.financingSource}}</h4>
+                </div>
+                <div class="col-md-4">
+                    <form [formGroup]="purchaseOrderDependencyApplicantForm"
+                        class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+                        <div class="form-group">
+                            <label for="id" class="form-label fs-7 ">DEPENDENCIA</label>
+                            <select id="id" formControlName="id" class="form-select  border-dark">
+                                <option value="Seleccione la dependencia soliciante">Seleccione la dependencia
+                                    soliciante
+                                </option>
+                                <option type="number" class="form-control border-dark "
+                                    *ngFor="let orgs of organizationsDto" id="id" [value]="orgs.id">
+                                    {{orgs.organizationName}}</option>
+                            </select>
+                            <div *ngIf="id.invalid && (id.dirty || id.touched)" class="text-danger">
+                                <div *ngIf="id.errors?.['required']">
+                                    Debe seleccionar una organizacion
+                                </div>
+                            </div>
+                            <button (click)="setPurchaseOrderOrganizationApplicant(purchaseOrderDto.id)"
+                                class="btn btn-sm mt-1 text-white">APLICAR</button>
+                        </div>
+
+                    </form>
                 </div>
             </div>
             <div class="row">
@@ -433,6 +550,7 @@
                                             src="./assets/img/tag_24dp_FILL0.svg"></th>
                                     <th scope="col">UNIDAD EJECUTORA</th>
                                     <th scope="col">DEPENDENCIA</th>
+                                    <th scope="col">Dependencia(Real)</th>
                                     <th scope="col">TOTAL</th>
                                     <th> <img id="cart_icon_list" src="./assets/img/cart-shopping-solid.svg"></th>
                                     <th>
@@ -453,6 +571,7 @@
                                     </td>
                                     <td>{{order.executerUnit}}</td>
                                     <td>{{order.dependency}}</td>
+                                    <td>{{order.dependencyApplicant}}</td>
                                     <td id="fullBlue_td">{{order.purchaseOrderTotal | currency: '$': 'symbol'}}</td>
                                     <td class="text-center"><a
                                             (click)="openDialogPurchaseOrderItemsList(purchaseOrderItemsListTemplate,order.id)"

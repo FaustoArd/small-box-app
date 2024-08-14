@@ -23,6 +23,7 @@ import { DepositItemComparatorDto } from 'src/app/models/depositItemComparatorDt
 import { OrganizationService } from 'src/app/services/organization.service';
 import { OrganizationDto } from 'src/app/models/organizationDto';
 import { ExcelService } from 'src/app/services/excel.service';
+import { DepositDependencyControlDto } from 'src/app/models/depositDependencyControlDto';
 
 @Component({
   selector: 'app-deposit-home',
@@ -41,6 +42,7 @@ export class DepositHomeComponent implements OnInit {
   totalPurchaseOrders!: number;
   totalSupplies!:number;
   totalDepositControls!:number;
+  totalDependencyControls!:number;
   now!: Date;
  
 
@@ -91,11 +93,37 @@ export class DepositHomeComponent implements OnInit {
     this.purchaseOrderTableMatDialogRef.close();
   }
 
+  purchaseOrderDependencyApplicantForm = this.formBuilder.group({
+    id:['', [this.numberValidator,Validators.required]]
+  })
+  selectedPurchaseOrderApplicantDto!:OrganizationDto;
+setPurchaseOrderOrganizationApplicant(purchaseOrderId:number){
+  if(this.purchaseOrderDependencyApplicantForm.valid){
+    this.selectedPurchaseOrderApplicantDto = new OrganizationDto();
+    this.selectedPurchaseOrderApplicantDto = Object.assign(this.selectedPurchaseOrderApplicantDto
+      ,this.purchaseOrderDependencyApplicantForm.value);
+      this.depositControlService.setPurchaseOrderOrganizationApplicant(this.selectedPurchaseOrderApplicantDto,purchaseOrderId)
+      .subscribe({
+        next:(orgNameData)=>{
+          this.snackBar.openSnackBar('Se guardo la organizacion: ' + orgNameData + '. ', 'Cerrar', 3000);
+
+        },
+        error:(errorData)=>{
+          this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+        },
+        complete:()=> {
+          this.purchaseOrderDependencyApplicantForm.reset();
+          this.onClosePurchaseOrderTableTemplate();
+        }
+      })
+  }
+}
 
   /**Purchase order upload report template */
   private purchaseOrderTableMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
   @ViewChild('purchaseOrderTableTemplate') purchaseOrderTableTemplate !: TemplateRef<any>
   openPurchaseOrderTableTemplate(purchaseOrderItems: PurchaseOrderItemDto[]): void {
+    this.getAllOrganizations();
     this.purchaseOrderItemDtos = purchaseOrderItems;
     const template = this.purchaseOrderTableTemplate;
     this.purchaseOrderTableMatDialogRef = this.dialogService.openSupplyCorrectionNoteCreation({
@@ -168,13 +196,14 @@ export class DepositHomeComponent implements OnInit {
       });
     }
   }
-
+  dependencyDepositReport:PurchaseOrderToDepositReportDto[]=[];
   depositReport: PurchaseOrderToDepositReportDto[] = [];
   loadPurchaseOrderToDepositControl(purchaseOrderId: number) {
     const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
     this.depositControlService.loadPurchaseOrderToDeposit(purchaseOrderId, depoId).subscribe({
       next: (depositReportData) => {
-        this.depositReport = depositReportData;
+        this.depositReport = depositReportData[0];
+        this.dependencyDepositReport = depositReportData[1];
         console.log(this.depositReport);
       },
       error: (errorData) => {
@@ -614,6 +643,21 @@ export class DepositHomeComponent implements OnInit {
     })
   }
 
+  depositDependencyControlDtos:DepositDependencyControlDto[]=[];
+getDepositDependencyControlsByDeposit() {
+    const depoId = Number(this.cookieService.getCurrentDepositSelectedId());
+    this.depositControlService.findAllDependencyControlsByDeposit(depoId).subscribe({
+      next: (depositData) => {
+        this.depositDependencyControlDtos = depositData;
+        this.depositDependencyFilters = this.depositDependencyControlDtos;
+        this.totalDependencyControls = depositData.length;
+      },
+      error: (errorData) => {
+        this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
+      }
+    })
+  }
+
   onCloseDepositControlListTemplate() {
     this.depositControlListMatDialogRef.close();
   }
@@ -627,6 +671,19 @@ export class DepositHomeComponent implements OnInit {
     });
     this.depositControlListMatDialogRef.afterClosed().subscribe();
   }
+
+  private dependencyControlListMatDialogRef!: MatDialogRef<DialogTemplateComponent>;
+  openDependencyControlListTemplate(template:any):void{
+    this.getDepositDependencyControlsByDeposit();
+    this.dependencyControlListMatDialogRef = this.dialogService.openDialogDepositListCreation({
+      template
+    });
+    this.dependencyControlListMatDialogRef.afterClosed().subscribe();
+  }
+  onCloseDependencyControlListTemplate(){
+    this.dependencyControlListMatDialogRef.close();
+  }
+ 
 
 
 
@@ -897,6 +954,17 @@ filterDepositControls(filter:string){
     control.itemDescription.toLowerCase().includes(filter.toLowerCase())
   );
  
+}
+depositDependencyFilters:DepositDependencyControlDto[]=[];
+depositDependencyControlTemp!:DepositDependencyControlDto;
+filterDependencyControls(filter:string){
+  if(!filter){
+    this.depositDependencyFilters = this.depositDependencyControlDtos;
+    return;
+  }
+  this.depositDependencyFilters = this.depositDependencyControlDtos.filter(control =>{
+    control.itemDescription.toLowerCase().includes(filter.toLowerCase());
+  })
 }
 
 exportDepositToExcel():void{
