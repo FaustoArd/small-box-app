@@ -71,10 +71,7 @@ public class DepositDependencyControlServiceImpl implements DepositDependencyCon
 			,List<PurchaseOrderItem> items,Deposit deposit,Organization applicantOrganization) {
 		log.info("Load purchase order to dependency control");
 		
-		
 		List<PurchaseOrderToDepositReportDto> report = new ArrayList<>();
-		
-		
 		
 		List<DepositDependencyControl> collectedItems = items.stream().map(orderItem -> {
 			Optional<DepositDependencyControl> dependencyControlFound = dependencyControlRepository
@@ -82,15 +79,13 @@ public class DepositDependencyControlServiceImpl implements DepositDependencyCon
 			if(dependencyControlFound.isPresent()) {
 				return updateDependencyControlExistingItem(report, purchaseOrder, deposit, dependencyControlFound, orderItem);
 			}else {
-				return createNewDepositItem(report, purchaseOrder, deposit, orderItem,applicantOrganization);
+				return createNewDependencyControlItem(report, purchaseOrder, deposit, orderItem,applicantOrganization);
 			}
 		}).toList();
 		dependencyControlRepository.saveAll(collectedItems);
 		
 		return report;
 	}
-
-	
 
 	private DepositDependencyControl updateDependencyControlExistingItem(List<PurchaseOrderToDepositReportDto> report,
 			PurchaseOrder purchaseOrder, Deposit deposit, Optional<DepositDependencyControl> dependencyControlFound,
@@ -106,7 +101,7 @@ public class DepositDependencyControlServiceImpl implements DepositDependencyCon
 		return dependencyControl;
 	}
 
-	private DepositDependencyControl createNewDepositItem(List<PurchaseOrderToDepositReportDto> report,
+	private DepositDependencyControl createNewDependencyControlItem(List<PurchaseOrderToDepositReportDto> report,
 			PurchaseOrder purchaseOrder, Deposit deposit, PurchaseOrderItem purchaseOrderItem,Organization applicantOrganization) {
 		log.info("new item,creating dependency control item");
 		DepositDependencyControl dependencyControl = new DepositDependencyControl();
