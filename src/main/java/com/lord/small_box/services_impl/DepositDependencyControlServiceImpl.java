@@ -7,16 +7,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lord.small_box.dtos.DepositDependencyControlDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
+import com.lord.small_box.dtos.UpdateDependencyItemReportDto;
 import com.lord.small_box.exceptions.ItemNotFoundException;
 import com.lord.small_box.mappers.DepositDependencyControlMapper;
 import com.lord.small_box.models.Deposit;
+import com.lord.small_box.models.DepositControl;
 import com.lord.small_box.models.DepositDependencyControl;
 import com.lord.small_box.models.Organization;
 import com.lord.small_box.models.PurchaseOrder;
 import com.lord.small_box.models.PurchaseOrderItem;
+import com.lord.small_box.repositories.DepositControlRepository;
 import com.lord.small_box.repositories.DepositDependencyControlRepository;
 import com.lord.small_box.repositories.DepositRepository;
 import com.lord.small_box.repositories.OrganizationRepository;
@@ -33,17 +37,28 @@ public class DepositDependencyControlServiceImpl implements DepositDependencyCon
 	
 	@Autowired
 	private final DepositRepository depositRepository;
+	
+	@Autowired
+	private final DepositControlRepository depositControlRepository;
 
 	
 
 	private static final Logger log = LoggerFactory.getLogger(DepositDependencyControlServiceImpl.class);
 
 	public DepositDependencyControlServiceImpl(DepositDependencyControlRepository dependencyControlRepository
-			,OrganizationRepository organizationRepository,DepositRepository depositRepository) {
+			,OrganizationRepository organizationRepository,DepositRepository depositRepository
+			,DepositControlRepository depositControlRepository) {
 		this.dependencyControlRepository = dependencyControlRepository;
 		this.organizationRepository = organizationRepository;
 		this.depositRepository = depositRepository;
+		this.depositControlRepository = depositControlRepository;
 		
+	}
+	@Override
+	public DepositDependencyControlDto findDependencyControlById(long itemId) {
+		DepositDependencyControl control = findDepedencyControlById(itemId);
+		return DepositDependencyControlMapper.INSTANCE.DependencyControlToDto(control);
+	
 	}
 
 	@Override
@@ -120,6 +135,43 @@ public class DepositDependencyControlServiceImpl implements DepositDependencyCon
 				dependencyControl.getMeasureUnit(), "NUEVO"));
 		return dependencyControl;
 	}
+
+	@Transactional
+	@Override
+	public List<UpdateDependencyItemReportDto> decreaseItemQuantity(long itemId, int itemQuantity,long depositId) {
+		List<UpdateDependencyItemReportDto> report = new ArrayList<>();
+		DepositDependencyControl dependencyControl = findDepedencyControlById(itemId);
+		
+		dependencyControl.setQuantity(dependencyControl.getQuantity()-itemQuantity);
+		DepositDependencyControl udpatedDependencyControl =  dependencyControlRepository.save(dependencyControl);
+		report.add(new UpdateDependencyItemReportDto("Item Dependencia", udpatedDependencyControl.getItemCode()
+				,udpatedDependencyControl.getQuantity()));
+		
+		Deposit deposit = findDepositById(depositId); 
+		
+		DepositControl depositControl = depositControlRepository.findByItemCodeAndDeposit(dependencyControl.getItemCode(),deposit)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el deposito"));
+		
+		depositControl.setQuantity(depositControl.getQuantity()-itemQuantity);
+		DepositControl updatedDepositControl = depositControlRepository.save(depositControl);
+		report.add(new UpdateDependencyItemReportDto("Item Deposito", updatedDepositControl.getItemCode(),updatedDepositControl.getQuantity()));
+		return report;
+		
+			
+		
+	}
+	
+	private DepositDependencyControl findDepedencyControlById(long itemId) {
+		return dependencyControlRepository.findById(itemId)
+				.orElseThrow(()-> new ItemNotFoundException("No se encontro el item de dependencia"));
+	}
+	private Deposit findDepositById(long depositId) {
+		return depositRepository.findById(depositId).orElseThrow(()-> new ItemNotFoundException("No se encontro el item de dependencia"));
+	}
+
+	
+	
+	
 
 	
 

@@ -284,9 +284,9 @@
                                 <td id="fullBlue_td">{{item.itemTotalPrice | currency: '$': 'symbol'}}</td>
                                 <td *ngIf="item.quantity>=10" class="text-success fw-bold">{{item.quantity}}</td>
                                 <td *ngIf="item.quantity<10" class="text-danger fw-bold">{{item.quantity}}</td>
-                                <!-- <td><a (click)="openDialogDepositControlUpdate(item.id,updateDepositContolTemplate)"
+                                <td><a (click)="openDialogUpdateDependencyControlTemplate(item.id,updateDependencyControltemplate)"
                                         class="btn btn-md"></a></td>
-                                <td><a (click)="confirmDeleteDepositControl(item.id)" class="btn btn-md"></a>
+                                <!-- <td><a (click)="confirmDeleteDepositControl(item.id)" class="btn btn-md"></a>
                                 </td> -->
                             </tr>
                         </tbody>
@@ -295,6 +295,141 @@
             </div>
         </div>
     </body>
+</ng-template>
+
+<!-- Update dependency control template -->
+<ng-template #updateDependencyControltemplate>
+    <body>
+        <button id="closeButton" (click)="onCloseUpdateDependencyControlTemplate()"
+            class="btn btn-sm text-white">X</button>
+        <div class="container-sm w-75">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 text-center">
+                    <form [formGroup]="dependencyControlUpdateForm"
+                        class="row g-6 form-group justifty-center text-center fw-bold ms-1">
+
+                        <div class="form-group">
+                            <label for="itemCode" class=" form-label fs-7 ">CODIGO</label>
+                            <input class="form-control border-dark" type="text" formControlName="itemCode" id="itemCode"
+                                [readonly]="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="measureUnit" class=" form-label fs-7 ">U.MEDIDA</label>
+                            <input class="form-control border-dark" type="text" formControlName="measureUnit"
+                                id="measureUnit" [readonly]="disableSelect">
+                        </div>
+                        <div class="form-group">
+                            <label for="itemDescription" class=" form-label fs-7 ">DESCRIPCION</label>
+                            <input class="form-control border-dark" type="text" formControlName="itemDescription"
+                                id="itemDescription" [readonly]="disableSelect">
+                        </div>
+                        <div class="form-group">
+                            <label for="itemUnitPrice" class=" form-label fs-7 ">P.UNITARIO</label>
+                            <input class="form-control border-dark" type="number" formControlName="itemUnitPrice"
+                                id="itemUnitPrice" [readonly]="disableSelect">
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity" class=" form-label fs-7 ">CANTIDAD</label>
+                            <input class="form-control border-dark" type="number" formControlName="quantity"
+                                id="quantity">
+                            <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)" class="text-danger">
+                                <div *ngIf="quantity.errors?.['required']">
+                                    Debe ingresar una cantidad validad
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="col-md-3">
+                    <div class="ms-5 mt-2">
+                        <div *ngIf="disableSelect">
+                            <div class="d-inline mt-3">
+                                <div class="fw-bold" id="label-disable-select">HABILITAR EDICION</div>
+                            </div>
+                            <div class="d-inlin">
+                                <div id="btnDisableSelect" (click)="editAllDependencyControlFields(false)"
+                                    class="btn btn-sm text-white ms-5 btn-warning border-dark"></div>
+                            </div>
+                        </div>
+                        <div *ngIf="!disableSelect">
+                            <div class="d-inline mt-3">
+                                <div class="fw-bold" id="label-disable-select">DESHABILITAR EDICION</div>
+                            </div>
+                            <div class="d-inlin">
+                                <div id="btnDisableSelect" (click)="editAllDependencyControlFields(true)"
+                                    class="btn btn-sm text-white ms-5 btn-danger border-dark"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-4 ms-5"></div>
+                <div class="col-md-1">
+                    <button id="btnControlUpdate" (click)="updateDependencyControl()"
+                        class="btn btn-sm text-white">Actualizar</button>
+                </div>
+                <div class="col-md-1 ms-5">
+                    <button id="btnControlCancel" (click)="onCloseUpdateDependencyControlTemplate()"
+                        class="btn btn-sm text-dark">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</ng-template>
+
+<ng-template #updateDependencyItemReportTemplate>
+    <body id="comparatorNoteCss">
+
+
+        <div *ngIf="updatedItemReport!=undefined" id="comparatorNoteCss" class="container-flex">
+            <button id="closeButton" (click)="onCloseUpdateDependencyItemReportTemplate()"
+                class="btn btn-sm text-white">X</button>
+            <div class="row mt-2">
+                <div class="col-md-3">
+
+                </div>
+
+                <div id="ordersTitle" class="col-md-6">
+                    <h2>DETALLE DE ACTUALIZACION ITEM</h2>
+
+                </div>
+
+                <div class="col-md-3">
+                    <div>
+                        <h4> Fecha: {{now |date: 'dd-MM-yyyy'}}</h4>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2" *ngFor="let item of updatedItemReport">
+                <div class="col-md-2"></div>
+                <div class="col-md-3">
+                    <div class="mt-2">
+                        <p>ITEM:</p>
+                        <h1 id="supplyReportFullBlue" class="d-inline">TIPO:</h1><small class="ms-2 ">
+                            {{item.depositMode}}</small>
+                    </div>
+
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> DETALLE:</h1><small class="ms-2 ">
+                            {{item.itemCode}}</small>
+                    </div>
+                    <div>
+                        <h1 id="supplyReportFullBlue" class="d-inline"> U.MEDIDA:</h1><small class="ms-2 ">
+                            {{item.itemQuantity}}</small>
+                    </div>
+              
+                </div>
+                <div class="col-md-1"></div>
+                </div>
+            </div>
+    </body>
+
 </ng-template>
 
 <!-- Purchase order upload report template -->
@@ -599,6 +734,7 @@
     </body>
 </ng-template>
 
+<!-- SUPPLY LIST TEMPLATE -->
 <ng-template #supplyListTemplate>
 
     <body *ngIf="suppliesDto.length==0">

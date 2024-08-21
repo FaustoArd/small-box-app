@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.lord.small_box.dtos.DepositDependencyControlDto;
 import com.lord.small_box.dtos.PurchaseOrderToDepositReportDto;
+import com.lord.small_box.dtos.UpdateDependencyItemReportDto;
 import com.lord.small_box.models.Deposit;
 import com.lord.small_box.models.DepositDependencyControl;
 import com.lord.small_box.models.Organization;
@@ -18,6 +19,10 @@ public interface DepositDependencyControlService {
 	
 	public List<PurchaseOrderToDepositReportDto> loadPurchaseOrderToDepositDependencyControl(PurchaseOrder purchaseOrder
 			,List<PurchaseOrderItem> orderItems,Deposit deposit,Organization applicantOrganization);
+	
+	public List<UpdateDependencyItemReportDto> decreaseItemQuantity(long itemId, int itemQuantity,long depositId);
+	
+	public DepositDependencyControlDto findDependencyControlById(long itemId);
 	
 
 }

@@ -1,7 +1,5 @@
 export class DepositControlDto {
     id!: number
-
-    supplyNumber!: string;
     place!: string;
 
     itemDescription!: string;

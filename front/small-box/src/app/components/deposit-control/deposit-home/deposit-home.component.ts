@@ -11,7 +11,6 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { DialogTemplateComponent } from '../../dialog/dialog-template/dialog-template.component';
 import { MatDialogRef } from '@angular/material/dialog';
-
 import { PurchaseOrderToDepositReportDto } from 'src/app/models/purchaseOrderToDepositReportDto';
 import { DepositControlDto } from 'src/app/models/depositControlDto';
 import { SupplyCorrectionNote } from 'src/app/models/supplyCorrectionNoteDto';
@@ -19,11 +18,11 @@ import { ConfirmDialogService } from 'src/app/services/confirm-dialog.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { DepositDto } from 'src/app/models/depositDto';
 import { Router } from '@angular/router';
-import { DepositItemComparatorDto } from 'src/app/models/depositItemComparatorDto';
 import { OrganizationService } from 'src/app/services/organization.service';
 import { OrganizationDto } from 'src/app/models/organizationDto';
 import { ExcelService } from 'src/app/services/excel.service';
 import { DepositDependencyControlDto } from 'src/app/models/depositDependencyControlDto';
+import { UpdateDependencyItemReportDto } from 'src/app/models/updateDependencyItemReportDto';
 
 @Component({
   selector: 'app-deposit-home',
@@ -38,6 +37,7 @@ export class DepositHomeComponent implements OnInit {
   selectedDepositBol: boolean = false;
   selectedDepositStr: string = "";
   disableSelect: boolean = true;
+  dependencyDisableSelect:boolean=true;
 
   totalPurchaseOrders!: number;
   totalSupplies!:number;
@@ -839,6 +839,19 @@ getDepositDependencyControlsByDeposit() {
     itemUnitPrice: [0],
     itemTotalPrice: [0]
   });
+ dependencyControlUpdateForm = this.formBuilder.group({
+    id: [0],
+    supplyNumber: [''],
+    itemDescription: [''],
+    itemCode: [''],
+    quantity: [0, Validators.required],
+    expirationDate: [''],
+    provider: [''],
+    measureUnit: [''],
+    itemUnitPrice: [0],
+    itemTotalPrice: [0],
+    applicantOrganizationId:[0],
+  });
   get quantity() {
     return this.depositControlUpdateForm.controls.quantity;
   }
@@ -847,8 +860,7 @@ getDepositDependencyControlsByDeposit() {
   updateDepositControlShow(findedDepositControlDto: DepositControlDto): void {
     this.depositControlUpdateForm.patchValue({
       id: this.findedDepositControlDto.id,
-      supplyNumber: this.findedDepositControlDto.supplyNumber,
-      itemCode: this.findedDepositControlDto.itemCode,
+    itemCode: this.findedDepositControlDto.itemCode,
       itemDescription: this.findedDepositControlDto.itemDescription,
       quantity: this.findedDepositControlDto.quantity,
       expirationDate: JSON.stringify(this.findedDepositControlDto.expirationDate),
@@ -862,6 +874,20 @@ getDepositDependencyControlsByDeposit() {
     this.updateDepositControlMatDialogRef.close();
 
   }
+  updateDependencyControlShow(findedDependencyControl:DepositDependencyControlDto):void{
+    this.dependencyControlUpdateForm.patchValue({
+      id: this.findedDependencyControl.id,
+      itemCode: this.findedDependencyControl.itemCode,
+      itemDescription: this.findedDependencyControl.itemDescription,
+      quantity: this.findedDependencyControl.quantity,
+      expirationDate: JSON.stringify(this.findedDependencyControl.expirationDate),
+      provider: this.findedDependencyControl.provider,
+      measureUnit: this.findedDependencyControl.measureUnit,
+      itemUnitPrice: this.findedDependencyControl.itemUnitPrice,
+      itemTotalPrice: this.findedDependencyControl.itemTotalPrice,
+      applicantOrganizationId:this.findedDependencyControl.applicantOrganizationId,
+    });
+  }
 
 
   private updateDepositControlMatDialogRef!: MatDialogRef<DialogTemplateComponent>
@@ -873,6 +899,19 @@ getDepositDependencyControlsByDeposit() {
       template
     })
     this.updateDepositControlMatDialogRef.afterClosed().subscribe();
+  }
+
+  private updateDependencyControlMatDialogRef!:MatDialogRef<DialogTemplateComponent>;
+  openDialogUpdateDependencyControlTemplate(dependencyControlId:number,template:TemplateRef<any>){
+    this.getDependencyControlById(dependencyControlId);
+    this.updateDependencyControlMatDialogRef = this.dialogService.openDialogCreation({
+      template
+    })
+    this.updateDependencyControlMatDialogRef.afterClosed().subscribe();
+  }
+  onCloseUpdateDependencyControlTemplate(){
+   
+    this.updateDependencyControlMatDialogRef.close();
   }
 
   updatedDepositControl!: DepositControlDto;
@@ -890,14 +929,52 @@ getDepositDependencyControlsByDeposit() {
         },
         complete: () => {
           this.onCloseUpdateDepositControlTemplate();
-          this.getDepositControlsByDeposit()
+          this.getDepositControlsByDeposit();
         }
       });
     }
   }
+  updatedItemReport:UpdateDependencyItemReportDto[]=[];
+  updateDependencyControl(){
+    if(this.dependencyControlUpdateForm.valid){
+      this.findedDependencyControl = Object.assign(this.findedDependencyControl,this.dependencyControlUpdateForm.value);
+      const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
+     this.depositControlService.decreaseDependencyControlItemQuantity(this.findedDependencyControl.id,
+      this.findedDependencyControl.quantity,depositId).subscribe({
+        next:(updatedItem)=>{
+          this.updatedItemReport = updatedItem;
+        },
+        error:(errorData)=>{
+          this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+        },
+        complete:()=>{
+          this.openUpdateDependencyItemReportTemplate();
+        }
+      })
+    }else{
+      this.snackBar.openSnackBar("Error al actualizar cantidad", 'Cerrar', 3000);
+    }
+  }
+  updateDependencyItemReportMatDialogRef!:MatDialogRef<DialogTemplateComponent>;
+  @ViewChild('updateDependencyItemReportTemplate') updateDependencyItemReportTemplate !: TemplateRef<any>
+  openUpdateDependencyItemReportTemplate(){
+    const template = this.updateDependencyItemReportTemplate;
+    this.updateDependencyControlMatDialogRef = this.dialogService.openCustomDialogCreation({
+      template
+    },'40%','40%',true,true);
+    this.updateDependencyItemReportMatDialogRef.afterClosed().subscribe();
+
+  }
+  onCloseUpdateDependencyItemReportTemplate(){
+    this.updateDependencyControlMatDialogRef.close();
+    this.onCloseUpdateDependencyControlTemplate();
+  }
 
   editAllDepositControlfields(disableSelect: boolean): void {
     this.disableSelect = disableSelect;
+  }
+  editAllDependencyControlFields(disableSelect:boolean):void{
+    this.dependencyDisableSelect = disableSelect;
   }
   getDepositControlById(depositControlId: number) {
     this.depositControlService.findDepositControlbyId(depositControlId).subscribe({
@@ -908,10 +985,26 @@ getDepositDependencyControlsByDeposit() {
         this.snackBar.openSnackBar(errorData, 'Cerrar', 3000);
       },
       complete: () => {
-        console.log("Item code" + this.findedDepositControlDto.itemCode)
+        console.log("Item code" + this.findedDepositControlDto.itemCode);
         this.updateDepositControlShow(this.findedDepositControlDto);
       }
     });
+  }
+  findedDependencyControl!:DepositDependencyControlDto;
+  getDependencyControlById(dependencyControlId:number){
+    this.depositControlService.findDependencyControlById(dependencyControlId).subscribe({
+      next:(dependencyControlData)=>{
+
+        this.findedDependencyControl= dependencyControlData;
+      },
+      error:(errorData)=>{
+        this.snackBar.openSnackBar(errorData,'Cerrar',3000);
+      },
+      complete:()=>{
+        this.updateDependencyControlShow(this.findedDependencyControl);
+      }
+    })
+   
   }
   deleteDepositControlById(depositControlId: number) {
     this.depositControlService.deleteDepositControlById(depositControlId).subscribe({

@@ -17,6 +17,7 @@ import { ExcelItemDto } from '../models/excelItemDto';
 import { OrganizationDto } from '../models/organizationDto';
 import { SupplyItemRequestDto } from '../models/supplyItemRequestDto';
 import { DepositDependencyControlDto } from '../models/depositDependencyControlDto';
+import { UpdateDependencyItemReportDto } from '../models/updateDependencyItemReportDto';
 
 const DEPOSIT_CONTROL_BASE_URL = "http://localhost:8080/api/v1/smallbox/deposit-control";
 
@@ -95,6 +96,17 @@ findPuchaseOrderItems(purchaseOrderId:number):Observable<PurchaseOrderItemDto[]>
     findAllDependencyControlsByApplicantOrganizationAndDeposit(applicantOrganzationId:number,depositId:number):Observable<DepositDependencyControlDto[]>{
       return this.http.get<DepositDependencyControlDto[]>
       (`${DEPENDENCY_CONTROL_BASE_URL}/find-dependency-controls?applicantOrganizationId=${applicantOrganzationId}&depositId=${depositId}`,this.httpOptions)
+      .pipe(catchError(this.handleError));
+    }
+    decreaseDependencyControlItemQuantity(itemId:number,itemQuantity:number,depositId:number):Observable<UpdateDependencyItemReportDto[]>{
+      return this.http.get<UpdateDependencyItemReportDto[]>
+      (`${DEPENDENCY_CONTROL_BASE_URL}/decrease-item-quantity?itemId=${itemId}&itemQuantity=${itemQuantity}&depositId=${depositId}`
+        ,this.httpOptions)
+    }
+
+    findDependencyControlById(dependencyControlId:number):Observable<DepositDependencyControlDto>{
+      return this.http.get<DepositDependencyControlDto>
+      (`${DEPENDENCY_CONTROL_BASE_URL}/find-dependency-control-by-id/${dependencyControlId}`,this.httpOptions)
       .pipe(catchError(this.handleError));
     }
    createDeposit(depositDto:DepositDto):Observable<string>{
