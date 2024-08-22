@@ -34,7 +34,7 @@ public class DepositDependencyControl {
 
 	private String itemDescription;
 
-	@Column(name = "code", unique = true)
+	@Column(name = "code", unique = false)
 	private String itemCode;
 
 	private int quantity;

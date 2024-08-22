@@ -332,14 +332,17 @@
                         <div class="form-group">
                             <label for="quantity" class=" form-label fs-7 ">CANTIDAD</label>
                             <input class="form-control border-dark" type="number" formControlName="quantity"
-                                id="quantity">
+                                id="quantity" [readonly]="disableSelect">
                             <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)" class="text-danger">
                                 <div *ngIf="quantity.errors?.['required']">
                                     Debe ingresar una cantidad validad
                                 </div>
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <label for="quantity" class=" form-label fs-7 ">REDUCIR CANTIDAD</label>
+                            <input class="form-control border-dark" type="number" #newQuantity>
+                        </div>
                     </form>
 
                 </div>
@@ -370,7 +373,7 @@
             <div class="row mt-1">
                 <div class="col-md-4 ms-5"></div>
                 <div class="col-md-1">
-                    <button id="btnControlUpdate" (click)="updateDependencyControl()"
+                    <button id="btnControlUpdate" (click)="updateDependencyControl(newQuantity.value)"
                         class="btn btn-sm text-white">Actualizar</button>
                 </div>
                 <div class="col-md-1 ms-5">

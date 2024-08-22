@@ -935,12 +935,13 @@ getDepositDependencyControlsByDeposit() {
     }
   }
   updatedItemReport:UpdateDependencyItemReportDto[]=[];
-  updateDependencyControl(){
+  updateDependencyControl(newQuantity:string){
+  
     if(this.dependencyControlUpdateForm.valid){
       this.findedDependencyControl = Object.assign(this.findedDependencyControl,this.dependencyControlUpdateForm.value);
       const depositId = Number(this.cookieService.getCurrentDepositSelectedId());
      this.depositControlService.decreaseDependencyControlItemQuantity(this.findedDependencyControl.id,
-      this.findedDependencyControl.quantity,depositId).subscribe({
+      Number(newQuantity),depositId).subscribe({
         next:(updatedItem)=>{
           this.updatedItemReport = updatedItem;
         },
@@ -959,15 +960,19 @@ getDepositDependencyControlsByDeposit() {
   @ViewChild('updateDependencyItemReportTemplate') updateDependencyItemReportTemplate !: TemplateRef<any>
   openUpdateDependencyItemReportTemplate(){
     const template = this.updateDependencyItemReportTemplate;
-    this.updateDependencyControlMatDialogRef = this.dialogService.openCustomDialogCreation({
+    this.updateDependencyItemReportMatDialogRef = this.dialogService.openCustomDialogCreation({
       template
     },'40%','40%',true,true);
-    this.updateDependencyItemReportMatDialogRef.afterClosed().subscribe();
+    this.updateDependencyItemReportMatDialogRef.afterClosed().subscribe({
+      next:()=>{
+        this.onCloseUpdateDependencyControlTemplate();
+      }
+    });
 
   }
   onCloseUpdateDependencyItemReportTemplate(){
-    this.updateDependencyControlMatDialogRef.close();
-    this.onCloseUpdateDependencyControlTemplate();
+    this.updateDependencyItemReportMatDialogRef.close();
+   
   }
 
   editAllDepositControlfields(disableSelect: boolean): void {
