@@ -934,6 +934,8 @@ getDepositDependencyControlsByDeposit() {
       });
     }
   }
+
+
   updatedItemReport:UpdateDependencyItemReportDto[]=[];
   updateDependencyControl(newQuantity:string){
   
@@ -1060,9 +1062,15 @@ filterDependencyControls(filter:string){
     this.depositDependencyFilters = this.depositDependencyControlDtos;
     return;
   }
-  this.depositDependencyFilters = this.depositDependencyControlDtos.filter(control =>{
-    control.itemDescription.toLowerCase().includes(filter.toLowerCase());
-  })
+  this.depositDependencyFilters = this.depositDependencyControlDtos.filter(control =>
+    control.itemDescription.toLowerCase().includes(filter.toLowerCase())
+  );
+  if(this.depositDependencyFilters.length==0){
+    this.depositDependencyFilters = this.depositDependencyControlDtos.filter(control =>
+      control.itemCode.toLowerCase().includes(filter.toLowerCase())
+    );
+  }
+ 
 }
 
 exportDepositToExcel():void{
